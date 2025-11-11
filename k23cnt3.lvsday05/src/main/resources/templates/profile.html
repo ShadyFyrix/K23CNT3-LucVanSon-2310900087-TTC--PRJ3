@@ -1,0 +1,46 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Profile - Devmaster Academy</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
+<body class="bg-light">
+<header class="container d-flex align-items-center mt-3">
+    <img src="https://devmaster.edu.vn/images/logo.png"
+         alt="Devmaster Academy"
+         style="height: 80px; margin-right: 20px;">
+    <div>
+        <h1 class="text-dark">Devmaster Academy</h1>
+        <p class="text-muted">Thông tin Profile</p>
+    </div>
+</header>
+
+<section class="container mt-4">
+    <!-- Sử dụng card thay vì alert -->
+    <div class="card shadow-sm mb-4" th:each="info : ${DevmasterProfile}">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title mb-0" th:text="${info.name}">Devmaster Academy</h3>
+        </div>
+        <div class="card-body">
+            <p class="card-text"><strong class="text-dark">Username:</strong>
+                <span class="text-dark" th:text="${info.username}">dev</span>
+            </p>
+            <p class="card-text"><strong class="text-dark">Email:</strong>
+                <span class="text-dark" th:text="${info.email}">contact@devmaster.edu.vn</span>
+            </p>
+            <p class="card-text"><strong class="text-dark">Website:</strong>
+                <a th:href="${info.website}" th:text="${info.website}" class="text-primary">https://devmaster.edu.vn</a>
+            </p>
+        </div>
+    </div>
+
+    <a th:href="@{/}" class="btn btn-success mt-3">Back to Home</a>
+</section>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

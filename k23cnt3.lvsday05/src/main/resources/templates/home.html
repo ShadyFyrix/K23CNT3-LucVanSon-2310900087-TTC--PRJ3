@@ -1,0 +1,23 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Sử dụng Header Fragment -->
+<head th:replace="fragments/_layout::head(${title})">
+    <title>Devmaster</title>
+</head>
+<body>
+<!-- Sử dụng Header Fragment -->
+<header th:replace="fragments/_layout ::
+        header"></header>
+<!-- Nội dung chính cuả trang chủ -->
+<section class="container" style="min-height: 268px">
+    <div class="row">
+        <h1>Đây là trang chủ</h1>
+    </div>
+    <!-- Sử dụng Menu Fragment / Chèn menu -->
+    <nav th:insert="fragments/_layout::menu"></nav>
+</section>
+<!-- Sử dụng Footer Fragment -->
+<footer th:replace="fragments/_layout ::
+footer"></footer>
+</body>
+</html>

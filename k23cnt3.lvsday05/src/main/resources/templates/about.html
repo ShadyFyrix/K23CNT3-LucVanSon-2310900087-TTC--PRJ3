@@ -1,0 +1,22 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<!-- Sử dụng head Fragment -->
+<head th:replace="fragments/_layout::head('Devmaster::Liên hệ')">
+  <title></title>
+</head>
+<body>
+<!-- Sử dụng Header Fragment -->
+<header th:replace="fragments/_layout :: header"></header>
+<!-- Nội dung chính cuả trang giới thiệu -->
+<section class="container" style="min-height: 268px">
+  <div class="row">
+    <h1>Đây là trang giới thiệu</h1>
+    <hr/>
+    <h3>VIỆN CÔNG NGHỆ VÀ ĐÀO TẠO DEVMASTER</h3>
+    <p>Đơn vị tiên phong trong đào tạo kỹ năng CNTT</p>
+  </div>
+</section>
+<!-- Sử dụng Footer Fragment -->
+<footer th:replace="fragments/_layout :: footer"></footer>
+</body>
+</html>

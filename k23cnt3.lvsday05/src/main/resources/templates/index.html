@@ -1,0 +1,33 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no,
+initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Giới thiệu Thymeleaf</title>
+    <!-- CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"
+    />
+    <!-- JavaScript -->
+    <script th:src="@{/css/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<header class="container d-flex align-items-center">
+    <img src="https://devmaster.edu.vn/images/logo.png"
+         alt="Devmaster Academy">
+    <div>
+        <h1
+                th:text="${@environment.getProperty('app.name')}"></h1>
+        <p
+                th:text="${@environment.getProperty('app.welcome.message')}"></p
+        >
+    </div>
+</header>
+<section class="container">
+    <a th:href="@{/profile}"
+       class="btn btn-success">Devmaster Profile</a>
+</section>
+</body>
+</html>
