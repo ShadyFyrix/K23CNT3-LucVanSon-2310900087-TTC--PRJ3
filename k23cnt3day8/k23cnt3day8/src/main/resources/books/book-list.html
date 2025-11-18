@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book List</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="layout/nav :: navFragment"></div>
+
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Book List</h2>
+        <a th:href="@{/books/new}" class="btn btn-success">Add New Book</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover align-middle">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Authors</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Active</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="book : ${books}">
+                <td th:text="${book.id}"></td>
+                <td th:text="${book.code}"></td>
+                <td>
+                    <a th:href="@{/books/detail/{id}(id=${book.id})}" th:text="${book.name}"></a>
+                </td>
+                <td>
+                    <span th:each="author : ${book.authors}">
+                        <span class="badge bg-primary me-1" th:text="${author.name}"></span>
+                    </span>
+                </td>
+                <td th:text="${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td th:text="${book.quantity}"></td>
+                <td>
+                    <span th:text="${book.isActive} ? 'Yes' : 'No'"
+                          th:classappend="${book.isActive} ? 'text-success' : 'text-danger'"></span>
+                </td>
+                <td>
+                    <img th:if="${book.imgUrl != null}" th:src="${book.imgUrl}"
+                         th:alt="${book.name}" class="img-thumbnail"
+                         style="max-width:80px; max-height:80px;"/>
+                    <span th:if="${book.imgUrl == null}">No Image</span>
+                </td>
+
+                <td>
+                    <a th:href="@{/books/edit/{id}(id=${book.id})}" class="btn btn-primary btn-sm me-1">Edit</a>
+                    <a th:href="@{/books/delete/{id}(id=${book.id})}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Are you sure to delete?')">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${author.id != null} ? 'Edit Author' : 'Add New Author'">Author Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 th:text="${author.id != null} ? 'Edit Author' : 'Add New Author'"></h2>
+    <form th:action="@{/authors/save}" th:object="${author}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" th:field="*{name}" class="form-control" placeholder="Author Name" required/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" th:field="*{email}" class="form-control" placeholder="Author Email"/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Author Image</label>
+            <input type="file" name="imageAuthor" class="form-control"/>
+            <div th:if="${author.imgUrl != null}" class="mt-2">
+                <p>Current Image:</p>
+                <img th:src="@{${author.imgUrl}}" alt="Author Image" class="img-thumbnail" style="max-width:200px;"/>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save</button>
+        <a th:href="@{/authors}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

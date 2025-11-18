@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Author List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="layout/nav :: navFragment"></div>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Author List</h2>
+        <a th:href="@{/authors/new}" class="btn btn-success">Add New Author</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover align-middle">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="author : ${authors}">
+                <td th:text="${author.id}"></td>
+                <td th:text="${author.name}"></td>
+                <td th:text="${author.email}"></td>
+                <td>
+                    <!-- Chỉ hiển thị khi có ảnh -->
+                    <img th:if="${author.imgUrl != null}"
+                         th:src="${author.imgUrl}"
+                         th:alt="${author.name}"
+                         class="img-thumbnail"
+                         style="max-width:80px; max-height:80px;"/>
+                    <!-- Nếu không có ảnh, hiển thị placeholder -->
+                    <span th:if="${author.imgUrl == null}">No Image</span>
+                </td>
+
+                <td>
+                    <a th:href="@{/authors/edit/{id}(id=${author.id})}"
+                       class="btn btn-primary btn-sm me-1">Edit</a>
+                    <a th:href="@{/authors/delete/{id}(id=${author.id})}"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Are you sure to delete?')">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
