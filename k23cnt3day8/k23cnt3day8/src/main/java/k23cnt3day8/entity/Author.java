@@ -14,7 +14,7 @@ import java.util.List;
 public class Author {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // INT AUTO_INCREMENT
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "code", length = 255)
@@ -41,7 +41,6 @@ public class Author {
     @Column(name = "isActive")
     private Boolean isActive;
 
-    // Quan hệ Many-to-Many với Book
     @ManyToMany(mappedBy = "authors")
     private List<Book> books = new ArrayList<>();
 }

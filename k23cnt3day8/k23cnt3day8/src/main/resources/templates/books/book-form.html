@@ -16,6 +16,10 @@
             border-radius: 5px;
             border: 1px solid #ddd;
         }
+        .dropdown-menu {
+            max-height: 200px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -68,14 +72,15 @@
                                 id="authorsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             Select Authors
                         </button>
-                        <ul class="dropdown-menu p-3" aria-labelledby="authorsDropdown" style="max-height:200px; overflow-y:auto;">
+                        <ul class="dropdown-menu p-3" aria-labelledby="authorsDropdown">
                             <li th:each="author : ${authors}">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox"
+                                    <input class="form-check-input author-checkbox" type="checkbox"
                                            th:id="'author_' + ${author.id}"
                                            th:name="authorIds"
                                            th:value="${author.id}"
-                                           th:checked="${book.authors.contains(author)}">
+                                           th:checked="${book.authors.contains(author)}"
+                                           th:attr="data-author-name=${author.name}">
                                     <label class="form-check-label" th:for="'author_' + ${author.id}"
                                            th:text="${author.name}"></label>
                                 </div>
@@ -84,6 +89,14 @@
                     </div>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Main Author (Chủ biên)</label>
+                    <select class="form-select" name="mainAuthorId" id="mainAuthorSelect" disabled>
+                        <option value="">-- Select Main Author --</option>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                    <small class="form-text text-muted">Please select authors first to choose main author</small>
+                </div>
 
                 <div class="mb-3">
                     <label class="form-label">Book Image</label>
@@ -111,5 +124,69 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Bootstrap Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const authorCheckboxes = document.querySelectorAll('.author-checkbox');
+        const mainAuthorSelect = document.getElementById('mainAuthorSelect');
+
+        // Get current main author ID from Thymeleaf (using a hidden field)
+        const currentMainAuthorId = document.querySelector('input[th\\:field="*{mainAuthor.id}"]') ?
+                                    document.querySelector('input[th\\:field="*{mainAuthor.id}"]').value :
+                                    null;
+
+        function updateMainAuthorSelect() {
+            const selectedAuthors = Array.from(authorCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => ({
+                    id: cb.value,
+                    name: cb.getAttribute('data-author-name') || cb.nextElementSibling.textContent.trim()
+                }));
+
+            console.log('Selected authors:', selectedAuthors); // For debugging
+
+            // Clear current options
+            mainAuthorSelect.innerHTML = '<option value="">-- Select Main Author --</option>';
+
+            if (selectedAuthors.length > 0) {
+                // Enable select
+                mainAuthorSelect.disabled = false;
+
+                // Add options for selected authors
+                selectedAuthors.forEach(author => {
+                    const option = document.createElement('option');
+                    option.value = author.id;
+                    option.textContent = author.name;
+                    mainAuthorSelect.appendChild(option);
+                });
+
+                // Set current main author if exists and is in selected authors
+                if (currentMainAuthorId && selectedAuthors.some(author => author.id === currentMainAuthorId)) {
+                    mainAuthorSelect.value = currentMainAuthorId;
+                }
+            } else {
+                // Disable select if no authors selected
+                mainAuthorSelect.disabled = true;
+                mainAuthorSelect.innerHTML = '<option value="">-- Select Main Author --</option>';
+            }
+        }
+
+        // Add event listeners to all author checkboxes
+        authorCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateMainAuthorSelect);
+        });
+
+        // Also update when dropdown is shown (in case of pre-selected authors in edit mode)
+        const authorsDropdown = document.getElementById('authorsDropdown');
+        if (authorsDropdown) {
+            authorsDropdown.addEventListener('click', function() {
+                setTimeout(updateMainAuthorSelect, 100);
+            });
+        }
+
+        // Initialize on page load
+        updateMainAuthorSelect();
+    });
+</script>
 </body>
 </html>

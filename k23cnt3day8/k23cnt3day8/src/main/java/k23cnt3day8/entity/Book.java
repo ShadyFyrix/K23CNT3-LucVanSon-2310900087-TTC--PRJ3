@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "book") // giữ tên bảng như trong database
+@Table(name = "book")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +15,7 @@ import java.util.List;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // INT AUTO_INCREMENT
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "code", length = 255)
@@ -39,11 +39,16 @@ public class Book {
     @Column(name = "isActive")
     private Boolean isActive;
 
+    // Thêm trường chủ biên
+    @ManyToOne
+    @JoinColumn(name = "main_author_id")
+    private Author mainAuthor;
+
     @ManyToMany
     @JoinTable(
-            name = "book_author", // tên bảng trung gian
-            joinColumns = @JoinColumn(name = "bookId"), // cột liên kết book
-            inverseJoinColumns = @JoinColumn(name = "authorId") // cột liên kết author
+            name = "book_author",
+            joinColumns = @JoinColumn(name = "bookId"),
+            inverseJoinColumns = @JoinColumn(name = "authorId")
     )
     private List<Author> authors = new ArrayList<>();
 }

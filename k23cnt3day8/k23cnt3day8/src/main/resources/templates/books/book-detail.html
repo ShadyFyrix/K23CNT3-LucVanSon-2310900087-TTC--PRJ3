@@ -22,6 +22,10 @@
                     <p class="card-text"><strong>Tác giả:</strong>
                         <span th:each="author : ${book.authors}" th:text="${author.name} + ' '"></span>
                     </p>
+                    <p class="card-text"><strong>Chủ biên:</strong>
+                        <span th:if="${book.mainAuthor != null}" th:text="${book.mainAuthor.name}" class="text-success fw-bold"></span>
+                        <span th:if="${book.mainAuthor == null}" class="text-muted">Không có</span>
+                    </p>
                     <p class="card-text"><strong>Trạng thái:</strong> <span th:text="${book.isActive} ? 'Hoạt động' : 'Không hoạt động'"></span></p>
                     <p class="card-text"><strong>Mô tả:</strong> <span th:text="${book.description}"></span></p>
                 </div>
