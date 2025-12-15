@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/user-layout}">
+
+<head>
+    <title>Trả lời bình luận - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- LvsCommentReplies.html - Danh sách trả lời cho bình luận -->
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-reply-all mr-3 text-[#fed700]"></i>Trả lời bình luận của tôi
+            </h1>
+
+            <div th:if="${LvsReplies == null or LvsReplies.isEmpty()}" class="text-center py-16">
+                <i class="fas fa-reply text-6xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400 text-xl">Chưa có ai trả lời bình luận của bạn</p>
+            </div>
+
+            <div th:if="${LvsReplies != null and !LvsReplies.isEmpty()}" class="space-y-4">
+                <div th:each="reply : ${LvsReplies}" class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6">
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-[#1e1e1e] rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-user text-gray-600"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <p class="text-white font-bold" th:text="${reply.lvsUser.lvsUsername}">Username</p>
+                                    <p class="text-gray-400 text-sm"
+                                        th:text="${#temporals.format(reply.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date</p>
+                                </div>
+                            </div>
+                            <p class="text-white" th:text="${reply.lvsContent}">Reply content</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

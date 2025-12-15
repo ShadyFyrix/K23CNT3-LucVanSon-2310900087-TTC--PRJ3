@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<footer th:fragment="footer" class="glass-card py-4 px-5 mt-auto border-0">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
+        <div class="text-muted small mb-2 mb-md-0">
+            © <span th:text="${#dates.year(#dates.createNow())}">2025</span>
+            <strong class="text-gradient-primary">LVS Admin</strong>. All rights reserved.
+        </div>
+        <div class="text-muted small">
+            Designed with <i class="fas fa-heart text-danger"></i> by
+            <a href="#" class="text-decoration-none fw-bold text-gradient-primary">Lục Văn Sơn</a>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

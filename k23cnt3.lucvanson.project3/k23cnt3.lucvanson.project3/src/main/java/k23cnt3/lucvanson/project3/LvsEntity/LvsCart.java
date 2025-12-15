@@ -1,14 +1,12 @@
 package k23cnt3.lucvanson.project3.LvsEntity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "LvsCart")
-@Data
 public class LvsCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,13 +22,13 @@ public class LvsCart {
     @Column(name = "LvsTotalItems")
     private Integer lvsTotalItems = 0;
 
-    @Column(name = "LvsTotalPrice", precision = 15, scale = 2)
+    @Column(name = "LvsTotalPrice")
     private Double lvsTotalPrice = 0.0;
 
-    @Column(name = "LvsDiscountAmount", precision = 15, scale = 2)
+    @Column(name = "LvsDiscountAmount")
     private Double lvsDiscountAmount = 0.0;
 
-    @Column(name = "LvsFinalPrice", precision = 15, scale = 2)
+    @Column(name = "LvsFinalPrice")
     private Double lvsFinalPrice = 0.0;
 
     // Mã khuyến mãi
@@ -64,4 +62,87 @@ public class LvsCart {
             lvsFinalPrice = lvsTotalPrice - lvsDiscountAmount;
         }
     }
+
+    // Getters and Setters
+
+    public Long getLvsCartId() {
+        return lvsCartId;
+    }
+
+    public void setLvsCartId(Long lvsCartId) {
+        this.lvsCartId = lvsCartId;
+    }
+
+    public LvsUser getLvsUser() {
+        return lvsUser;
+    }
+
+    public void setLvsUser(LvsUser lvsUser) {
+        this.lvsUser = lvsUser;
+    }
+
+    public Integer getLvsTotalItems() {
+        return lvsTotalItems;
+    }
+
+    public void setLvsTotalItems(Integer lvsTotalItems) {
+        this.lvsTotalItems = lvsTotalItems;
+    }
+
+    public Double getLvsTotalPrice() {
+        return lvsTotalPrice;
+    }
+
+    public void setLvsTotalPrice(Double lvsTotalPrice) {
+        this.lvsTotalPrice = lvsTotalPrice;
+    }
+
+    public Double getLvsDiscountAmount() {
+        return lvsDiscountAmount;
+    }
+
+    public void setLvsDiscountAmount(Double lvsDiscountAmount) {
+        this.lvsDiscountAmount = lvsDiscountAmount;
+    }
+
+    public Double getLvsFinalPrice() {
+        return lvsFinalPrice;
+    }
+
+    public void setLvsFinalPrice(Double lvsFinalPrice) {
+        this.lvsFinalPrice = lvsFinalPrice;
+    }
+
+    public String getLvsPromotionCode() {
+        return lvsPromotionCode;
+    }
+
+    public void setLvsPromotionCode(String lvsPromotionCode) {
+        this.lvsPromotionCode = lvsPromotionCode;
+    }
+
+    public LocalDateTime getLvsCreatedAt() {
+        return lvsCreatedAt;
+    }
+
+    public void setLvsCreatedAt(LocalDateTime lvsCreatedAt) {
+        this.lvsCreatedAt = lvsCreatedAt;
+    }
+
+    public LocalDateTime getLvsUpdatedAt() {
+        return lvsUpdatedAt;
+    }
+
+    public void setLvsUpdatedAt(LocalDateTime lvsUpdatedAt) {
+        this.lvsUpdatedAt = lvsUpdatedAt;
+    }
+
+    public List<LvsCartItem> getLvsCartItems() {
+        return lvsCartItems;
+    }
+
+    public void setLvsCartItems(List<LvsCartItem> lvsCartItems) {
+        this.lvsCartItems = lvsCartItems;
+    }
+
 }

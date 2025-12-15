@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/user-layout}">
+
+<head>
+    <title>Giỏ hàng - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- 
+            LvsCartView.html - Trang giỏ hàng
+            Hiển thị: Danh sách sản phẩm, tổng tiền, khuyến mãi, nút thanh toán
+            Biến: ${LvsCart}, ${LvsCartItems}
+        -->
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-shopping-cart mr-3 text-[#fed700]"></i>Giỏ hàng của bạn
+            </h1>
+
+            <div th:if="${LvsCartItems == null or LvsCartItems.isEmpty()}" class="text-center py-16">
+                <i class="fas fa-shopping-cart text-6xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400 text-xl mb-4">Giỏ hàng trống</p>
+                <a th:href="@{/user/san-pham}"
+                    class="inline-block bg-[#fed700] text-black font-bold px-6 py-3 rounded-lg hover:bg-yellow-400 transition">
+                    Tiếp tục mua sắm
+                </a>
+            </div>
+
+            <div th:if="${LvsCartItems != null and !LvsCartItems.isEmpty()}"
+                class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Cart Items -->
+                <div class="lg:col-span-2">
+                    <div class="bg-[#2b2b2b] border border-[#333] rounded-xl overflow-hidden">
+                        <div th:each="item : ${LvsCartItems}"
+                            class="border-b border-[#333] last:border-0 p-6 flex gap-4">
+                            <div
+                                class="w-24 h-24 bg-[#1e1e1e] rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-image text-3xl text-gray-600"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-white font-bold mb-2" th:text="${item.lvsProject.lvsProjectName}">
+                                    Product</h3>
+                                <p class="text-[#fed700] font-bold mb-3"
+                                    th:text="${#numbers.formatCurrency(item.lvsPrice)}">$0</p>
+                                <div class="flex items-center gap-4">
+                                    <div class="flex items-center gap-2">
+                                        <button
+                                            class="w-8 h-8 bg-[#1e1e1e] border border-[#444] rounded hover:border-[#fed700] transition">
+                                            <i class="fas fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="text-white font-bold w-12 text-center"
+                                            th:text="${item.lvsQuantity}">1</span>
+                                        <button
+                                            class="w-8 h-8 bg-[#1e1e1e] border border-[#444] rounded hover:border-[#fed700] transition">
+                                            <i class="fas fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                    <form th:action="@{/LvsUser/LvsCart/LvsRemoveItem}" method="post" class="inline">
+                                        <input type="hidden" name="lvsCartItemId" th:value="${item.lvsCartItemId}">
+                                        <button type="submit" class="text-red-400 hover:text-red-300 transition">
+                                            <i class="fas fa-trash mr-1"></i>Xóa
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 sticky top-4">
+                        <h2 class="text-xl font-bold text-white mb-6">Tổng đơn hàng</h2>
+
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between text-gray-400">
+                                <span>Tạm tính:</span>
+                                <span th:text="${#numbers.formatCurrency(LvsCart.lvsTotalPrice)}">$0</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400"
+                                th:if="${LvsCart.lvsDiscount != null and LvsCart.lvsDiscount > 0}">
+                                <span>Giảm giá:</span>
+                                <span class="text-green-400">-<span
+                                        th:text="${#numbers.formatCurrency(LvsCart.lvsDiscount)}">$0</span></span>
+                            </div>
+                            <div class="border-t border-[#444] pt-3 flex justify-between text-white font-bold text-lg">
+                                <span>Tổng cộng:</span>
+                                <span class="text-[#fed700]"
+                                    th:text="${#numbers.formatCurrency(LvsCart.lvsFinalPrice)}">$0</span>
+                            </div>
+                        </div>
+
+                        <form th:action="@{/LvsUser/LvsCart/LvsCheckout}" method="post">
+                            <button type="submit"
+                                class="w-full bg-[#fed700] text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition mb-3">
+                                <i class="fas fa-credit-card mr-2"></i>Thanh toán
+                            </button>
+                        </form>
+
+                        <a th:href="@{/user/san-pham}"
+                            class="block text-center text-gray-400 hover:text-white transition">
+                            <i class="fas fa-arrow-left mr-2"></i>Tiếp tục mua sắm
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

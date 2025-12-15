@@ -1,14 +1,12 @@
 package k23cnt3.lucvanson.project3.LvsEntity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "LvsPost")
-@Data
 public class LvsPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,4 +82,143 @@ public class LvsPost {
     public enum LvsPostStatus {
         DRAFT, PUBLISHED, HIDDEN, DELETED
     }
+
+    // Getters and Setters
+
+    public Long getLvsPostId() {
+        return lvsPostId;
+    }
+
+    public void setLvsPostId(Long lvsPostId) {
+        this.lvsPostId = lvsPostId;
+    }
+
+    public String getLvsTitle() {
+        return lvsTitle;
+    }
+
+    public void setLvsTitle(String lvsTitle) {
+        this.lvsTitle = lvsTitle;
+    }
+
+    public String getLvsContent() {
+        return lvsContent;
+    }
+
+    public void setLvsContent(String lvsContent) {
+        this.lvsContent = lvsContent;
+    }
+
+    public LvsPostType getLvsType() {
+        return lvsType;
+    }
+
+    public void setLvsType(LvsPostType lvsType) {
+        this.lvsType = lvsType;
+    }
+
+    public LvsUser getLvsUser() {
+        return lvsUser;
+    }
+
+    public void setLvsUser(LvsUser lvsUser) {
+        this.lvsUser = lvsUser;
+    }
+
+    public LvsProject getLvsProject() {
+        return lvsProject;
+    }
+
+    public void setLvsProject(LvsProject lvsProject) {
+        this.lvsProject = lvsProject;
+    }
+
+    public LvsPostStatus getLvsStatus() {
+        return lvsStatus;
+    }
+
+    public void setLvsStatus(LvsPostStatus lvsStatus) {
+        this.lvsStatus = lvsStatus;
+    }
+
+    public Integer getLvsViewCount() {
+        return lvsViewCount;
+    }
+
+    public void setLvsViewCount(Integer lvsViewCount) {
+        this.lvsViewCount = lvsViewCount;
+    }
+
+    public Integer getLvsLikeCount() {
+        return lvsLikeCount;
+    }
+
+    public void setLvsLikeCount(Integer lvsLikeCount) {
+        this.lvsLikeCount = lvsLikeCount;
+    }
+
+    public Integer getLvsCommentCount() {
+        return lvsCommentCount;
+    }
+
+    public void setLvsCommentCount(Integer lvsCommentCount) {
+        this.lvsCommentCount = lvsCommentCount;
+    }
+
+    public Integer getLvsShareCount() {
+        return lvsShareCount;
+    }
+
+    public void setLvsShareCount(Integer lvsShareCount) {
+        this.lvsShareCount = lvsShareCount;
+    }
+
+    public Boolean getLvsIsPinned() {
+        return lvsIsPinned;
+    }
+
+    public void setLvsIsPinned(Boolean lvsIsPinned) {
+        this.lvsIsPinned = lvsIsPinned;
+    }
+
+    public Boolean getLvsIsApproved() {
+        return lvsIsApproved;
+    }
+
+    public void setLvsIsApproved(Boolean lvsIsApproved) {
+        this.lvsIsApproved = lvsIsApproved;
+    }
+
+    public String getLvsTags() {
+        return lvsTags;
+    }
+
+    public void setLvsTags(String lvsTags) {
+        this.lvsTags = lvsTags;
+    }
+
+    public LocalDateTime getLvsCreatedAt() {
+        return lvsCreatedAt;
+    }
+
+    public void setLvsCreatedAt(LocalDateTime lvsCreatedAt) {
+        this.lvsCreatedAt = lvsCreatedAt;
+    }
+
+    public LocalDateTime getLvsUpdatedAt() {
+        return lvsUpdatedAt;
+    }
+
+    public void setLvsUpdatedAt(LocalDateTime lvsUpdatedAt) {
+        this.lvsUpdatedAt = lvsUpdatedAt;
+    }
+
+    public List<LvsComment> getLvsComments() {
+        return lvsComments;
+    }
+
+    public void setLvsComments(List<LvsComment> lvsComments) {
+        this.lvsComments = lvsComments;
+    }
+
 }

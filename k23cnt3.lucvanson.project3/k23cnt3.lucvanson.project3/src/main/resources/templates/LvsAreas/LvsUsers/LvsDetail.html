@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{areas/user/layout/user-layout}">
+
+<head>
+    <title th:text="${project.lvsProjectName} + ' - Zilly Store'">Product Detail - Zilly Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content" class="min-h-screen">
+        <!-- Breadcrumb -->
+        <div class="bg-[#1e1e1e] border-b border-[#333]">
+            <div class="container mx-auto px-4 py-4 flex items-center gap-2 text-sm text-gray-400">
+                <a href="/" class="hover:text-[#fed700] transition">Home</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <a href="/user/san-pham" class="hover:text-[#fed700] transition">Shop</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-white font-medium" th:text="${project.lvsProjectName}">Product Name</span>
+            </div>
+        </div>
+
+        <section class="container mx-auto px-4 py-8">
+            <div class="bg-[#2b2b2b] rounded-xl border border-[#333] p-8">
+                <div class="flex flex-col md:flex-row gap-12">
+                    <!-- Image Gallery -->
+                    <div class="md:w-1/2">
+                        <div
+                            class="border border-[#333] rounded-lg p-8 flex items-center justify-center bg-[#1e1e1e] mb-4 h-96">
+                            <img th:if="${project.lvsThumbnailUrl}" th:src="@{${project.lvsThumbnailUrl}}"
+                                class="max-h-full max-w-full object-contain" alt="Product Image">
+                            <i th:unless="${project.lvsThumbnailUrl}"
+                                class="fas fa-box-open text-gray-600 text-9xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="md:w-1/2">
+                        <div class="mb-4">
+                            <span
+                                class="text-[#fed700] text-xs font-bold px-2 py-1 border border-[#fed700] rounded uppercase tracking-wider"
+                                th:text="${project.lvsCategory != null ? project.lvsCategory.lvsCategoryName : 'NEW'}">Category</span>
+                        </div>
+
+                        <h1 class="text-3xl font-bold text-white mb-4" th:text="${project.lvsProjectName}">Product Name
+                        </h1>
+
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="flex text-[#fed700] text-sm">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="text-gray-400 text-sm">([(${project.lvsReviewCount ?: 0})]) Customer
+                                Reviews</span>
+                        </div>
+
+                        <div class="text-4xl font-bold text-[#e62e04] mb-6"
+                            th:text="${#numbers.formatCurrency(project.lvsPrice)}">$0.00</div>
+
+                        <p class="text-gray-400 mb-8 leading-relaxed" th:text="${project.lvsDescription}">
+                            Product description goes here.
+                        </p>
+
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="flex items-center border border-[#333] rounded overflow-hidden">
+                                <button
+                                    class="px-3 py-2 bg-[#1e1e1e] hover:bg-[#333] text-gray-400 transition">-</button>
+                                <input type="number" value="1"
+                                    class="w-12 text-center border-none bg-[#1e1e1e] text-white focus:ring-0 p-2 font-bold">
+                                <button
+                                    class="px-3 py-2 bg-[#1e1e1e] hover:bg-[#333] text-gray-400 transition">+</button>
+                            </div>
+                            <button
+                                class="flex-grow bg-[#fed700] text-black font-bold py-3 px-8 rounded-full hover:bg-white transition shadow-lg flex items-center justify-center gap-2">
+                                <i class="fas fa-shopping-bag"></i> Add to Cart
+                            </button>
+                            <button
+                                class="w-12 h-12 rounded-full border border-[#333] flex items-center justify-center text-gray-400 hover:text-[#fed700] hover:border-[#fed700] transition">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+
+                        <div class="border-t border-[#333] pt-6 space-y-3 text-sm text-gray-500">
+                            <div class="flex gap-2">
+                                <span class="font-bold text-gray-300">SKU:</span>
+                                <span th:text="'PROD-' + ${project.lvsProjectId}">PROD-001</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="font-bold text-gray-300">Tags:</span>
+                                <span>Organic, Healthy, Fresh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

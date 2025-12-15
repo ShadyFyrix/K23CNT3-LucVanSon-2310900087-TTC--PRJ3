@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Quản lý Danh mục</title>
+
+    <!-- Modern Design System -->
+    <link rel="stylesheet" th:href="@{/css/lvs-modern-admin.css}">
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+        }
+
+        .dashboard-container {
+            max-width: 1300px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: #f8fafc;
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .table tbody td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .badge-success {
+            background-color: var(--success-color) !important;
+            color: white;
+        }
+
+        .badge-danger {
+            background-color: var(--danger-color) !important;
+            color: white;
+        }
+
+        .badge-info {
+            background-color: var(--primary-color) !important;
+            color: white;
+        }
+
+        .badge-secondary {
+            background-color: var(--gray-color) !important;
+            color: white;
+        }
+
+        .filter-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2.5rem;
+        }
+
+        .search-input {
+            padding-left: 3rem;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+
+        .search-box {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        .sortable-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sortable-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            cursor: move;
+            transition: box-shadow 0.3s;
+            border: 1px solid #e9ecef;
+        }
+
+        .sortable-item:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .sortable-handle {
+            cursor: move;
+            color: var(--gray-color);
+            padding: 0.5rem;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.9rem 1.8rem;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid var(--gray-color);
+            color: var(--gray-color);
+            background: transparent;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--gray-color);
+            color: white;
+        }
+
+        /* CSS cho các nút action */
+        .action-column {
+            position: sticky;
+            right: 0;
+            background: white;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+            min-width: 140px;
+            white-space: nowrap;
+        }
+
+        .table tbody tr:hover .action-column {
+            background-color: #f8f9fa;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-action.btn-info {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+        }
+
+        .btn-action.btn-info:hover {
+            background-color: #138496;
+            transform: scale(1.05);
+        }
+
+        .btn-action.btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+        }
+
+        .btn-action.btn-warning:hover {
+            background-color: #e0a800;
+            transform: scale(1.05);
+        }
+
+        .btn-action.btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-action.btn-danger:hover {
+            background-color: #dc3545;
+            transform: scale(1.05);
+        }
+
+        .category-badge {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+
+        .pagination-container {
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .page-link {
+            border-radius: 8px;
+            margin: 0 3px;
+            border: 1px solid #dee2e6;
+            color: var(--primary-color);
+        }
+
+        .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
+
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            padding: 0.5rem 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .table-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .action-buttons {
+                justify-content: center;
+            }
+
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-header {
+                padding: 1.5rem;
+            }
+
+            .table-container {
+                border-radius: 12px;
+                overflow-x: auto;
+            }
+
+            .table {
+                min-width: 800px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-action {
+                width: 32px;
+                height: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="page-title">
+                            <i class="fas fa-list-alt me-2 text-primary"></i>
+                            Quản lý Danh mục
+                        </h1>
+                        <p class="text-muted mb-0">Quản lý và tổ chức danh mục dự án của bạn</p>
+                    </div>
+                    <a th:href="@{/LvsAdmin/LvsCategory/LvsAdd}" class="btn btn-success">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Thêm mới
+                    </a>
+                </div>
+            </div>
+
+            <!-- Alert Messages -->
+            <div th:if="${LvsSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle me-3 fs-4"></i>
+                    <div th:text="${LvsSuccess}"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${LvsError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+                    <div th:text="${LvsError}"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card gradient-primary animate-fade-in-up">
+                    <div class="stat-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" th:text="${LvsCategories != null ? LvsCategories.totalElements : 0}">0
+                        </h3>
+                        <p class="stat-label">Tổng số danh mục</p>
+                    </div>
+                </div>
+
+                <div class="stat-card gradient-success animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" th:text="${LvsActiveCount != null ? LvsActiveCount : 0}">0</h3>
+                        <p class="stat-label">Đang hoạt động</p>
+                    </div>
+                </div>
+
+                <div class="stat-card gradient-info animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="stat-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" th:text="${LvsTotalProjects != null ? LvsTotalProjects : 0}">0</h3>
+                        <p class="stat-label">Tổng dự án</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon bg-warning">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" th:text="${LvsCurrentPage != null ? LvsCurrentPage + 1 : 1}">1</h3>
+                        <p class="stat-label">Trang hiện tại</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-group d-flex align-items-center gap-3">
+                    <div class="search-box flex-grow-1">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input form-control" placeholder="Tìm kiếm danh mục..."
+                            id="searchInput" onkeyup="filterCategories()">
+                    </div>
+
+                    <select class="form-select" style="width: 180px;" onchange="filterByStatus(this.value)">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="active">Đang hoạt động</option>
+                        <option value="inactive">Vô hiệu hóa</option>
+                    </select>
+
+                    <button class="btn btn-outline-secondary" onclick="resetFilters()">
+                        <i class="fas fa-redo"></i>
+                        Đặt lại
+                    </button>
+                </div>
+            </div>
+
+            <!-- Categories Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3 class="table-title">
+                        <i class="fas fa-table me-2"></i>
+                        Danh sách danh mục
+                    </h3>
+
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table" id="categoriesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên</th>
+                                <th>Mô tả</th>
+                                <th>Biểu tượng</th>
+                                <th>Dự án</th>
+                                <th>Thứ tự</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="LvsCategory : ${LvsCategories != null ? LvsCategories.content : null}"
+                                th:data-status="${LvsCategory.lvsIsActive ? 'active' : 'inactive'}">
+                                <td th:text="${LvsCategory.lvsCategoryId}"></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="category-badge"
+                                            th:style="'background-color:' + ${LvsCategory.lvsColor} ?: '#e9ecef'"></span>
+                                        <strong th:text="${LvsCategory.lvsCategoryName}"></strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    <small class="text-muted"
+                                        th:text="${LvsCategory.lvsDescription} ?: 'Không có mô tả'"></small>
+                                </td>
+                                <td>
+                                    <i th:if="${LvsCategory.lvsIcon}" th:class="${LvsCategory.lvsIcon}"
+                                        style="font-size: 1.25rem; color: var(--primary-color);"></i>
+                                    <span th:unless="${LvsCategory.lvsIcon}" class="text-muted">—</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-info" th:text="${LvsCategory.lvsProjectCount}">0</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-secondary" th:text="${LvsCategory.lvsSortOrder}">0</span>
+                                </td>
+                                <td>
+                                    <span th:if="${LvsCategory.lvsIsActive}" class="status-badge badge-success">
+                                        <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>
+                                        Hoạt động
+                                    </span>
+                                    <span th:unless="${LvsCategory.lvsIsActive}" class="status-badge badge-danger">
+                                        <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>
+                                        Vô hiệu
+                                    </span>
+                                </td>
+                                <td>
+                                    <small
+                                        th:text="${#temporals.format(LvsCategory.lvsCreatedAt, 'dd/MM/yyyy')}"></small>
+                                </td>
+                                <td class="action-column">
+                                    <div class="action-buttons d-flex gap-1">
+                                        <a th:href="@{/LvsAdmin/LvsCategory/LvsDetail/{id}(id=${LvsCategory.lvsCategoryId})}"
+                                            class="btn btn-action btn-info" title="Xem chi tiết"><i
+                                                class="bi bi-eye"></i></a>
+                                        <a th:href="@{/LvsAdmin/LvsCategory/LvsEdit/{id}(id=${LvsCategory.lvsCategoryId})}"
+                                            class="btn btn-action btn-warning" title="Chỉnh sửa"><i
+                                                class="bi bi-pencil"></i></a>
+                                        <form
+                                            th:action="@{/LvsAdmin/LvsCategory/LvsDelete/{id}(id=${LvsCategory.lvsCategoryId})}"
+                                            method="post" class="d-inline"
+                                            onsubmit="return confirmDelete(this, '[[${LvsCategory.lvsCategoryName}]]', [[${LvsCategory.lvsProjectCount}]])">
+                                            <button type="submit" class="btn btn-action btn-danger" title="Xóa"><i
+                                                    class="bi bi-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Empty State -->
+                            <tr th:if="${LvsCategories == null or #lists.isEmpty(LvsCategories.content)}">
+                                <td colspan="9">
+                                    <div class="empty-state text-center p-5">
+                                        <i class="fas fa-inbox" style="font-size: 4rem; color: #dee2e6;"></i>
+                                        <h5 class="text-muted mt-3">Chưa có danh mục nào</h5>
+                                        <p class="text-muted">Bắt đầu bằng cách tạo danh mục đầu tiên</p>
+                                        <a th:href="@{/LvsAdmin/LvsCategory/LvsAdd}" class="btn btn-success">
+                                            <i class="fas fa-plus-circle me-2"></i>
+                                            Thêm danh mục mới
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div th:if="${LvsCategories != null and LvsCategories.totalPages > 1}"
+                    class="pagination-container p-3 border-top">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="page-info text-muted">
+                            Hiển thị
+                            <span th:text="${LvsCategories != null ? LvsCategories.numberOfElements : 0}">0</span>
+                            trên tổng số
+                            <span th:text="${LvsCategories != null ? LvsCategories.totalElements : 0}">0</span>
+                            danh mục
+                        </div>
+
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination mb-0">
+                                <li class="page-item" th:classappend="${LvsCategories.first} ? 'disabled' : ''">
+                                    <a class="page-link" th:href="@{/LvsAdmin/LvsCategory/LvsList(page=0, size=20)}">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${LvsCategories.first} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                        th:href="@{/LvsAdmin/LvsCategory/LvsList(page=${LvsCurrentPage - 1}, size=20)}">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                </li>
+
+                                <li th:each="LvsPageNumber : ${#numbers.sequence(0, LvsCategories.totalPages - 1)}"
+                                    class="page-item"
+                                    th:classappend="${LvsCurrentPage == LvsPageNumber} ? 'active' : ''">
+                                    <a class="page-link"
+                                        th:href="@{/LvsAdmin/LvsCategory/LvsList(page=${LvsPageNumber}, size=20)}"
+                                        th:text="${LvsPageNumber + 1}">1</a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${LvsCategories.last} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                        th:href="@{/LvsAdmin/LvsCategory/LvsList(page=${LvsCurrentPage + 1}, size=20)}">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${LvsCategories.last} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                        th:href="@{/LvsAdmin/LvsCategory/LvsList(page=${LvsCategories.totalPages - 1}, size=20)}">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div layout:fragment="scripts">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Initialize sortable list
+                const sortableList = document.getElementById('sortableList');
+                if (sortableList) {
+                    new Sortable(sortableList, {
+                        animation: 150,
+                        handle: '.sortable-handle',
+                        onUpdate: function () {
+                            // Update hidden inputs order
+                            const items = sortableList.querySelectorAll('[data-id]');
+                            const form = document.getElementById('reorderForm');
+                            const inputs = form.querySelectorAll('input[name="lvsCategoryIds"]');
+
+                            items.forEach((item, index) => {
+                                const id = item.getAttribute('data-id');
+                                inputs[index].value = id;
+                            });
+                        }
+                    });
+                }
+
+                // Initialize tooltips
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            });
+
+            function filterCategories() {
+                const input = document.getElementById('searchInput');
+                const filter = input.value.toLowerCase();
+                const rows = document.querySelectorAll('#categoriesTable tbody tr');
+
+                rows.forEach(row => {
+                    const name = row.cells[1].textContent.toLowerCase();
+                    const description = row.cells[2].textContent.toLowerCase();
+
+                    if (name.includes(filter) || description.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            function filterByStatus(status) {
+                const rows = document.querySelectorAll('#categoriesTable tbody tr');
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute('data-status');
+
+                    if (status === 'all' || rowStatus === status) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            function resetFilters() {
+                document.getElementById('searchInput').value = '';
+                document.querySelector('select').value = 'all';
+
+                const rows = document.querySelectorAll('#categoriesTable tbody tr');
+                rows.forEach(row => {
+                    row.style.display = '';
+                });
+            }
+
+            function confirmDelete(form, categoryName, projectCount) {
+                let message = `Bạn có chắc muốn xóa danh mục "${categoryName}"?`;
+
+                if (projectCount > 0) {
+                    message += `\n\nCẢNH BÁO: Danh mục đang có ${projectCount} dự án. Tất cả dự án sẽ bị xóa hoặc không còn thuộc danh mục này!`;
+                }
+
+                return confirm(message);
+            }
+
+            // Workaround: Inject text into action buttons after DOM loads
+            // This is needed because Thymeleaf renders empty <a> and <button> as self-closing tags
+            window.addEventListener('load', function () {
+                setTimeout(function () {
+                    // Find all action buttons
+                    const infoButtons = document.querySelectorAll('.btn-action.btn-info');
+                    const warningButtons = document.querySelectorAll('.btn-action.btn-warning');
+                    const dangerButtons = document.querySelectorAll('.btn-action.btn-danger');
+
+                    // Inject text
+                    infoButtons.forEach(btn => {
+                        if (!btn.textContent.trim()) btn.textContent = 'Xem';
+                    });
+                    warningButtons.forEach(btn => {
+                        if (!btn.textContent.trim()) btn.textContent = 'Sửa';
+                    });
+                    dangerButtons.forEach(btn => {
+                        if (!btn.textContent.trim()) btn.textContent = 'Xóa';
+                    });
+                }, 100); // Wait 100ms after page load
+            });
+        </script>
+    </div>
+</body>
+
+</html>

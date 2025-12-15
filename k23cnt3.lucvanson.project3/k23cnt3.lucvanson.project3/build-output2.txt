@@ -1,0 +1,595 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------< k23cnt3.lucvanson.project3:k23cnt3.lucvanson.project3 >--------
+[INFO] Building k23cnt3.lucvanson.project3 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ k23cnt3.lucvanson.project3 ---
+[INFO] Deleting D:\k23cnt3.lucvanson.project3\k23cnt3.lucvanson.project3\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ k23cnt3.lucvanson.project3 ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ k23cnt3.lucvanson.project3 ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 95 source files with javac [debug parameters release 21] to target\classes
+[INFO] Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[9,56] package org.springframework.messaging.handler.annotation does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[10,56] package org.springframework.messaging.handler.annotation does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[11,42] package org.springframework.messaging.simp does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[32,13] cannot find symbol
+  symbol:   class SimpMessagingTemplate
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserMessageController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[24,13] cannot find symbol
+  symbol:   class LvsProjectService
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[27,13] cannot find symbol
+  symbol:   class LvsCategoryService
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[30,13] cannot find symbol
+  symbol:   class LvsUserService
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsCartRepository.java:[57,5] cannot find symbol
+  symbol:   class List
+  location: interface k23cnt3.lucvanson.project3.LvsRepository.LvsCartRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsCartRepository.java:[60,5] cannot find symbol
+  symbol:   class List
+  location: interface k23cnt3.lucvanson.project3.LvsRepository.LvsCartRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsTransactionRepository.java:[128,26] method findByLvsStatus(k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus) is already defined in interface k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsUserRepository.java:[11,17] java.lang.ScopedValue is a preview API and is disabled by default.
+  (use --enable-preview to enable preview APIs)
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsUserRepository.java:[100,5] java.lang.ScopedValue is a preview API and is disabled by default.
+  (use --enable-preview to enable preview APIs)
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsAuthServiceImpl.java:[8,52] package org.springframework.security.crypto.password does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsAuthServiceImpl.java:[27,19] cannot find symbol
+  symbol:   class PasswordEncoder
+  location: class k23cnt3.lucvanson.project3.LvsService.LvsImpl.LvsAuthServiceImpl
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFileServiceImpl.java:[77,48] reference to List is ambiguous
+  both interface java.util.List in java.util and class java.awt.List in java.awt match
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFileServiceImpl.java:[77,12] reference to List is ambiguous
+  both interface java.util.List in java.util and class java.awt.List in java.awt match
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFileServiceImpl.java:[167,48] reference to List is ambiguous
+  both interface java.util.List in java.util and class java.awt.List in java.awt match
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFileServiceImpl.java:[167,12] reference to List is ambiguous
+  both interface java.util.List in java.util and class java.awt.List in java.awt match
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFileServiceImpl.java:[253,62] reference to List is ambiguous
+  both interface java.util.List in java.util and class java.awt.List in java.awt match
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[12,52] package org.springframework.security.crypto.password does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[32,19] cannot find symbol
+  symbol:   class PasswordEncoder
+  location: class k23cnt3.lucvanson.project3.LvsService.LvsImpl.LvsUserServiceImpl
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[129,6] cannot find symbol
+  symbol:   class MessageMapping
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserMessageController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[130,6] cannot find symbol
+  symbol:   class SendTo
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserMessageController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCategoryController.java:[76,24] cannot find symbol
+  symbol:   method setLvsIsActive(boolean)
+  location: variable lvsCategory of type k23cnt3.lucvanson.project3.LvsEntity.LvsCategory
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCategoryController.java:[80,82] cannot find symbol
+  symbol:   method getLvsCategoryId()
+  location: variable lvsSavedCategory of type k23cnt3.lucvanson.project3.LvsEntity.LvsCategory
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCategoryController.java:[103,51] cannot find symbol
+  symbol:   method getLvsProjects()
+  location: variable lvsCategory of type k23cnt3.lucvanson.project3.LvsEntity.LvsCategory
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCategoryController.java:[144,24] cannot find symbol
+  symbol:   method setLvsCategoryId(java.lang.Integer)
+  location: variable lvsCategory of type k23cnt3.lucvanson.project3.LvsEntity.LvsCategory
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsOrderItem.java:[50,38] cannot find symbol
+  symbol:   method getLvsPrice()
+  location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsOrderItem.java:[52,66] cannot find symbol
+  symbol:   method getLvsUser()
+  location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsOrderItem.java:[53,35] cannot find symbol
+  symbol:   method getLvsUser()
+  location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsOrder.java:[79,34] invalid method reference
+  cannot find symbol
+    symbol:   method getLvsItemTotal(T)
+    location: class k23cnt3.lucvanson.project3.LvsEntity.LvsOrderItem
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsCart.java:[57,31] invalid method reference
+  cannot find symbol
+    symbol:   method getLvsQuantity(T)
+    location: class k23cnt3.lucvanson.project3.LvsEntity.LvsCartItem
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsCart.java:[61,46] cannot find symbol
+  symbol:   method getLvsItemTotal()
+  location: variable item of type k23cnt3.lucvanson.project3.LvsEntity.LvsCartItem
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsCart.java:[61,79] cannot find symbol
+  symbol:   method getLvsItemTotal()
+  location: variable item of type k23cnt3.lucvanson.project3.LvsEntity.LvsCartItem
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsCartItem.java:[49,38] cannot find symbol
+  symbol:   method getLvsPrice()
+  location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCommentController.java:[83,49] cannot find symbol
+  symbol:   method getLvsReplies()
+  location: variable lvsComment of type k23cnt3.lucvanson.project3.LvsEntity.LvsComment
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCommentController.java:[186,23] cannot find symbol
+  symbol:   method setLvsCommentId(java.lang.Long)
+  location: variable lvsComment of type k23cnt3.lucvanson.project3.LvsEntity.LvsComment
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCommentController.java:[187,23] cannot find symbol
+  symbol:   method setLvsIsEdited(boolean)
+  location: variable lvsComment of type k23cnt3.lucvanson.project3.LvsEntity.LvsComment
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminMessageController.java:[185,9] cannot find symbol
+  symbol:   class Map
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminMessageController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminOrderController.java:[81,52] cannot find symbol
+  symbol:   method getLvsOrderItems()
+  location: variable lvsOrder of type k23cnt3.lucvanson.project3.LvsEntity.LvsOrder
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminOrderController.java:[146,78] cannot find symbol
+  symbol:   method getLvsUserId()
+  location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPostController.java:[237,20] cannot find symbol
+  symbol:   method setLvsPostId(java.lang.Long)
+  location: variable lvsPost of type k23cnt3.lucvanson.project3.LvsEntity.LvsPost
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[102,61] cannot find symbol
+  symbol:   method getLvsUserId()
+  location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[125,60] cannot find symbol
+  symbol:   method getLvsUserId()
+  location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[201,23] cannot find symbol
+  symbol:   method setLvsProjectId(java.lang.Long)
+  location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[221,48] method lvsGetAllUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+  required: org.springframework.data.domain.Pageable
+  found:    no arguments
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[243,23] cannot find symbol
+  symbol:   method setLvsUser(k23cnt3.lucvanson.project3.LvsEntity.LvsUser)
+  location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[244,23] cannot find symbol
+  symbol:   method setLvsStatus(k23cnt3.lucvanson.project3.LvsEntity.LvsProject.LvsProjectStatus)
+  location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[245,23] cannot find symbol
+  symbol:   method setLvsIsApproved(boolean)
+  location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[250,80] cannot find symbol
+  symbol:   method getLvsProjectId()
+  location: variable lvsSavedProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPromotionController.java:[86,25] cannot find symbol
+  symbol:   method setLvsIsActive(boolean)
+  location: variable lvsPromotion of type k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPromotionController.java:[90,84] cannot find symbol
+  symbol:   method getLvsPromotionId()
+  location: variable lvsSavedPromotion of type k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPromotionController.java:[152,25] cannot find symbol
+  symbol:   method setLvsPromotionId(java.lang.Integer)
+  location: variable lvsPromotion of type k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPromotionController.java:[222,41] cannot find symbol
+  symbol:   method getLvsUsedCount()
+  location: variable lvsPromotion of type k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPromotionController.java:[223,41] cannot find symbol
+  symbol:   method getLvsUsageLimit()
+  location: variable lvsPromotion of type k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[86,26] cannot find symbol
+  symbol:   method getLvsReportType()
+  location: variable lvsReport of type k23cnt3.lucvanson.project3.LvsEntity.LvsReport
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[88,68] cannot find symbol
+  symbol:   method getLvsTargetId()
+  location: variable lvsReport of type k23cnt3.lucvanson.project3.LvsEntity.LvsReport
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[122,58] cannot find symbol
+  symbol:   method getLvsUserId()
+  location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[204,9] cannot find symbol
+  symbol:   class Map
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[205,9] cannot find symbol
+  symbol:   class Map
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[206,9] cannot find symbol
+  symbol:   class Map
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReviewController.java:[142,42] cannot find symbol
+  symbol:   method getLvsProject()
+  location: variable lvsReview of type k23cnt3.lucvanson.project3.LvsEntity.LvsReview
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReviewController.java:[192,22] cannot find symbol
+  symbol:   method setLvsReviewId(java.lang.Long)
+  location: variable lvsReview of type k23cnt3.lucvanson.project3.LvsEntity.LvsReview
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReviewController.java:[193,51] cannot find symbol
+  symbol:   method getLvsUser()
+  location: variable lvsExistingReview of type k23cnt3.lucvanson.project3.LvsEntity.LvsReview
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReviewController.java:[194,54] cannot find symbol
+  symbol:   method getLvsProject()
+  location: variable lvsExistingReview of type k23cnt3.lucvanson.project3.LvsEntity.LvsReview
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReviewController.java:[199,71] cannot find symbol
+  symbol:   method getLvsProject()
+  location: variable lvsExistingReview of type k23cnt3.lucvanson.project3.LvsEntity.LvsReview
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminSettingController.java:[90,23] cannot find symbol
+  symbol:   method setLvsSettingId(java.lang.Integer)
+  location: variable lvsSetting of type k23cnt3.lucvanson.project3.LvsEntity.LvsSetting
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminSettingController.java:[94,79] cannot find symbol
+  symbol:   method getLvsGroup()
+  location: variable lvsSetting of type k23cnt3.lucvanson.project3.LvsEntity.LvsSetting
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminSettingController.java:[128,79] cannot find symbol
+  symbol:   method getLvsGroup()
+  location: variable lvsSetting of type k23cnt3.lucvanson.project3.LvsEntity.LvsSetting
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[106,65] cannot find symbol
+  symbol:   method getLvsUserId()
+  location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[128,68] cannot find symbol
+  symbol:   method getLvsUserId()
+  location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[151,68] cannot find symbol
+  symbol:   method getLvsUserId()
+  location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[189,48] method lvsGetAllUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+  required: org.springframework.data.domain.Pageable
+  found:    no arguments
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[213,27] cannot find symbol
+  symbol:   method setLvsUser(k23cnt3.lucvanson.project3.LvsEntity.LvsUser)
+  location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[214,27] cannot find symbol
+  symbol:   method setLvsAdminApprover(k23cnt3.lucvanson.project3.LvsEntity.LvsUser)
+  location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[215,27] cannot find symbol
+  symbol:   method setLvsStatus(k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus)
+  location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[216,27] cannot find symbol
+  symbol:   method setLvsApprovedAt(java.time.LocalDateTime)
+  location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[221,31] cannot find symbol
+  symbol:   method getLvsType()
+  location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[222,43] cannot find symbol
+  symbol:   method getLvsCoin()
+  location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[222,73] cannot find symbol
+  symbol:   method getLvsAmount()
+  location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[223,38] cannot find symbol
+  symbol:   method getLvsType()
+  location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[224,46] cannot find symbol
+  symbol:   method getLvsBalance()
+  location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[224,79] cannot find symbol
+  symbol:   method getLvsAmount()
+  location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[229,88] cannot find symbol
+  symbol:   method getLvsTransactionId()
+  location: variable lvsSavedTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[49,66] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsRole
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[51,57] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsRole
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[53,59] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsUserStatus
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[86,39] cannot find symbol
+  symbol:   method getLvsProjects()
+  location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[87,36] cannot find symbol
+  symbol:   method getLvsPosts()
+  location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[88,37] cannot find symbol
+  symbol:   method getLvsOrders()
+  location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[111,51] cannot find symbol
+  symbol:   method getLvsUserId()
+  location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[229,25] cannot find symbol
+  symbol:   method getLvsPassword()
+  location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[237,74] cannot find symbol
+  symbol:   method getLvsUserId()
+  location: variable lvsSavedUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[277,20] cannot find symbol
+  symbol:   method setLvsUserId(java.lang.Long)
+  location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[36,45] cannot find symbol
+  symbol:   method lvsAuthenticate(java.lang.String,java.lang.String)
+  location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[43,28] cannot find symbol
+  symbol:   method getLvsRole()
+  location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[44,32] cannot find symbol
+  symbol:   method getLvsRole()
+  location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[72,25] cannot find symbol
+  symbol:   method getLvsPassword()
+  location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[78,55] cannot find symbol
+  symbol:   method lvsRegisterUser(k23cnt3.lucvanson.project3.LvsEntity.LvsUser)
+  location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[111,27] cannot find symbol
+  symbol:   method lvsSendPasswordResetEmail(java.lang.String)
+  location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[INFO] 100 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.077 s
+[INFO] Finished at: 2025-12-06T23:34:03+07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project k23cnt3.lucvanson.project3: Compilation failure: Compilation failure: 
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[9,56] package org.springframework.messaging.handler.annotation does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[10,56] package org.springframework.messaging.handler.annotation does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[11,42] package org.springframework.messaging.simp does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[32,13] cannot find symbol
+[ERROR]   symbol:   class SimpMessagingTemplate
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserMessageController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[24,13] cannot find symbol
+[ERROR]   symbol:   class LvsProjectService
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[27,13] cannot find symbol
+[ERROR]   symbol:   class LvsCategoryService
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[30,13] cannot find symbol
+[ERROR]   symbol:   class LvsUserService
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsCartRepository.java:[57,5] cannot find symbol
+[ERROR]   symbol:   class List
+[ERROR]   location: interface k23cnt3.lucvanson.project3.LvsRepository.LvsCartRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsCartRepository.java:[60,5] cannot find symbol
+[ERROR]   symbol:   class List
+[ERROR]   location: interface k23cnt3.lucvanson.project3.LvsRepository.LvsCartRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsTransactionRepository.java:[128,26] method findByLvsStatus(k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus) is already defined in interface k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsUserRepository.java:[11,17] java.lang.ScopedValue is a preview API and is disabled by default.
+[ERROR]   (use --enable-preview to enable preview APIs)
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsUserRepository.java:[100,5] java.lang.ScopedValue is a preview API and is disabled by default.
+[ERROR]   (use --enable-preview to enable preview APIs)
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsAuthServiceImpl.java:[8,52] package org.springframework.security.crypto.password does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsAuthServiceImpl.java:[27,19] cannot find symbol
+[ERROR]   symbol:   class PasswordEncoder
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsService.LvsImpl.LvsAuthServiceImpl
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFileServiceImpl.java:[77,48] reference to List is ambiguous
+[ERROR]   both interface java.util.List in java.util and class java.awt.List in java.awt match
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFileServiceImpl.java:[77,12] reference to List is ambiguous
+[ERROR]   both interface java.util.List in java.util and class java.awt.List in java.awt match
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFileServiceImpl.java:[167,48] reference to List is ambiguous
+[ERROR]   both interface java.util.List in java.util and class java.awt.List in java.awt match
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFileServiceImpl.java:[167,12] reference to List is ambiguous
+[ERROR]   both interface java.util.List in java.util and class java.awt.List in java.awt match
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFileServiceImpl.java:[253,62] reference to List is ambiguous
+[ERROR]   both interface java.util.List in java.util and class java.awt.List in java.awt match
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[12,52] package org.springframework.security.crypto.password does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[32,19] cannot find symbol
+[ERROR]   symbol:   class PasswordEncoder
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsService.LvsImpl.LvsUserServiceImpl
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[129,6] cannot find symbol
+[ERROR]   symbol:   class MessageMapping
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserMessageController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[130,6] cannot find symbol
+[ERROR]   symbol:   class SendTo
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserMessageController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCategoryController.java:[76,24] cannot find symbol
+[ERROR]   symbol:   method setLvsIsActive(boolean)
+[ERROR]   location: variable lvsCategory of type k23cnt3.lucvanson.project3.LvsEntity.LvsCategory
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCategoryController.java:[80,82] cannot find symbol
+[ERROR]   symbol:   method getLvsCategoryId()
+[ERROR]   location: variable lvsSavedCategory of type k23cnt3.lucvanson.project3.LvsEntity.LvsCategory
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCategoryController.java:[103,51] cannot find symbol
+[ERROR]   symbol:   method getLvsProjects()
+[ERROR]   location: variable lvsCategory of type k23cnt3.lucvanson.project3.LvsEntity.LvsCategory
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCategoryController.java:[144,24] cannot find symbol
+[ERROR]   symbol:   method setLvsCategoryId(java.lang.Integer)
+[ERROR]   location: variable lvsCategory of type k23cnt3.lucvanson.project3.LvsEntity.LvsCategory
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsOrderItem.java:[50,38] cannot find symbol
+[ERROR]   symbol:   method getLvsPrice()
+[ERROR]   location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsOrderItem.java:[52,66] cannot find symbol
+[ERROR]   symbol:   method getLvsUser()
+[ERROR]   location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsOrderItem.java:[53,35] cannot find symbol
+[ERROR]   symbol:   method getLvsUser()
+[ERROR]   location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsOrder.java:[79,34] invalid method reference
+[ERROR]   cannot find symbol
+[ERROR]     symbol:   method getLvsItemTotal(T)
+[ERROR]     location: class k23cnt3.lucvanson.project3.LvsEntity.LvsOrderItem
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsCart.java:[57,31] invalid method reference
+[ERROR]   cannot find symbol
+[ERROR]     symbol:   method getLvsQuantity(T)
+[ERROR]     location: class k23cnt3.lucvanson.project3.LvsEntity.LvsCartItem
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsCart.java:[61,46] cannot find symbol
+[ERROR]   symbol:   method getLvsItemTotal()
+[ERROR]   location: variable item of type k23cnt3.lucvanson.project3.LvsEntity.LvsCartItem
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsCart.java:[61,79] cannot find symbol
+[ERROR]   symbol:   method getLvsItemTotal()
+[ERROR]   location: variable item of type k23cnt3.lucvanson.project3.LvsEntity.LvsCartItem
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsEntity/LvsCartItem.java:[49,38] cannot find symbol
+[ERROR]   symbol:   method getLvsPrice()
+[ERROR]   location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCommentController.java:[83,49] cannot find symbol
+[ERROR]   symbol:   method getLvsReplies()
+[ERROR]   location: variable lvsComment of type k23cnt3.lucvanson.project3.LvsEntity.LvsComment
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCommentController.java:[186,23] cannot find symbol
+[ERROR]   symbol:   method setLvsCommentId(java.lang.Long)
+[ERROR]   location: variable lvsComment of type k23cnt3.lucvanson.project3.LvsEntity.LvsComment
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminCommentController.java:[187,23] cannot find symbol
+[ERROR]   symbol:   method setLvsIsEdited(boolean)
+[ERROR]   location: variable lvsComment of type k23cnt3.lucvanson.project3.LvsEntity.LvsComment
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminMessageController.java:[185,9] cannot find symbol
+[ERROR]   symbol:   class Map
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminMessageController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminOrderController.java:[81,52] cannot find symbol
+[ERROR]   symbol:   method getLvsOrderItems()
+[ERROR]   location: variable lvsOrder of type k23cnt3.lucvanson.project3.LvsEntity.LvsOrder
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminOrderController.java:[146,78] cannot find symbol
+[ERROR]   symbol:   method getLvsUserId()
+[ERROR]   location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPostController.java:[237,20] cannot find symbol
+[ERROR]   symbol:   method setLvsPostId(java.lang.Long)
+[ERROR]   location: variable lvsPost of type k23cnt3.lucvanson.project3.LvsEntity.LvsPost
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[102,61] cannot find symbol
+[ERROR]   symbol:   method getLvsUserId()
+[ERROR]   location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[125,60] cannot find symbol
+[ERROR]   symbol:   method getLvsUserId()
+[ERROR]   location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[201,23] cannot find symbol
+[ERROR]   symbol:   method setLvsProjectId(java.lang.Long)
+[ERROR]   location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[221,48] method lvsGetAllUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+[ERROR]   required: org.springframework.data.domain.Pageable
+[ERROR]   found:    no arguments
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[243,23] cannot find symbol
+[ERROR]   symbol:   method setLvsUser(k23cnt3.lucvanson.project3.LvsEntity.LvsUser)
+[ERROR]   location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[244,23] cannot find symbol
+[ERROR]   symbol:   method setLvsStatus(k23cnt3.lucvanson.project3.LvsEntity.LvsProject.LvsProjectStatus)
+[ERROR]   location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[245,23] cannot find symbol
+[ERROR]   symbol:   method setLvsIsApproved(boolean)
+[ERROR]   location: variable lvsProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[250,80] cannot find symbol
+[ERROR]   symbol:   method getLvsProjectId()
+[ERROR]   location: variable lvsSavedProject of type k23cnt3.lucvanson.project3.LvsEntity.LvsProject
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPromotionController.java:[86,25] cannot find symbol
+[ERROR]   symbol:   method setLvsIsActive(boolean)
+[ERROR]   location: variable lvsPromotion of type k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPromotionController.java:[90,84] cannot find symbol
+[ERROR]   symbol:   method getLvsPromotionId()
+[ERROR]   location: variable lvsSavedPromotion of type k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPromotionController.java:[152,25] cannot find symbol
+[ERROR]   symbol:   method setLvsPromotionId(java.lang.Integer)
+[ERROR]   location: variable lvsPromotion of type k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPromotionController.java:[222,41] cannot find symbol
+[ERROR]   symbol:   method getLvsUsedCount()
+[ERROR]   location: variable lvsPromotion of type k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminPromotionController.java:[223,41] cannot find symbol
+[ERROR]   symbol:   method getLvsUsageLimit()
+[ERROR]   location: variable lvsPromotion of type k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[86,26] cannot find symbol
+[ERROR]   symbol:   method getLvsReportType()
+[ERROR]   location: variable lvsReport of type k23cnt3.lucvanson.project3.LvsEntity.LvsReport
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[88,68] cannot find symbol
+[ERROR]   symbol:   method getLvsTargetId()
+[ERROR]   location: variable lvsReport of type k23cnt3.lucvanson.project3.LvsEntity.LvsReport
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[122,58] cannot find symbol
+[ERROR]   symbol:   method getLvsUserId()
+[ERROR]   location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[204,9] cannot find symbol
+[ERROR]   symbol:   class Map
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[205,9] cannot find symbol
+[ERROR]   symbol:   class Map
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[206,9] cannot find symbol
+[ERROR]   symbol:   class Map
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReviewController.java:[142,42] cannot find symbol
+[ERROR]   symbol:   method getLvsProject()
+[ERROR]   location: variable lvsReview of type k23cnt3.lucvanson.project3.LvsEntity.LvsReview
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReviewController.java:[192,22] cannot find symbol
+[ERROR]   symbol:   method setLvsReviewId(java.lang.Long)
+[ERROR]   location: variable lvsReview of type k23cnt3.lucvanson.project3.LvsEntity.LvsReview
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReviewController.java:[193,51] cannot find symbol
+[ERROR]   symbol:   method getLvsUser()
+[ERROR]   location: variable lvsExistingReview of type k23cnt3.lucvanson.project3.LvsEntity.LvsReview
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReviewController.java:[194,54] cannot find symbol
+[ERROR]   symbol:   method getLvsProject()
+[ERROR]   location: variable lvsExistingReview of type k23cnt3.lucvanson.project3.LvsEntity.LvsReview
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReviewController.java:[199,71] cannot find symbol
+[ERROR]   symbol:   method getLvsProject()
+[ERROR]   location: variable lvsExistingReview of type k23cnt3.lucvanson.project3.LvsEntity.LvsReview
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminSettingController.java:[90,23] cannot find symbol
+[ERROR]   symbol:   method setLvsSettingId(java.lang.Integer)
+[ERROR]   location: variable lvsSetting of type k23cnt3.lucvanson.project3.LvsEntity.LvsSetting
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminSettingController.java:[94,79] cannot find symbol
+[ERROR]   symbol:   method getLvsGroup()
+[ERROR]   location: variable lvsSetting of type k23cnt3.lucvanson.project3.LvsEntity.LvsSetting
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminSettingController.java:[128,79] cannot find symbol
+[ERROR]   symbol:   method getLvsGroup()
+[ERROR]   location: variable lvsSetting of type k23cnt3.lucvanson.project3.LvsEntity.LvsSetting
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[106,65] cannot find symbol
+[ERROR]   symbol:   method getLvsUserId()
+[ERROR]   location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[128,68] cannot find symbol
+[ERROR]   symbol:   method getLvsUserId()
+[ERROR]   location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[151,68] cannot find symbol
+[ERROR]   symbol:   method getLvsUserId()
+[ERROR]   location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[189,48] method lvsGetAllUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+[ERROR]   required: org.springframework.data.domain.Pageable
+[ERROR]   found:    no arguments
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[213,27] cannot find symbol
+[ERROR]   symbol:   method setLvsUser(k23cnt3.lucvanson.project3.LvsEntity.LvsUser)
+[ERROR]   location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[214,27] cannot find symbol
+[ERROR]   symbol:   method setLvsAdminApprover(k23cnt3.lucvanson.project3.LvsEntity.LvsUser)
+[ERROR]   location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[215,27] cannot find symbol
+[ERROR]   symbol:   method setLvsStatus(k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus)
+[ERROR]   location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[216,27] cannot find symbol
+[ERROR]   symbol:   method setLvsApprovedAt(java.time.LocalDateTime)
+[ERROR]   location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[221,31] cannot find symbol
+[ERROR]   symbol:   method getLvsType()
+[ERROR]   location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[222,43] cannot find symbol
+[ERROR]   symbol:   method getLvsCoin()
+[ERROR]   location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[222,73] cannot find symbol
+[ERROR]   symbol:   method getLvsAmount()
+[ERROR]   location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[223,38] cannot find symbol
+[ERROR]   symbol:   method getLvsType()
+[ERROR]   location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[224,46] cannot find symbol
+[ERROR]   symbol:   method getLvsBalance()
+[ERROR]   location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[224,79] cannot find symbol
+[ERROR]   symbol:   method getLvsAmount()
+[ERROR]   location: variable lvsTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[229,88] cannot find symbol
+[ERROR]   symbol:   method getLvsTransactionId()
+[ERROR]   location: variable lvsSavedTransaction of type k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[49,66] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsRole
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[51,57] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsRole
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[53,59] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsUserStatus
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[86,39] cannot find symbol
+[ERROR]   symbol:   method getLvsProjects()
+[ERROR]   location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[87,36] cannot find symbol
+[ERROR]   symbol:   method getLvsPosts()
+[ERROR]   location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[88,37] cannot find symbol
+[ERROR]   symbol:   method getLvsOrders()
+[ERROR]   location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[111,51] cannot find symbol
+[ERROR]   symbol:   method getLvsUserId()
+[ERROR]   location: variable lvsAdmin of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[229,25] cannot find symbol
+[ERROR]   symbol:   method getLvsPassword()
+[ERROR]   location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[237,74] cannot find symbol
+[ERROR]   symbol:   method getLvsUserId()
+[ERROR]   location: variable lvsSavedUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[277,20] cannot find symbol
+[ERROR]   symbol:   method setLvsUserId(java.lang.Long)
+[ERROR]   location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[36,45] cannot find symbol
+[ERROR]   symbol:   method lvsAuthenticate(java.lang.String,java.lang.String)
+[ERROR]   location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[43,28] cannot find symbol
+[ERROR]   symbol:   method getLvsRole()
+[ERROR]   location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[44,32] cannot find symbol
+[ERROR]   symbol:   method getLvsRole()
+[ERROR]   location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[72,25] cannot find symbol
+[ERROR]   symbol:   method getLvsPassword()
+[ERROR]   location: variable lvsUser of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[78,55] cannot find symbol
+[ERROR]   symbol:   method lvsRegisterUser(k23cnt3.lucvanson.project3.LvsEntity.LvsUser)
+[ERROR]   location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[111,27] cannot find symbol
+[ERROR]   symbol:   method lvsSendPasswordResetEmail(java.lang.String)
+[ERROR]   location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

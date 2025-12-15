@@ -1,12 +1,10 @@
 package k23cnt3.lucvanson.project3.LvsEntity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "LvsOrderItem")
-@Data
 public class LvsOrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +30,10 @@ public class LvsOrderItem {
     @Column(name = "LvsQuantity")
     private Integer lvsQuantity = 1;
 
-    @Column(name = "LvsUnitPrice", precision = 15, scale = 2)
+    @Column(name = "LvsUnitPrice")
     private Double lvsUnitPrice;
 
-    @Column(name = "LvsItemTotal", precision = 15, scale = 2)
+    @Column(name = "LvsItemTotal")
     private Double lvsItemTotal;
 
     // Thời gian tạo
@@ -56,4 +54,71 @@ public class LvsOrderItem {
             lvsItemTotal = lvsUnitPrice * lvsQuantity;
         }
     }
+
+    // Getters and Setters
+
+    public Long getLvsOrderItemId() {
+        return lvsOrderItemId;
+    }
+
+    public void setLvsOrderItemId(Long lvsOrderItemId) {
+        this.lvsOrderItemId = lvsOrderItemId;
+    }
+
+    public LvsOrder getLvsOrder() {
+        return lvsOrder;
+    }
+
+    public void setLvsOrder(LvsOrder lvsOrder) {
+        this.lvsOrder = lvsOrder;
+    }
+
+    public LvsProject getLvsProject() {
+        return lvsProject;
+    }
+
+    public void setLvsProject(LvsProject lvsProject) {
+        this.lvsProject = lvsProject;
+    }
+
+    public LvsUser getLvsSeller() {
+        return lvsSeller;
+    }
+
+    public void setLvsSeller(LvsUser lvsSeller) {
+        this.lvsSeller = lvsSeller;
+    }
+
+    public Integer getLvsQuantity() {
+        return lvsQuantity;
+    }
+
+    public void setLvsQuantity(Integer lvsQuantity) {
+        this.lvsQuantity = lvsQuantity;
+    }
+
+    public Double getLvsUnitPrice() {
+        return lvsUnitPrice;
+    }
+
+    public void setLvsUnitPrice(Double lvsUnitPrice) {
+        this.lvsUnitPrice = lvsUnitPrice;
+    }
+
+    public Double getLvsItemTotal() {
+        return lvsItemTotal;
+    }
+
+    public void setLvsItemTotal(Double lvsItemTotal) {
+        this.lvsItemTotal = lvsItemTotal;
+    }
+
+    public LocalDateTime getLvsCreatedAt() {
+        return lvsCreatedAt;
+    }
+
+    public void setLvsCreatedAt(LocalDateTime lvsCreatedAt) {
+        this.lvsCreatedAt = lvsCreatedAt;
+    }
+
 }

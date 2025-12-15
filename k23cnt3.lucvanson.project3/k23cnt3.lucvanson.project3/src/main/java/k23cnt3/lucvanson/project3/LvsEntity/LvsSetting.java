@@ -1,12 +1,10 @@
 package k23cnt3.lucvanson.project3.LvsEntity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "LvsSetting")
-@Data
 public class LvsSetting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,4 +45,87 @@ public class LvsSetting {
 
     @Column(name = "LvsUpdatedAt")
     private LocalDateTime lvsUpdatedAt = LocalDateTime.now();
+
+    // Getters and Setters
+
+    public Integer getLvsSettingId() {
+        return lvsSettingId;
+    }
+
+    public void setLvsSettingId(Integer lvsSettingId) {
+        this.lvsSettingId = lvsSettingId;
+    }
+
+    public String getLvsKey() {
+        return lvsKey;
+    }
+
+    public void setLvsKey(String lvsKey) {
+        this.lvsKey = lvsKey;
+    }
+
+    public String getLvsValue() {
+        return lvsValue;
+    }
+
+    public void setLvsValue(String lvsValue) {
+        this.lvsValue = lvsValue;
+    }
+
+    public String getLvsGroup() {
+        return lvsGroup;
+    }
+
+    public void setLvsGroup(String lvsGroup) {
+        this.lvsGroup = lvsGroup;
+    }
+
+    public String getLvsLabel() {
+        return lvsLabel;
+    }
+
+    public void setLvsLabel(String lvsLabel) {
+        this.lvsLabel = lvsLabel;
+    }
+
+    public String getLvsDataType() {
+        return lvsDataType;
+    }
+
+    public void setLvsDataType(String lvsDataType) {
+        this.lvsDataType = lvsDataType;
+    }
+
+    public Boolean getLvsIsPublic() {
+        return lvsIsPublic;
+    }
+
+    public void setLvsIsPublic(Boolean lvsIsPublic) {
+        this.lvsIsPublic = lvsIsPublic;
+    }
+
+    public String getLvsDescription() {
+        return lvsDescription;
+    }
+
+    public void setLvsDescription(String lvsDescription) {
+        this.lvsDescription = lvsDescription;
+    }
+
+    public LocalDateTime getLvsCreatedAt() {
+        return lvsCreatedAt;
+    }
+
+    public void setLvsCreatedAt(LocalDateTime lvsCreatedAt) {
+        this.lvsCreatedAt = lvsCreatedAt;
+    }
+
+    public LocalDateTime getLvsUpdatedAt() {
+        return lvsUpdatedAt;
+    }
+
+    public void setLvsUpdatedAt(LocalDateTime lvsUpdatedAt) {
+        this.lvsUpdatedAt = lvsUpdatedAt;
+    }
+
 }

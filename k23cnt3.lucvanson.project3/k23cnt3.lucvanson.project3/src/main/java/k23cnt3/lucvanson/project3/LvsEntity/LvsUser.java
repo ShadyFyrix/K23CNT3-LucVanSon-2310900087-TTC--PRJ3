@@ -1,14 +1,12 @@
 package k23cnt3.lucvanson.project3.LvsEntity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "LvsUser")
-@Data
 public class LvsUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +32,10 @@ public class LvsUser {
     private LvsRole lvsRole = LvsRole.USER;
 
     // Số dư và coin
-    @Column(name = "LvsCoin", precision = 15, scale = 2)
+    @Column(name = "LvsCoin")
     private Double lvsCoin = 0.0;
 
-    @Column(name = "LvsBalance", precision = 15, scale = 2)
+    @Column(name = "LvsBalance")
     private Double lvsBalance = 0.0; // Doanh thu từ bán dự án
 
     // Avatar và trạng thái
@@ -104,4 +102,211 @@ public class LvsUser {
     public enum LvsUserStatus {
         ACTIVE, INACTIVE, BANNED
     }
+    @PreUpdate
+    protected void lvsOnUpdate() {
+        this.lvsUpdatedAt = LocalDateTime.now();
+    }
+
+    // Getters and Setters
+
+    public Long getLvsUserId() {
+        return lvsUserId;
+    }
+
+    public void setLvsUserId(Long lvsUserId) {
+        this.lvsUserId = lvsUserId;
+    }
+
+    public String getLvsUsername() {
+        return lvsUsername;
+    }
+
+    public void setLvsUsername(String lvsUsername) {
+        this.lvsUsername = lvsUsername;
+    }
+
+    public String getLvsPassword() {
+        return lvsPassword;
+    }
+
+    public void setLvsPassword(String lvsPassword) {
+        this.lvsPassword = lvsPassword;
+    }
+
+    public String getLvsEmail() {
+        return lvsEmail;
+    }
+
+    public void setLvsEmail(String lvsEmail) {
+        this.lvsEmail = lvsEmail;
+    }
+
+    public String getLvsFullName() {
+        return lvsFullName;
+    }
+
+    public void setLvsFullName(String lvsFullName) {
+        this.lvsFullName = lvsFullName;
+    }
+
+    public LvsRole getLvsRole() {
+        return lvsRole;
+    }
+
+    public void setLvsRole(LvsRole lvsRole) {
+        this.lvsRole = lvsRole;
+    }
+
+    public Double getLvsCoin() {
+        return lvsCoin;
+    }
+
+    public void setLvsCoin(Double lvsCoin) {
+        this.lvsCoin = lvsCoin;
+    }
+
+    public Double getLvsBalance() {
+        return lvsBalance;
+    }
+
+    public void setLvsBalance(Double lvsBalance) {
+        this.lvsBalance = lvsBalance;
+    }
+
+    public String getLvsAvatarUrl() {
+        return lvsAvatarUrl;
+    }
+
+    public void setLvsAvatarUrl(String lvsAvatarUrl) {
+        this.lvsAvatarUrl = lvsAvatarUrl;
+    }
+
+    public LvsUserStatus getLvsStatus() {
+        return lvsStatus;
+    }
+
+    public void setLvsStatus(LvsUserStatus lvsStatus) {
+        this.lvsStatus = lvsStatus;
+    }
+
+    public String getLvsPhone() {
+        return lvsPhone;
+    }
+
+    public void setLvsPhone(String lvsPhone) {
+        this.lvsPhone = lvsPhone;
+    }
+
+    public String getLvsAddress() {
+        return lvsAddress;
+    }
+
+    public void setLvsAddress(String lvsAddress) {
+        this.lvsAddress = lvsAddress;
+    }
+
+    public String getLvsBio() {
+        return lvsBio;
+    }
+
+    public void setLvsBio(String lvsBio) {
+        this.lvsBio = lvsBio;
+    }
+
+    public LocalDateTime getLvsLastLogin() {
+        return lvsLastLogin;
+    }
+
+    public void setLvsLastLogin(LocalDateTime lvsLastLogin) {
+        this.lvsLastLogin = lvsLastLogin;
+    }
+
+    public LocalDateTime getLvsCreatedAt() {
+        return lvsCreatedAt;
+    }
+
+    public void setLvsCreatedAt(LocalDateTime lvsCreatedAt) {
+        this.lvsCreatedAt = lvsCreatedAt;
+    }
+
+    public LocalDateTime getLvsUpdatedAt() {
+        return lvsUpdatedAt;
+    }
+
+    public void setLvsUpdatedAt(LocalDateTime lvsUpdatedAt) {
+        this.lvsUpdatedAt = lvsUpdatedAt;
+    }
+
+    public List<LvsProject> getLvsProjects() {
+        return lvsProjects;
+    }
+
+    public void setLvsProjects(List<LvsProject> lvsProjects) {
+        this.lvsProjects = lvsProjects;
+    }
+
+    public List<LvsPost> getLvsPosts() {
+        return lvsPosts;
+    }
+
+    public void setLvsPosts(List<LvsPost> lvsPosts) {
+        this.lvsPosts = lvsPosts;
+    }
+
+    public List<LvsOrder> getLvsOrders() {
+        return lvsOrders;
+    }
+
+    public void setLvsOrders(List<LvsOrder> lvsOrders) {
+        this.lvsOrders = lvsOrders;
+    }
+
+    public List<LvsTransaction> getLvsTransactions() {
+        return lvsTransactions;
+    }
+
+    public void setLvsTransactions(List<LvsTransaction> lvsTransactions) {
+        this.lvsTransactions = lvsTransactions;
+    }
+
+    public List<LvsReport> getLvsReports() {
+        return lvsReports;
+    }
+
+    public void setLvsReports(List<LvsReport> lvsReports) {
+        this.lvsReports = lvsReports;
+    }
+
+    public List<LvsMessage> getLvsSentMessages() {
+        return lvsSentMessages;
+    }
+
+    public void setLvsSentMessages(List<LvsMessage> lvsSentMessages) {
+        this.lvsSentMessages = lvsSentMessages;
+    }
+
+    public List<LvsMessage> getLvsReceivedMessages() {
+        return lvsReceivedMessages;
+    }
+
+    public void setLvsReceivedMessages(List<LvsMessage> lvsReceivedMessages) {
+        this.lvsReceivedMessages = lvsReceivedMessages;
+    }
+
+    public LvsCart getLvsCart() {
+        return lvsCart;
+    }
+
+    public void setLvsCart(LvsCart lvsCart) {
+        this.lvsCart = lvsCart;
+    }
+
+    public List<LvsReview> getLvsReviews() {
+        return lvsReviews;
+    }
+
+    public void setLvsReviews(List<LvsReview> lvsReviews) {
+        this.lvsReviews = lvsReviews;
+    }
+
 }

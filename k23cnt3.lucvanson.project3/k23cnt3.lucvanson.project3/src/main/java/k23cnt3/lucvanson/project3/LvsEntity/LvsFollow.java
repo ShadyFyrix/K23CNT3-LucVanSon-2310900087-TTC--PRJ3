@@ -1,12 +1,10 @@
 package k23cnt3.lucvanson.project3.LvsEntity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "LvsFollow")
-@Data
 public class LvsFollow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +21,39 @@ public class LvsFollow {
 
     @Column(name = "LvsCreatedAt")
     private LocalDateTime lvsCreatedAt = LocalDateTime.now();
+
+    // Getters and Setters
+
+    public Long getLvsFollowId() {
+        return lvsFollowId;
+    }
+
+    public void setLvsFollowId(Long lvsFollowId) {
+        this.lvsFollowId = lvsFollowId;
+    }
+
+    public LvsUser getLvsFollower() {
+        return lvsFollower;
+    }
+
+    public void setLvsFollower(LvsUser lvsFollower) {
+        this.lvsFollower = lvsFollower;
+    }
+
+    public LvsUser getLvsFollowing() {
+        return lvsFollowing;
+    }
+
+    public void setLvsFollowing(LvsUser lvsFollowing) {
+        this.lvsFollowing = lvsFollowing;
+    }
+
+    public LocalDateTime getLvsCreatedAt() {
+        return lvsCreatedAt;
+    }
+
+    public void setLvsCreatedAt(LocalDateTime lvsCreatedAt) {
+        this.lvsCreatedAt = lvsCreatedAt;
+    }
+
 }

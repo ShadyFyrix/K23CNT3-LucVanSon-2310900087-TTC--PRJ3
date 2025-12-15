@@ -1,0 +1,492 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------< k23cnt3.lucvanson.project3:k23cnt3.lucvanson.project3 >--------
+[INFO] Building k23cnt3.lucvanson.project3 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ k23cnt3.lucvanson.project3 ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ k23cnt3.lucvanson.project3 ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 96 source files with javac [debug parameters release 21] to target\classes
+[INFO] Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[24,13] cannot find symbol
+  symbol:   class LvsProjectService
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[27,13] cannot find symbol
+  symbol:   class LvsCategoryService
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[30,13] cannot find symbol
+  symbol:   class LvsUserService
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsUserRepository.java:[11,17] java.lang.ScopedValue is a preview API and is disabled by default.
+  (use --enable-preview to enable preview APIs)
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsUserRepository.java:[100,5] java.lang.ScopedValue is a preview API and is disabled by default.
+  (use --enable-preview to enable preview APIs)
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminMessageController.java:[185,9] cannot find symbol
+  symbol:   class Map
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminMessageController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[221,48] method lvsGetAllUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+  required: org.springframework.data.domain.Pageable
+  found:    no arguments
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[204,9] cannot find symbol
+  symbol:   class Map
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[205,9] cannot find symbol
+  symbol:   class Map
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[206,9] cannot find symbol
+  symbol:   class Map
+  location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[189,48] method lvsGetAllUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+  required: org.springframework.data.domain.Pageable
+  found:    no arguments
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[49,66] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsRole
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[51,57] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsRole
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[53,59] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsUserStatus
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[36,45] cannot find symbol
+  symbol:   method lvsAuthenticate(java.lang.String,java.lang.String)
+  location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[78,55] cannot find symbol
+  symbol:   method lvsRegisterUser(k23cnt3.lucvanson.project3.LvsEntity.LvsUser)
+  location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[111,27] cannot find symbol
+  symbol:   method lvsSendPasswordResetEmail(java.lang.String)
+  location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[60,82] incompatible types: int cannot be converted to org.springframework.data.domain.Pageable
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[63,70] incompatible types: int cannot be converted to org.springframework.data.domain.Pageable
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[95,89] incompatible types: int cannot be converted to org.springframework.data.domain.Pageable
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[98,75] incompatible types: int cannot be converted to org.springframework.data.domain.Pageable
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[101,85] incompatible types: int cannot be converted to org.springframework.data.domain.Pageable
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[126,65] method lvsSearchProjects in interface k23cnt3.lucvanson.project3.LvsService.LvsProjectService cannot be applied to given types;
+  required: java.lang.String,org.springframework.data.domain.Pageable
+  found:    java.lang.String
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[130,56] method lvsSearchPosts in interface k23cnt3.lucvanson.project3.LvsService.LvsPostService cannot be applied to given types;
+  required: java.lang.String,org.springframework.data.domain.Pageable
+  found:    java.lang.String
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[134,56] method lvsSearchUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+  required: java.lang.String,org.springframework.data.domain.Pageable
+  found:    java.lang.String
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[138,68] method lvsSearchProjects in interface k23cnt3.lucvanson.project3.LvsService.LvsProjectService cannot be applied to given types;
+  required: java.lang.String,org.springframework.data.domain.Pageable
+  found:    java.lang.String
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[139,59] method lvsSearchPosts in interface k23cnt3.lucvanson.project3.LvsService.LvsPostService cannot be applied to given types;
+  required: java.lang.String,org.springframework.data.domain.Pageable
+  found:    java.lang.String
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[140,59] method lvsSearchUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+  required: java.lang.String,org.springframework.data.domain.Pageable
+  found:    java.lang.String
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserFollowController.java:[173,17] cannot find symbol
+  symbol:   method setLvsFollowing(boolean)
+  location: variable user of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[87,57] method lvsGetConversation in interface k23cnt3.lucvanson.project3.LvsService.LvsMessageService cannot be applied to given types;
+  required: java.lang.Long,java.lang.Long,org.springframework.data.domain.Pageable
+  found:    java.lang.Long,java.lang.Long
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProfileController.java:[176,69] method lvsGetTransactionsByUser in interface k23cnt3.lucvanson.project3.LvsService.LvsTransactionService cannot be applied to given types;
+  required: java.lang.Long,org.springframework.data.domain.Pageable
+  found:    java.lang.Long
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProfileController.java:[180,82] incompatible types: java.util.List<java.lang.Object[]> cannot be converted to java.util.List<k23cnt3.lucvanson.project3.LvsEntity.LvsProject>
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProfileController.java:[298,27] method lvsChangePassword in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+  required: java.lang.Long,java.lang.String,java.lang.String
+  found:    java.lang.Long,java.lang.String
+  reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsUserRepository.java:[100,63] 'void' type not allowed here
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsCartServiceImpl.java:[340,17] calculateAmounts() has private access in k23cnt3.lucvanson.project3.LvsEntity.LvsOrder
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsCommentServiceImpl.java:[76,36] cannot find symbol
+  symbol:   method findByLvsIsApproved(java.lang.Boolean,org.springframework.data.domain.Pageable)
+  location: variable lvsCommentRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsCommentRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsCommentServiceImpl.java:[87,36] cannot find symbol
+  symbol:   method findByLvsParent_LvsUser_LvsUserId(java.lang.Long,org.springframework.data.domain.Pageable)
+  location: variable lvsCommentRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsCommentRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFollowServiceImpl.java:[127,65] incompatible types: java.lang.Long cannot be converted to int
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFollowServiceImpl.java:[137,64] incompatible types: java.lang.Long cannot be converted to int
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFollowServiceImpl.java:[177,33] cannot find symbol
+  symbol:   method findByIdIn(java.util.Set<java.lang.Long>,org.springframework.data.domain.Pageable)
+  location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[58,36] cannot find symbol
+  symbol:   method findByLvsContentContaining(java.lang.String,org.springframework.data.domain.Pageable)
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[68,36] cannot find symbol
+  symbol:   method findByLvsReceiver_LvsUserIdOrderByLvsCreatedAtDesc(java.lang.Long)
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[78,36] cannot find symbol
+  symbol:   method findByLvsSender_LvsUserIdOrderByLvsCreatedAtDesc(java.lang.Long)
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[89,36] cannot find symbol
+  symbol:   method findByLvsSender_LvsUserIdOrLvsReceiver_LvsUserId(java.lang.Long,java.lang.Long,org.springframework.data.domain.Pageable)
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[101,36] cannot find symbol
+  symbol:   method findConversationBetweenUsers(java.lang.Long,java.lang.Long,org.springframework.data.domain.Pageable)
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[111,60] cannot find symbol
+  symbol:   method findDistinctConversationsByUserId(java.lang.Long)
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[179,60] cannot find symbol
+  symbol:   method findByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdOrLvsSender_LvsUserIdAndLvsReceiver_LvsUserId(java.lang.Long,java.lang.Long,java.lang.Long,java.lang.Long)
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[193,17] cannot find symbol
+  symbol:   method findByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdAndLvsIsReadFalse(java.lang.Long,java.lang.Long)
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[228,82] incompatible types: java.lang.Long cannot be converted to int
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[239,36] cannot find symbol
+  symbol:   method findByUserAndContentContaining(java.lang.Long,java.lang.String)
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[250,36] cannot find symbol
+  symbol:   method findLatestMessagesByUserId(java.lang.Long,int)
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[279,36] cannot find symbol
+  symbol:   method countByLvsIsReadFalse()
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[290,57] cannot find symbol
+  symbol:   method countMessagesByType()
+  location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsOrderServiceImpl.java:[72,34] cannot find symbol
+  symbol:   method findByLvsOrderCodeContainingOrLvsBuyer_LvsUsernameContaining(java.lang.String,java.lang.String,org.springframework.data.domain.Pageable)
+  location: variable lvsOrderRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsOrderServiceImpl.java:[149,17] calculateAmounts() has private access in k23cnt3.lucvanson.project3.LvsEntity.LvsOrder
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsOrderServiceImpl.java:[483,34] cannot find symbol
+  symbol:   method calculateTotalRevenue()
+  location: variable lvsOrderRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsOrderServiceImpl.java:[494,34] cannot find symbol
+  symbol:   method calculateTotalRevenueBetween(java.time.LocalDateTime,java.time.LocalDateTime)
+  location: variable lvsOrderRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsPostServiceImpl.java:[69,33] cannot find symbol
+  symbol:   method findByLvsTitleContainingOrLvsContentContaining(java.lang.String,java.lang.String,org.springframework.data.domain.Pageable)
+  location: variable lvsPostRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsPostRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsPostServiceImpl.java:[129,33] cannot find symbol
+  symbol:   method findAllByOrderByLvsCreatedAtDesc(org.springframework.data.domain.Pageable)
+  location: variable lvsPostRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsPostRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsPostServiceImpl.java:[139,33] cannot find symbol
+  symbol:   method findAllByOrderByLvsViewCountDesc(org.springframework.data.domain.Pageable)
+  location: variable lvsPostRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsPostRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsPostServiceImpl.java:[178,28] cannot find symbol
+  symbol:   method setLvsIsEdited(boolean)
+  location: variable lvsExistingPost of type k23cnt3.lucvanson.project3.LvsEntity.LvsPost
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[59,36] cannot find symbol
+  symbol:   method findByLvsProjectNameContainingOrLvsDescriptionContaining(java.lang.String,java.lang.String,org.springframework.data.domain.Pageable)
+  location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[104,36] cannot find symbol
+  symbol:   method findAllByOrderByLvsCreatedAtDesc(org.springframework.data.domain.Pageable)
+  location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[114,36] cannot find symbol
+  symbol:   method findAllByOrderByLvsViewCountDesc(org.springframework.data.domain.Pageable)
+  location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[135,36] cannot find symbol
+  symbol:   method findRecentPurchasesByUserId(java.lang.Long,int)
+  location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[301,59] cannot find symbol
+  symbol:   method calculateAverageRating(java.lang.Long)
+  location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[318,36] cannot find symbol
+  symbol:   method hasUserPurchasedProject(java.lang.Long,java.lang.Long)
+  location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[360,36] cannot find symbol
+  symbol:   method findTopSellingProjects(int)
+  location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[380,36] cannot find symbol
+  symbol:   method findByLvsStatusAndLvsIsApprovedTrue(k23cnt3.lucvanson.project3.LvsEntity.LvsProject.LvsProjectStatus,org.springframework.data.domain.Pageable)
+  location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsPromotionServiceImpl.java:[82,38] cannot find symbol
+  symbol:   method findByLvsIsActive(java.lang.Boolean,org.springframework.data.domain.Pageable)
+  location: variable lvsPromotionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsPromotionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsReportServiceImpl.java:[324,87] package LvsUser does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsReviewServiceImpl.java:[78,35] cannot find symbol
+  symbol:   method findByLvsIsApproved(java.lang.Boolean,org.springframework.data.domain.Pageable)
+  location: variable lvsReviewRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsReviewRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsReviewServiceImpl.java:[197,35] cannot find symbol
+  symbol:   method existsByLvsUser_LvsUserIdAndLvsProject_LvsProjectId(java.lang.Long,java.lang.Long)
+  location: variable lvsReviewRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsReviewRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsReviewServiceImpl.java:[207,35] cannot find symbol
+  symbol:   method calculateAverageRatingByProjectId(java.lang.Long)
+  location: variable lvsReviewRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsReviewRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsTransactionServiceImpl.java:[63,40] cannot find symbol
+  symbol:   method findByLvsDescriptionContaining(java.lang.String,org.springframework.data.domain.Pageable)
+  location: variable lvsTransactionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsTransactionServiceImpl.java:[464,40] cannot find symbol
+  symbol:   method sumAmountByTypeAndStatus(k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionType,k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus)
+  location: variable lvsTransactionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsTransactionServiceImpl.java:[476,40] cannot find symbol
+  symbol:   method sumAmountByTypeAndStatusAndDateRange(k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionType,k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus,java.time.LocalDateTime,java.time.LocalDateTime)
+  location: variable lvsTransactionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsTransactionServiceImpl.java:[492,57] cannot find symbol
+  symbol:   method sumAmountByTypeAndStatusAndDateRange(k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionType,k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus,java.time.LocalDateTime,java.time.LocalDateTime)
+  location: variable lvsTransactionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsTransactionServiceImpl.java:[524,40] cannot find symbol
+  symbol:   method findTopByLvsUser_LvsUserIdOrderByLvsCreatedAtDesc(java.lang.Long,int)
+  location: variable lvsTransactionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[96,33] cannot find symbol
+  symbol:   method findByLvsUsernameContainingOrLvsEmailContainingOrLvsFullNameContaining(java.lang.String,java.lang.String,java.lang.String,org.springframework.data.domain.Pageable)
+  location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[355,33] cannot find symbol
+  symbol:   method findTopBuyers(int)
+  location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[433,33] cannot find symbol
+  symbol:   method getTotalRevenueByUserId(java.lang.Long)
+  location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[443,33] cannot find symbol
+  symbol:   method getTotalWithdrawnByUserId(java.lang.Long)
+  location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[454,33] cannot find symbol
+  symbol:   method getTopSellingProjectsByUserId(java.lang.Long,int)
+  location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[INFO] 84 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  4.143 s
+[INFO] Finished at: 2025-12-06T23:58:55+07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project k23cnt3.lucvanson.project3: Compilation failure: Compilation failure: 
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[24,13] cannot find symbol
+[ERROR]   symbol:   class LvsProjectService
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[27,13] cannot find symbol
+[ERROR]   symbol:   class LvsCategoryService
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProjectController.java:[30,13] cannot find symbol
+[ERROR]   symbol:   class LvsUserService
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsUser.LvsUserProjectController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsUserRepository.java:[11,17] java.lang.ScopedValue is a preview API and is disabled by default.
+[ERROR]   (use --enable-preview to enable preview APIs)
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsUserRepository.java:[100,5] java.lang.ScopedValue is a preview API and is disabled by default.
+[ERROR]   (use --enable-preview to enable preview APIs)
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminMessageController.java:[185,9] cannot find symbol
+[ERROR]   symbol:   class Map
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminMessageController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminProjectController.java:[221,48] method lvsGetAllUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+[ERROR]   required: org.springframework.data.domain.Pageable
+[ERROR]   found:    no arguments
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[204,9] cannot find symbol
+[ERROR]   symbol:   class Map
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[205,9] cannot find symbol
+[ERROR]   symbol:   class Map
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminReportController.java:[206,9] cannot find symbol
+[ERROR]   symbol:   class Map
+[ERROR]   location: class k23cnt3.lucvanson.project3.LvsController.LvsAdmin.LvsAdminReportController
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminTransactionController.java:[189,48] method lvsGetAllUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+[ERROR]   required: org.springframework.data.domain.Pageable
+[ERROR]   found:    no arguments
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[49,66] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsRole
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[51,57] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsRole
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAdmin/LvsAdminUserController.java:[53,59] incompatible types: java.lang.String cannot be converted to k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsUserStatus
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[36,45] cannot find symbol
+[ERROR]   symbol:   method lvsAuthenticate(java.lang.String,java.lang.String)
+[ERROR]   location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[78,55] cannot find symbol
+[ERROR]   symbol:   method lvsRegisterUser(k23cnt3.lucvanson.project3.LvsEntity.LvsUser)
+[ERROR]   location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsAuth/LvsAuthController.java:[111,27] cannot find symbol
+[ERROR]   symbol:   method lvsSendPasswordResetEmail(java.lang.String)
+[ERROR]   location: variable lvsUserService of type k23cnt3.lucvanson.project3.LvsService.LvsUserService
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[60,82] incompatible types: int cannot be converted to org.springframework.data.domain.Pageable
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[63,70] incompatible types: int cannot be converted to org.springframework.data.domain.Pageable
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[95,89] incompatible types: int cannot be converted to org.springframework.data.domain.Pageable
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[98,75] incompatible types: int cannot be converted to org.springframework.data.domain.Pageable
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[101,85] incompatible types: int cannot be converted to org.springframework.data.domain.Pageable
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[126,65] method lvsSearchProjects in interface k23cnt3.lucvanson.project3.LvsService.LvsProjectService cannot be applied to given types;
+[ERROR]   required: java.lang.String,org.springframework.data.domain.Pageable
+[ERROR]   found:    java.lang.String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[130,56] method lvsSearchPosts in interface k23cnt3.lucvanson.project3.LvsService.LvsPostService cannot be applied to given types;
+[ERROR]   required: java.lang.String,org.springframework.data.domain.Pageable
+[ERROR]   found:    java.lang.String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[134,56] method lvsSearchUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+[ERROR]   required: java.lang.String,org.springframework.data.domain.Pageable
+[ERROR]   found:    java.lang.String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[138,68] method lvsSearchProjects in interface k23cnt3.lucvanson.project3.LvsService.LvsProjectService cannot be applied to given types;
+[ERROR]   required: java.lang.String,org.springframework.data.domain.Pageable
+[ERROR]   found:    java.lang.String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[139,59] method lvsSearchPosts in interface k23cnt3.lucvanson.project3.LvsService.LvsPostService cannot be applied to given types;
+[ERROR]   required: java.lang.String,org.springframework.data.domain.Pageable
+[ERROR]   found:    java.lang.String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserDashboardController.java:[140,59] method lvsSearchUsers in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+[ERROR]   required: java.lang.String,org.springframework.data.domain.Pageable
+[ERROR]   found:    java.lang.String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserFollowController.java:[173,17] cannot find symbol
+[ERROR]   symbol:   method setLvsFollowing(boolean)
+[ERROR]   location: variable user of type k23cnt3.lucvanson.project3.LvsEntity.LvsUser
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserMessageController.java:[87,57] method lvsGetConversation in interface k23cnt3.lucvanson.project3.LvsService.LvsMessageService cannot be applied to given types;
+[ERROR]   required: java.lang.Long,java.lang.Long,org.springframework.data.domain.Pageable
+[ERROR]   found:    java.lang.Long,java.lang.Long
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProfileController.java:[176,69] method lvsGetTransactionsByUser in interface k23cnt3.lucvanson.project3.LvsService.LvsTransactionService cannot be applied to given types;
+[ERROR]   required: java.lang.Long,org.springframework.data.domain.Pageable
+[ERROR]   found:    java.lang.Long
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProfileController.java:[180,82] incompatible types: java.util.List<java.lang.Object[]> cannot be converted to java.util.List<k23cnt3.lucvanson.project3.LvsEntity.LvsProject>
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsController/LvsUser/LvsUserProfileController.java:[298,27] method lvsChangePassword in interface k23cnt3.lucvanson.project3.LvsService.LvsUserService cannot be applied to given types;
+[ERROR]   required: java.lang.Long,java.lang.String,java.lang.String
+[ERROR]   found:    java.lang.Long,java.lang.String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsRepository/LvsUserRepository.java:[100,63] 'void' type not allowed here
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsCartServiceImpl.java:[340,17] calculateAmounts() has private access in k23cnt3.lucvanson.project3.LvsEntity.LvsOrder
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsCommentServiceImpl.java:[76,36] cannot find symbol
+[ERROR]   symbol:   method findByLvsIsApproved(java.lang.Boolean,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsCommentRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsCommentRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsCommentServiceImpl.java:[87,36] cannot find symbol
+[ERROR]   symbol:   method findByLvsParent_LvsUser_LvsUserId(java.lang.Long,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsCommentRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsCommentRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFollowServiceImpl.java:[127,65] incompatible types: java.lang.Long cannot be converted to int
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFollowServiceImpl.java:[137,64] incompatible types: java.lang.Long cannot be converted to int
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsFollowServiceImpl.java:[177,33] cannot find symbol
+[ERROR]   symbol:   method findByIdIn(java.util.Set<java.lang.Long>,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[58,36] cannot find symbol
+[ERROR]   symbol:   method findByLvsContentContaining(java.lang.String,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[68,36] cannot find symbol
+[ERROR]   symbol:   method findByLvsReceiver_LvsUserIdOrderByLvsCreatedAtDesc(java.lang.Long)
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[78,36] cannot find symbol
+[ERROR]   symbol:   method findByLvsSender_LvsUserIdOrderByLvsCreatedAtDesc(java.lang.Long)
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[89,36] cannot find symbol
+[ERROR]   symbol:   method findByLvsSender_LvsUserIdOrLvsReceiver_LvsUserId(java.lang.Long,java.lang.Long,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[101,36] cannot find symbol
+[ERROR]   symbol:   method findConversationBetweenUsers(java.lang.Long,java.lang.Long,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[111,60] cannot find symbol
+[ERROR]   symbol:   method findDistinctConversationsByUserId(java.lang.Long)
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[179,60] cannot find symbol
+[ERROR]   symbol:   method findByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdOrLvsSender_LvsUserIdAndLvsReceiver_LvsUserId(java.lang.Long,java.lang.Long,java.lang.Long,java.lang.Long)
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[193,17] cannot find symbol
+[ERROR]   symbol:   method findByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdAndLvsIsReadFalse(java.lang.Long,java.lang.Long)
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[228,82] incompatible types: java.lang.Long cannot be converted to int
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[239,36] cannot find symbol
+[ERROR]   symbol:   method findByUserAndContentContaining(java.lang.Long,java.lang.String)
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[250,36] cannot find symbol
+[ERROR]   symbol:   method findLatestMessagesByUserId(java.lang.Long,int)
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[279,36] cannot find symbol
+[ERROR]   symbol:   method countByLvsIsReadFalse()
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsMessageServiceImpl.java:[290,57] cannot find symbol
+[ERROR]   symbol:   method countMessagesByType()
+[ERROR]   location: variable lvsMessageRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsMessageRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsOrderServiceImpl.java:[72,34] cannot find symbol
+[ERROR]   symbol:   method findByLvsOrderCodeContainingOrLvsBuyer_LvsUsernameContaining(java.lang.String,java.lang.String,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsOrderRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsOrderServiceImpl.java:[149,17] calculateAmounts() has private access in k23cnt3.lucvanson.project3.LvsEntity.LvsOrder
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsOrderServiceImpl.java:[483,34] cannot find symbol
+[ERROR]   symbol:   method calculateTotalRevenue()
+[ERROR]   location: variable lvsOrderRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsOrderServiceImpl.java:[494,34] cannot find symbol
+[ERROR]   symbol:   method calculateTotalRevenueBetween(java.time.LocalDateTime,java.time.LocalDateTime)
+[ERROR]   location: variable lvsOrderRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsPostServiceImpl.java:[69,33] cannot find symbol
+[ERROR]   symbol:   method findByLvsTitleContainingOrLvsContentContaining(java.lang.String,java.lang.String,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsPostRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsPostRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsPostServiceImpl.java:[129,33] cannot find symbol
+[ERROR]   symbol:   method findAllByOrderByLvsCreatedAtDesc(org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsPostRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsPostRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsPostServiceImpl.java:[139,33] cannot find symbol
+[ERROR]   symbol:   method findAllByOrderByLvsViewCountDesc(org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsPostRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsPostRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsPostServiceImpl.java:[178,28] cannot find symbol
+[ERROR]   symbol:   method setLvsIsEdited(boolean)
+[ERROR]   location: variable lvsExistingPost of type k23cnt3.lucvanson.project3.LvsEntity.LvsPost
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[59,36] cannot find symbol
+[ERROR]   symbol:   method findByLvsProjectNameContainingOrLvsDescriptionContaining(java.lang.String,java.lang.String,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[104,36] cannot find symbol
+[ERROR]   symbol:   method findAllByOrderByLvsCreatedAtDesc(org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[114,36] cannot find symbol
+[ERROR]   symbol:   method findAllByOrderByLvsViewCountDesc(org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[135,36] cannot find symbol
+[ERROR]   symbol:   method findRecentPurchasesByUserId(java.lang.Long,int)
+[ERROR]   location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[301,59] cannot find symbol
+[ERROR]   symbol:   method calculateAverageRating(java.lang.Long)
+[ERROR]   location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[318,36] cannot find symbol
+[ERROR]   symbol:   method hasUserPurchasedProject(java.lang.Long,java.lang.Long)
+[ERROR]   location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[360,36] cannot find symbol
+[ERROR]   symbol:   method findTopSellingProjects(int)
+[ERROR]   location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsProjectServiceImpl.java:[380,36] cannot find symbol
+[ERROR]   symbol:   method findByLvsStatusAndLvsIsApprovedTrue(k23cnt3.lucvanson.project3.LvsEntity.LvsProject.LvsProjectStatus,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsProjectRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsPromotionServiceImpl.java:[82,38] cannot find symbol
+[ERROR]   symbol:   method findByLvsIsActive(java.lang.Boolean,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsPromotionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsPromotionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsReportServiceImpl.java:[324,87] package LvsUser does not exist
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsReviewServiceImpl.java:[78,35] cannot find symbol
+[ERROR]   symbol:   method findByLvsIsApproved(java.lang.Boolean,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsReviewRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsReviewRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsReviewServiceImpl.java:[197,35] cannot find symbol
+[ERROR]   symbol:   method existsByLvsUser_LvsUserIdAndLvsProject_LvsProjectId(java.lang.Long,java.lang.Long)
+[ERROR]   location: variable lvsReviewRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsReviewRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsReviewServiceImpl.java:[207,35] cannot find symbol
+[ERROR]   symbol:   method calculateAverageRatingByProjectId(java.lang.Long)
+[ERROR]   location: variable lvsReviewRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsReviewRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsTransactionServiceImpl.java:[63,40] cannot find symbol
+[ERROR]   symbol:   method findByLvsDescriptionContaining(java.lang.String,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsTransactionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsTransactionServiceImpl.java:[464,40] cannot find symbol
+[ERROR]   symbol:   method sumAmountByTypeAndStatus(k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionType,k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus)
+[ERROR]   location: variable lvsTransactionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsTransactionServiceImpl.java:[476,40] cannot find symbol
+[ERROR]   symbol:   method sumAmountByTypeAndStatusAndDateRange(k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionType,k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus,java.time.LocalDateTime,java.time.LocalDateTime)
+[ERROR]   location: variable lvsTransactionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsTransactionServiceImpl.java:[492,57] cannot find symbol
+[ERROR]   symbol:   method sumAmountByTypeAndStatusAndDateRange(k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionType,k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus,java.time.LocalDateTime,java.time.LocalDateTime)
+[ERROR]   location: variable lvsTransactionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsTransactionServiceImpl.java:[524,40] cannot find symbol
+[ERROR]   symbol:   method findTopByLvsUser_LvsUserIdOrderByLvsCreatedAtDesc(java.lang.Long,int)
+[ERROR]   location: variable lvsTransactionRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[96,33] cannot find symbol
+[ERROR]   symbol:   method findByLvsUsernameContainingOrLvsEmailContainingOrLvsFullNameContaining(java.lang.String,java.lang.String,java.lang.String,org.springframework.data.domain.Pageable)
+[ERROR]   location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[355,33] cannot find symbol
+[ERROR]   symbol:   method findTopBuyers(int)
+[ERROR]   location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[433,33] cannot find symbol
+[ERROR]   symbol:   method getTotalRevenueByUserId(java.lang.Long)
+[ERROR]   location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[443,33] cannot find symbol
+[ERROR]   symbol:   method getTotalWithdrawnByUserId(java.lang.Long)
+[ERROR]   location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] /D:/k23cnt3.lucvanson.project3/k23cnt3.lucvanson.project3/src/main/java/k23cnt3/lucvanson/project3/LvsService/LvsImpl/LvsUserServiceImpl.java:[454,33] cannot find symbol
+[ERROR]   symbol:   method getTopSellingProjectsByUserId(java.lang.Long,int)
+[ERROR]   location: variable lvsUserRepository of type k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

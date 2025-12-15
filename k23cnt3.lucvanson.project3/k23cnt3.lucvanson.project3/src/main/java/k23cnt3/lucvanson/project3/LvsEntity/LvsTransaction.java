@@ -1,12 +1,10 @@
 package k23cnt3.lucvanson.project3.LvsEntity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "LvsTransaction")
-@Data
 public class LvsTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +22,7 @@ public class LvsTransaction {
     private LvsTransactionType lvsType;
 
     // Số tiền
-    @Column(name = "LvsAmount", nullable = false, precision = 15, scale = 2)
+    @Column(name = "LvsAmount", nullable = false)
     private Double lvsAmount;
 
     // Trạng thái
@@ -70,4 +68,103 @@ public class LvsTransaction {
     public enum LvsTransactionStatus {
         PENDING, SUCCESS, FAILED
     }
+
+    // Getters and Setters
+
+    public Long getLvsTransactionId() {
+        return lvsTransactionId;
+    }
+
+    public void setLvsTransactionId(Long lvsTransactionId) {
+        this.lvsTransactionId = lvsTransactionId;
+    }
+
+    public LvsUser getLvsUser() {
+        return lvsUser;
+    }
+
+    public void setLvsUser(LvsUser lvsUser) {
+        this.lvsUser = lvsUser;
+    }
+
+    public LvsTransactionType getLvsType() {
+        return lvsType;
+    }
+
+    public void setLvsType(LvsTransactionType lvsType) {
+        this.lvsType = lvsType;
+    }
+
+    public Double getLvsAmount() {
+        return lvsAmount;
+    }
+
+    public void setLvsAmount(Double lvsAmount) {
+        this.lvsAmount = lvsAmount;
+    }
+
+    public LvsTransactionStatus getLvsStatus() {
+        return lvsStatus;
+    }
+
+    public void setLvsStatus(LvsTransactionStatus lvsStatus) {
+        this.lvsStatus = lvsStatus;
+    }
+
+    public String getLvsDescription() {
+        return lvsDescription;
+    }
+
+    public void setLvsDescription(String lvsDescription) {
+        this.lvsDescription = lvsDescription;
+    }
+
+    public String getLvsPaymentInfo() {
+        return lvsPaymentInfo;
+    }
+
+    public void setLvsPaymentInfo(String lvsPaymentInfo) {
+        this.lvsPaymentInfo = lvsPaymentInfo;
+    }
+
+    public LvsOrder getLvsOrder() {
+        return lvsOrder;
+    }
+
+    public void setLvsOrder(LvsOrder lvsOrder) {
+        this.lvsOrder = lvsOrder;
+    }
+
+    public LvsUser getLvsAdminApprover() {
+        return lvsAdminApprover;
+    }
+
+    public void setLvsAdminApprover(LvsUser lvsAdminApprover) {
+        this.lvsAdminApprover = lvsAdminApprover;
+    }
+
+    public LocalDateTime getLvsApprovedAt() {
+        return lvsApprovedAt;
+    }
+
+    public void setLvsApprovedAt(LocalDateTime lvsApprovedAt) {
+        this.lvsApprovedAt = lvsApprovedAt;
+    }
+
+    public String getLvsAdminNote() {
+        return lvsAdminNote;
+    }
+
+    public void setLvsAdminNote(String lvsAdminNote) {
+        this.lvsAdminNote = lvsAdminNote;
+    }
+
+    public LocalDateTime getLvsCreatedAt() {
+        return lvsCreatedAt;
+    }
+
+    public void setLvsCreatedAt(LocalDateTime lvsCreatedAt) {
+        this.lvsCreatedAt = lvsCreatedAt;
+    }
+
 }

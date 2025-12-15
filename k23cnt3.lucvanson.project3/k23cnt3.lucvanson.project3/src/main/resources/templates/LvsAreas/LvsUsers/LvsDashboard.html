@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Dashboard - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- 
+            LvsDashboard.html - Trang dashboard cá nhân của user
+            Hiển thị: Thống kê, dự án mới, bài viết mới, đơn hàng chờ thanh toán
+            Biến: ${LvsUser}, ${LvsTotalProjects}, ${LvsNewProjects}, ${LvsPendingOrders}, v.v.
+        -->
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-tachometer-alt mr-3 text-[#fed700]"></i>Dashboard
+            </h1>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/50 rounded-xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Dự án của tôi</p>
+                            <p class="text-3xl font-bold text-white mt-2" th:text="${LvsTotalProjects}">0</p>
+                        </div>
+                        <i class="fas fa-project-diagram text-4xl text-blue-400"></i>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/50 rounded-xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Bài viết</p>
+                            <p class="text-3xl font-bold text-white mt-2" th:text="${LvsTotalPosts}">0</p>
+                        </div>
+                        <i class="fas fa-newspaper text-4xl text-green-400"></i>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 border border-yellow-500/50 rounded-xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Đơn hàng</p>
+                            <p class="text-3xl font-bold text-white mt-2" th:text="${LvsTotalOrders}">0</p>
+                        </div>
+                        <i class="fas fa-shopping-cart text-4xl text-yellow-400"></i>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/50 rounded-xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Followers</p>
+                            <p class="text-3xl font-bold text-white mt-2" th:text="${LvsFollowersCount}">0</p>
+                        </div>
+                        <i class="fas fa-users text-4xl text-purple-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Projects -->
+            <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 mb-8">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-fire text-[#fed700]"></i>Dự án mới nhất
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div th:each="project : ${LvsNewProjects}" class="electro-card p-4">
+                        <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${project.lvsProjectId})}" class="block">
+                            <div class="h-32 bg-[#1e1e1e] rounded-lg mb-3 flex items-center justify-center">
+                                <i class="fas fa-image text-4xl text-gray-600"></i>
+                            </div>
+                            <h3 class="text-white font-bold text-sm mb-2 line-clamp-2"
+                                th:text="${project.lvsProjectName}">Project</h3>
+                            <p class="text-[#fed700] font-bold" th:text="${#numbers.formatCurrency(project.lvsPrice)}">
+                                $0</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Orders -->
+            <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6"
+                th:if="${LvsPendingOrders != null and !LvsPendingOrders.isEmpty()}">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-clock text-yellow-400"></i>Đơn hàng chờ thanh toán
+                </h2>
+                <div class="space-y-3">
+                    <div th:each="order : ${LvsPendingOrders}"
+                        class="bg-[#1e1e1e] border border-[#444] rounded-lg p-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-white font-bold">Đơn hàng #<span th:text="${order.lvsOrderId}">0</span></p>
+                            <p class="text-gray-400 text-sm"
+                                th:text="${#temporals.format(order.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[#fed700] font-bold"
+                                th:text="${#numbers.formatCurrency(order.lvsTotalPrice)}">$0</p>
+                            <a th:href="@{/LvsUser/LvsOrder/LvsDetail/{id}(id=${order.lvsOrderId})}"
+                                class="text-sm text-blue-400 hover:text-blue-300">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

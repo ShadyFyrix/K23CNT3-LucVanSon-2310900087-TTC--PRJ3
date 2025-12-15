@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/user-layout}">
+
+<head>
+    <title>Chi tiết dự án - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8 max-w-6xl">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <div
+                        class="h-96 bg-[#2b2b2b] border border-[#333] rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-image text-8xl text-gray-600"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <h1 class="text-3xl font-bold text-white mb-4" th:text="${LvsProject.lvsProjectName}">Project Name
+                    </h1>
+                    <p class="text-[#fed700] font-bold text-4xl mb-6"
+                        th:text="${#numbers.formatCurrency(LvsProject.lvsPrice)}">$0</p>
+
+                    <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 mb-6">
+                        <h2 class="text-xl font-bold text-white mb-3">Mô tả</h2>
+                        <p class="text-gray-300" th:text="${LvsProject.lvsDescription}">Description</p>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button
+                            class="flex-1 bg-[#fed700] text-black font-bold py-4 rounded-lg hover:bg-yellow-400 transition">
+                            <i class="fas fa-shopping-cart mr-2"></i>Thêm vào giỏ
+                        </button>
+                        <button
+                            class="bg-[#1e1e1e] border border-[#444] text-white px-6 py-4 rounded-lg hover:border-[#fed700] transition">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

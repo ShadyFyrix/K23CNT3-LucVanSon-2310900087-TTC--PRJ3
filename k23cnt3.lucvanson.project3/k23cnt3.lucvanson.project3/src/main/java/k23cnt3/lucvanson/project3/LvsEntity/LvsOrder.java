@@ -1,14 +1,12 @@
 package k23cnt3.lucvanson.project3.LvsEntity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "LvsOrder")
-@Data
 public class LvsOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,14 +23,14 @@ public class LvsOrder {
     private LvsUser lvsBuyer;
 
     // Tổng tiền
-    @Column(name = "LvsTotalAmount", nullable = false, precision = 15, scale = 2)
+    @Column(name = "LvsTotalAmount", nullable = false)
     private Double lvsTotalAmount;
 
     // Giảm giá
-    @Column(name = "LvsDiscountAmount", precision = 15, scale = 2)
+    @Column(name = "LvsDiscountAmount")
     private Double lvsDiscountAmount = 0.0;
 
-    @Column(name = "LvsFinalAmount", precision = 15, scale = 2)
+    @Column(name = "LvsFinalAmount")
     private Double lvsFinalAmount;
 
     // Trạng thái đơn hàng
@@ -86,4 +84,127 @@ public class LvsOrder {
     public enum LvsOrderStatus {
         PENDING, PROCESSING, COMPLETED, CANCELLED, REFUNDED
     }
+
+    // Getters and Setters
+
+    public Long getLvsOrderId() {
+        return lvsOrderId;
+    }
+
+    public void setLvsOrderId(Long lvsOrderId) {
+        this.lvsOrderId = lvsOrderId;
+    }
+
+    public String getLvsOrderCode() {
+        return lvsOrderCode;
+    }
+
+    public void setLvsOrderCode(String lvsOrderCode) {
+        this.lvsOrderCode = lvsOrderCode;
+    }
+
+    public LvsUser getLvsBuyer() {
+        return lvsBuyer;
+    }
+
+    public void setLvsBuyer(LvsUser lvsBuyer) {
+        this.lvsBuyer = lvsBuyer;
+    }
+
+    public Double getLvsTotalAmount() {
+        return lvsTotalAmount;
+    }
+
+    public void setLvsTotalAmount(Double lvsTotalAmount) {
+        this.lvsTotalAmount = lvsTotalAmount;
+    }
+
+    public Double getLvsDiscountAmount() {
+        return lvsDiscountAmount;
+    }
+
+    public void setLvsDiscountAmount(Double lvsDiscountAmount) {
+        this.lvsDiscountAmount = lvsDiscountAmount;
+    }
+
+    public Double getLvsFinalAmount() {
+        return lvsFinalAmount;
+    }
+
+    public void setLvsFinalAmount(Double lvsFinalAmount) {
+        this.lvsFinalAmount = lvsFinalAmount;
+    }
+
+    public LvsOrderStatus getLvsStatus() {
+        return lvsStatus;
+    }
+
+    public void setLvsStatus(LvsOrderStatus lvsStatus) {
+        this.lvsStatus = lvsStatus;
+    }
+
+    public String getLvsPaymentMethod() {
+        return lvsPaymentMethod;
+    }
+
+    public void setLvsPaymentMethod(String lvsPaymentMethod) {
+        this.lvsPaymentMethod = lvsPaymentMethod;
+    }
+
+    public String getLvsPromotionCode() {
+        return lvsPromotionCode;
+    }
+
+    public void setLvsPromotionCode(String lvsPromotionCode) {
+        this.lvsPromotionCode = lvsPromotionCode;
+    }
+
+    public Boolean getLvsIsPaid() {
+        return lvsIsPaid;
+    }
+
+    public void setLvsIsPaid(Boolean lvsIsPaid) {
+        this.lvsIsPaid = lvsIsPaid;
+    }
+
+    public String getLvsNotes() {
+        return lvsNotes;
+    }
+
+    public void setLvsNotes(String lvsNotes) {
+        this.lvsNotes = lvsNotes;
+    }
+
+    public LocalDateTime getLvsCreatedAt() {
+        return lvsCreatedAt;
+    }
+
+    public void setLvsCreatedAt(LocalDateTime lvsCreatedAt) {
+        this.lvsCreatedAt = lvsCreatedAt;
+    }
+
+    public LocalDateTime getLvsUpdatedAt() {
+        return lvsUpdatedAt;
+    }
+
+    public void setLvsUpdatedAt(LocalDateTime lvsUpdatedAt) {
+        this.lvsUpdatedAt = lvsUpdatedAt;
+    }
+
+    public LocalDateTime getLvsPaidAt() {
+        return lvsPaidAt;
+    }
+
+    public void setLvsPaidAt(LocalDateTime lvsPaidAt) {
+        this.lvsPaidAt = lvsPaidAt;
+    }
+
+    public List<LvsOrderItem> getLvsOrderItems() {
+        return lvsOrderItems;
+    }
+
+    public void setLvsOrderItems(List<LvsOrderItem> lvsOrderItems) {
+        this.lvsOrderItems = lvsOrderItems;
+    }
+
 }

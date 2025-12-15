@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE - LVS Admin">LVS Admin</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Modern Design System -->
+    <link rel="stylesheet" th:href="@{/css/lvs-modern-admin.css}">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-primary);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-left: 260px;
+            /* Sidebar width */
+        }
+
+        /* Header Styles */
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-nav .nav-link i {
+            margin-right: 5px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            bottom: 0;
+            width: 260px;
+            overflow-y: auto;
+            z-index: 1000;
+            padding: 1.5rem 0;
+        }
+
+
+        .sidebar-heading {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #6c757d;
+            padding: 10px 20px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .sidebar .nav-link {
+            color: #333;
+            padding: 10px 20px;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+            border-left-color: #4361ee;
+            color: #4361ee;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #e9ecef;
+            border-left-color: #4361ee;
+            color: #4361ee;
+            font-weight: 600;
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .content-wrapper {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: calc(100vh - 56px);
+        }
+
+        /* Dashboard Cards */
+        .stat-card {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.7;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-change.up {
+            color: #28a745;
+        }
+
+        .stat-change.down {
+            color: #dc3545;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        /* Activity Items */
+        .activity-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+                margin-top: 0;
+            }
+
+            .content-wrapper {
+                margin-left: 0;
+            }
+
+            body {
+                padding-top: 0;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            padding: 15px 20px;
+            border-top: 1px solid #dee2e6;
+            margin-top: auto;
+        }
+    </style>
+</head>
+
+<body
+    style="margin-left: 260px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; display: flex; flex-direction: column;">
+    <header th:replace="~{LvsAreas/LvsAdmin/LvsFragments/LvsHeader :: header}"></header>
+
+    <div class="d-flex flex-grow-1">
+        <nav th:replace="~{LvsAreas/LvsAdmin/LvsFragments/LvsSidebar :: sidebar}"></nav>
+
+        <main class="flex-grow-1 p-4 p-md-5" style="margin-top: 20px;">
+            <div layout:fragment="content" class="animate-fade-in-up">
+                <!-- Content here -->
+            </div>
+        </main>
+    </div>
+
+    <footer th:replace="~{LvsAreas/LvsAdmin/LvsFragments/LvsFooter :: footer}"></footer>
+</body>
+
+</html>

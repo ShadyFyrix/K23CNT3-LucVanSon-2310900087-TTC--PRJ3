@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body th:fragment="header">
+    <header class="bg-[#1e1e1e] border-b border-[#333]">
+        <!-- Top Bar -->
+        <div class="bg-[#151515] text-[#b7b7b7] text-xs py-2">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="hidden md:block">
+                    Welcome to Worldwide Electronics Store
+                </div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-yellow-400 flex items-center gap-1"><i
+                            class="fas fa-map-marker-alt"></i> Store Locator</a>
+                    <a href="#" class="hover:text-yellow-400 flex items-center gap-1"><i class="fas fa-truck"></i> Track
+                        Your Order</a>
+                    <a href="#" class="hover:text-yellow-400 flex items-center gap-1"><i
+                            class="fas fa-shopping-bag"></i> Shop</a>
+                    <a href="#" class="hover:text-yellow-400 flex items-center gap-1"><i class="fas fa-user"></i> My
+                        Account</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+                <!-- Logo -->
+                <a href="/" class="text-white text-4xl font-bold tracking-tighter flex-shrink-0">
+                    electro<span class="text-[#fed700]">.</span>
+                </a>
+
+                <!-- Search Bar -->
+                <div class="flex-grow max-w-2xl w-full relative">
+                    <form action="/user/san-pham" method="get" class="flex w-full">
+                        <select
+                            class="bg-[#2b2b2b] text-white border border-[#333] border-r-0 rounded-l-full px-4 py-3 outline-none focus:border-[#fed700] hidden md:block w-40 text-sm appearance-none cursor-pointer">
+                            <option value="">All Categories</option>
+                            <option th:if="${categories != null}" th:each="cat : ${categories}"
+                                th:value="${cat.lvsCategoryId}" th:text="${cat.lvsCategoryName}">Category</option>
+                        </select>
+                        <input type="text" name="keyword" placeholder="Search products..."
+                            class="w-full bg-[#2b2b2b] text-white border border-[#333] border-l-0 px-4 py-3 outline-none focus:border-[#fed700] placeholder-gray-500">
+                        <button type="submit"
+                            class="bg-[#fed700] text-black font-bold px-8 py-3 rounded-r-full hover:bg-yellow-500 transition">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Icons -->
+                <div class="flex items-center gap-6 text-white">
+                    <a href="#" class="flex flex-col items-center group">
+                        <div class="relative">
+                            <i class="fas fa-sync-alt text-xl group-hover:text-[#fed700] transition"></i>
+                            <span
+                                class="absolute -top-2 -right-2 bg-[#fed700] text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                        </div>
+                    </a>
+                    <a href="#" class="flex flex-col items-center group">
+                        <div class="relative">
+                            <i class="far fa-heart text-xl group-hover:text-[#fed700] transition"></i>
+                            <span
+                                class="absolute -top-2 -right-2 bg-[#fed700] text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                        </div>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsLogin}" class="flex flex-col items-center group">
+                        <i class="far fa-user text-xl group-hover:text-[#fed700] transition"></i>
+                    </a>
+                    <a href="/user/cart" class="flex items-center gap-3 group">
+                        <div class="relative">
+                            <i class="fas fa-shopping-bag text-xl group-hover:text-[#fed700] transition"></i>
+                            <span
+                                class="absolute -top-2 -right-2 bg-[#fed700] text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                        </div>
+                        <span class="font-bold group-hover:text-[#fed700] transition hidden lg:block">$0.00</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="border-t border-[#333]">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-between">
+                    <!-- Hamburger Menu (Mobile/Vertical) -->
+                    <div class="relative group py-3 pr-8 border-r border-[#333] hidden lg:block">
+                        <a href="#" class="flex items-center gap-3 font-bold hover:text-[#fed700] transition">
+                            <i class="fas fa-bars text-[#fed700]"></i>
+                            <span>All Departments</span>
+                        </a>
+                        <!-- Dropdown could go here -->
+                    </div>
+
+                    <!-- Horizontal Menu -->
+                    <nav class="hidden lg:flex gap-8 text-sm font-bold uppercase tracking-wide flex-grow pl-8">
+                        <a href="/" class="text-[#fed700] border-b-2 border-[#fed700] py-3">Home</a>
+                        <a href="/user/san-pham" class="hover:text-[#fed700] transition py-3">Shop</a>
+                        <a href="#" class="hover:text-[#fed700] transition py-3">Blog</a>
+                        <a href="#" class="hover:text-[#fed700] transition py-3">Contact Us</a>
+                    </nav>
+
+                    <div class="block lg:hidden py-3">
+                        <button class="text-white text-xl"><i class="fas fa-bars"></i> Menu</button>
+                    </div>
+
+                    <a href="#" class="text-[#e62e04] font-bold text-sm hidden lg:block">
+                        % Weekly Discount!
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+</body>
+
+</html>

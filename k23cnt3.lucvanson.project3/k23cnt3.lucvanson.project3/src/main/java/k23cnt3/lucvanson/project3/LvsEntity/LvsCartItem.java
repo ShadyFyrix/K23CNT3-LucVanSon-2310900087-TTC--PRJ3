@@ -1,12 +1,10 @@
 package k23cnt3.lucvanson.project3.LvsEntity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "LvsCartItem")
-@Data
 public class LvsCartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +25,10 @@ public class LvsCartItem {
     @Column(name = "LvsQuantity")
     private Integer lvsQuantity = 1;
 
-    @Column(name = "LvsUnitPrice", precision = 15, scale = 2)
+    @Column(name = "LvsUnitPrice")
     private Double lvsUnitPrice;
 
-    @Column(name = "LvsItemTotal", precision = 15, scale = 2)
+    @Column(name = "LvsItemTotal")
     private Double lvsItemTotal;
 
     // Có được chọn để thanh toán không
@@ -52,4 +50,71 @@ public class LvsCartItem {
             lvsItemTotal = lvsUnitPrice * lvsQuantity;
         }
     }
+
+    // Getters and Setters
+
+    public Long getLvsCartItemId() {
+        return lvsCartItemId;
+    }
+
+    public void setLvsCartItemId(Long lvsCartItemId) {
+        this.lvsCartItemId = lvsCartItemId;
+    }
+
+    public LvsCart getLvsCart() {
+        return lvsCart;
+    }
+
+    public void setLvsCart(LvsCart lvsCart) {
+        this.lvsCart = lvsCart;
+    }
+
+    public LvsProject getLvsProject() {
+        return lvsProject;
+    }
+
+    public void setLvsProject(LvsProject lvsProject) {
+        this.lvsProject = lvsProject;
+    }
+
+    public Integer getLvsQuantity() {
+        return lvsQuantity;
+    }
+
+    public void setLvsQuantity(Integer lvsQuantity) {
+        this.lvsQuantity = lvsQuantity;
+    }
+
+    public Double getLvsUnitPrice() {
+        return lvsUnitPrice;
+    }
+
+    public void setLvsUnitPrice(Double lvsUnitPrice) {
+        this.lvsUnitPrice = lvsUnitPrice;
+    }
+
+    public Double getLvsItemTotal() {
+        return lvsItemTotal;
+    }
+
+    public void setLvsItemTotal(Double lvsItemTotal) {
+        this.lvsItemTotal = lvsItemTotal;
+    }
+
+    public Boolean getLvsIsSelected() {
+        return lvsIsSelected;
+    }
+
+    public void setLvsIsSelected(Boolean lvsIsSelected) {
+        this.lvsIsSelected = lvsIsSelected;
+    }
+
+    public LocalDateTime getLvsAddedAt() {
+        return lvsAddedAt;
+    }
+
+    public void setLvsAddedAt(LocalDateTime lvsAddedAt) {
+        this.lvsAddedAt = lvsAddedAt;
+    }
+
 }

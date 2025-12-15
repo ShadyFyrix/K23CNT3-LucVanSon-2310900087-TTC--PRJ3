@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body th:fragment="footer">
+    <!-- Newsletter Section -->
+    <div class="bg-[#fed700] py-8">
+        <div class="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4 text-black">
+                <i class="fas fa-paper-plane text-2xl"></i>
+                <div>
+                    <h3 class="font-bold text-xl uppercase tracking-tighter">Sign up to Newsletter</h3>
+                    <p class="text-sm font-medium">...and receive <strong class="text-black">$20 coupon</strong> for
+                        first shopping</p>
+                </div>
+            </div>
+            <div class="flex-grow max-w-xl w-full">
+                <form class="flex">
+                    <input type="email" placeholder="Enter your email address"
+                        class="w-full bg-white text-black px-4 py-3 rounded-l-full outline-none border-none placeholder-gray-500">
+                    <button
+                        class="bg-[#333] text-white font-bold px-8 py-3 rounded-r-full hover:bg-black transition text-sm uppercase tracking-wide">SignUp</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Footer -->
+    <footer class="bg-[#1e1e1e] pt-16 pb-8 border-t border-[#333]">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <!-- Contact Info -->
+                <div>
+                    <a href="/" class="text-white text-3xl font-bold tracking-tighter block mb-6">
+                        electro<span class="text-[#fed700]">.</span>
+                    </a>
+
+                    <div class="flex items-start gap-4 mb-6">
+                        <i class="fas fa-headset text-[#fed700] text-4xl mt-1"></i>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-1">Got Questions ? Call us 24/7!</p>
+                            <a href="tel:80080018588"
+                                class="text-white text-xl font-medium hover:text-[#fed700] transition">(800) 8001-8588,
+                                (0600) 874 548</a>
+                        </div>
+                    </div>
+
+                    <div class="text-gray-400 text-sm space-y-2">
+                        <h4 class="font-bold text-white mb-2">Contact Info</h4>
+                        <p>17 Princess Road, London, Greater London NW1 8JR, UK</p>
+                        <div class="flex gap-4 mt-6 text-xl text-gray-400">
+                            <a href="#" class="hover:text-white transition"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="hover:text-white transition"><i class="fab fa-whatsapp"></i></a>
+                            <a href="#" class="hover:text-white transition"><i class="fab fa-pinterest"></i></a>
+                            <a href="#" class="hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Find It Fast -->
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-6">Find It Fast</h3>
+                    <ul class="text-gray-400 text-sm space-y-3">
+                        <li><a href="#" class="hover:text-[#fed700] transition">Laptops & Computers</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Cameras & Photography</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Smart Phones & Tablets</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Video Games & Consoles</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">TV & Audio</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Gadgets</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Waterproof Headphones</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Care -->
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-6">Customer Care</h3>
+                    <ul class="text-gray-400 text-sm space-y-3">
+                        <li><a href="#" class="hover:text-[#fed700] transition">My Account</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Track your Order</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Customer Service</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Returns/Exchange</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">FAQs</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Product Support</a></li>
+                    </ul>
+                </div>
+
+                <!-- Pages -->
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-6">About</h3>
+                    <ul class="text-gray-400 text-sm space-y-3">
+                        <li><a href="#" class="hover:text-[#fed700] transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-[#fed700] transition">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div
+                class="bg-[#2b2b2b] p-4 rounded flex flex-col md:flex-row items-center justify-between text-xs text-gray-500">
+                <p>&copy; 2024 Electro - All Rights Reserved</p>
+                <div class="flex gap-2 text-2xl">
+                    <i class="fab fa-cc-visa hover:text-white transition"></i>
+                    <i class="fab fa-cc-paypal hover:text-white transition"></i>
+                    <i class="fab fa-cc-mastercard hover:text-white transition"></i>
+                    <i class="fab fa-cc-amex hover:text-white transition"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

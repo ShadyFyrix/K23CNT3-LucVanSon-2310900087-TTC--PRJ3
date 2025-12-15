@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/user-layout}">
+
+<head>
+    <title>Kết quả tìm kiếm - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- 
+            LvsSearchResults.html - Trang kết quả tìm kiếm
+            Hiển thị: Kết quả tìm kiếm projects, posts, users
+            Biến: ${LvsProjects}, ${LvsPosts}, ${LvsUsers}, ${LvsKeyword}, ${LvsSearchType}
+        -->
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-2">
+                <i class="fas fa-search mr-3 text-[#fed700]"></i>Kết quả tìm kiếm
+            </h1>
+            <p class="text-gray-400 mb-8">Từ khóa: "<span th:text="${LvsKeyword}"
+                    class="text-white font-bold">keyword</span>"</p>
+
+            <!-- Tabs -->
+            <div class="flex gap-4 mb-8 border-b border-[#333]">
+                <a th:href="@{/LvsUser/LvsSearch(lvsKeyword=${LvsKeyword},lvsType='all')}"
+                    th:classappend="${LvsSearchType == 'all' ? 'border-[#fed700] text-[#fed700]' : 'border-transparent text-gray-400'}"
+                    class="px-4 py-3 border-b-2 font-bold hover:text-white transition">
+                    Tất cả
+                </a>
+                <a th:href="@{/LvsUser/LvsSearch(lvsKeyword=${LvsKeyword},lvsType='projects')}"
+                    th:classappend="${LvsSearchType == 'projects' ? 'border-[#fed700] text-[#fed700]' : 'border-transparent text-gray-400'}"
+                    class="px-4 py-3 border-b-2 font-bold hover:text-white transition">
+                    Dự án (<span th:text="${LvsProjects != null ? LvsProjects.size() : 0}">0</span>)
+                </a>
+                <a th:href="@{/LvsUser/LvsSearch(lvsKeyword=${LvsKeyword},lvsType='posts')}"
+                    th:classappend="${LvsSearchType == 'posts' ? 'border-[#fed700] text-[#fed700]' : 'border-transparent text-gray-400'}"
+                    class="px-4 py-3 border-b-2 font-bold hover:text-white transition">
+                    Bài viết (<span th:text="${LvsPosts != null ? LvsPosts.size() : 0}">0</span>)
+                </a>
+                <a th:href="@{/LvsUser/LvsSearch(lvsKeyword=${LvsKeyword},lvsType='users')}"
+                    th:classappend="${LvsSearchType == 'users' ? 'border-[#fed700] text-[#fed700]' : 'border-transparent text-gray-400'}"
+                    class="px-4 py-3 border-b-2 font-bold hover:text-white transition">
+                    Người dùng (<span th:text="${LvsUsers != null ? LvsUsers.size() : 0}">0</span>)
+                </a>
+            </div>
+
+            <!-- Projects Results -->
+            <div th:if="${LvsProjects != null and !LvsProjects.isEmpty()}" class="mb-8">
+                <h2 class="text-xl font-bold text-white mb-4">Dự án</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div th:each="project : ${LvsProjects}" class="electro-card p-4">
+                        <a th:href="@{/user/detail/{id}(id=${project.lvsProjectId})}">
+                            <div class="h-32 bg-[#1e1e1e] rounded-lg mb-3 flex items-center justify-center">
+                                <i class="fas fa-image text-4xl text-gray-600"></i>
+                            </div>
+                            <h3 class="text-white font-bold text-sm mb-2 line-clamp-2"
+                                th:text="${project.lvsProjectName}">Project</h3>
+                            <p class="text-[#fed700] font-bold" th:text="${#numbers.formatCurrency(project.lvsPrice)}">
+                                $0</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Results -->
+            <div th:if="${(LvsProjects == null or LvsProjects.isEmpty()) and (LvsPosts == null or LvsPosts.isEmpty()) and (LvsUsers == null or LvsUsers.isEmpty())}"
+                class="text-center py-16">
+                <i class="fas fa-search text-6xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400 text-xl">Không tìm thấy kết quả nào</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

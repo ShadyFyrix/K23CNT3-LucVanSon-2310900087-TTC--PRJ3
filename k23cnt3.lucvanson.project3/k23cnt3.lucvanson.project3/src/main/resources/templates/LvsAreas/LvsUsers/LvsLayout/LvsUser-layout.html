@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE - Electro">Electro Store</title>
+
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        electro: {
+                            yellow: '#fed700',
+                            dark: '#1e1e1e',
+                            red: '#e62e04',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Bootstrap 5 CSS (WebJar) -->
+    <link th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Font Awesome (WebJar) -->
+    <link th:href="@{/webjars/font-awesome/6.4.0/css/all.min.css}" rel="stylesheet">
+
+    <!-- Custom User Style -->
+    <link th:href="@{/css/user-style.css}" rel="stylesheet">
+
+    <style>
+        /* Essential overrides */
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #1e1e1e;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body class="bg-[#1e1e1e] text-white">
+    <!-- Header -->
+    <div th:replace="~{LvsAreas/LvsUsers/LvsFragments/LvsHeader :: header}"></div>
+
+    <!-- Main Content -->
+    <main layout:fragment="content" class="flex-grow">
+        <div class="container mx-auto px-4 py-8">
+            <h2 class="text-2xl font-bold">Content Loading...</h2>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{LvsAreas/LvsUsers/LvsFragments/LvsFooter :: footer}"></div>
+
+    <!-- Bootstrap JS (WebJar) -->
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+
+    <th:block layout:fragment="scripts"></th:block>
+</body>
+
+</html>

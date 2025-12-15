@@ -1,13 +1,11 @@
 package k23cnt3.lucvanson.project3.LvsEntity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "LvsPromotion")
-@Data
 public class LvsPromotion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,11 +26,11 @@ public class LvsPromotion {
     private LvsDiscountType lvsDiscountType = LvsDiscountType.PERCENT;
 
     // Giá trị giảm
-    @Column(name = "LvsDiscountValue", nullable = false, precision = 10, scale = 2)
+    @Column(name = "LvsDiscountValue", nullable = false)
     private Double lvsDiscountValue;
 
     // Đơn hàng tối thiểu
-    @Column(name = "LvsMinOrderValue", precision = 10, scale = 2)
+    @Column(name = "LvsMinOrderValue")
     private Double lvsMinOrderValue = 0.0;
 
     // Giới hạn sử dụng
@@ -65,4 +63,111 @@ public class LvsPromotion {
     public enum LvsDiscountType {
         PERCENT, FIXED
     }
+
+    // Getters and Setters
+
+    public Integer getLvsPromotionId() {
+        return lvsPromotionId;
+    }
+
+    public void setLvsPromotionId(Integer lvsPromotionId) {
+        this.lvsPromotionId = lvsPromotionId;
+    }
+
+    public String getLvsCode() {
+        return lvsCode;
+    }
+
+    public void setLvsCode(String lvsCode) {
+        this.lvsCode = lvsCode;
+    }
+
+    public String getLvsName() {
+        return lvsName;
+    }
+
+    public void setLvsName(String lvsName) {
+        this.lvsName = lvsName;
+    }
+
+    public LvsDiscountType getLvsDiscountType() {
+        return lvsDiscountType;
+    }
+
+    public void setLvsDiscountType(LvsDiscountType lvsDiscountType) {
+        this.lvsDiscountType = lvsDiscountType;
+    }
+
+    public Double getLvsDiscountValue() {
+        return lvsDiscountValue;
+    }
+
+    public void setLvsDiscountValue(Double lvsDiscountValue) {
+        this.lvsDiscountValue = lvsDiscountValue;
+    }
+
+    public Double getLvsMinOrderValue() {
+        return lvsMinOrderValue;
+    }
+
+    public void setLvsMinOrderValue(Double lvsMinOrderValue) {
+        this.lvsMinOrderValue = lvsMinOrderValue;
+    }
+
+    public Integer getLvsUsageLimit() {
+        return lvsUsageLimit;
+    }
+
+    public void setLvsUsageLimit(Integer lvsUsageLimit) {
+        this.lvsUsageLimit = lvsUsageLimit;
+    }
+
+    public Integer getLvsUsedCount() {
+        return lvsUsedCount;
+    }
+
+    public void setLvsUsedCount(Integer lvsUsedCount) {
+        this.lvsUsedCount = lvsUsedCount;
+    }
+
+    public LocalDate getLvsStartDate() {
+        return lvsStartDate;
+    }
+
+    public void setLvsStartDate(LocalDate lvsStartDate) {
+        this.lvsStartDate = lvsStartDate;
+    }
+
+    public LocalDate getLvsEndDate() {
+        return lvsEndDate;
+    }
+
+    public void setLvsEndDate(LocalDate lvsEndDate) {
+        this.lvsEndDate = lvsEndDate;
+    }
+
+    public Boolean getLvsIsActive() {
+        return lvsIsActive;
+    }
+
+    public void setLvsIsActive(Boolean lvsIsActive) {
+        this.lvsIsActive = lvsIsActive;
+    }
+
+    public String getLvsDescription() {
+        return lvsDescription;
+    }
+
+    public void setLvsDescription(String lvsDescription) {
+        this.lvsDescription = lvsDescription;
+    }
+
+    public LocalDateTime getLvsCreatedAt() {
+        return lvsCreatedAt;
+    }
+
+    public void setLvsCreatedAt(LocalDateTime lvsCreatedAt) {
+        this.lvsCreatedAt = lvsCreatedAt;
+    }
+
 }

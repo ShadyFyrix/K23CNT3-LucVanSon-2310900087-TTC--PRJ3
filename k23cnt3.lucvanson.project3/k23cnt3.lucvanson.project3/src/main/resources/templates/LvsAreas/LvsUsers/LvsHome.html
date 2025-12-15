@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Home - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- Hero Section -->
+        <section class="mb-12">
+            <div class="container mx-auto px-4 mt-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Main Slider -->
+                    <div
+                        class="lg:col-span-2 bg-[url('https://placehold.co/800x400/1e1e1e/333')] bg-cover bg-center h-[400px] rounded-2xl relative overflow-hidden flex items-center p-12 border border-[#333]">
+                        <div class="relative z-10 max-w-md">
+                            <span class="text-[#fed700] font-bold uppercase tracking-widest text-sm mb-2 block">Value of
+                                the Day</span>
+                            <h2 class="text-white text-5xl font-light mb-6">Virtual Reality <br><strong
+                                    class="font-bold">Oculus Rift</strong></h2>
+                            <p class="text-gray-400 mb-8 text-lg">Experience the world of tomorrow.</p>
+                            <a href="/user/san-pham"
+                                class="inline-block bg-[#fed700] text-black font-bold px-8 py-3 rounded-full hover:bg-white transition">
+                                Shop Now <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Side Banners -->
+                    <div class="flex flex-col gap-6">
+                        <div
+                            class="bg-[#2b2b2b] rounded-2xl p-6 flex-grow flex flex-col justify-center border border-[#333] relative overflow-hidden group">
+                            <div class="relative z-10">
+                                <span class="text-[#fed700] font-bold text-xs uppercase mb-1 block">Extreme 4K</span>
+                                <h3 class="text-white text-2xl font-light">Game Console <br><strong
+                                        class="font-bold">PlayStation 5</strong></h3>
+                                <a href="#"
+                                    class="text-white text-sm font-bold mt-4 inline-block hover:text-[#fed700] transition underline decoration-[#fed700]">Shop
+                                    Now</a>
+                            </div>
+                            <i
+                                class="fas fa-gamepad absolute -right-4 -bottom-4 text-9xl text-[#1e1e1e] group-hover:scale-110 transition duration-500"></i>
+                        </div>
+                        <div
+                            class="bg-[#2b2b2b] rounded-2xl p-6 flex-grow flex flex-col justify-center border border-[#333] relative overflow-hidden group">
+                            <div class="relative z-10">
+                                <span class="text-[#fed700] font-bold text-xs uppercase mb-1 block">New Arrival</span>
+                                <h3 class="text-white text-2xl font-light">Accessories <br><strong
+                                        class="font-bold">Gaming Chairs</strong></h3>
+                                <a href="#"
+                                    class="text-white text-sm font-bold mt-4 inline-block hover:text-[#fed700] transition underline decoration-[#fed700]">Shop
+                                    Now</a>
+                            </div>
+                            <i
+                                class="fas fa-chair absolute -right-4 -bottom-4 text-9xl text-[#1e1e1e] group-hover:scale-110 transition duration-500"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Carousel Section -->
+        <section class="container mx-auto px-4 mb-16">
+            <div class="flex items-center justify-between mb-8 pb-4 border-b border-[#333]">
+                <h2 class="text-2xl text-white font-light">Best <strong class="font-bold">Sellers</strong></h2>
+                <div class="flex gap-4 text-sm font-bold text-gray-500">
+                    <a href="#" class="text-[#fed700] border-b-2 border-[#fed700] pb-4 -mb-4.5">Top 20</a>
+                    <a href="#" class="hover:text-white transition">Smart Phones</a>
+                    <a href="#" class="hover:text-white transition">Laptops</a>
+                    <a href="#" class="hover:text-white transition">Cameras</a>
+                </div>
+            </div>
+
+            <!-- Products Grid (Using Electro Card Style) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Product Card -->
+                <div th:each="p : ${projects}" class="electro-card group h-full flex flex-col">
+                    <div class="p-4 relative">
+                        <span
+                            class="electro-badge-new absolute top-4 left-4 text-[10px] font-bold px-2 py-1 rounded">NEW</span>
+                        <!-- Wishlist Button -->
+                        <button
+                            class="absolute top-4 right-4 text-gray-400 hover:text-white transition opacity-0 group-hover:opacity-100">
+                            <i class="far fa-heart"></i>
+                        </button>
+
+                        <a th:href="@{/user/detail/{id}(id=${p.lvsProjectId})}"
+                            class="block h-48 flex items-center justify-center mb-4">
+                            <img th:if="${p.lvsThumbnailUrl}" th:src="@{${p.lvsThumbnailUrl}}"
+                                class="max-h-full max-w-full object-contain transition duration-300 group-hover:scale-105"
+                                alt="Product">
+                            <i th:unless="${p.lvsThumbnailUrl}" class="fas fa-camera text-6xl text-[#333]"></i>
+                        </a>
+
+                        <div class="mb-1">
+                            <a href="#" class="text-xs text-gray-500 hover:text-[#fed700] transition"
+                                th:text="${p.lvsCategory != null ? p.lvsCategory.lvsCategoryName : 'Gadgets'}">Category</a>
+                        </div>
+
+                        <h3 class="mb-2 h-10 overflow-hidden">
+                            <a th:href="@{/user/detail/{id}(id=${p.lvsProjectId})}"
+                                class="text-[#3edbf0] text-sm font-bold leading-tight hover:text-[#fed700] transition line-clamp-2"
+                                th:text="${p.lvsProjectName}">Product Name</a>
+                        </h3>
+
+                        <div class="flex items-center justify-between mt-auto">
+                            <span class="electro-price" th:text="${#numbers.formatCurrency(p.lvsPrice)}">$0.00</span>
+                            <button
+                                class="bg-[#333] hover:bg-[#fed700] hover:text-black text-white w-8 h-8 rounded-full flex items-center justify-center transition">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Strip -->
+        <section class="border-t border-[#333] bg-[#1a1a1a] py-12">
+            <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-rocket text-4xl text-[#fed700]"></i>
+                    <div>
+                        <h4 class="text-white font-bold text-sm uppercase">Free Delivery</h4>
+                        <p class="text-gray-500 text-xs">For all orders over $99</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-sync text-4xl text-[#fed700]"></i>
+                    <div>
+                        <h4 class="text-white font-bold text-sm uppercase">90 Days Return</h4>
+                        <p class="text-gray-500 text-xs">If goods have problems</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-credit-card text-4xl text-[#fed700]"></i>
+                    <div>
+                        <h4 class="text-white font-bold text-sm uppercase">Secure Payment</h4>
+                        <p class="text-gray-500 text-xs">100% secure payment</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-comments text-4xl text-[#fed700]"></i>
+                    <div>
+                        <h4 class="text-white font-bold text-sm uppercase">24/7 Support</h4>
+                        <p class="text-gray-500 text-xs">Dedicated support</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-gift text-4xl text-[#fed700]"></i>
+                    <div>
+                        <h4 class="text-white font-bold text-sm uppercase">Gift Service</h4>
+                        <p class="text-gray-500 text-xs">Support gift service</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

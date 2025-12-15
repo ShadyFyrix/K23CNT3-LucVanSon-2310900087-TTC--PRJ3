@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title th:text="${lvsPageTitle}">Quản lý User</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        .status-active {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+        .status-banned {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .role-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        .role-admin {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .role-moderator {
+            background-color: #6f42c1;
+            color: white;
+        }
+
+        .role-user {
+            background-color: #198754;
+            color: white;
+        }
+
+        .search-form {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .table-actions {
+            white-space: nowrap;
+        }
+
+        .coin-balance {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .revenue-balance {
+            color: #198754;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Simple Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">LVS Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/LvsAdmin/LvsUsers}">Quản lý User</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <!-- Flash Messages -->
+        <div th:if="${lvsSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${lvsSuccess}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${lvsError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${lvsError}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-0" th:text="${lvsPageTitle}">Quản lý User</h1>
+                <p class="text-muted mb-0">Tổng số user: <span th:text="${lvsUsers.totalElements}"></span></p>
+            </div>
+            <a th:href="@{/LvsAdmin/LvsUsers/LvsCreate}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Thêm User mới
+            </a>
+        </div>
+
+        <!-- Search & Filter Form -->
+        <div class="search-form">
+            <form th:action="@{/LvsAdmin/LvsUsers}" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="keyword" class="form-label">Tìm kiếm</label>
+                    <input type="text" class="form-control" id="keyword" name="keyword" th:value="${lvsKeyword}"
+                        placeholder="Username, Email, Họ tên...">
+                </div>
+                <div class="col-md-3">
+                    <label for="role" class="form-label">Vai trò</label>
+                    <select class="form-select" id="role" name="role">
+                        <option value="">Tất cả</option>
+                        <option th:each="role : ${lvsRoles}" th:value="${role}" th:text="${role}"
+                            th:selected="${lvsSelectedRole == role}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="status" class="form-label">Trạng thái</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">Tất cả</option>
+                        <option th:each="status : ${lvsStatuses}" th:value="${status}" th:text="${status}"
+                            th:selected="${lvsSelectedStatus == status}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-1"></i> Lọc
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Vai trò</th>
+                                <th>Trạng thái</th>
+                                <th>Coin</th>
+                                <th>Doanh thu</th>
+                                <th>Ngày tạo</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${lvsUsers.content}">
+                                <td th:text="${user.lvsUserId}">1</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img th:src="${user.lvsAvatarUrl != null} ? ${user.lvsAvatarUrl} : 'https://via.placeholder.com/40'"
+                                            class="user-avatar me-2" alt="Avatar">
+                                        <div>
+                                            <strong th:text="${user.lvsUsername}">username</strong><br>
+                                            <small class="text-muted" th:text="${user.lvsFullName}">Họ tên</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td th:text="${user.lvsEmail}">email@example.com</td>
+                                <td>
+                                    <span th:classappend="'role-badge role-' + ${user.lvsRole.name().toLowerCase()}"
+                                        th:text="${user.lvsRole}">USER</span>
+                                </td>
+                                <td>
+                                    <span
+                                        th:classappend="'status-badge status-' + ${user.lvsStatus.name().toLowerCase()}"
+                                        th:text="${user.lvsStatus}">ACTIVE</span>
+                                </td>
+                                <td class="coin-balance"
+                                    th:text="${#numbers.formatDecimal(user.lvsCoin, 0, 'COMMA', 2, 'POINT')} + ' coin'">
+                                    0.00 coin
+                                </td>
+                                <td class="revenue-balance" th:text="${#numbers.formatCurrency(user.lvsBalance)}">
+                                    $0.00
+                                </td>
+                                <td th:text="${#temporals.format(user.lvsCreatedAt, 'dd/MM/yyyy')}">
+                                    01/01/2023
+                                </td>
+                                <td class="table-actions">
+                                    <a th:href="@{/LvsAdmin/LvsUsers/{id}/LvsDetail(id=${user.lvsUserId})}"
+                                        class="btn btn-sm btn-info" title="Xem chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a th:href="@{/LvsAdmin/LvsUsers/{id}/LvsEdit(id=${user.lvsUserId})}"
+                                        class="btn btn-sm btn-warning" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-danger delete-btn"
+                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                        th:data-userid="${user.lvsUserId}" th:data-username="${user.lvsUsername}"
+                                        title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr th:if="${lvsUsers.content.isEmpty()}">
+                                <td colspan="9" class="text-center text-muted py-4">
+                                    <i class="fas fa-user-slash fa-2x mb-2"></i><br>
+                                    Không tìm thấy user nào
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav th:if="${lvsUsers.totalPages > 1}">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${lvsUsers.first} ? 'disabled' : ''">
+                            <a class="page-link"
+                                th:href="@{/LvsAdmin/LvsUsers(page=0, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${lvsUsers.first} ? 'disabled' : ''">
+                            <a class="page-link"
+                                th:href="@{/LvsAdmin/LvsUsers(page=${lvsUsers.number-1}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+
+                        <li th:each="page : ${#numbers.sequence(0, lvsUsers.totalPages-1)}" class="page-item"
+                            th:classappend="${page == lvsUsers.number} ? 'active' : ''">
+                            <a class="page-link"
+                                th:href="@{/LvsAdmin/LvsUsers(page=${page}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}"
+                                th:text="${page+1}">1</a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${lvsUsers.last} ? 'disabled' : ''">
+                            <a class="page-link"
+                                th:href="@{/LvsAdmin/LvsUsers(page=${lvsUsers.number+1}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${lvsUsers.last} ? 'disabled' : ''">
+                            <a class="page-link"
+                                th:href="@{/LvsAdmin/LvsUsers(page=${lvsUsers.totalPages-1}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
+                                <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xử lý User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn đang xử lý user: <strong id="deleteUsername"></strong></p>
+
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle"></i> Lựa chọn:</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="deleteType" id="softDelete" value="soft"
+                                checked>
+                            <label class="form-check-label" for="softDelete">
+                                <strong>Vô hiệu hóa tài khoản (Soft Delete)</strong><br>
+                                <small class="text-muted">User sẽ không thể đăng nhập nhưng dữ liệu vẫn được giữ lại. Có
+                                    thể khôi phục sau.</small>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="deleteType" id="hardDelete" value="hard">
+                            <label class="form-check-label" for="hardDelete">
+                                <strong>Xóa vĩnh viễn (Hard Delete)</strong><br>
+                                <small class="text-muted text-danger">Tất cả dữ liệu của user sẽ bị xóa vĩnh viễn và
+                                    không thể khôi phục.</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="lvsReason" class="form-label">Lý do xử lý <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="lvsReason" name="lvsReason" rows="3" required></textarea>
+                    </div>
+
+                    <div class="alert alert-warning" id="hardDeleteWarning" style="display: none;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>CẢNH BÁO:</strong> Bạn đang chọn xóa vĩnh viễn. Hành động này KHÔNG THỂ hoàn tác!
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Handle delete modal
+        document.addEventListener('DOMContentLoaded', function () {
+            var deleteModal = document.getElementById('deleteModal');
+            var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            var hardDeleteWarning = document.getElementById('hardDeleteWarning');
+            var deleteTypeRadios = document.querySelectorAll('input[name="deleteType"]');
+            var currentUserId = '';
+
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var userId = button.getAttribute('data-userid');
+                var username = button.getAttribute('data-username');
+
+                document.getElementById('deleteUsername').textContent = username;
+                currentUserId = userId;
+
+                // Reset form
+                document.getElementById('lvsReason').value = '';
+                document.getElementById('softDelete').checked = true;
+                hardDeleteWarning.style.display = 'none';
+            });
+
+            // Hiển thị cảnh báo khi chọn hard delete
+            deleteTypeRadios.forEach(function (radio) {
+                radio.addEventListener('change', function () {
+                    if (this.value === 'hard') {
+                        hardDeleteWarning.style.display = 'block';
+                    } else {
+                        hardDeleteWarning.style.display = 'none';
+                    }
+                });
+            });
+
+            // Xử lý khi nhấn xác nhận
+            confirmDeleteBtn.onclick = function () {
+                var reason = document.getElementById('lvsReason').value;
+                var deleteType = document.querySelector('input[name="deleteType"]:checked').value;
+
+                if (!reason.trim()) {
+                    alert('Vui lòng nhập lý do!');
+                    return;
+                }
+
+                // Tạo form ẩn để submit
+                var form = document.createElement('form');
+                form.method = 'post';
+                form.style.display = 'none';
+
+                // Xác định URL dựa trên loại xóa
+                if (deleteType === 'hard') {
+                    form.action = '/lvsforum/LvsAdmin/LvsUsers/' + currentUserId + '/LvsHardDelete';
+                    console.log('Hard delete for user ID:', currentUserId);
+                } else {
+                    form.action = '/lvsforum/LvsAdmin/LvsUsers/' + currentUserId + '/LvsDelete';
+                    console.log('Soft delete for user ID:', currentUserId);
+                }
+
+                // Thêm input cho lý do
+                var reasonInput = document.createElement('input');
+                reasonInput.type = 'hidden';
+                reasonInput.name = 'lvsReason';
+                reasonInput.value = reason;
+                form.appendChild(reasonInput);
+
+                // Thêm CSRF token
+                var csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+                if (csrfToken) {
+                    var csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_csrf';
+                    csrfInput.value = csrfToken;
+                    form.appendChild(csrfInput);
+                }
+
+                document.body.appendChild(form);
+                console.log('Submitting form to:', form.action);
+                console.log('Reason:', reason);
+                console.log('CSRF Token:', csrfToken);
+
+                // Đóng modal trước khi submit
+                var modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                if (modal) {
+                    modal.hide();
+                }
+
+                // Submit form
+                try {
+                    form.submit();
+                } catch (error) {
+                    console.error('Form submit error:', error);
+                    alert('Lỗi khi submit form: ' + error.message);
+                }
+            };
+        });
+    </script>
+</body>
+
+</html>

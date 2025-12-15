@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<header th:fragment="header">
+    <nav class="glass-navbar navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid px-4 px-lg-5">
+            <!-- Brand -->
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/LvsAdmin}">
+                <div class="brand-icon gradient-primary d-flex align-items-center justify-content-center me-3 shadow-lg"
+                     style="width: 45px; height: 45px; border-radius: var(--radius-lg);">
+                    <i class="fas fa-shield-alt text-white fs-4"></i>
+                </div>
+                <span class="fw-bold text-gradient-primary" style="font-size: 1.5rem;">LVS Admin</span>
+            </a>
+
+            <!-- Toggler -->
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Search (desktop) -->
+                <div class="mx-auto d-none d-lg-flex" style="max-width: 450px;">
+                    <div class="input-group glass-card border-0">
+                            <span class="input-group-text bg-transparent border-0 text-muted">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        <input type="text" class="form-control bg-transparent border-0" placeholder="Tìm kiếm nhanh...">
+                    </div>
+                </div>
+
+                <!-- Right menu -->
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <!-- Notification -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link position-relative p-2" href="#" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell fs-5 text-primary"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill gradient-danger"
+                                  style="font-size: 0.65rem;">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end glass-card shadow-xl p-3" style="min-width: 320px;">
+                            <li class="dropdown-header fw-bold mb-2">Thông báo</li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-3 rounded-3 hover-lift" href="#">
+                                <div class="d-flex">
+                                    <i class="fas fa-info-circle text-info fs-5 me-3"></i>
+                                    <div>
+                                        <div class="fw-semibold">Danh mục mới được thêm</div>
+                                        <small class="text-muted">5 phút trước</small>
+                                    </div>
+                                </div>
+                            </a></li>
+                        </ul>
+                    </li>
+
+                    <!-- User -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link d-flex align-items-center gap-3" href="#" data-bs-toggle="dropdown">
+                            <div class="avatar-circle gradient-primary shadow-lg"
+                                 style="width: 40px; height: 40px;">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div class="d-none d-md-block text-start">
+                                <div class="fw-semibold">Administrator</div>
+                                <small class="text-muted">admin@lvs.com</small>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end glass-card shadow-xl p-3">
+                            <li class="text-center mb-3">
+                                <div class="avatar-circle gradient-primary mx-auto mb-3 shadow-lg"
+                                     style="width: 70px; height: 70px;">
+                                    <i class="fas fa-user text-white fs-3"></i>
+                                </div>
+                                <div class="fw-bold">Administrator</div>
+                                <small class="text-muted">admin@lvs.com</small>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2 hover-lift" href="#"><i class="fas fa-user-circle me-3"></i>Hồ sơ</a></li>
+                            <li><a class="dropdown-item py-2 hover-lift" href="#"><i class="fas fa-cog me-3"></i>Cài đặt</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="m-0">
+                                    <button type="submit" class="dropdown-item text-danger py-2 hover-lift">
+                                        <i class="fas fa-sign-out-alt me-3"></i>Đăng xuất
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div style="height: 80px;"></div>
+</header>
+</body>
+</html>

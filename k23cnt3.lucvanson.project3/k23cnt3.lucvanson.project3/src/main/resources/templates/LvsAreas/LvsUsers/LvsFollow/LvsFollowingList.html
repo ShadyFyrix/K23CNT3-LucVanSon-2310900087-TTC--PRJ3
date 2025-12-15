@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/user-layout}">
+
+<head>
+    <title>Following - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8"><i class="fas fa-user-friends mr-3 text-[#fed700]"></i>Đang
+                theo dõi</h1>
+            <div th:if="${LvsFollowing == null or LvsFollowing.isEmpty()}" class="text-center py-16">
+                <i class="fas fa-user-friends text-6xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400 text-xl">Bạn chưa theo dõi ai</p>
+            </div>
+            <div th:if="${LvsFollowing != null and !LvsFollowing.isEmpty()}"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div th:each="user : ${LvsFollowing}"
+                    class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 text-center">
+                    <div class="w-20 h-20 bg-[#1e1e1e] rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-user text-3xl text-gray-600"></i>
+                    </div>
+                    <h3 class="text-white font-bold mb-2" th:text="${user.lvsUsername}">Username</h3>
+                    <p class="text-gray-400 text-sm mb-4 line-clamp-2" th:text="${user.lvsBio}">Bio</p>
+                    <button
+                        class="bg-red-500/20 border border-red-500/50 text-red-400 font-bold px-6 py-2 rounded-lg hover:bg-red-500/30 transition">
+                        <i class="fas fa-user-minus mr-1"></i>Unfollow
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
