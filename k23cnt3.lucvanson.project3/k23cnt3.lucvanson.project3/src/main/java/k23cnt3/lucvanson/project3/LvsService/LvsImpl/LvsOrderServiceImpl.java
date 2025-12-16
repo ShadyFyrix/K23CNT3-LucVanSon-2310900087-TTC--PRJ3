@@ -4,6 +4,7 @@ import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus;
 import k23cnt3.lucvanson.project3.LvsRepository.*;
 import k23cnt3.lucvanson.project3.LvsService.LvsOrderService;
+import k23cnt3.lucvanson.project3.LvsService.LvsCartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ public class LvsOrderServiceImpl implements LvsOrderService {
     private final LvsProjectRepository lvsProjectRepository;
     private final LvsOrderItemRepository lvsOrderItemRepository;
     private final LvsTransactionRepository lvsTransactionRepository;
+    private final LvsCartService lvsCartService;
 
     /**
      * Lấy đơn hàng theo ID
@@ -153,9 +155,8 @@ public class LvsOrderServiceImpl implements LvsOrderService {
 
         lvsOrder.getLvsOrderItems().add(lvsOrderItem);
 
-        // Tính toán tổng tiền
-        // TODO: Fix - calculateAmounts() is private
-        // lvsOrder.calculateAmounts();
+        // Tính toán tổng tiền (calculateAmounts() will be called automatically by
+        // @PrePersist)
         lvsOrder.setLvsTotalAmount(lvsOrderItem.getLvsQuantity() * lvsOrderItem.getLvsUnitPrice());
         lvsOrder.setLvsFinalAmount(lvsOrder.getLvsTotalAmount());
 
@@ -170,9 +171,8 @@ public class LvsOrderServiceImpl implements LvsOrderService {
      */
     @Override
     public LvsOrder lvsCreateOrderFromCart(Long lvsUserId) {
-        // TODO: Triển khai logic tạo đơn hàng từ giỏ hàng
-        // Hiện tại gọi phương thức từ CartService
-        return null;
+        // Delegate to CartService to convert cart to order
+        return lvsCartService.lvsConvertCartToOrder(lvsUserId);
     }
 
     /**

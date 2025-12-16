@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Chi tiết Giao dịch</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Chi tiết Giao dịch #<span th:text="${LvsTransaction.lvsTransactionId}"></span></h1>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <p><strong>User:</strong> <span th:text="${LvsTransaction.lvsUser?.lvsUsername}"></span></p>
+                            <p><strong>Loại:</strong> <span th:text="${LvsTransaction.lvsType}"></span></p>
+                            <p><strong>Số tiền:</strong> <span
+                                    th:text="${#numbers.formatDecimal(LvsTransaction.lvsAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>
+                            </p>
+                            <p><strong>Trạng thái:</strong> <span th:text="${LvsTransaction.lvsStatus}"></span></p>
+                            <p><strong>Ngày tạo:</strong> <span
+                                    th:text="${#temporals.format(LvsTransaction.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Thao tác</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <form
+                                    th:if="${LvsTransaction.lvsStatus.name() == 'PENDING' && LvsTransaction.lvsType.name() == 'DEPOSIT'}"
+                                    th:action="@{/LvsAdmin/LvsTransaction/LvsApproveDeposit/{id}(id=${LvsTransaction.lvsTransactionId})}"
+                                    method="post">
+                                    <button type="submit" class="btn btn-success w-100"><i class="fas fa-check"></i>
+                                        Duyệt nạp tiền</button>
+                                </form>
+                                <form
+                                    th:if="${LvsTransaction.lvsStatus.name() == 'PENDING' && LvsTransaction.lvsType.name() == 'WITHDRAWAL'}"
+                                    th:action="@{/LvsAdmin/LvsTransaction/LvsApproveWithdrawal/{id}(id=${LvsTransaction.lvsTransactionId})}"
+                                    method="post">
+                                    <button type="submit" class="btn btn-success w-100"><i class="fas fa-check"></i>
+                                        Duyệt rút tiền</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

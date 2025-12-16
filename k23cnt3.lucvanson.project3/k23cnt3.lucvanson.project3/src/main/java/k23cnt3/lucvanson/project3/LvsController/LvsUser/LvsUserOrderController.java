@@ -60,14 +60,14 @@ public class LvsUserOrderController {
         model.addAttribute("LvsSelectedStatus", lvsStatus);
         model.addAttribute("LvsCurrentPage", page);
 
-        return "LvsUser/LvsMyOrders";
+        return "LvsAreas/LvsUsers/LvsOrders/LvsMyOrders";
     }
 
     // Xem chi tiết đơn hàng
     @GetMapping("/LvsDetail/{id}")
     public String lvsViewOrderDetail(@PathVariable Long id,
-                                     HttpSession session,
-                                     Model model) {
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -86,15 +86,15 @@ public class LvsUserOrderController {
         model.addAttribute("LvsOrder", lvsOrder);
         model.addAttribute("LvsOrderItems", lvsOrderItems);
 
-        return "LvsUser/LvsOrderDetail";
+        return "LvsAreas/LvsUsers/LvsOrders/LvsOrderDetail";
     }
 
     // Mua ngay (tạo đơn hàng trực tiếp)
     @PostMapping("/LvsBuyNow")
     public String lvsBuyNow(@RequestParam Long lvsProjectId,
-                            @RequestParam(defaultValue = "1") Integer lvsQuantity,
-                            HttpSession session,
-                            Model model) {
+            @RequestParam(defaultValue = "1") Integer lvsQuantity,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -138,8 +138,8 @@ public class LvsUserOrderController {
     // Thanh toán đơn hàng
     @PostMapping("/LvsPay/{id}")
     public String lvsPayOrder(@PathVariable Long id,
-                              HttpSession session,
-                              Model model) {
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -163,9 +163,9 @@ public class LvsUserOrderController {
     // Hủy đơn hàng
     @PostMapping("/LvsCancel/{id}")
     public String lvsCancelOrder(@PathVariable Long id,
-                                 @RequestParam(required = false) String lvsReason,
-                                 HttpSession session,
-                                 Model model) {
+            @RequestParam(required = false) String lvsReason,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -189,8 +189,8 @@ public class LvsUserOrderController {
     // Xác nhận đã nhận hàng (hoàn tất đơn hàng)
     @PostMapping("/LvsComplete/{id}")
     public String lvsCompleteOrder(@PathVariable Long id,
-                                   HttpSession session,
-                                   Model model) {
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -208,14 +208,14 @@ public class LvsUserOrderController {
             model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
         }
 
-        return "redirect:/LvsUser/LvsOrder/LvsDetail/" + id;
+        return "redirect:LvsAreas/LvsUser/LvsOrder/LvsDetail/" + id;
     }
 
     // Xuất hóa đơn PDF
     @GetMapping("/LvsInvoice/{id}")
     public String lvsGenerateInvoice(@PathVariable Long id,
-                                     HttpSession session,
-                                     Model model) {
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -225,20 +225,20 @@ public class LvsUserOrderController {
 
         if (lvsOrder == null ||
                 !lvsOrder.getLvsBuyer().getLvsUserId().equals(lvsCurrentUser.getLvsUserId())) {
-            return "redirect:/LvsUser/LvsOrder/LvsMyOrders";
+            return "redirect:LvsAreas/LvsUser/LvsOrder/LvsMyOrders";
         }
 
         model.addAttribute("LvsOrder", lvsOrder);
 
-        return "LvsUser/LvsInvoicePdf"; // Trả về view PDF
+        return "LvsAreas/LvsUsers/LvsOrders/LvsInvoicePdf"; // Trả về view PDF
     }
 
     // Yêu cầu hoàn tiền
     @PostMapping("/LvsRequestRefund/{id}")
     public String lvsRequestRefund(@PathVariable Long id,
-                                   @RequestParam String lvsReason,
-                                   HttpSession session,
-                                   Model model) {
+            @RequestParam String lvsReason,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -10,100 +11,260 @@
 </head>
 
 <body>
-    <div th:replace="~{LvsAreas/LvsAdmin/LvsFragments/LvsHeader :: header}"></div>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
 
-    <div class="container-fluid mt-4">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a th:href="@{/LvsAdmin}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsProject/LvsList}">Quan ly Du an</a></li>
-                        <li class="breadcrumb-item active">Chinh sua Du an</li>
-                    </ol>
-                </nav>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsProject/LvsList}">Quan ly Du an</a>
+                            </li>
+                            <li class="breadcrumb-item active">Chinh sua Du an</li>
+                        </ol>
+                    </nav>
 
-                <div class="card">
-                    <div class="card-header bg-warning">
-                        <h4 class="mb-0"><i class="fas fa-edit"></i> Chinh sua Du an</h4>
-                    </div>
-                    <div class="card-body">
-                        <div th:if="${lvsError}" class="alert alert-danger" th:text="${lvsError}"></div>
+                    <div class="card">
+                        <div class="card-header bg-warning">
+                            <h4 class="mb-0"><i class="fas fa-edit"></i> Chinh sua Du an</h4>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${lvsError}" class="alert alert-danger" th:text="${lvsError}"></div>
 
-                        <form th:action="@{/LvsAdmin/LvsProject/LvsEdit/{id}(id=${lvsProject.lvsProjectId})}"
-                            method="post" th:object="${lvsProject}">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <div class="mb-3">
-                                        <label class="form-label">Ten Du an <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" th:field="*{lvsProjectName}" required>
+                            <form th:action="@{/LvsAdmin/LvsProject/LvsEdit/{id}(id=${lvsProject.lvsProjectId})}"
+                                method="post" th:object="${lvsProject}" enctype="multipart/form-data">
+                                <input type="hidden" name="lvsDeletedImages" id="lvsDeletedImages" value="">
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label class="form-label">Ten Du an <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" th:field="*{lvsProjectName}"
+                                                required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Mo ta</label>
+                                            <textarea class="form-control" rows="4"
+                                                th:field="*{lvsDescription}"></textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Danh muc</label>
+                                            <select class="form-select" th:field="*{lvsCategory.lvsCategoryId}">
+                                                <option value="">-- Chon danh muc --</option>
+                                                <option th:each="cat : ${lvsCategories}" th:value="${cat.lvsCategoryId}"
+                                                    th:text="${cat.lvsCategoryName}"></option>
+                                            </select>
+                                        </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label">Mo ta</label>
-                                        <textarea class="form-control" rows="4" th:field="*{lvsDescription}"></textarea>
-                                    </div>
+                                    <div class="col-md-4">
+                                        <!-- Current Thumbnail -->
+                                        <div class="mb-3" th:if="${lvsProject.lvsThumbnailUrl}">
+                                            <label class="form-label">Ảnh đại diện hiện tại</label>
+                                            <div class="position-relative">
+                                                <img th:src="@{${lvsProject.lvsThumbnailUrl}}" alt="Current Thumbnail"
+                                                    class="img-thumbnail" style="max-width: 100%; max-height: 200px;">
+                                            </div>
+                                        </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label">Danh muc</label>
-                                        <select class="form-select" th:field="*{lvsCategory.lvsCategoryId}">
-                                            <option value="">-- Chon danh muc --</option>
-                                            <option th:each="cat : ${lvsCategories}" th:value="${cat.lvsCategoryId}"
-                                                th:text="${cat.lvsCategoryName}"></option>
-                                        </select>
+                                        <!-- New Thumbnail Upload -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Thay đổi ảnh đại diện</label>
+                                            <input type="file" class="form-control" name="lvsThumbnailFile"
+                                                id="lvsThumbnailFile" accept="image/*"
+                                                onchange="previewThumbnail(event)">
+                                            <div id="thumbnailPreview" class="mt-2" style="display: none;">
+                                                <img id="thumbnailImg" src="" alt="Thumbnail Preview"
+                                                    class="img-thumbnail" style="max-width: 100%; max-height: 200px;">
+                                                <button type="button" class="btn btn-sm btn-danger mt-2"
+                                                    onclick="removeThumbnail()">
+                                                    <i class="fas fa-times"></i> Xóa
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Existing Images -->
+                                        <div class="mb-3" th:if="${lvsProject.lvsImages}">
+                                            <label class="form-label">Ảnh dự án hiện tại</label>
+                                            <div id="existingImages" class="row g-2"></div>
+                                        </div>
+
+                                        <!-- New Images Upload -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Thêm ảnh dự án mới</label>
+                                            <input type="file" class="form-control" name="lvsImageFiles"
+                                                id="lvsImageFiles" accept="image/*" multiple
+                                                onchange="previewImages(event)">
+                                            <div id="imagesPreview" class="mt-2 row g-2"></div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Gia (VND) <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" th:field="*{lvsPrice}" min="0"
+                                                required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">URL Demo</label>
+                                            <input type="url" class="form-control" th:field="*{lvsDemoUrl}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">URL Source Code</label>
+                                            <input type="url" class="form-control" th:field="*{lvsSourceCodeUrl}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">URL File</label>
+                                            <input type="url" class="form-control" th:field="*{lvsFileUrl}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Trang thai</label>
+                                            <select class="form-select" th:field="*{lvsStatus}">
+                                                <option
+                                                    th:each="status : ${T(k23cnt3.lucvanson.project3.LvsEntity.LvsProject.LvsProjectStatus).values()}"
+                                                    th:value="${status}" th:text="${status}"></option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Gia (VND) <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" th:field="*{lvsPrice}" min="0"
-                                            required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">URL Demo</label>
-                                        <input type="url" class="form-control" th:field="*{lvsDemoUrl}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">URL Source Code</label>
-                                        <input type="url" class="form-control" th:field="*{lvsSourceCodeUrl}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">URL File</label>
-                                        <input type="url" class="form-control" th:field="*{lvsFileUrl}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">Trang thai</label>
-                                        <select class="form-select" th:field="*{lvsStatus}">
-                                            <option
-                                                th:each="status : ${T(k23cnt3.lucvanson.project3.LvsEntity.LvsProject.LvsProjectStatus).values()}"
-                                                th:value="${status}" th:text="${status}"></option>
-                                        </select>
-                                    </div>
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a th:href="@{/LvsAdmin/LvsProject/LvsDetail/{id}(id=${lvsProject.lvsProjectId})}"
+                                        class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Quay lai
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Cap nhat Du an
+                                    </button>
                                 </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-4">
-                                <a th:href="@{/LvsAdmin/LvsProject/LvsDetail/{id}(id=${lvsProject.lvsProjectId})}"
-                                    class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left"></i> Quay lai
-                                </a>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Cap nhat Du an
-                                </button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const existingImagesJson = /*[[${lvsProject.lvsImages}]]*/ '[]';
+            const deletedImages = [];
+
+            // Load existing images on page load
+            document.addEventListener('DOMContentLoaded', function () {
+                if (existingImagesJson && existingImagesJson !== '[]') {
+                    try {
+                        const images = JSON.parse(existingImagesJson);
+                        const container = document.getElementById('existingImages');
+                        images.forEach((imageUrl, index) => {
+                            const col = document.createElement('div');
+                            col.className = 'col-6';
+                            col.innerHTML = `
+                            <div class="position-relative">
+                                <img src="${imageUrl}" class="img-thumbnail" 
+                                     style="width: 100%; height: 150px; object-fit: cover;">
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
+                                        onclick="deleteExistingImage('${imageUrl}', this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                            container.appendChild(col);
+                        });
+                    } catch (e) {
+                        console.error('Error parsing existing images:', e);
+                    }
+                }
+            });
+
+            // Delete existing image
+            function deleteExistingImage(imageUrl, button) {
+                if (confirm('Bạn có chắc muốn xóa ảnh này?')) {
+                    deletedImages.push(imageUrl);
+                    document.getElementById('lvsDeletedImages').value = deletedImages.join(',');
+                    button.closest('.col-6').remove();
+                }
+            }
+
+            // Preview thumbnail image
+            function previewThumbnail(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('thumbnailImg').src = e.target.result;
+                        document.getElementById('thumbnailPreview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            // Remove thumbnail
+            function removeThumbnail() {
+                document.getElementById('lvsThumbnailFile').value = '';
+                document.getElementById('thumbnailPreview').style.display = 'none';
+                document.getElementById('thumbnailImg').src = '';
+            }
+
+            // Preview multiple images
+            function previewImages(event) {
+                const files = event.target.files;
+                const previewContainer = document.getElementById('imagesPreview');
+                previewContainer.innerHTML = '';
+
+                Array.from(files).forEach((file, index) => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const col = document.createElement('div');
+                            col.className = 'col-6';
+                            col.innerHTML = `
+                            <div class="position-relative">
+                                <img src="${e.target.result}" class="img-thumbnail" 
+                                     style="width: 100%; height: 150px; object-fit: cover;">
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
+                                        onclick="removeImage(${index})">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                            previewContainer.appendChild(col);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Remove image from preview
+            function removeImage(index) {
+                const input = document.getElementById('lvsImageFiles');
+                const dt = new DataTransfer();
+                const files = input.files;
+
+                for (let i = 0; i < files.length; i++) {
+                    if (i !== index) {
+                        dt.items.add(files[i]);
+                    }
+                }
+
+                input.files = dt.files;
+                previewImages({ target: input });
+            }
+            /*]]>*/
+        </script>
+    </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div layout:fragment="scripts">
+        <!-- Additional scripts if needed -->
+    </div>
 </body>
 
 </html>

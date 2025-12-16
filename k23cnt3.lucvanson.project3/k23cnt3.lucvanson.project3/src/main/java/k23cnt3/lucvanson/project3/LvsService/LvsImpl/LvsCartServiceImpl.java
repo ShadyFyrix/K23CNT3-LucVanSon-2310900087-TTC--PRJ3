@@ -352,9 +352,8 @@ public class LvsCartServiceImpl implements LvsCartService {
             lvsOrder.getLvsOrderItems().add(lvsOrderItem);
         }
 
-        // Tính toán tổng tiền
-        // TODO: Fix calculateAmounts() - currently has private access
-        // lvsOrder.calculateAmounts();
+        // Tính toán tổng tiền (calculateAmounts() will be called automatically by
+        // @PrePersist)
         lvsOrder.setLvsTotalAmount(lvsCart.getLvsTotalPrice());
         lvsOrder.setLvsDiscountAmount(lvsCart.getLvsDiscountAmount());
         lvsOrder.setLvsFinalAmount(lvsCart.getLvsFinalPrice());

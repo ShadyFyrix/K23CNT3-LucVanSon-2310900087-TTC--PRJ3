@@ -3,6 +3,8 @@ package k23cnt3.lucvanson.project3.LvsController.LvsUser;
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +30,7 @@ public class LvsUserMessageController {
     @Autowired
     private LvsUserService lvsUserService;
 
-    @Autowired
+    @Autowired(required = false)
     private SimpMessagingTemplate messagingTemplate;
 
     // Trang hộp thư đến
@@ -49,7 +51,7 @@ public class LvsUserMessageController {
         model.addAttribute("LvsUnreadCount", lvsMessageService.lvsGetUnreadCount(
                 lvsCurrentUser.getLvsUserId()));
 
-        return "LvsUser/LvsMessageInbox";
+        return "LvsAreas/LvsUsers/LvsMessages/LvsMessageInbox";
     }
 
     // Trang hộp thư đi
@@ -65,14 +67,14 @@ public class LvsUserMessageController {
 
         model.addAttribute("LvsMessages", lvsSentMessages);
 
-        return "LvsUser/LvsMessageSent";
+        return "LvsAreas/LvsUsers/LvsMessages/LvsMessageSent";
     }
 
     // Xem cuộc trò chuyện với người dùng cụ thể
     @GetMapping("/LvsConversation/{userId}")
     public String lvsViewConversation(@PathVariable Long userId,
-                                      Model model,
-                                      HttpSession session) {
+            Model model,
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -84,8 +86,9 @@ public class LvsUserMessageController {
         }
 
         // Lấy tin nhắn giữa 2 người
+        Pageable lvsPageable = PageRequest.of(0, 100); // Get last 100 messages
         List<LvsMessage> lvsMessages = lvsMessageService.lvsGetConversation(
-                lvsCurrentUser.getLvsUserId(), userId);
+                lvsCurrentUser.getLvsUserId(), userId, lvsPageable).getContent();
 
         // Đánh dấu đã đọc
         lvsMessageService.lvsMarkAsRead(lvsCurrentUser.getLvsUserId(), userId);
@@ -94,15 +97,15 @@ public class LvsUserMessageController {
         model.addAttribute("LvsMessages", lvsMessages);
         model.addAttribute("LvsNewMessage", new LvsMessage());
 
-        return "LvsUser/LvsMessageConversation";
+        return "LvsAreas/LvsUsers/LvsMessages/LvsMessageConversation";
     }
 
     // Gửi tin nhắn (HTTP POST)
     @PostMapping("/LvsSend")
     public String lvsSendMessage(@RequestParam Long lvsReceiverId,
-                                 @RequestParam String lvsContent,
-                                 HttpSession session,
-                                 Model model) {
+            @RequestParam String lvsContent,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -132,12 +135,13 @@ public class LvsUserMessageController {
         lvsMessage.setLvsCreatedAt(LocalDateTime.now());
         LvsMessage lvsSavedMessage = lvsMessageService.lvsSendMessage(lvsMessage);
 
-        // Gửi tin nhắn đến người nhận cụ thể
-        messagingTemplate.convertAndSendToUser(
-                lvsSavedMessage.getLvsReceiver().getLvsUserId().toString(),
-                "/LvsQueue/LvsMessages",
-                lvsSavedMessage
-        );
+        // Gửi tin nhắn đến người nhận cụ thể (if WebSocket is configured)
+        if (messagingTemplate != null) {
+            messagingTemplate.convertAndSendToUser(
+                    lvsSavedMessage.getLvsReceiver().getLvsUserId().toString(),
+                    "/LvsQueue/LvsMessages",
+                    lvsSavedMessage);
+        }
 
         return lvsSavedMessage;
     }
@@ -146,7 +150,7 @@ public class LvsUserMessageController {
     @PostMapping("/LvsMarkAsRead")
     @ResponseBody
     public String lvsMarkMessageAsRead(@RequestParam Long lvsMessageId,
-                                       HttpSession session) {
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "{\"success\": false}";
@@ -159,7 +163,7 @@ public class LvsUserMessageController {
     // Xóa tin nhắn
     @PostMapping("/LvsDelete/{id}")
     public String lvsDeleteMessage(@PathVariable Long id,
-                                   HttpSession session) {
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -173,7 +177,7 @@ public class LvsUserMessageController {
     // Xóa toàn bộ cuộc trò chuyện
     @PostMapping("/LvsDeleteConversation/{userId}")
     public String lvsDeleteConversation(@PathVariable Long userId,
-                                        HttpSession session) {
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -188,10 +192,10 @@ public class LvsUserMessageController {
     // Gửi file đính kèm
     @PostMapping("/LvsSendAttachment")
     public String lvsSendAttachment(@RequestParam Long lvsReceiverId,
-                                    @RequestParam String lvsContent,
-                                    @RequestParam String lvsAttachmentUrl,
-                                    HttpSession session,
-                                    Model model) {
+            @RequestParam String lvsContent,
+            @RequestParam String lvsAttachmentUrl,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -218,8 +222,8 @@ public class LvsUserMessageController {
     // Tìm kiếm tin nhắn
     @GetMapping("/LvsSearch")
     public String lvsSearchMessages(@RequestParam String lvsKeyword,
-                                    Model model,
-                                    HttpSession session) {
+            Model model,
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -231,6 +235,6 @@ public class LvsUserMessageController {
         model.addAttribute("LvsMessages", lvsMessages);
         model.addAttribute("LvsKeyword", lvsKeyword);
 
-        return "LvsUser/LvsMessageSearch";
+        return "LvsAreas/LvsUsers/LvsMessages/LvsMessageSearch";
     }
 }

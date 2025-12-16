@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Nạp tiền - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-wallet mr-3 text-[#fed700]"></i>Nạp tiền vào tài khoản
+            </h1>
+
+            <div class="max-w-2xl mx-auto bg-[#2b2b2b] border border-[#333] rounded-xl p-8">
+                <!-- Current Balance -->
+                <div
+                    class="bg-gradient-to-r from-[#fed700]/20 to-yellow-600/20 border border-[#fed700]/50 rounded-xl p-6 mb-8">
+                    <p class="text-gray-300 text-sm mb-2">Số dư hiện tại</p>
+                    <p class="text-[#fed700] font-bold text-3xl"
+                        th:text="${#numbers.formatCurrency(LvsCurrentBalance)}">$0</p>
+                </div>
+
+                <form th:action="@{/LvsUser/LvsTransaction/LvsDeposit}" method="post">
+                    <!-- Amount -->
+                    <div class="mb-6">
+                        <label class="block text-white font-semibold mb-3">Số tiền nạp <span
+                                class="text-red-500">*</span></label>
+                        <input type="number" name="lvsAmount" step="0.01" min="1" required
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#fed700]"
+                            placeholder="Nhập số tiền..." />
+                        <p class="text-gray-400 text-sm mt-2">Số tiền tối thiểu: $1</p>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="mb-6">
+                        <label class="block text-white font-semibold mb-3">Phương thức thanh toán <span
+                                class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="lvsPaymentMethod" value="CARD" class="hidden peer" required />
+                                <div
+                                    class="bg-[#1e1e1e] border-2 border-[#444] peer-checked:border-[#fed700] rounded-lg p-4 text-center transition-all">
+                                    <i
+                                        class="fas fa-credit-card text-3xl text-gray-400 peer-checked:text-[#fed700] mb-2"></i>
+                                    <p class="text-white font-semibold">Thẻ tín dụng</p>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="lvsPaymentMethod" value="BANK" class="hidden peer" />
+                                <div
+                                    class="bg-[#1e1e1e] border-2 border-[#444] peer-checked:border-[#fed700] rounded-lg p-4 text-center transition-all">
+                                    <i
+                                        class="fas fa-university text-3xl text-gray-400 peer-checked:text-[#fed700] mb-2"></i>
+                                    <p class="text-white font-semibold">Chuyển khoản</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div th:if="${LvsError}" class="mb-6 p-4 bg-red-500/20 border border-red-500 rounded-lg">
+                        <p class="text-red-400" th:text="${LvsError}">Error message</p>
+                    </div>
+
+                    <!-- Success Message -->
+                    <div th:if="${LvsSuccess}" class="mb-6 p-4 bg-green-500/20 border border-green-500 rounded-lg">
+                        <p class="text-green-400" th:text="${LvsSuccess}">Success message</p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-3">
+                        <button type="submit"
+                            class="flex-1 bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-6 py-3 rounded-lg font-semibold transition-colors">
+                            <i class="fas fa-check mr-2"></i>Xác nhận nạp tiền
+                        </button>
+                        <a href="/lvsforum/LvsUser/LvsProfile/LvsView"
+                            class="flex-1 bg-[#333] hover:bg-[#444] text-white px-6 py-3 rounded-lg font-semibold text-center transition-colors">
+                            <i class="fas fa-times mr-2"></i>Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

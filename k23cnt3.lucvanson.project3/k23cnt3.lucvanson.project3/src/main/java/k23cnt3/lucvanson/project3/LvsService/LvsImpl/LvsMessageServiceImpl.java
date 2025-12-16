@@ -29,6 +29,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Lấy tin nhắn theo ID
+     * 
      * @param lvsMessageId ID tin nhắn
      * @return Tin nhắn tìm thấy
      */
@@ -39,6 +40,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Lấy tất cả tin nhắn với phân trang
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Trang tin nhắn
      */
@@ -49,7 +51,8 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Tìm kiếm tin nhắn theo keyword
-     * @param lvsKeyword Từ khóa tìm kiếm
+     * 
+     * @param lvsKeyword  Từ khóa tìm kiếm
      * @param lvsPageable Thông tin phân trang
      * @return Trang tin nhắn tìm thấy
      */
@@ -60,6 +63,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Lấy hộp thư đến
+     * 
      * @param lvsUserId ID người dùng
      * @return Danh sách tin nhắn đến
      */
@@ -70,6 +74,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Lấy hộp thư đi
+     * 
      * @param lvsUserId ID người dùng
      * @return Danh sách tin nhắn đi
      */
@@ -80,7 +85,8 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Lấy tin nhắn theo user
-     * @param lvsUserId ID người dùng
+     * 
+     * @param lvsUserId   ID người dùng
      * @param lvsPageable Thông tin phân trang
      * @return Trang tin nhắn
      */
@@ -91,8 +97,9 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Lấy cuộc trò chuyện giữa 2 user
-     * @param lvsUserId1 ID user 1
-     * @param lvsUserId2 ID user 2
+     * 
+     * @param lvsUserId1  ID user 1
+     * @param lvsUserId2  ID user 2
      * @param lvsPageable Thông tin phân trang
      * @return Trang tin nhắn
      */
@@ -103,6 +110,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Lấy danh sách cuộc trò chuyện
+     * 
      * @param lvsUserId ID người dùng
      * @return Danh sách user có trò chuyện
      */
@@ -124,6 +132,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Gửi tin nhắn
+     * 
      * @param lvsMessage Thông tin tin nhắn
      * @return Tin nhắn đã gửi
      */
@@ -137,6 +146,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Lưu tin nhắn
+     * 
      * @param lvsMessage Thông tin tin nhắn
      * @return Tin nhắn đã lưu
      */
@@ -147,6 +157,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Xóa tin nhắn
+     * 
      * @param lvsMessageId ID tin nhắn
      */
     @Override
@@ -156,8 +167,9 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Xóa tin nhắn của user
+     * 
      * @param lvsMessageId ID tin nhắn
-     * @param lvsUserId ID người dùng
+     * @param lvsUserId    ID người dùng
      */
     @Override
     public void lvsDeleteMessage(Long lvsMessageId, Long lvsUserId) {
@@ -171,19 +183,22 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Xóa cuộc trò chuyện
+     * 
      * @param lvsUserId1 ID user 1
      * @param lvsUserId2 ID user 2
      */
     @Override
     public void lvsDeleteConversation(Long lvsUserId1, Long lvsUserId2) {
-        List<LvsMessage> lvsMessages = lvsMessageRepository.findByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdOrLvsSender_LvsUserIdAndLvsReceiver_LvsUserId(
-                lvsUserId1, lvsUserId2, lvsUserId2, lvsUserId1);
+        List<LvsMessage> lvsMessages = lvsMessageRepository
+                .findByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdOrLvsSender_LvsUserIdAndLvsReceiver_LvsUserId(
+                        lvsUserId1, lvsUserId2, lvsUserId2, lvsUserId1);
         lvsMessageRepository.deleteAll(lvsMessages);
     }
 
     /**
      * Đánh dấu đã đọc
-     * @param lvsUserId ID người dùng
+     * 
+     * @param lvsUserId      ID người dùng
      * @param lvsOtherUserId ID người kia
      * @return true nếu thành công
      */
@@ -203,6 +218,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Đánh dấu tin nhắn đã đọc
+     * 
      * @param lvsMessageId ID tin nhắn
      * @return true nếu thành công
      */
@@ -220,17 +236,19 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Đếm tin nhắn chưa đọc
+     * 
      * @param lvsUserId ID người dùng
      * @return Số tin nhắn chưa đọc
      */
     @Override
     public int lvsGetUnreadCount(Long lvsUserId) {
-        return lvsMessageRepository.countByLvsReceiver_LvsUserIdAndLvsIsReadFalse(lvsUserId);
+        return lvsMessageRepository.countByLvsReceiver_LvsUserIdAndLvsIsReadFalse(lvsUserId).intValue();
     }
 
     /**
      * Tìm kiếm tin nhắn của user
-     * @param lvsUserId ID người dùng
+     * 
+     * @param lvsUserId  ID người dùng
      * @param lvsKeyword Từ khóa tìm kiếm
      * @return Danh sách tin nhắn tìm thấy
      */
@@ -241,8 +259,9 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Lấy tin nhắn mới nhất
+     * 
      * @param lvsUserId ID người dùng
-     * @param lvsLimit Giới hạn số lượng
+     * @param lvsLimit  Giới hạn số lượng
      * @return Danh sách tin nhắn mới nhất
      */
     @Override
@@ -252,6 +271,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Đếm tổng số tin nhắn
+     * 
      * @return Tổng số tin nhắn
      */
     @Override
@@ -261,6 +281,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Đếm tin nhắn hôm nay
+     * 
      * @return Số tin nhắn hôm nay
      */
     @Override
@@ -272,6 +293,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Đếm tin nhắn chưa đọc
+     * 
      * @return Số tin nhắn chưa đọc
      */
     @Override
@@ -281,6 +303,7 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Lấy tin nhắn theo loại
+     * 
      * @return Map thống kê tin nhắn theo loại
      */
     @Override
@@ -299,20 +322,26 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Gửi tin nhắn hệ thống
-     * @param lvsUserId ID người dùng
+     * 
+     * @param lvsUserId  ID người dùng
      * @param lvsContent Nội dung tin nhắn
      */
     @Override
     public void lvsSendSystemMessage(Long lvsUserId, String lvsContent) {
-        LvsUser lvsSystemUser = lvsUserRepository.findByLvsUsername("system").orElseGet(() -> {
-            LvsUser lvsNewSystemUser = new LvsUser();
-            lvsNewSystemUser.setLvsUsername("system");
-            lvsNewSystemUser.setLvsEmail("system@example.com");
-            lvsNewSystemUser.setLvsPassword("system");
-            lvsNewSystemUser.setLvsFullName("Hệ thống");
-            lvsNewSystemUser.setLvsRole(LvsUser.LvsRole.ADMIN);
-            return lvsUserRepository.save(lvsNewSystemUser);
-        });
+        // Use first admin user as system user
+        LvsUser lvsSystemUser = lvsUserRepository.findFirstByLvsRoleOrderByLvsUserIdAsc(LvsUser.LvsRole.ADMIN)
+                .orElse(null);
+
+        if (lvsSystemUser == null) {
+            // If no admin exists, create a system user
+            lvsSystemUser = new LvsUser();
+            lvsSystemUser.setLvsUsername("system");
+            lvsSystemUser.setLvsEmail("system@example.com");
+            lvsSystemUser.setLvsPassword("system");
+            lvsSystemUser.setLvsFullName("Hệ thống");
+            lvsSystemUser.setLvsRole(LvsUser.LvsRole.ADMIN);
+            lvsSystemUser = lvsUserRepository.save(lvsSystemUser);
+        }
 
         LvsUser lvsReceiver = lvsUserRepository.findById(lvsUserId).orElse(null);
         if (lvsReceiver != null) {
@@ -331,8 +360,9 @@ public class LvsMessageServiceImpl implements LvsMessageService {
 
     /**
      * Gửi thông báo
-     * @param lvsUserId ID người dùng
-     * @param lvsTitle Tiêu đề thông báo
+     * 
+     * @param lvsUserId  ID người dùng
+     * @param lvsTitle   Tiêu đề thông báo
      * @param lvsContent Nội dung thông báo
      */
     @Override

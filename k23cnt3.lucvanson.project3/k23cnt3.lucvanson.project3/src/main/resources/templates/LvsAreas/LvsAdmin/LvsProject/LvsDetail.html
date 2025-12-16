@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -10,164 +11,185 @@
 </head>
 
 <body>
-    <div th:replace="~{LvsAreas/LvsAdmin/LvsFragments/LvsHeader :: header}"></div>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsProject/LvsList}">Quan ly Du an</a>
+                            </li>
+                            <li class="breadcrumb-item active">Chi tiet Du an</li>
+                        </ol>
+                    </nav>
 
-    <div class="container-fluid mt-4">
-        <div class="row">
-            <div class="col-12">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a th:href="@{/LvsAdmin}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsProject/LvsList}">Quan ly Du an</a></li>
-                        <li class="breadcrumb-item active">Chi tiet Du an</li>
-                    </ol>
-                </nav>
+                    <div th:if="${lvsSuccess}" class="alert alert-success" th:text="${lvsSuccess}"></div>
+                    <div th:if="${lvsError}" class="alert alert-danger" th:text="${lvsError}"></div>
 
-                <div th:if="${lvsSuccess}" class="alert alert-success" th:text="${lvsSuccess}"></div>
-                <div th:if="${lvsError}" class="alert alert-danger" th:text="${lvsError}"></div>
-
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0" th:text="${lvsProject.lvsProjectName}">Project Name</h4>
-                            <div>
-                                <span th:if="${lvsProject.lvsIsFeatured}" class="badge bg-warning">Featured</span>
-                                <span th:if="${lvsProject.lvsIsApproved}" class="badge bg-success">Approved</span>
-                                <span th:switch="${lvsProject.lvsStatus.name()}" class="badge">
-                                    <span th:case="'PENDING'" class="badge bg-warning">PENDING</span>
-                                    <span th:case="'APPROVED'" class="badge bg-success">APPROVED</span>
-                                    <span th:case="'REJECTED'" class="badge bg-danger">REJECTED</span>
-                                </span>
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0" th:text="${lvsProject.lvsProjectName}">Project Name</h4>
+                                <div>
+                                    <span th:if="${lvsProject.lvsIsFeatured}" class="badge bg-warning">Featured</span>
+                                    <span th:if="${lvsProject.lvsIsApproved}" class="badge bg-success">Approved</span>
+                                    <span th:switch="${lvsProject.lvsStatus.name()}" class="badge">
+                                        <span th:case="'PENDING'" class="badge bg-warning">PENDING</span>
+                                        <span th:case="'APPROVED'" class="badge bg-success">APPROVED</span>
+                                        <span th:case="'REJECTED'" class="badge bg-danger">REJECTED</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h5>Thong tin co ban</h5>
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th width="200">ID</th>
-                                        <td th:text="${lvsProject.lvsProjectId}">1</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Ten Du an</th>
-                                        <td th:text="${lvsProject.lvsProjectName}">Project Name</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Mo ta</th>
-                                        <td th:text="${lvsProject.lvsDescription}">Description</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Danh muc</th>
-                                        <td th:text="${lvsProject.lvsCategory?.lvsCategoryName ?: 'N/A'}">Category</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Nguoi tao</th>
-                                        <td th:text="${lvsProject.lvsUser?.lvsUsername ?: 'N/A'}">User</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Gia</th>
-                                        <td th:text="${lvsProject.lvsPrice} + ' VND'">0 VND</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Ngay tao</th>
-                                        <td th:text="${#temporals.format(lvsProject.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">
-                                            01/01/2023</td>
-                                    </tr>
-                                </table>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5>Thong tin co ban</h5>
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <th width="200">ID</th>
+                                            <td th:text="${lvsProject.lvsProjectId}">1</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Ten Du an</th>
+                                            <td th:text="${lvsProject.lvsProjectName}">Project Name</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Mo ta</th>
+                                            <td th:text="${lvsProject.lvsDescription}">Description</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Danh muc</th>
+                                            <td th:text="${lvsProject.lvsCategory?.lvsCategoryName ?: 'N/A'}">Category
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Nguoi tao</th>
+                                            <td th:text="${lvsProject.lvsUser?.lvsUsername ?: 'N/A'}">User</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Gia</th>
+                                            <td th:text="${lvsProject.lvsPrice} + ' VND'">0 VND</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Ngay tao</th>
+                                            <td
+                                                th:text="${#temporals.format(lvsProject.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">
+                                                01/01/2023</td>
+                                        </tr>
+                                    </table>
 
-                                <h5 class="mt-4">Thong ke</h5>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="card text-center">
-                                            <div class="card-body">
-                                                <h3 th:text="${lvsProject.lvsViewCount}">0</h3>
-                                                <p class="mb-0">Luot xem</p>
+                                    <h5 class="mt-4">Thong ke</h5>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="card text-center">
+                                                <div class="card-body">
+                                                    <h3 th:text="${lvsProject.lvsViewCount}">0</h3>
+                                                    <p class="mb-0">Luot xem</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="card text-center">
-                                            <div class="card-body">
-                                                <h3 th:text="${lvsProject.lvsPurchaseCount}">0</h3>
-                                                <p class="mb-0">Luot mua</p>
+                                        <div class="col-md-3">
+                                            <div class="card text-center">
+                                                <div class="card-body">
+                                                    <h3 th:text="${lvsProject.lvsPurchaseCount}">0</h3>
+                                                    <p class="mb-0">Luot mua</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="card text-center">
-                                            <div class="card-body">
-                                                <h3 th:text="${lvsProject.lvsRating}">0.0</h3>
-                                                <p class="mb-0">Rating</p>
+                                        <div class="col-md-3">
+                                            <div class="card text-center">
+                                                <div class="card-body">
+                                                    <h3 th:text="${lvsProject.lvsRating}">0.0</h3>
+                                                    <p class="mb-0">Rating</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="card text-center">
-                                            <div class="card-body">
-                                                <h3 th:text="${lvsProject.lvsReviewCount}">0</h3>
-                                                <p class="mb-0">Reviews</p>
+                                        <div class="col-md-3">
+                                            <div class="card text-center">
+                                                <div class="card-body">
+                                                    <h3 th:text="${lvsProject.lvsReviewCount}">0</h3>
+                                                    <p class="mb-0">Reviews</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-4">
-                                <h5>Hanh dong</h5>
-                                <div class="d-grid gap-2">
-                                    <a th:href="@{/LvsAdmin/LvsProject/LvsEdit/{id}(id=${lvsProject.lvsProjectId})}"
-                                        class="btn btn-warning">
-                                        <i class="fas fa-edit"></i> Chinh sua
-                                    </a>
+                                <!-- Image Gallery Section -->
+                                <div class="col-md-8 mt-4">
+                                    <!-- Thumbnail -->
+                                    <div th:if="${lvsProject.lvsThumbnailUrl}" class="mb-4">
+                                        <h5>Ảnh đại diện</h5>
+                                        <img th:src="@{${lvsProject.lvsThumbnailUrl}}" alt="Project Thumbnail"
+                                            class="img-fluid rounded shadow"
+                                            style="max-height: 400px; object-fit: cover;">
+                                    </div>
 
-                                    <form th:if="${lvsProject.lvsStatus.name() == 'PENDING'}"
-                                        th:action="@{/LvsAdmin/LvsProject/LvsApprove/{id}(id=${lvsProject.lvsProjectId})}"
-                                        method="post">
-                                        <button type="submit" class="btn btn-success w-100">
-                                            <i class="fas fa-check"></i> Duyet Du an
-                                        </button>
-                                    </form>
-
-                                    <form
-                                        th:action="@{/LvsAdmin/LvsProject/LvsToggleFeatured/{id}(id=${lvsProject.lvsProjectId})}"
-                                        method="post">
-                                        <button type="submit" class="btn btn-info w-100">
-                                            <i class="fas fa-star"></i>
-                                            <span
-                                                th:text="${lvsProject.lvsIsFeatured} ? 'Bo Noi bat' : 'Danh dau Noi bat'">Toggle
-                                                Featured</span>
-                                        </button>
-                                    </form>
-
-                                    <form
-                                        th:action="@{/LvsAdmin/LvsProject/LvsDelete/{id}(id=${lvsProject.lvsProjectId})}"
-                                        method="post" onsubmit="return confirm('Ban co chac muon xoa du an nay?');">
-                                        <button type="submit" class="btn btn-danger w-100">
-                                            <i class="fas fa-trash"></i> Xoa Du an
-                                        </button>
-                                    </form>
-
-                                    <a th:href="@{/LvsAdmin/LvsProject/LvsList}" class="btn btn-secondary">
-                                        <i class="fas fa-arrow-left"></i> Quay lai
-                                    </a>
+                                    <!-- Project Images Gallery -->
+                                    <div th:if="${lvsProject.lvsImages}" class="mb-4">
+                                        <h5>Thư viện ảnh dự án</h5>
+                                        <div id="projectImagesGallery" class="row g-3"></div>
+                                    </div>
                                 </div>
 
-                                <h5 class="mt-4">Links</h5>
-                                <div class="list-group">
-                                    <a th:if="${lvsProject.lvsDemoUrl}" th:href="${lvsProject.lvsDemoUrl}"
-                                        target="_blank" class="list-group-item list-group-item-action">
-                                        <i class="fas fa-external-link-alt"></i> Demo URL
-                                    </a>
-                                    <a th:if="${lvsProject.lvsSourceCodeUrl}" th:href="${lvsProject.lvsSourceCodeUrl}"
-                                        target="_blank" class="list-group-item list-group-item-action">
-                                        <i class="fab fa-github"></i> Source Code
-                                    </a>
-                                    <a th:if="${lvsProject.lvsFileUrl}" th:href="${lvsProject.lvsFileUrl}"
-                                        target="_blank" class="list-group-item list-group-item-action">
-                                        <i class="fas fa-download"></i> Download File
-                                    </a>
+                                <div class="col-md-4">
+                                    <h5>Hanh dong</h5>
+                                    <div class="d-grid gap-2">
+                                        <a th:href="@{/LvsAdmin/LvsProject/LvsEdit/{id}(id=${lvsProject.lvsProjectId})}"
+                                            class="btn btn-warning">
+                                            <i class="fas fa-edit"></i> Chinh sua
+                                        </a>
+
+                                        <form th:if="${lvsProject.lvsStatus.name() == 'PENDING'}"
+                                            th:action="@{/LvsAdmin/LvsProject/LvsApprove/{id}(id=${lvsProject.lvsProjectId})}"
+                                            method="post">
+                                            <button type="submit" class="btn btn-success w-100">
+                                                <i class="fas fa-check"></i> Duyet Du an
+                                            </button>
+                                        </form>
+
+                                        <form
+                                            th:action="@{/LvsAdmin/LvsProject/LvsToggleFeatured/{id}(id=${lvsProject.lvsProjectId})}"
+                                            method="post">
+                                            <button type="submit" class="btn btn-info w-100">
+                                                <i class="fas fa-star"></i>
+                                                <span
+                                                    th:text="${lvsProject.lvsIsFeatured} ? 'Bo Noi bat' : 'Danh dau Noi bat'">Toggle
+                                                    Featured</span>
+                                            </button>
+                                        </form>
+
+                                        <form
+                                            th:action="@{/LvsAdmin/LvsProject/LvsDelete/{id}(id=${lvsProject.lvsProjectId})}"
+                                            method="post" onsubmit="return confirm('Ban co chac muon xoa du an nay?');">
+                                            <button type="submit" class="btn btn-danger w-100">
+                                                <i class="fas fa-trash"></i> Xoa Du an
+                                            </button>
+                                        </form>
+
+                                        <a th:href="@{/LvsAdmin/LvsProject/LvsList}" class="btn btn-secondary">
+                                            <i class="fas fa-arrow-left"></i> Quay lai
+                                        </a>
+                                    </div>
+
+                                    <h5 class="mt-4">Links</h5>
+                                    <div class="list-group">
+                                        <a th:if="${lvsProject.lvsDemoUrl}" th:href="${lvsProject.lvsDemoUrl}"
+                                            target="_blank" class="list-group-item list-group-item-action">
+                                            <i class="fas fa-external-link-alt"></i> Demo URL
+                                        </a>
+                                        <a th:if="${lvsProject.lvsSourceCodeUrl}"
+                                            th:href="${lvsProject.lvsSourceCodeUrl}" target="_blank"
+                                            class="list-group-item list-group-item-action">
+                                            <i class="fab fa-github"></i> Source Code
+                                        </a>
+                                        <a th:if="${lvsProject.lvsFileUrl}" th:href="${lvsProject.lvsFileUrl}"
+                                            target="_blank" class="list-group-item list-group-item-action">
+                                            <i class="fas fa-download"></i> Download File
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -175,9 +197,72 @@
                 </div>
             </div>
         </div>
+
+        <!-- Image Lightbox Modal -->
+        <div class="modal fade" id="imageLightbox" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xem ảnh</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="lightboxImage" src="" class="img-fluid" alt="Full size image">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const projectImagesJson = /*[[${lvsProject.lvsImages}]]*/ '[]';
+
+            // Load project images gallery
+            document.addEventListener('DOMContentLoaded', function () {
+                if (projectImagesJson && projectImagesJson !== '[]') {
+                    try {
+                        const images = JSON.parse(projectImagesJson);
+                        const gallery = document.getElementById('projectImagesGallery');
+
+                        if (gallery && images.length > 0) {
+                            images.forEach((imageUrl, index) => {
+                                const col = document.createElement('div');
+                                col.className = 'col-md-4 col-sm-6';
+                                col.innerHTML = `
+                                <div class="card h-100">
+                                    <img src="${imageUrl}" class="card-img-top" 
+                                         style="height: 200px; object-fit: cover; cursor: pointer;" 
+                                         onclick="showLightbox('${imageUrl}')"
+                                         alt="Project Image ${index + 1}">
+                                    <div class="card-body p-2 text-center">
+                                        <small class="text-muted">Ảnh ${index + 1}</small>
+                                    </div>
+                                </div>
+                            `;
+                                gallery.appendChild(col);
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Error loading project images:', e);
+                    }
+                }
+            });
+
+            // Show image in lightbox
+            function showLightbox(imageUrl) {
+                document.getElementById('lightboxImage').src = imageUrl;
+                const modal = new bootstrap.Modal(document.getElementById('imageLightbox'));
+                modal.show();
+            }
+            /*]]>*/
+        </script>
+    </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div layout:fragment="scripts">
+        <!-- Additional scripts if needed -->
+    </div>
 </body>
 
 </html>

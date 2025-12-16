@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Debug Info</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-white mb-8">🔍 Debug Information</h1>
+
+            <!-- Authentication Info -->
+            <div class="bg-[#2b2b2b] rounded-xl p-6 mb-6 border border-[#333]">
+                <h2 class="text-xl font-bold text-[#fed700] mb-4">Authentication Status</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-gray-400 w-40">Authenticated:</span>
+                        <span th:text="${authenticated}" th:class="${authenticated} ? 'text-green-400' : 'text-red-400'"
+                            class="font-bold">false</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-gray-400 w-40">Auth Name:</span>
+                        <span th:text="${authName}" class="text-white">null</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-gray-400 w-40">Authorities:</span>
+                        <span th:text="${authorities}" class="text-white">null</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Info -->
+            <div class="bg-[#2b2b2b] rounded-xl p-6 mb-6 border border-[#333]">
+                <h2 class="text-xl font-bold text-[#fed700] mb-4">Session Information</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-gray-400 w-40">Session User:</span>
+                        <span th:text="${sessionUser != null ? 'Present' : 'null'}"
+                            th:class="${sessionUser != null} ? 'text-green-400' : 'text-red-400'"
+                            class="font-bold">null</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-gray-400 w-40">Username:</span>
+                        <span th:text="${sessionUserName}" class="text-white">null</span>
+                    </div>
+                    <div th:if="${sessionUser != null}">
+                        <div class="flex items-center gap-3">
+                            <span class="text-gray-400 w-40">Email:</span>
+                            <span th:text="${sessionUser.lvsEmail}" class="text-white">null</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-gray-400 w-40">Role:</span>
+                            <span th:text="${sessionUser.lvsRole}" class="text-white">null</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-gray-400 w-40">Status:</span>
+                            <span th:text="${sessionUser.lvsStatus}" class="text-white">null</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-blue-400 mb-3">📝 What to check:</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li>✅ <strong>Authenticated</strong> should be <span class="text-green-400">true</span></li>
+                    <li>✅ <strong>Auth Name</strong> should be your username</li>
+                    <li>✅ <strong>Authorities</strong> should contain ROLE_USER or ROLE_ADMIN</li>
+                    <li>✅ <strong>Session User</strong> should be <span class="text-green-400">Present</span></li>
+                    <li>✅ <strong>Username</strong> should match your login</li>
+                </ul>
+
+                <div class="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                    <p class="text-yellow-400 font-bold mb-2">⚠️ If any of these are wrong:</p>
+                    <ol class="list-decimal list-inside space-y-1 text-gray-300 text-sm">
+                        <li>Logout completely: <a th:href="@{/LvsAuth/LvsLogout}" class="text-[#fed700] underline">Click
+                                here</a></li>
+                        <li>Clear browser cookies</li>
+                        <li>Login again with testuser/123456</li>
+                        <li>Come back to this page</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="mt-8">
+                <a th:href="@{/LvsUser/LvsDashboard}"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-[#fed700] text-black font-bold rounded-xl hover:bg-yellow-500 transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

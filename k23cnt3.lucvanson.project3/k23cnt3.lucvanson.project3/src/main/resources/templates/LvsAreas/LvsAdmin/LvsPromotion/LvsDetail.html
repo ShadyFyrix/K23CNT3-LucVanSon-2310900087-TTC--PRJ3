@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Chi tiết Khuyến mãi</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Chi tiết Khuyến mãi</h1>
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>Mã:</strong> <code th:text="${LvsPromotion.lvsCode}"></code></p>
+                    <p><strong>Loại giảm giá:</strong> <span th:text="${LvsPromotion.lvsDiscountType}"></span></p>
+                    <p><strong>Giá trị:</strong> <span th:text="${LvsPromotion.lvsDiscountValue}"></span></p>
+                    <p><strong>Hạn sử dụng:</strong> <span
+                            th:text="${#temporals.format(LvsPromotion.lvsValidTo, 'dd/MM/yyyy')}"></span></p>
+                    <p><strong>Đã sử dụng:</strong> <span
+                            th:text="${LvsPromotion.lvsUsedCount} + '/' + ${LvsPromotion.lvsUsageLimit}"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

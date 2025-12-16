@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Quản lý Tin nhắn</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Quản lý Tin nhắn</h1>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Người gửi</th>
+                                <th>Người nhận</th>
+                                <th>Nội dung</th>
+                                <th>Ngày</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="msg : ${LvsMessages.content}">
+                                <td th:text="${msg.lvsMessageId}"></td>
+                                <td th:text="${msg.lvsSender?.lvsUsername}"></td>
+                                <td th:text="${msg.lvsReceiver?.lvsUsername}"></td>
+                                <td th:text="${#strings.abbreviate(msg.lvsContent, 50)}"></td>
+                                <td th:text="${#temporals.format(msg.lvsCreatedAt, 'dd/MM/yyyy')}"></td>
+                                <td><a th:href="@{/LvsAdmin/LvsMessage/LvsDetail/{id}(id=${msg.lvsMessageId})}"
+                                        class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

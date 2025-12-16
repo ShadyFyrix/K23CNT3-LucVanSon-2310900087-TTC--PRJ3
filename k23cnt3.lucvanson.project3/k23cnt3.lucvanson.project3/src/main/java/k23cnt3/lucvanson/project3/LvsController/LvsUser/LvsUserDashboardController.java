@@ -2,6 +2,8 @@ package k23cnt3.lucvanson.project3.LvsController.LvsUser;
 
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
+import k23cnt3.lucvanson.project3.LvsService.LvsFollowService;
+import k23cnt3.lucvanson.project3.LvsService.LvsOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.PageRequest;
 import jakarta.servlet.http.HttpSession;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -67,9 +68,9 @@ public class LvsUserDashboardController {
         session.setAttribute("LvsCurrentUser", lvsCurrentUser);
 
         // Lấy thống kê cá nhân
-        int lvsTotalProjects = lvsCurrentUser.getLvsProjects().size();
-        int lvsTotalPosts = lvsCurrentUser.getLvsPosts().size();
-        int lvsTotalOrders = lvsCurrentUser.getLvsOrders().size();
+        int lvsTotalProjects = 0; // lvsCurrentUser.getLvsProjects().size(); // TODO: Fix lazy loading
+        int lvsTotalPosts = 0; // lvsCurrentUser.getLvsPosts().size(); // TODO: Fix lazy loading
+        int lvsTotalOrders = 0; // lvsCurrentUser.getLvsOrders().size(); // TODO: Fix lazy loading
         int lvsFollowersCount = lvsFollowService.lvsGetFollowerCount(lvsCurrentUser.getLvsUserId());
         int lvsFollowingCount = lvsFollowService.lvsGetFollowingCount(lvsCurrentUser.getLvsUserId());
 
@@ -118,15 +119,15 @@ public class LvsUserDashboardController {
      */
     @GetMapping("/LvsHome")
     public String lvsHomePage(Model model) {
-        // Lấy dự án nổi bật
-        List<LvsProject> lvsFeaturedProjects = lvsProjectService.lvsGetFeaturedProjects(PageRequest.of(0, 6))
+        // Lấy dự án nổi bật (sử dụng getAllProjects thay vì getFeaturedProjects)
+        List<LvsProject> lvsFeaturedProjects = lvsProjectService.lvsGetAllProjects(PageRequest.of(0, 6))
                 .getContent();
 
         // Lấy bài viết phổ biến
-        List<LvsPost> lvsPopularPosts = lvsPostService.lvsGetPopularPosts(PageRequest.of(0, 6)).getContent();
+        List<LvsPost> lvsPopularPosts = lvsPostService.lvsGetPopularPosts(PageRequest.of(0, 6));
 
         // Lấy dự án mới nhất
-        List<LvsProject> lvsNewestProjects = lvsProjectService.lvsGetNewestProjects(PageRequest.of(0, 8)).getContent();
+        List<LvsProject> lvsNewestProjects = lvsProjectService.lvsGetNewestProjects(PageRequest.of(0, 8));
 
         model.addAttribute("LvsFeaturedProjects", lvsFeaturedProjects);
         model.addAttribute("LvsPopularPosts", lvsPopularPosts);

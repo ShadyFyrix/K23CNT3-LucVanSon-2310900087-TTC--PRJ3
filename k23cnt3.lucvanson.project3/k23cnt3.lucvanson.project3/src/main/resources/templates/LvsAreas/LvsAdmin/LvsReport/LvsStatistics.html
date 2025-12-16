@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Thống kê Báo cáo</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Thống kê Báo cáo</h1>
+            <div class="row">
+                <div class="col-md-4 mb-4" th:each="entry : ${LvsStatsByType}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 th:text="${entry.key}"></h5>
+                            <h2 th:text="${entry.value}"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Theo trạng thái</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between"
+                                    th:each="entry : ${LvsStatsByStatus}">
+                                    <span th:text="${entry.key}"></span>
+                                    <span class="badge bg-primary" th:text="${entry.value}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Theo thời gian</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between"
+                                    th:each="entry : ${LvsStatsByTime}">
+                                    <span th:text="${entry.key}"></span>
+                                    <span class="badge bg-info" th:text="${entry.value}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

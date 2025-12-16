@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body th:fragment="sidebar">
+    <!-- Compact Sidebar with Dropdowns -->
+    <aside
+        class="w-72 bg-gradient-to-b from-[#2b2b2b] to-[#1e1e1e] border-r border-[#333] min-h-screen hidden lg:block sticky top-0 shadow-2xl">
+        <!-- User Profile Section -->
+        <div class="p-6 border-b border-[#333]/50">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-14 h-14 rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center text-black font-bold text-2xl shadow-lg">
+                    <span th:if="${session.LvsCurrentUser}"
+                        th:text="${#strings.substring(session.LvsCurrentUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                    <i th:unless="${session.LvsCurrentUser}" class="fas fa-user"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-white font-bold text-lg truncate" th:if="${session.LvsCurrentUser}"
+                        th:text="${session.LvsCurrentUser.lvsUsername}">User</p>
+                    <p class="text-gray-400 text-sm" th:if="${session.LvsCurrentUser}">
+                        <i class="fas fa-coins text-[#fed700]"></i>
+                        <span th:text="${session.LvsCurrentUser.lvsCoin ?: 0}">0</span> coins
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu with Dropdowns -->
+        <nav class="p-4 space-y-1 overflow-y-auto" style="max-height: calc(100vh - 200px);">
+            <!-- Dashboard -->
+            <a th:href="@{/LvsUser/LvsDashboard}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 hover:border-l-4 hover:border-[#fed700] transition-all duration-200 group">
+                <i class="fas fa-home text-[#fed700] text-lg group-hover:scale-110 transition-transform"></i>
+                <span class="text-gray-300 group-hover:text-white font-medium">Dashboard</span>
+            </a>
+
+            <!-- Account Dropdown -->
+            <details class="group/account">
+                <summary
+                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-user text-gray-400 group-hover/account:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 group-hover/account:text-white font-medium">Account</span>
+                    </div>
+                    <i
+                        class="fas fa-chevron-down text-gray-500 group-open/account:rotate-180 transition-transform duration-200"></i>
+                </summary>
+                <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
+                    <a th:href="@{/LvsUser/LvsProfile/LvsView}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-id-card w-4"></i> View Profile
+                    </a>
+                    <a th:href="@{/LvsUser/LvsProfile/LvsEdit}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-edit w-4"></i> Edit Profile
+                    </a>
+                    <a th:href="@{/LvsUser/LvsProfile/LvsChangePassword}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-key w-4"></i> Change Password
+                    </a>
+                </div>
+            </details>
+
+            <!-- Shopping Dropdown -->
+            <details class="group/shop">
+                <summary
+                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    <div class="flex items-center gap-3">
+                        <i
+                            class="fas fa-shopping-bag text-gray-400 group-hover/shop:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 group-hover/shop:text-white font-medium">Shopping</span>
+                    </div>
+                    <i
+                        class="fas fa-chevron-down text-gray-500 group-open/shop:rotate-180 transition-transform duration-200"></i>
+                </summary>
+                <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
+                    <a th:href="@{/LvsUser/LvsCart/LvsView}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-shopping-cart w-4"></i> My Cart
+                    </a>
+                    <a th:href="@{/LvsUser/LvsOrder/LvsMyOrders}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-box w-4"></i> My Orders
+                    </a>
+                </div>
+            </details>
+
+            <!-- Projects Dropdown -->
+            <details class="group/project">
+                <summary
+                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    <div class="flex items-center gap-3">
+                        <i
+                            class="fas fa-project-diagram text-gray-400 group-hover/project:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 group-hover/project:text-white font-medium">Projects</span>
+                    </div>
+                    <i
+                        class="fas fa-chevron-down text-gray-500 group-open/project:rotate-180 transition-transform duration-200"></i>
+                </summary>
+                <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
+                    <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-th-large w-4"></i> Browse All
+                    </a>
+                    <a th:href="@{/LvsUser/LvsProject/LvsMyProjects}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-folder w-4"></i> My Projects
+                    </a>
+                    <a th:href="@{/LvsUser/LvsProject/LvsAdd}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-plus-circle w-4"></i> Add New
+                    </a>
+                </div>
+            </details>
+
+            <!-- Messages -->
+            <a th:href="@{/LvsUser/LvsMessage/LvsInbox}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
+                <div class="relative">
+                    <i class="fas fa-envelope text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
+                    <span th:if="${session.LvsUnreadCount != null and session.LvsUnreadCount > 0}"
+                        class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
+                        th:text="${session.LvsUnreadCount}">0</span>
+                </div>
+                <span class="text-gray-300 group-hover:text-white font-medium">Messages</span>
+            </a>
+
+            <!-- Social Dropdown -->
+            <details class="group/social">
+                <summary
+                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-users text-gray-400 group-hover/social:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 group-hover/social:text-white font-medium">Social</span>
+                    </div>
+                    <i
+                        class="fas fa-chevron-down text-gray-500 group-open/social:rotate-180 transition-transform duration-200"></i>
+                </summary>
+                <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
+                    <a th:href="@{/LvsUser/LvsFollow/LvsMyFollowers}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-user-friends w-4"></i> Followers
+                    </a>
+                    <a th:href="@{/LvsUser/LvsFollow/LvsMyFollowing}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-user-plus w-4"></i> Following
+                    </a>
+                    <a th:href="@{/LvsUser/LvsReview/LvsMyReviews}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-star w-4"></i> My Reviews
+                    </a>
+                    <a th:href="@{/LvsUser/LvsComment/LvsMyComments}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-comments w-4"></i> My Comments
+                    </a>
+                </div>
+            </details>
+
+            <!-- Finance Dropdown -->
+            <details class="group/finance">
+                <summary
+                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-wallet text-gray-400 group-hover/finance:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 group-hover/finance:text-white font-medium">Finance</span>
+                    </div>
+                    <i
+                        class="fas fa-chevron-down text-gray-500 group-open/finance:rotate-180 transition-transform duration-200"></i>
+                </summary>
+                <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
+                    <a th:href="@{/LvsUser/LvsTransaction/LvsHistory}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-history w-4"></i> Transactions
+                    </a>
+                    <a th:href="@{/LvsUser/LvsProfile/LvsRevenue}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-chart-line w-4"></i> Revenue
+                    </a>
+                    <a th:href="@{/LvsUser/LvsTransaction/LvsDeposit}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-plus-square w-4"></i> Deposit
+                    </a>
+                </div>
+            </details>
+
+            <!-- Reports -->
+            <a th:href="@{/LvsUser/LvsReport/LvsMy}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
+                <i class="fas fa-flag text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
+                <span class="text-gray-300 group-hover:text-white font-medium">My Reports</span>
+            </a>
+        </nav>
+
+        <!-- Logout Button (Fixed at bottom) -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#1e1e1e] to-transparent">
+            <a th:href="@{/LvsAuth/LvsLogout}"
+                class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 transition-all duration-200 group">
+                <i class="fas fa-sign-out-alt text-red-400 group-hover:text-red-300 transition-colors"></i>
+                <span class="text-red-400 group-hover:text-red-300 font-medium">Logout</span>
+            </a>
+        </div>
+    </aside>
+</body>
+
+</html>

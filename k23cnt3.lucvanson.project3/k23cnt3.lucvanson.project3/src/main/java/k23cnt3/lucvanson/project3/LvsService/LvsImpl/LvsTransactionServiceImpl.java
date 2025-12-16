@@ -34,6 +34,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy giao dịch theo ID
+     * 
      * @param lvsTransactionId ID giao dịch
      * @return Giao dịch tìm thấy
      */
@@ -44,6 +45,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy tất cả giao dịch với phân trang
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Trang giao dịch
      */
@@ -54,7 +56,8 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Tìm kiếm giao dịch theo keyword
-     * @param lvsKeyword Từ khóa tìm kiếm
+     * 
+     * @param lvsKeyword  Từ khóa tìm kiếm
      * @param lvsPageable Thông tin phân trang
      * @return Trang giao dịch tìm thấy
      */
@@ -65,7 +68,8 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy giao dịch theo user
-     * @param lvsUserId ID người dùng
+     * 
+     * @param lvsUserId   ID người dùng
      * @param lvsPageable Thông tin phân trang
      * @return Trang giao dịch
      */
@@ -76,7 +80,8 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy giao dịch theo type
-     * @param lvsType Loại giao dịch
+     * 
+     * @param lvsType     Loại giao dịch
      * @param lvsPageable Thông tin phân trang
      * @return Trang giao dịch
      */
@@ -88,7 +93,8 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy giao dịch theo status
-     * @param lvsStatus Trạng thái giao dịch
+     * 
+     * @param lvsStatus   Trạng thái giao dịch
      * @param lvsPageable Thông tin phân trang
      * @return Trang giao dịch
      */
@@ -100,8 +106,9 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy giao dịch theo user và type
-     * @param lvsUserId ID người dùng
-     * @param lvsType Loại giao dịch
+     * 
+     * @param lvsUserId   ID người dùng
+     * @param lvsType     Loại giao dịch
      * @param lvsPageable Thông tin phân trang
      * @return Trang giao dịch
      */
@@ -113,41 +120,49 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy giao dịch theo user và status
-     * @param lvsUserId ID người dùng
-     * @param lvsStatus Trạng thái giao dịch
+     * 
+     * @param lvsUserId   ID người dùng
+     * @param lvsStatus   Trạng thái giao dịch
      * @param lvsPageable Thông tin phân trang
      * @return Trang giao dịch
      */
     @Override
-    public Page<LvsTransaction> lvsGetTransactionsByUserAndStatus(Long lvsUserId, String lvsStatus, Pageable lvsPageable) {
+    public Page<LvsTransaction> lvsGetTransactionsByUserAndStatus(Long lvsUserId, String lvsStatus,
+            Pageable lvsPageable) {
         LvsTransactionStatus lvsTransactionStatus = LvsTransactionStatus.valueOf(lvsStatus.toUpperCase());
-        return lvsTransactionRepository.findByLvsUser_LvsUserIdAndLvsStatus(lvsUserId, lvsTransactionStatus, lvsPageable);
+        return lvsTransactionRepository.findByLvsUser_LvsUserIdAndLvsStatus(lvsUserId, lvsTransactionStatus,
+                lvsPageable);
     }
 
     /**
      * Lấy giao dịch theo type và status
-     * @param lvsType Loại giao dịch
-     * @param lvsStatus Trạng thái giao dịch
+     * 
+     * @param lvsType     Loại giao dịch
+     * @param lvsStatus   Trạng thái giao dịch
      * @param lvsPageable Thông tin phân trang
      * @return Trang giao dịch
      */
     @Override
-    public Page<LvsTransaction> lvsGetTransactionsByTypeAndStatus(String lvsType, String lvsStatus, Pageable lvsPageable) {
+    public Page<LvsTransaction> lvsGetTransactionsByTypeAndStatus(String lvsType, String lvsStatus,
+            Pageable lvsPageable) {
         LvsTransactionType lvsTransactionType = LvsTransactionType.valueOf(lvsType.toUpperCase());
         LvsTransactionStatus lvsTransactionStatus = LvsTransactionStatus.valueOf(lvsStatus.toUpperCase());
-        return lvsTransactionRepository.findByLvsTypeAndLvsStatus(lvsTransactionType, lvsTransactionStatus, lvsPageable);
+        return lvsTransactionRepository.findByLvsTypeAndLvsStatus(lvsTransactionType, lvsTransactionStatus,
+                lvsPageable);
     }
 
     /**
      * Lấy giao dịch theo user, type và status
-     * @param lvsUserId ID người dùng
-     * @param lvsType Loại giao dịch
-     * @param lvsStatus Trạng thái giao dịch
+     * 
+     * @param lvsUserId   ID người dùng
+     * @param lvsType     Loại giao dịch
+     * @param lvsStatus   Trạng thái giao dịch
      * @param lvsPageable Thông tin phân trang
      * @return Trang giao dịch
      */
     @Override
-    public Page<LvsTransaction> lvsGetTransactionsByUserAndTypeAndStatus(Long lvsUserId, String lvsType, String lvsStatus, Pageable lvsPageable) {
+    public Page<LvsTransaction> lvsGetTransactionsByUserAndTypeAndStatus(Long lvsUserId, String lvsType,
+            String lvsStatus, Pageable lvsPageable) {
         LvsTransactionType lvsTransactionType = LvsTransactionType.valueOf(lvsType.toUpperCase());
         LvsTransactionStatus lvsTransactionStatus = LvsTransactionStatus.valueOf(lvsStatus.toUpperCase());
         return lvsTransactionRepository.findByLvsUser_LvsUserIdAndLvsTypeAndLvsStatus(
@@ -156,6 +171,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lưu giao dịch
+     * 
      * @param lvsTransaction Thông tin giao dịch
      * @return Giao dịch đã lưu
      */
@@ -167,6 +183,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Cập nhật giao dịch
+     * 
      * @param lvsTransaction Thông tin giao dịch cập nhật
      * @return Giao dịch đã cập nhật
      */
@@ -190,6 +207,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Xóa giao dịch
+     * 
      * @param lvsTransactionId ID giao dịch
      */
     @Override
@@ -199,15 +217,17 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Tạo yêu cầu nạp tiền
-     * @param lvsUserId ID người dùng
-     * @param lvsAmount Số tiền nạp
+     * 
+     * @param lvsUserId        ID người dùng
+     * @param lvsAmount        Số tiền nạp
      * @param lvsPaymentMethod Phương thức thanh toán
      * @return Giao dịch đã tạo
      */
     @Override
     public LvsTransaction lvsCreateDepositRequest(Long lvsUserId, Double lvsAmount, String lvsPaymentMethod) {
         var lvsUser = lvsUserRepository.findById(lvsUserId).orElse(null);
-        if (lvsUser == null) return null;
+        if (lvsUser == null)
+            return null;
 
         LvsTransaction lvsTransaction = new LvsTransaction();
         lvsTransaction.setLvsUser(lvsUser);
@@ -223,6 +243,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Tạo yêu cầu rút tiền
+     * 
      * @param lvsUserId ID người dùng
      * @param lvsAmount Số tiền rút
      * @return Giao dịch đã tạo
@@ -230,7 +251,8 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
     @Override
     public LvsTransaction lvsCreateWithdrawalRequest(Long lvsUserId, Double lvsAmount) {
         var lvsUser = lvsUserRepository.findById(lvsUserId).orElse(null);
-        if (lvsUser == null) return null;
+        if (lvsUser == null)
+            return null;
 
         // Kiểm tra số dư
         if (lvsUser.getLvsBalance() < lvsAmount) {
@@ -254,8 +276,9 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Duyệt nạp tiền
+     * 
      * @param lvsTransactionId ID giao dịch
-     * @param lvsAdminId ID LvsAdmin duyệt
+     * @param lvsAdminId       ID LvsAdmin duyệt
      * @return Giao dịch đã duyệt
      */
     @Override
@@ -280,8 +303,9 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Duyệt rút tiền
+     * 
      * @param lvsTransactionId ID giao dịch
-     * @param lvsAdminId ID LvsAdmin duyệt
+     * @param lvsAdminId       ID LvsAdmin duyệt
      * @return Giao dịch đã duyệt
      */
     @Override
@@ -301,9 +325,10 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Từ chối giao dịch
+     * 
      * @param lvsTransactionId ID giao dịch
-     * @param lvsAdminId ID LvsAdmin từ chối
-     * @param lvsReason Lý do từ chối
+     * @param lvsAdminId       ID LvsAdmin từ chối
+     * @param lvsReason        Lý do từ chối
      * @return Giao dịch đã từ chối
      */
     @Override
@@ -330,6 +355,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Hủy giao dịch
+     * 
      * @param lvsTransactionId ID giao dịch
      */
     @Override
@@ -351,8 +377,9 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Xử lý thanh toán đơn hàng
+     * 
      * @param lvsOrderId ID đơn hàng
-     * @param lvsUserId ID người dùng
+     * @param lvsUserId  ID người dùng
      * @return true nếu thành công
      */
     @Override
@@ -360,7 +387,8 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
         var lvsOrder = lvsOrderRepository.findById(lvsOrderId).orElse(null);
         var lvsUser = lvsUserRepository.findById(lvsUserId).orElse(null);
 
-        if (lvsOrder == null || lvsUser == null) return false;
+        if (lvsOrder == null || lvsUser == null)
+            return false;
 
         // Kiểm tra số dư
         if (lvsUser.getLvsCoin() < lvsOrder.getLvsFinalAmount()) {
@@ -393,7 +421,8 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Xử lý bán dự án
-     * @param lvsOrderId ID đơn hàng
+     * 
+     * @param lvsOrderId  ID đơn hàng
      * @param lvsSellerId ID người bán
      * @return true nếu thành công
      */
@@ -402,7 +431,8 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
         var lvsOrder = lvsOrderRepository.findById(lvsOrderId).orElse(null);
         var lvsSeller = lvsUserRepository.findById(lvsSellerId).orElse(null);
 
-        if (lvsOrder == null || lvsSeller == null) return false;
+        if (lvsOrder == null || lvsSeller == null)
+            return false;
 
         // Tính doanh thu cho người bán
         double lvsRevenue = lvsOrder.getLvsFinalAmount() * 0.8; // Giả sử platform giữ 20%
@@ -428,6 +458,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Đếm tổng số giao dịch
+     * 
      * @return Tổng số giao dịch
      */
     @Override
@@ -437,6 +468,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Đếm số giao dịch theo trạng thái
+     * 
      * @param lvsStatus Trạng thái cần đếm
      * @return Số giao dịch
      */
@@ -448,6 +480,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Đếm số giao dịch đang chờ xử lý
+     * 
      * @return Số giao dịch chờ xử lý
      */
     @Override
@@ -457,6 +490,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy tổng doanh thu
+     * 
      * @return Tổng doanh thu
      */
     @Override
@@ -467,8 +501,9 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy tổng doanh thu theo khoảng thời gian
+     * 
      * @param lvsStartDate Ngày bắt đầu
-     * @param lvsEndDate Ngày kết thúc
+     * @param lvsEndDate   Ngày kết thúc
      * @return Tổng doanh thu
      */
     @Override
@@ -480,6 +515,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy thống kê doanh thu 30 ngày gần nhất
+     * 
      * @return Map thống kê doanh thu
      */
     @Override
@@ -500,6 +536,7 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy dữ liệu biểu đồ doanh thu
+     * 
      * @return Dữ liệu biểu đồ
      */
     @Override
@@ -515,17 +552,25 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
 
     /**
      * Lấy lịch sử giao dịch gần đây
+     * 
      * @param lvsUserId ID người dùng
-     * @param lvsLimit Giới hạn số lượng
+     * @param lvsLimit  Giới hạn số lượng
      * @return Danh sách giao dịch gần đây
      */
     @Override
     public List<LvsTransaction> lvsGetRecentTransactions(Long lvsUserId, int lvsLimit) {
-        return lvsTransactionRepository.findTopByLvsUser_LvsUserIdOrderByLvsCreatedAtDesc(lvsUserId, lvsLimit);
+        // TODO: Fix repository method - expects Pageable not int
+        // return
+        // lvsTransactionRepository.findTopByLvsUser_LvsUserIdOrderByLvsCreatedAtDesc(lvsUserId,
+        // lvsLimit);
+        return lvsTransactionRepository.findTopByLvsUser_LvsUserIdOrderByLvsCreatedAtDesc(
+                lvsUserId,
+                org.springframework.data.domain.PageRequest.of(0, lvsLimit));
     }
 
     /**
      * Kiểm tra số dư
+     * 
      * @param lvsUserId ID người dùng
      * @return Số dư
      */

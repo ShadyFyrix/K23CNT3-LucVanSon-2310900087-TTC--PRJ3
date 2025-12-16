@@ -47,15 +47,15 @@ public class LvsUserReportController {
         model.addAttribute("LvsReports", lvsReports);
         model.addAttribute("LvsCurrentPage", page);
 
-        return "LvsUser/LvsMyReports";
+        return "LvsAreas/LvsUsers/LvsReports/LvsMyReports";
     }
 
     // Gửi báo cáo
     @GetMapping("/LvsCreate")
     public String lvsShowCreateReportForm(@RequestParam LvsReport.LvsReportType lvsReportType,
-                                          @RequestParam Long lvsTargetId,
-                                          Model model,
-                                          HttpSession session) {
+            @RequestParam Long lvsTargetId,
+            Model model,
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -65,16 +65,16 @@ public class LvsUserReportController {
         model.addAttribute("LvsReportType", lvsReportType);
         model.addAttribute("LvsTargetId", lvsTargetId);
 
-        return "LvsUser/LvsReportCreate";
+        return "LvsAreas/LvsUsers/LvsReports/LvsReportCreate";
     }
 
     // Xử lý gửi báo cáo
     @PostMapping("/LvsCreate")
     public String lvsCreateReport(@ModelAttribute LvsReport lvsReport,
-                                  @RequestParam LvsReport.LvsReportType lvsReportType,
-                                  @RequestParam Long lvsTargetId,
-                                  HttpSession session,
-                                  Model model) {
+            @RequestParam LvsReport.LvsReportType lvsReportType,
+            @RequestParam Long lvsTargetId,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -92,15 +92,15 @@ public class LvsUserReportController {
             return "redirect:/LvsUser/LvsReport/LvsMyReports";
         } catch (Exception e) {
             model.addAttribute("LvsError", "Lỗi khi gửi báo cáo: " + e.getMessage());
-            return "LvsUser/LvsReportCreate";
+            return "LvsAreas/LvsUsers/LvsReports/LvsReportCreate";
         }
     }
 
     // Xem chi tiết báo cáo
     @GetMapping("/LvsDetail/{id}")
     public String lvsViewReportDetail(@PathVariable Long id,
-                                      HttpSession session,
-                                      Model model) {
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         LvsReport lvsReport = lvsReportService.lvsGetReportById(id);
 
@@ -111,13 +111,13 @@ public class LvsUserReportController {
 
         model.addAttribute("LvsReport", lvsReport);
 
-        return "LvsUser/LvsReportDetail";
+        return "LvsAreas/LvsUsers/LvsReports/LvsReportDetail";
     }
 
     // Hủy báo cáo
     @PostMapping("/LvsCancel/{id}")
     public String lvsCancelReport(@PathVariable Long id,
-                                  HttpSession session) {
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         LvsReport lvsReport = lvsReportService.lvsGetReportById(id);
 

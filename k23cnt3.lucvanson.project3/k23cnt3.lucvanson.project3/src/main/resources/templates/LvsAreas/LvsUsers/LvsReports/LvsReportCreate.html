@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Tạo báo cáo - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-flag mr-3 text-[#fed700]"></i>Tạo báo cáo
+            </h1>
+
+            <div class="max-w-2xl mx-auto bg-[#2b2b2b] border border-[#333] rounded-xl p-8">
+                <form th:action="@{/LvsUser/LvsReport/LvsCreate}" th:object="${LvsReport}" method="post">
+                    <!-- Report Type -->
+                    <div class="mb-6">
+                        <label class="block text-white font-semibold mb-3">Loại báo cáo <span
+                                class="text-red-500">*</span></label>
+                        <select th:field="*{lvsReportType}" required
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#fed700]">
+                            <option value="">-- Chọn loại báo cáo --</option>
+                            <option value="PROJECT">Dự án</option>
+                            <option value="USER">Người dùng</option>
+                            <option value="POST">Bài viết</option>
+                            <option value="COMMENT">Bình luận</option>
+                            <option value="OTHER">Khác</option>
+                        </select>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="mb-6">
+                        <label class="block text-white font-semibold mb-3">Lý do <span
+                                class="text-red-500">*</span></label>
+                        <select th:field="*{lvsReason}" required
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#fed700]">
+                            <option value="">-- Chọn lý do --</option>
+                            <option value="SPAM">Spam</option>
+                            <option value="INAPPROPRIATE">Nội dung không phù hợp</option>
+                            <option value="COPYRIGHT">Vi phạm bản quyền</option>
+                            <option value="SCAM">Lừa đảo</option>
+                            <option value="HARASSMENT">Quấy rối</option>
+                            <option value="OTHER">Khác</option>
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-6">
+                        <label class="block text-white font-semibold mb-3">Mô tả chi tiết <span
+                                class="text-red-500">*</span></label>
+                        <textarea th:field="*{lvsDescription}" rows="6" required
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#fed700]"
+                            placeholder="Vui lòng mô tả chi tiết vấn đề..."></textarea>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div th:if="${LvsError}" class="mb-6 p-4 bg-red-500/20 border border-red-500 rounded-lg">
+                        <p class="text-red-400" th:text="${LvsError}">Error message</p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-3">
+                        <button type="submit"
+                            class="flex-1 bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-6 py-3 rounded-lg font-semibold transition-colors">
+                            <i class="fas fa-paper-plane mr-2"></i>Gửi báo cáo
+                        </button>
+                        <a href="javascript:history.back()"
+                            class="flex-1 bg-[#333] hover:bg-[#444] text-white px-6 py-3 rounded-lg font-semibold text-center transition-colors">
+                            <i class="fas fa-times mr-2"></i>Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

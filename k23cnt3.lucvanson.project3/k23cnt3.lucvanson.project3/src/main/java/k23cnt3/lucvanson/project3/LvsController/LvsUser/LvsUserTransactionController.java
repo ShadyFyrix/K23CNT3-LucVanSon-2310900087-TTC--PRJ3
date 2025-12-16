@@ -66,14 +66,14 @@ public class LvsUserTransactionController {
         model.addAttribute("LvsSelectedStatus", lvsStatus);
         model.addAttribute("LvsCurrentPage", page);
 
-        return "LvsUser/LvsTransactionHistory";
+        return "LvsAreas/LvsUsers/LvsTransactions/LvsTransactionHistory";
     }
 
     // Xem chi tiết giao dịch
     @GetMapping("/LvsDetail/{id}")
     public String lvsViewTransactionDetail(@PathVariable Long id,
-                                           HttpSession session,
-                                           Model model) {
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         LvsTransaction lvsTransaction = lvsTransactionService.lvsGetTransactionById(id);
 
@@ -84,7 +84,7 @@ public class LvsUserTransactionController {
 
         model.addAttribute("LvsTransaction", lvsTransaction);
 
-        return "LvsUser/LvsTransactionDetail";
+        return "LvsAreas/LvsUsers/LvsTransactions/LvsTransactionDetail";
     }
 
     // Tạo yêu cầu nạp coin
@@ -97,16 +97,16 @@ public class LvsUserTransactionController {
 
         model.addAttribute("LvsTransaction", new LvsTransaction());
 
-        return "LvsUser/LvsTransactionDeposit";
+        return "LvsAreas/LvsUsers/LvsTransactions/LvsTransactionDeposit";
     }
 
     // Xử lý yêu cầu nạp coin
     @PostMapping("/LvsDeposit")
     public String lvsProcessDeposit(@RequestParam Double lvsAmount,
-                                    @RequestParam String lvsPaymentMethod,
-                                    @RequestParam(required = false) String lvsPaymentInfo,
-                                    HttpSession session,
-                                    Model model) {
+            @RequestParam String lvsPaymentMethod,
+            @RequestParam(required = false) String lvsPaymentInfo,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -123,7 +123,7 @@ public class LvsUserTransactionController {
             return "redirect:/LvsUser/LvsTransaction/LvsDetail/" + lvsTransaction.getLvsTransactionId();
         } catch (Exception e) {
             model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
-            return "LvsUser/LvsTransactionDeposit";
+            return "LvsAreas/LvsUsers/LvsTransactions/LvsTransactionDeposit";
         }
     }
 
@@ -138,15 +138,15 @@ public class LvsUserTransactionController {
         model.addAttribute("LvsUser", lvsCurrentUser);
         model.addAttribute("LvsTransaction", new LvsTransaction());
 
-        return "LvsUser/LvsTransactionWithdraw";
+        return "LvsAreas/LvsUsers/LvsTransactions/LvsTransactionWithdraw";
     }
 
     // Xử lý yêu cầu rút coin
     @PostMapping("/LvsWithdraw")
     public String lvsProcessWithdraw(@RequestParam Double lvsAmount,
-                                     @RequestParam String lvsPaymentInfo,
-                                     HttpSession session,
-                                     Model model) {
+            @RequestParam String lvsPaymentInfo,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -156,7 +156,7 @@ public class LvsUserTransactionController {
             // Kiểm tra số dư
             if (lvsAmount > lvsCurrentUser.getLvsBalance()) {
                 model.addAttribute("LvsError", "Số dư không đủ!");
-                return "LvsUser/LvsTransactionWithdraw";
+                return "LvsAreas/LvsUsers/LvsTransactions/LvsTransactionWithdraw";
             }
 
             LvsTransaction lvsTransaction = lvsTransactionService.lvsCreateWithdrawalRequest(
@@ -169,14 +169,14 @@ public class LvsUserTransactionController {
             return "redirect:/LvsUser/LvsTransaction/LvsDetail/" + lvsTransaction.getLvsTransactionId();
         } catch (Exception e) {
             model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
-            return "LvsUser/LvsTransactionWithdraw";
+            return "LvsAreas/LvsUsers/LvsTransactions/LvsTransactionWithdraw";
         }
     }
 
     // Hủy yêu cầu giao dịch (chỉ khi đang pending)
     @PostMapping("/LvsCancel/{id}")
     public String lvsCancelTransaction(@PathVariable Long id,
-                                       HttpSession session) {
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         LvsTransaction lvsTransaction = lvsTransactionService.lvsGetTransactionById(id);
 

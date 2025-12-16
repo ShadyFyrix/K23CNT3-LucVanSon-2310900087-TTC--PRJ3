@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Tin nhắn đã gửi - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-paper-plane mr-3 text-[#fed700]"></i>Tin nhắn đã gửi
+            </h1>
+
+            <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6">
+                <div class="space-y-4">
+                    <div th:each="message : ${LvsMessages}" class="bg-[#1e1e1e] border border-[#444] rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-white font-semibold">Gửi đến: <span
+                                            th:text="${message.lvsReceiver.lvsUsername}">Receiver</span></p>
+                                    <p class="text-gray-400 text-xs"
+                                        th:text="${#temporals.format(message.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 ml-13" th:text="${message.lvsContent}">Message content...</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${#lists.isEmpty(LvsMessages)}" class="text-center py-12">
+                    <i class="fas fa-paper-plane text-6xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400">Chưa gửi tin nhắn nào</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

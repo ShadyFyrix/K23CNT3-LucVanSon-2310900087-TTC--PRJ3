@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Chi tiết giao dịch - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex items-center gap-4 mb-8">
+                <a href="/lvsforum/LvsUser/LvsTransaction/LvsHistory" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </a>
+                <h1 class="text-3xl font-bold text-white">
+                    <i class="fas fa-file-invoice-dollar mr-3 text-[#fed700]"></i>Chi tiết giao dịch
+                </h1>
+            </div>
+
+            <div class="max-w-2xl mx-auto bg-[#2b2b2b] border border-[#333] rounded-xl p-8">
+                <!-- Transaction Header -->
+                <div class="flex items-center justify-between mb-8 pb-6 border-b border-[#444]">
+                    <div>
+                        <p class="text-gray-400 text-sm mb-1">Mã giao dịch</p>
+                        <p class="text-white font-bold text-xl" th:text="${LvsTransaction.lvsTransactionId}">TX-123456
+                        </p>
+                    </div>
+                    <span
+                        th:classappend="${LvsTransaction.lvsStatus == 'SUCCESS'} ? 'bg-green-500/20 text-green-400 border-green-500' : (${LvsTransaction.lvsStatus == 'PENDING'} ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500' : 'bg-red-500/20 text-red-400 border-red-500')"
+                        class="px-4 py-2 rounded-lg text-sm font-semibold border"
+                        th:text="${LvsTransaction.lvsStatus}">Status</span>
+                </div>
+
+                <!-- Transaction Details -->
+                <div class="space-y-6">
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Loại giao dịch</span>
+                        <span class="text-white font-semibold" th:text="${LvsTransaction.lvsType}">Type</span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Số tiền</span>
+                        <span
+                            th:classappend="${LvsTransaction.lvsType == 'DEPOSIT'} ? 'text-green-400' : (${LvsTransaction.lvsType == 'WITHDRAW'} ? 'text-red-400' : 'text-blue-400')"
+                            class="font-bold text-xl"
+                            th:text="${#numbers.formatCurrency(LvsTransaction.lvsAmount)}">$0</span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Thời gian</span>
+                        <span class="text-white"
+                            th:text="${#temporals.format(LvsTransaction.lvsCreatedAt, 'dd/MM/yyyy HH:mm:ss')}">Date</span>
+                    </div>
+
+                    <div>
+                        <p class="text-gray-400 mb-2">Mô tả</p>
+                        <p class="text-white" th:text="${LvsTransaction.lvsDescription}">Description...</p>
+                    </div>
+
+                    <div th:if="${LvsTransaction.lvsOrder}">
+                        <p class="text-gray-400 mb-2">Đơn hàng liên quan</p>
+                        <a th:href="@{/LvsUser/LvsOrder/LvsDetail/{id}(id=${LvsTransaction.lvsOrder.lvsOrderId})}"
+                            class="text-blue-400 hover:text-blue-300 font-semibold">
+                            Đơn hàng #<span th:text="${LvsTransaction.lvsOrder.lvsOrderId}">0</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Back Button -->
+                <div class="mt-8 pt-6 border-t border-[#444]">
+                    <a href="/lvsforum/LvsUser/LvsTransaction/LvsHistory"
+                        class="bg-[#333] hover:bg-[#444] text-white px-6 py-3 rounded-lg font-semibold inline-block transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

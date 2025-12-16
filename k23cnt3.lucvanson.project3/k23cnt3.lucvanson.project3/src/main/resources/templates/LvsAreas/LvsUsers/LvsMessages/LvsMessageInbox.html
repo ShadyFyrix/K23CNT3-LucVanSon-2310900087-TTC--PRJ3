@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Hộp thư đến - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-3xl font-bold text-white">
+                    <i class="fas fa-inbox mr-3 text-[#fed700]"></i>Hộp thư đến
+                </h1>
+                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm" th:if="${LvsUnreadCount > 0}">
+                    <span th:text="${LvsUnreadCount}">0</span> chưa đọc
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Conversations List -->
+                <div class="lg:col-span-1 bg-[#2b2b2b] border border-[#333] rounded-xl p-4">
+                    <h2 class="text-lg font-bold text-white mb-4">Cuộc trò chuyện</h2>
+                    <div class="space-y-2">
+                        <a th:each="user : ${LvsConversations}"
+                            th:href="@{/LvsUser/LvsMessage/LvsConversation/{id}(id=${user.lvsUserId})}"
+                            class="block p-3 rounded-lg hover:bg-[#333] transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-gradient-to-br from-[#fed700] to-yellow-600 flex items-center justify-center">
+                                    <i class="fas fa-user text-[#1e1e1e]"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-white font-semibold" th:text="${user.lvsUsername}">Username</p>
+                                    <p class="text-gray-400 text-sm truncate">Click để xem tin nhắn</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Messages List -->
+                <div class="lg:col-span-2 bg-[#2b2b2b] border border-[#333] rounded-xl p-6">
+                    <h2 class="text-lg font-bold text-white mb-4">Tin nhắn gần đây</h2>
+                    <div class="space-y-4">
+                        <div th:each="message : ${LvsMessages}"
+                            class="bg-[#1e1e1e] border border-[#444] rounded-lg p-4">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-user text-white text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white font-semibold" th:text="${message.lvsSender.lvsUsername}">
+                                            Sender</p>
+                                        <p class="text-gray-400 text-xs"
+                                            th:text="${#temporals.format(message.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">
+                                            Date</p>
+                                    </div>
+                                </div>
+                                <span th:if="${!message.lvsIsRead}"
+                                    class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Mới</span>
+                            </div>
+                            <p class="text-gray-300 ml-13" th:text="${message.lvsContent}">Message content...</p>
+                            <div class="mt-3 flex gap-2">
+                                <a th:href="@{/LvsUser/LvsMessage/LvsConversation/{id}(id=${message.lvsSender.lvsUserId})}"
+                                    class="text-sm text-blue-400 hover:text-blue-300">
+                                    <i class="fas fa-reply mr-1"></i>Trả lời
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div th:if="${#lists.isEmpty(LvsMessages)}" class="text-center py-12">
+                        <i class="fas fa-envelope-open text-6xl text-gray-600 mb-4"></i>
+                        <p class="text-gray-400">Chưa có tin nhắn nào</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

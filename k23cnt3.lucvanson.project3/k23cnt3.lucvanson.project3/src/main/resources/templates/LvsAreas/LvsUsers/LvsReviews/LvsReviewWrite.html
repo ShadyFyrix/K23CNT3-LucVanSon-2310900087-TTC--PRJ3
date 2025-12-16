@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Viết đánh giá - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-pen mr-3 text-[#fed700]"></i>Viết đánh giá
+            </h1>
+
+            <div class="max-w-2xl mx-auto bg-[#2b2b2b] border border-[#333] rounded-xl p-8">
+                <form th:action="@{/LvsUser/LvsReview/LvsWrite}" th:object="${LvsReview}" method="post">
+                    <input type="hidden" th:field="*{lvsProject.lvsProjectId}" />
+
+                    <!-- Project Info -->
+                    <div class="mb-6 p-4 bg-[#1e1e1e] rounded-lg">
+                        <p class="text-gray-400 text-sm mb-1">Dự án</p>
+                        <p class="text-white font-bold text-lg" th:text="${LvsProject.lvsProjectName}">Project Name</p>
+                    </div>
+
+                    <!-- Rating -->
+                    <div class="mb-6">
+                        <label class="block text-white font-semibold mb-3">Đánh giá <span
+                                class="text-red-500">*</span></label>
+                        <div class="flex gap-2">
+                            <label th:each="i : ${#numbers.sequence(1, 5)}" class="cursor-pointer">
+                                <input type="radio" th:field="*{lvsRating}" th:value="${i}" class="hidden peer"
+                                    required />
+                                <i
+                                    class="fas fa-star text-3xl text-gray-600 peer-checked:text-[#fed700] hover:text-[#fed700] transition-colors"></i>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Comment -->
+                    <div class="mb-6">
+                        <label class="block text-white font-semibold mb-3">Nhận xét <span
+                                class="text-red-500">*</span></label>
+                        <textarea th:field="*{lvsComment}" rows="6" required
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#fed700]"
+                            placeholder="Chia sẻ trải nghiệm của bạn về dự án này..."></textarea>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div th:if="${LvsError}" class="mb-6 p-4 bg-red-500/20 border border-red-500 rounded-lg">
+                        <p class="text-red-400" th:text="${LvsError}">Error message</p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-3">
+                        <button type="submit"
+                            class="flex-1 bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-6 py-3 rounded-lg font-semibold transition-colors">
+                            <i class="fas fa-check mr-2"></i>Gửi đánh giá
+                        </button>
+                        <a href="javascript:history.back()"
+                            class="flex-1 bg-[#333] hover:bg-[#444] text-white px-6 py-3 rounded-lg font-semibold text-center transition-colors">
+                            <i class="fas fa-times mr-2"></i>Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

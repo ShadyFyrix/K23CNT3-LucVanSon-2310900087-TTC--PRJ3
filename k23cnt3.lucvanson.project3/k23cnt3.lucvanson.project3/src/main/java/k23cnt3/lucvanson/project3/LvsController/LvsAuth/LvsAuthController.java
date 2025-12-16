@@ -279,7 +279,8 @@ public class LvsAuthController {
             @RequestParam String lvsUsernameOrEmail,
             @RequestParam String lvsPassword,
             HttpSession session,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest request) {
 
         try {
             System.out.println("[USER LOGIN] Attempting login for: " + lvsUsernameOrEmail);
@@ -343,8 +344,18 @@ public class LvsAuthController {
                     lvsUser.getLvsUsername(),
                     lvsUser.getLvsPassword(),
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + lvsUser.getLvsRole().name())));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("[USER LOGIN] Spring Security authentication set for: " + lvsUser.getLvsUsername());
+
+            // Set authentication in SecurityContext
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+            securityContext.setAuthentication(authentication);
+            SecurityContextHolder.setContext(securityContext);
+
+            // CRITICAL: Save SecurityContext to session so it persists across redirect
+            SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+            securityContextRepository.saveContext(securityContext, request, null);
+
+            System.out.println("[USER LOGIN] Spring Security authentication set and saved to session for: "
+                    + lvsUser.getLvsUsername());
 
             redirectAttributes.addFlashAttribute("lvsSuccess",
                     "Đăng nhập thành công! Chào mừng " + lvsUser.getLvsUsername());

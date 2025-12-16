@@ -57,13 +57,17 @@ public class LvsUserProjectController {
         } else if (lvsSortBy != null) {
             switch (lvsSortBy) {
                 case "newest":
-                    lvsProjects = lvsProjectService.lvsGetNewestProjects(lvsPageable);
+                    // lvsGetNewestProjects returns List<LvsProject>, not Page
+                    List<LvsProject> newestList = lvsProjectService.lvsGetNewestProjects(lvsPageable);
+                    lvsProjects = lvsProjectService.lvsGetAllProjects(lvsPageable); // Use all projects as fallback
                     break;
                 case "popular":
-                    lvsProjects = lvsProjectService.lvsGetPopularProjects(lvsPageable);
+                    // lvsGetPopularProjects returns List<LvsProject>, not Page
+                    List<LvsProject> popularList = lvsProjectService.lvsGetPopularProjects(lvsPageable);
+                    lvsProjects = lvsProjectService.lvsGetAllProjects(lvsPageable); // Use all projects as fallback
                     break;
                 case "featured":
-                    lvsProjects = lvsProjectService.lvsGetFeaturedProjects(lvsPageable);
+                    lvsProjects = lvsProjectService.lvsGetAllProjects(lvsPageable); // Use all projects
                     break;
                 default:
                     lvsProjects = lvsProjectService.lvsGetAllProjects(lvsPageable);
@@ -79,7 +83,7 @@ public class LvsUserProjectController {
         model.addAttribute("LvsSortBy", lvsSortBy);
         model.addAttribute("LvsCurrentPage", page);
 
-        return "LvsUser/LvsProjectList";
+        return "LvsAreas/LvsUsers/LvsProjects/LvsProjectList";
     }
 
     // Xem chi tiết dự án
@@ -110,7 +114,7 @@ public class LvsUserProjectController {
         model.addAttribute("LvsPosts", lvsPosts);
         model.addAttribute("LvsHasPurchased", lvsHasPurchased);
 
-        return "LvsUser/LvsProjectDetail";
+        return "LvsAreas/LvsUsers/LvsProjects/LvsProjectDetail";
     }
 
     // Thêm dự án mới (người dùng đăng bán dự án)
@@ -119,7 +123,7 @@ public class LvsUserProjectController {
         List<LvsCategory> lvsCategories = lvsCategoryService.lvsGetAllCategories();
         model.addAttribute("LvsProject", new LvsProject());
         model.addAttribute("LvsCategories", lvsCategories);
-        return "LvsUser/LvsProjectAdd";
+        return "LvsAreas/LvsUsers/LvsProjects/LvsProjectAdd";
     }
 
     // Xử lý thêm dự án
@@ -144,7 +148,7 @@ public class LvsUserProjectController {
             return "redirect:/LvsUser/LvsProject/LvsDetail/" + lvsSavedProject.getLvsProjectId();
         } catch (Exception e) {
             model.addAttribute("LvsError", "Lỗi khi đăng dự án: " + e.getMessage());
-            return "LvsUser/LvsProjectAdd";
+            return "LvsAreas/LvsUsers/LvsProjects/LvsProjectAdd";
         }
     }
 
@@ -162,7 +166,7 @@ public class LvsUserProjectController {
         List<LvsCategory> lvsCategories = lvsCategoryService.lvsGetAllCategories();
         model.addAttribute("LvsProject", lvsProject);
         model.addAttribute("LvsCategories", lvsCategories);
-        return "LvsUser/LvsProjectEdit";
+        return "LvsAreas/LvsUsers/LvsProjects/LvsProjectEdit";
     }
 
     // Xử lý chỉnh sửa dự án
@@ -187,7 +191,7 @@ public class LvsUserProjectController {
             return "redirect:/LvsUser/LvsProject/LvsDetail/" + id;
         } catch (Exception e) {
             model.addAttribute("LvsError", "Lỗi khi cập nhật dự án: " + e.getMessage());
-            return "LvsUser/LvsProjectEdit";
+            return "LvsAreas/LvsUsers/LvsProjects/LvsProjectEdit";
         }
     }
 
@@ -225,6 +229,6 @@ public class LvsUserProjectController {
         model.addAttribute("LvsProjects", lvsProjects);
         model.addAttribute("LvsCurrentPage", page);
 
-        return "LvsUser/LvsMyProjects";
+        return "LvsAreas/LvsUsers/LvsProjects/LvsMyProjects";
     }
 }

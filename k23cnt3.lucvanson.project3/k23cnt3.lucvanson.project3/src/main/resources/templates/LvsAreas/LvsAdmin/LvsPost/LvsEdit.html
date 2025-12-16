@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa Bài viết</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">Chỉnh sửa Bài viết</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsPost/LvsList}">Bài viết</a></li>
+                            <li class="breadcrumb-item active">Chỉnh sửa</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div>
+                    <a th:href="@{/LvsAdmin/LvsPost/LvsDetail/{id}(id=${LvsPost.lvsPostId})}"
+                        class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+
+            <!-- Flash Messages -->
+            <div th:if="${LvsSuccess}" class="alert alert-success alert-dismissible fade show">
+                <span th:text="${LvsSuccess}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${LvsError}" class="alert alert-danger alert-dismissible fade show">
+                <span th:text="${LvsError}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Edit Form -->
+            <div class="card">
+                <div class="card-body">
+                    <form th:action="@{/LvsAdmin/LvsPost/LvsEdit/{id}(id=${LvsPost.lvsPostId})}" th:object="${LvsPost}"
+                        method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Tiêu đề <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{lvsTitle}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Loại bài viết</label>
+                            <select class="form-select" th:field="*{lvsType}">
+                                <option th:each="type : ${LvsPostTypes}" th:value="${type}" th:text="${type}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nội dung <span class="text-danger">*</span></label>
+                            <textarea class="form-control" th:field="*{lvsContent}" rows="15" required></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a th:href="@{/LvsAdmin/LvsPost/LvsDetail/{id}(id=${LvsPost.lvsPostId})}"
+                                class="btn btn-secondary">Hủy</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Cập nhật
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div layout:fragment="scripts">
+        <!-- Additional scripts if needed -->
+    </div>
+</body>
+
+</html>

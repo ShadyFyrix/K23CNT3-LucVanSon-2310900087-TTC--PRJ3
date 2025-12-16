@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Quản lý Đơn hàng</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Quản lý Đơn hàng</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form th:action="@{/LvsAdmin/LvsOrder/LvsList}" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Tìm kiếm</label>
+                            <input type="text" class="form-control" name="lvsKeyword" th:value="${LvsKeyword}"
+                                placeholder="Mã đơn, tên khách...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Trạng thái</label>
+                            <select class="form-select" name="lvsStatus">
+                                <option value="">Tất cả</option>
+                                <option th:each="status : ${LvsStatuses}" th:value="${status}" th:text="${status}"
+                                    th:selected="${status.toString() == LvsSelectedStatus}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search"></i> Tìm
+                                kiếm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã ĐH</th>
+                                <th>Khách hàng</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày đặt</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${LvsOrders.content}">
+                                <td th:text="${order.lvsOrderId}"></td>
+                                <td th:text="${order.lvsUser?.lvsUsername}"></td>
+                                <td
+                                    th:text="${#numbers.formatDecimal(order.lvsTotalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
+                                </td>
+                                <td>
+                                    <span th:if="${order.lvsStatus.name() == 'PENDING'}" class="badge bg-warning">Chờ xử
+                                        lý</span>
+                                    <span th:if="${order.lvsStatus.name() == 'PROCESSING'}" class="badge bg-info">Đang
+                                        xử lý</span>
+                                    <span th:if="${order.lvsStatus.name() == 'COMPLETED'}" class="badge bg-success">Hoàn
+                                        thành</span>
+                                    <span th:if="${order.lvsStatus.name() == 'CANCELLED'}" class="badge bg-danger">Đã
+                                        hủy</span>
+                                </td>
+                                <td th:text="${#temporals.format(order.lvsCreatedAt, 'dd/MM/yyyy')}"></td>
+                                <td>
+                                    <a th:href="@{/LvsAdmin/LvsOrder/LvsDetail/{id}(id=${order.lvsOrderId})}"
+                                        class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <nav th:if="${LvsOrders.totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${LvsOrders.first} ? 'disabled'">
+                                <a class="page-link"
+                                    th:href="@{/LvsAdmin/LvsOrder/LvsList(page=${LvsCurrentPage - 1})}">Trước</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, LvsOrders.totalPages - 1)}"
+                                th:classappend="${i == LvsCurrentPage} ? 'active'">
+                                <a class="page-link" th:href="@{/LvsAdmin/LvsOrder/LvsList(page=${i})}"
+                                    th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${LvsOrders.last} ? 'disabled'">
+                                <a class="page-link"
+                                    th:href="@{/LvsAdmin/LvsOrder/LvsList(page=${LvsCurrentPage + 1})}">Sau</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

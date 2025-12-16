@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Bài viết</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">Chi tiết Bài viết</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsPost/LvsList}">Bài viết</a></li>
+                            <li class="breadcrumb-item active" th:text="${LvsPost.lvsTitle}"></li>
+                        </ol>
+                    </nav>
+                </div>
+                <div>
+                    <a th:href="@{/LvsAdmin/LvsPost/LvsList}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                    <a th:href="@{/LvsAdmin/LvsPost/LvsEdit/{id}(id=${LvsPost.lvsPostId})}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Chỉnh sửa
+                    </a>
+                </div>
+            </div>
+
+            <!-- Flash Messages -->
+            <div th:if="${LvsSuccess}" class="alert alert-success alert-dismissible fade show">
+                <span th:text="${LvsSuccess}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${LvsError}" class="alert alert-danger alert-dismissible fade show">
+                <span th:text="${LvsError}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="row">
+                <!-- Main Content -->
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 th:text="${LvsPost.lvsTitle}"></h2>
+                            <div class="mb-3">
+                                <span class="badge bg-info me-2" th:text="${LvsPost.lvsType}"></span>
+                                <span th:if="${LvsPost.lvsStatus.name() == 'APPROVED'}" class="badge bg-success">Đã
+                                    duyệt</span>
+                                <span th:if="${LvsPost.lvsStatus.name() == 'PENDING'}" class="badge bg-warning">Chờ
+                                    duyệt</span>
+                                <span th:if="${LvsPost.lvsStatus.name() == 'HIDDEN'}" class="badge bg-secondary">Đã
+                                    ẩn</span>
+                                <span th:if="${LvsPost.lvsIsPinned}" class="badge bg-warning ms-2">
+                                    <i class="fas fa-thumbtack"></i> Ghim
+                                </span>
+                            </div>
+                            <div class="text-muted mb-4">
+                                <i class="fas fa-user"></i> <span th:text="${LvsPost.lvsUser?.lvsUsername}"></span> |
+                                <i class="fas fa-calendar"></i> <span
+                                    th:text="${#temporals.format(LvsPost.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}"></span> |
+                                <i class="fas fa-eye"></i> <span th:text="${LvsPost.lvsViewCount}"></span> lượt xem
+                            </div>
+                            <div th:utext="${LvsPost.lvsContent}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Actions -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Thao tác</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <!-- Approve/Hide -->
+                                <form th:if="${LvsPost.lvsStatus.name() == 'PENDING'}"
+                                    th:action="@{/LvsAdmin/LvsPost/LvsApprove/{id}(id=${LvsPost.lvsPostId})}"
+                                    method="post">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="fas fa-check"></i> Duyệt bài viết
+                                    </button>
+                                </form>
+                                <form th:if="${LvsPost.lvsStatus.name() == 'APPROVED'}"
+                                    th:action="@{/LvsAdmin/LvsPost/LvsHide/{id}(id=${LvsPost.lvsPostId})}"
+                                    method="post">
+                                    <button type="submit" class="btn btn-warning w-100">
+                                        <i class="fas fa-eye-slash"></i> Ẩn bài viết
+                                    </button>
+                                </form>
+                                <form th:if="${LvsPost.lvsStatus.name() == 'HIDDEN'}"
+                                    th:action="@{/LvsAdmin/LvsPost/LvsShow/{id}(id=${LvsPost.lvsPostId})}"
+                                    method="post">
+                                    <button type="submit" class="btn btn-info w-100">
+                                        <i class="fas fa-eye"></i> Hiển thị bài viết
+                                    </button>
+                                </form>
+
+                                <!-- Pin/Unpin -->
+                                <form th:if="${!LvsPost.lvsIsPinned}"
+                                    th:action="@{/LvsAdmin/LvsPost/LvsPin/{id}(id=${LvsPost.lvsPostId})}" method="post">
+                                    <button type="submit" class="btn btn-secondary w-100">
+                                        <i class="fas fa-thumbtack"></i> Ghim bài viết
+                                    </button>
+                                </form>
+                                <form th:if="${LvsPost.lvsIsPinned}"
+                                    th:action="@{/LvsAdmin/LvsPost/LvsUnpin/{id}(id=${LvsPost.lvsPostId})}"
+                                    method="post">
+                                    <button type="submit" class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-thumbtack"></i> Bỏ ghim
+                                    </button>
+                                </form>
+
+                                <!-- Delete -->
+                                <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal">
+                                    <i class="fas fa-trash"></i> Xóa bài viết
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Thống kê</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Lượt xem:</strong> <span th:text="${LvsPost.lvsViewCount}"></span></p>
+                            <p><strong>Lượt thích:</strong> <span th:text="${LvsPost.lvsLikeCount}"></span></p>
+                            <p><strong>Bình luận:</strong> 0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xóa bài viết</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/LvsAdmin/LvsPost/LvsDelete/{id}(id=${LvsPost.lvsPostId})}" method="post">
+                    <div class="modal-body">
+                        <p>Bạn có chắc chắn muốn xóa bài viết này?</p>
+                        <div class="mb-3">
+                            <label class="form-label">Lý do xóa (optional)</label>
+                            <textarea class="form-control" name="lvsReason" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div layout:fragment="scripts">
+        <!-- Additional scripts if needed -->
+    </div>
+</body>
+
+</html>

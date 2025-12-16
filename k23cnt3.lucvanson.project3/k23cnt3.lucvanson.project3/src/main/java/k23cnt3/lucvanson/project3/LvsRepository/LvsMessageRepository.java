@@ -41,6 +41,63 @@ public interface LvsMessageRepository extends JpaRepository<LvsMessage, Long> {
         // Đếm tin nhắn chưa đọc
         Long countByLvsReceiver_LvsUserIdAndLvsIsReadFalse(Long lvsUserId);
 
+        // Tìm kiếm tin nhắn theo nội dung
+        Page<LvsMessage> findByLvsContentContaining(String content, Pageable pageable);
+
+        // Tìm tin nhắn theo receiver sắp xếp theo ngày tạo giảm dần
+        List<LvsMessage> findByLvsReceiver_LvsUserIdOrderByLvsCreatedAtDesc(Long receiverId);
+
+        // Tìm tin nhắn theo sender sắp xếp theo ngày tạo giảm dần
+        List<LvsMessage> findByLvsSender_LvsUserIdOrderByLvsCreatedAtDesc(Long senderId);
+
+        // Tìm tin nhắn theo sender hoặc receiver
+        Page<LvsMessage> findByLvsSender_LvsUserIdOrLvsReceiver_LvsUserId(Long senderId, Long receiverId,
+                        Pageable pageable);
+
+        // Tìm cuộc trò chuyện giữa 2 users
+        @Query("SELECT m FROM LvsMessage m WHERE " +
+                        "(m.lvsSender.lvsUserId = :userId1 AND m.lvsReceiver.lvsUserId = :userId2) OR " +
+                        "(m.lvsSender.lvsUserId = :userId2 AND m.lvsReceiver.lvsUserId = :userId1) " +
+                        "ORDER BY m.lvsCreatedAt DESC")
+        Page<LvsMessage> findConversationBetweenUsers(@Param("userId1") Long userId1,
+                        @Param("userId2") Long userId2,
+                        Pageable pageable);
+
+        // Tìm các cuộc trò chuyện riêng biệt của user
+        @Query("SELECT DISTINCT m FROM LvsMessage m WHERE " +
+                        "m.lvsSender.lvsUserId = :userId OR m.lvsReceiver.lvsUserId = :userId " +
+                        "ORDER BY m.lvsCreatedAt DESC")
+        List<LvsMessage> findDistinctConversationsByUserId(@Param("userId") Long userId);
+
+        // Tìm tin nhắn giữa 2 users (cả 2 chiều)
+        List<LvsMessage> findByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdOrLvsSender_LvsUserIdAndLvsReceiver_LvsUserId(
+                        Long senderId1, Long receiverId1, Long senderId2, Long receiverId2);
+
+        // Tìm tin nhắn chưa đọc từ sender đến receiver
+        List<LvsMessage> findByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdAndLvsIsReadFalse(Long senderId,
+                        Long receiverId);
+
+        // Tìm kiếm tin nhắn của user theo nội dung
+        @Query("SELECT m FROM LvsMessage m WHERE " +
+                        "(m.lvsSender.lvsUserId = :userId OR m.lvsReceiver.lvsUserId = :userId) AND " +
+                        "LOWER(m.lvsContent) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+        List<LvsMessage> findByUserAndContentContaining(@Param("userId") Long userId,
+                        @Param("keyword") String keyword);
+
+        // Tìm tin nhắn mới nhất của user
+        @Query(value = "SELECT * FROM lvs_message WHERE " +
+                        "lvs_sender_id = :userId OR lvs_receiver_id = :userId " +
+                        "ORDER BY lvs_created_at DESC LIMIT :limit", nativeQuery = true)
+        List<LvsMessage> findLatestMessagesByUserId(@Param("userId") Long userId,
+                        @Param("limit") int limit);
+
+        // Đếm tin nhắn theo loại
+        @Query("SELECT m.lvsMessageType, COUNT(m) FROM LvsMessage m GROUP BY m.lvsMessageType")
+        List<Object[]> countMessagesByType();
+
+        // Đếm tất cả tin nhắn chưa đọc
+        Long countByLvsIsReadFalse();
+
         // Tìm tin nhắn theo type
         List<LvsMessage> findByLvsMessageType(String lvsMessageType);
 

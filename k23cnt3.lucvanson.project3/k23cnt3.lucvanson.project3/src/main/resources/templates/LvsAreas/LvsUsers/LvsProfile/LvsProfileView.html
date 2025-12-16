@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/user-layout}">
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
 
 <head>
     <title>Hồ sơ - Electro Store</title>
@@ -30,7 +30,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div class="text-center p-4 bg-[#1e1e1e] rounded-lg">
-                            <p class="text-3xl font-bold text-[#fed700]" th:text="${LvsUser.lvsProjects.size()}">0</p>
+                            <p class="text-3xl font-bold text-[#fed700]" th:text="${LvsProjectsCount}">0</p>
                             <p class="text-gray-400">Dự án</p>
                         </div>
                         <div class="text-center p-4 bg-[#1e1e1e] rounded-lg">
@@ -51,7 +51,8 @@
                     <div>
                         <h2 class="text-xl font-bold text-white mb-4">Dự án gần đây</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div th:each="project : ${LvsUser.lvsProjects}" th:if="${projectStat.index < 6}"
+                            <!-- TODO: Projects list requires eager loading
+<div th:each="project : ${LvsUser.lvsProjects}" th:if="${projectStat.index < 6}"
                                 class="electro-card p-4">
                                 <div class="h-32 bg-[#1e1e1e] rounded-lg mb-3 flex items-center justify-center">
                                     <i class="fas fa-image text-4xl text-gray-600"></i>

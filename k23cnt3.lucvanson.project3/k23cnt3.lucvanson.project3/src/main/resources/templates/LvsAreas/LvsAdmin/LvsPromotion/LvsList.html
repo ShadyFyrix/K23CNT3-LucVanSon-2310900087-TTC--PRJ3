@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Quản lý Khuyến mãi</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Quản lý Khuyến mãi</h1>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Mã</th>
+                                <th>Loại</th>
+                                <th>Giảm giá</th>
+                                <th>Hạn sử dụng</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="promo : ${LvsPromotions.content}">
+                                <td th:text="${promo.lvsPromotionId}"></td>
+                                <td><code th:text="${promo.lvsCode}"></code></td>
+                                <td th:text="${promo.lvsDiscountType}"></td>
+                                <td th:text="${promo.lvsDiscountValue}"></td>
+                                <td th:text="${#temporals.format(promo.lvsValidTo, 'dd/MM/yyyy')}"></td>
+                                <td>
+                                    <span th:if="${promo.lvsIsActive}" class="badge bg-success">Hoạt động</span>
+                                    <span th:unless="${promo.lvsIsActive}" class="badge bg-secondary">Vô hiệu</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/LvsAdmin/LvsPromotion/LvsDetail/{id}(id=${promo.lvsPromotionId})}"
+                                        class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                    <a th:href="@{/LvsAdmin/LvsPromotion/LvsEdit/{id}(id=${promo.lvsPromotionId})}"
+                                        class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Quản lý Báo cáo</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Quản lý Báo cáo</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form th:action="@{/LvsAdmin/LvsReport/LvsList}" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <select class="form-select" name="lvsStatus">
+                                <option value="">Tất cả trạng thái</option>
+                                <option th:each="status : ${LvsStatuses}" th:value="${status}" th:text="${status}"
+                                    th:selected="${status.toString() == LvsSelectedStatus}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" name="lvsType">
+                                <option value="">Tất cả loại</option>
+                                <option th:each="type : ${LvsTypes}" th:value="${type}" th:text="${type}"
+                                    th:selected="${type.toString() == LvsSelectedType}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-4"><button type="submit" class="btn btn-primary w-100"><i
+                                    class="fas fa-search"></i> Lọc</button></div>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Loại</th>
+                                <th>Người báo cáo</th>
+                                <th>Lý do</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="report : ${LvsReports.content}">
+                                <td th:text="${report.lvsReportId}"></td>
+                                <td><span class="badge bg-info" th:text="${report.lvsReportType}"></span></td>
+                                <td th:text="${report.lvsReporter?.lvsUsername}"></td>
+                                <td th:text="${#strings.abbreviate(report.lvsReason, 50)}"></td>
+                                <td>
+                                    <span th:if="${report.lvsStatus.name() == 'PENDING'}" class="badge bg-warning">Chờ
+                                        xử lý</span>
+                                    <span th:if="${report.lvsStatus.name() == 'RESOLVED'}" class="badge bg-success">Đã
+                                        giải quyết</span>
+                                    <span th:if="${report.lvsStatus.name() == 'REJECTED'}" class="badge bg-danger">Từ
+                                        chối</span>
+                                </td>
+                                <td th:text="${#temporals.format(report.lvsCreatedAt, 'dd/MM/yyyy')}"></td>
+                                <td><a th:href="@{/LvsAdmin/LvsReport/LvsDetail/{id}(id=${report.lvsReportId})}"
+                                        class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <nav th:if="${LvsReports.totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${LvsReports.first} ? 'disabled'">
+                                <a class="page-link"
+                                    th:href="@{/LvsAdmin/LvsReport/LvsList(page=${LvsCurrentPage - 1})}">Trước</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, LvsReports.totalPages - 1)}"
+                                th:classappend="${i == LvsCurrentPage} ? 'active'">
+                                <a class="page-link" th:href="@{/LvsAdmin/LvsReport/LvsList(page=${i})}"
+                                    th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${LvsReports.last} ? 'disabled'">
+                                <a class="page-link"
+                                    th:href="@{/LvsAdmin/LvsReport/LvsList(page=${LvsCurrentPage + 1})}">Sau</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

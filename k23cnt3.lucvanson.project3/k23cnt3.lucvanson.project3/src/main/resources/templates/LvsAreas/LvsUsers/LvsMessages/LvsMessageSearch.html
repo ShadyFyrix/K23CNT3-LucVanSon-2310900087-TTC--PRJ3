@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Tìm kiếm tin nhắn - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-search mr-3 text-[#fed700]"></i>Tìm kiếm tin nhắn
+            </h1>
+
+            <!-- Search Form -->
+            <form th:action="@{/LvsUser/LvsMessage/LvsSearch}" method="get" class="mb-8">
+                <div class="flex gap-3">
+                    <input type="text" name="lvsKeyword" th:value="${LvsKeyword}" placeholder="Nhập từ khóa tìm kiếm..."
+                        required
+                        class="flex-1 bg-[#2b2b2b] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#fed700]" />
+                    <button type="submit"
+                        class="bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-6 py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-search mr-2"></i>Tìm kiếm
+                    </button>
+                </div>
+            </form>
+
+            <!-- Results -->
+            <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6">
+                <p class="text-gray-400 mb-4" th:if="${LvsKeyword}">
+                    Kết quả cho: <span class="text-white font-semibold" th:text="${LvsKeyword}">keyword</span>
+                </p>
+                <div class="space-y-4">
+                    <div th:each="message : ${LvsMessages}" class="bg-[#1e1e1e] border border-[#444] rounded-lg p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-white font-semibold" th:text="${message.lvsSender.lvsUsername}">
+                                        Sender</p>
+                                    <p class="text-gray-400 text-xs"
+                                        th:text="${#temporals.format(message.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 ml-13" th:text="${message.lvsContent}">Message content...</p>
+                        <a th:href="@{/LvsUser/LvsMessage/LvsConversation/{id}(id=${message.lvsSender.lvsUserId})}"
+                            class="text-sm text-blue-400 hover:text-blue-300 mt-2 inline-block">
+                            <i class="fas fa-comments mr-1"></i>Xem cuộc trò chuyện
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${#lists.isEmpty(LvsMessages)}" class="text-center py-12">
+                    <i class="fas fa-search text-6xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400">Không tìm thấy tin nhắn nào</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

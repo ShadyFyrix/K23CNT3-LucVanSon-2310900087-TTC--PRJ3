@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Báo cáo của tôi - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-3xl font-bold text-white">
+                    <i class="fas fa-flag mr-3 text-[#fed700]"></i>Báo cáo của tôi
+                </h1>
+                <a href="/lvsforum/LvsUser/LvsReport/LvsCreate"
+                    class="bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-4 py-2 rounded-lg font-semibold transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Tạo báo cáo mới
+                </a>
+            </div>
+
+            <div class="space-y-4">
+                <div th:each="report : ${LvsReports.content}" class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span
+                                    th:classappend="${report.lvsStatus == 'PENDING'} ? 'bg-yellow-500/20 text-yellow-400' : (${report.lvsStatus == 'RESOLVED'} ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400')"
+                                    class="px-3 py-1 rounded-full text-sm font-semibold"
+                                    th:text="${report.lvsStatus}">Status</span>
+                                <span class="text-gray-400 text-sm"
+                                    th:text="${#temporals.format(report.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                            </div>
+                            <h3 class="text-white font-bold text-lg mb-2" th:text="${report.lvsReason}">Report reason
+                            </h3>
+                            <p class="text-gray-300 mb-3" th:text="${report.lvsDescription}">Description...</p>
+                            <div class="flex items-center gap-4 text-sm">
+                                <span class="text-gray-400">Loại: <span class="text-white"
+                                        th:text="${report.lvsReportType}">Type</span></span>
+                                <span class="text-gray-400" th:if="${report.lvsTargetProject}">
+                                    Dự án: <a
+                                        th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${report.lvsTargetProject.lvsProjectId})}"
+                                        class="text-blue-400 hover:text-blue-300"
+                                        th:text="${report.lvsTargetProject.lvsProjectName}">Project</a>
+                                </span>
+                            </div>
+                        </div>
+                        <a th:href="@{/LvsUser/LvsReport/LvsDetail/{id}(id=${report.lvsReportId})}"
+                            class="text-blue-400 hover:text-blue-300">
+                            <i class="fas fa-eye text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div th:if="${LvsReports.totalPages > 1}" class="mt-8 flex justify-center gap-2">
+                <a th:each="i : ${#numbers.sequence(0, LvsReports.totalPages - 1)}"
+                    th:href="@{/LvsUser/LvsReport/LvsMy(page=${i})}"
+                    th:classappend="${i == LvsCurrentPage} ? 'bg-[#fed700] text-[#1e1e1e]' : 'bg-[#2b2b2b] text-white hover:bg-[#333]'"
+                    class="px-4 py-2 rounded-lg transition-colors" th:text="${i + 1}">1</a>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${LvsReports.empty}" class="text-center py-16">
+                <i class="fas fa-flag text-6xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400 text-lg">Bạn chưa tạo báo cáo nào</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

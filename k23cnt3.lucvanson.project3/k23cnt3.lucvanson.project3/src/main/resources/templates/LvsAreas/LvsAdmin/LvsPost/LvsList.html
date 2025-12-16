@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Bài viết</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">Quản lý Bài viết</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Bài viết</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Filter & Search -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form th:action="@{/LvsAdmin/LvsPost/LvsList}" method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Tìm kiếm</label>
+                            <input type="text" class="form-control" name="lvsKeyword" th:value="${LvsKeyword}"
+                                placeholder="Tìm theo tiêu đề...">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Trạng thái</label>
+                            <select class="form-select" name="lvsStatus">
+                                <option value="">Tất cả</option>
+                                <option th:each="status : ${LvsStatuses}" th:value="${status}" th:text="${status}"
+                                    th:selected="${status.toString() == LvsSelectedStatus}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Loại bài viết</label>
+                            <select class="form-select" name="lvsType">
+                                <option value="">Tất cả</option>
+                                <option th:each="type : ${LvsTypes}" th:value="${type}" th:text="${type}"
+                                    th:selected="${type.toString() == LvsSelectedType}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Posts Table -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tiêu đề</th>
+                                    <th>Tác giả</th>
+                                    <th>Loại</th>
+                                    <th>Trạng thái</th>
+                                    <th>Lượt xem</th>
+                                    <th>Ngày đăng</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="post : ${LvsPosts.content}">
+                                    <td th:text="${post.lvsPostId}"></td>
+                                    <td>
+                                        <a th:href="@{/LvsAdmin/LvsPost/LvsDetail/{id}(id=${post.lvsPostId})}"
+                                            th:text="${post.lvsTitle}"></a>
+                                        <span th:if="${post.lvsIsPinned}" class="badge bg-warning ms-2">
+                                            <i class="fas fa-thumbtack"></i> Ghim
+                                        </span>
+                                    </td>
+                                    <td th:text="${post.lvsUser?.lvsUsername}"></td>
+                                    <td>
+                                        <span class="badge bg-info" th:text="${post.lvsType}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${post.lvsStatus.name() == 'APPROVED'}" class="badge bg-success">Đã
+                                            duyệt</span>
+                                        <span th:if="${post.lvsStatus.name() == 'PENDING'}" class="badge bg-warning">Chờ
+                                            duyệt</span>
+                                        <span th:if="${post.lvsStatus.name() == 'HIDDEN'}" class="badge bg-secondary">Đã
+                                            ẩn</span>
+                                    </td>
+                                    <td th:text="${post.lvsViewCount}"></td>
+                                    <td th:text="${#temporals.format(post.lvsCreatedAt, 'dd/MM/yyyy')}"></td>
+                                    <td>
+                                        <a th:href="@{/LvsAdmin/LvsPost/LvsDetail/{id}(id=${post.lvsPostId})}"
+                                            class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/LvsAdmin/LvsPost/LvsEdit/{id}(id=${post.lvsPostId})}"
+                                            class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav th:if="${LvsPosts.totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${LvsPosts.first} ? 'disabled'">
+                                <a class="page-link"
+                                    th:href="@{/LvsAdmin/LvsPost/LvsList(page=${LvsCurrentPage - 1})}">Trước</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, LvsPosts.totalPages - 1)}"
+                                th:classappend="${i == LvsCurrentPage} ? 'active'">
+                                <a class="page-link" th:href="@{/LvsAdmin/LvsPost/LvsList(page=${i})}"
+                                    th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${LvsPosts.last} ? 'disabled'">
+                                <a class="page-link"
+                                    th:href="@{/LvsAdmin/LvsPost/LvsList(page=${LvsCurrentPage + 1})}">Sau</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div layout:fragment="scripts">
+        <!-- Additional scripts if needed -->
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Quản lý Cài đặt</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Quản lý Cài đặt</h1>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Value</th>
+                                <th>Group</th>
+                                <th>Mô tả</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="setting : ${LvsSettings}">
+                                <td><code th:text="${setting.lvsKey}"></code></td>
+                                <td th:text="${setting.lvsValue}"></td>
+                                <td><span class="badge bg-info" th:text="${setting.lvsGroup}"></span></td>
+                                <td th:text="${setting.lvsDescription}"></td>
+                                <td>
+                                    <a th:href="@{/LvsAdmin/LvsSetting/LvsEdit/{id}(id=${setting.lvsSettingId})}"
+                                        class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

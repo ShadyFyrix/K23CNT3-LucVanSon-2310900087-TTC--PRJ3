@@ -55,14 +55,14 @@ public class LvsUserReviewController {
         model.addAttribute("LvsAverageRating", lvsAverageRating);
         model.addAttribute("LvsCurrentPage", page);
 
-        return "LvsUser/LvsReviewList";
+        return "LvsAreas/LvsUsers/LvsReviews/LvsReviewList";
     }
 
     // Viết đánh giá mới
     @GetMapping("/LvsWrite/{projectId}")
     public String lvsShowWriteReviewForm(@PathVariable Long projectId,
-                                         Model model,
-                                         HttpSession session) {
+            Model model,
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -91,16 +91,16 @@ public class LvsUserReviewController {
         model.addAttribute("LvsProject", lvsProject);
         model.addAttribute("LvsReview", new LvsReview());
 
-        return "LvsUser/LvsReviewWrite";
+        return "LvsAreas/LvsUsers/LvsReviews/LvsReviewWrite";
     }
 
     // Xử lý viết đánh giá
     @PostMapping("/LvsWrite/{projectId}")
     public String lvsWriteReview(@PathVariable Long projectId,
-                                 @ModelAttribute LvsReview lvsReview,
-                                 @RequestParam(required = false) String lvsImages,
-                                 HttpSession session,
-                                 Model model) {
+            @ModelAttribute LvsReview lvsReview,
+            @RequestParam(required = false) String lvsImages,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -110,7 +110,7 @@ public class LvsUserReviewController {
             // Kiểm tra rating hợp lệ
             if (lvsReview.getLvsRating() < 1 || lvsReview.getLvsRating() > 5) {
                 model.addAttribute("LvsError", "Rating phải từ 1 đến 5 sao!");
-                return "LvsUser/LvsReviewWrite";
+                return "LvsAreas/LvsUsers/LvsReviews/LvsReviewWrite";
             }
 
             LvsProject lvsProject = lvsProjectService.lvsGetProjectById(projectId);
@@ -128,15 +128,15 @@ public class LvsUserReviewController {
             return "redirect:/LvsUser/LvsProject/LvsDetail/" + projectId;
         } catch (Exception e) {
             model.addAttribute("LvsError", "Lỗi khi gửi đánh giá: " + e.getMessage());
-            return "LvsUser/LvsReviewWrite";
+            return "LvsAreas/LvsUsers/LvsReviews/LvsReviewWrite";
         }
     }
 
     // Chỉnh sửa đánh giá
     @GetMapping("/LvsEdit/{id}")
     public String lvsShowEditReviewForm(@PathVariable Long id,
-                                        Model model,
-                                        HttpSession session) {
+            Model model,
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         LvsReview lvsReview = lvsReviewService.lvsGetReviewById(id);
 
@@ -147,15 +147,15 @@ public class LvsUserReviewController {
 
         model.addAttribute("LvsReview", lvsReview);
 
-        return "LvsUser/LvsReviewEdit";
+        return "LvsAreas/LvsUsers/LvsReviews/LvsReviewEdit";
     }
 
     // Xử lý chỉnh sửa đánh giá
     @PostMapping("/LvsEdit/{id}")
     public String lvsEditReview(@PathVariable Long id,
-                                @ModelAttribute LvsReview lvsReview,
-                                HttpSession session,
-                                Model model) {
+            @ModelAttribute LvsReview lvsReview,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
@@ -181,14 +181,14 @@ public class LvsUserReviewController {
             return "redirect:/LvsUser/LvsProject/LvsDetail/" + lvsExistingReview.getLvsProject().getLvsProjectId();
         } catch (Exception e) {
             model.addAttribute("LvsError", "Lỗi khi cập nhật đánh giá: " + e.getMessage());
-            return "LvsUser/LvsReviewEdit";
+            return "LvsAreas/LvsUsers/LvsReviews/LvsReviewEdit";
         }
     }
 
     // Xóa đánh giá
     @PostMapping("/LvsDelete/{id}")
     public String lvsDeleteReview(@PathVariable Long id,
-                                  HttpSession session) {
+            HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         LvsReview lvsReview = lvsReviewService.lvsGetReviewById(id);
 
@@ -242,15 +242,15 @@ public class LvsUserReviewController {
         model.addAttribute("LvsReviews", lvsReviews);
         model.addAttribute("LvsCurrentPage", page);
 
-        return "LvsUser/LvsMyReviews";
+        return "LvsAreas/LvsUsers/LvsReviews/LvsMyReviews";
     }
 
     // Báo cáo đánh giá không phù hợp
     @PostMapping("/LvsReport/{id}")
     public String lvsReportReview(@PathVariable Long id,
-                                  @RequestParam String lvsReason,
-                                  HttpSession session,
-                                  Model model) {
+            @RequestParam String lvsReason,
+            HttpSession session,
+            Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";

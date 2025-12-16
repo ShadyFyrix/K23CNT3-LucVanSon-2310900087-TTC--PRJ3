@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Chỉnh sửa Khuyến mãi</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Chỉnh sửa Khuyến mãi</h1>
+            <div class="card">
+                <div class="card-body">
+                    <form th:action="@{/LvsAdmin/LvsPromotion/LvsEdit/{id}(id=${LvsPromotion.lvsPromotionId})}"
+                        th:object="${LvsPromotion}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Mã khuyến mãi</label>
+                            <input type="text" class="form-control" th:field="*{lvsCode}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Loại giảm giá</label>
+                            <select class="form-select" th:field="*{lvsDiscountType}">
+                                <option th:each="type : ${LvsDiscountTypes}" th:value="${type}" th:text="${type}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Giá trị giảm</label>
+                            <input type="number" class="form-control" th:field="*{lvsDiscountValue}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Hạn sử dụng</label>
+                            <input type="date" class="form-control" th:field="*{lvsValidTo}" required>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <a th:href="@{/LvsAdmin/LvsPromotion/LvsDetail/{id}(id=${LvsPromotion.lvsPromotionId})}"
+                                class="btn btn-secondary">Hủy</a>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Cập nhật</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

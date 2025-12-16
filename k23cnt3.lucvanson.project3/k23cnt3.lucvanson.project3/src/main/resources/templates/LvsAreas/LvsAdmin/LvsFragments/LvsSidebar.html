@@ -2,143 +2,172 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<div class="glass-sidebar-dark sidebar" th:fragment="sidebar"
-     style="position: fixed; left: 0; top: 80px; bottom: 0; width: 260px; overflow-y: auto; z-index: 1000; padding: var(--space-6) 0;">
+    <div class="glass-sidebar-dark sidebar" th:fragment="sidebar"
+        style="position: fixed; left: 0; top: 80px; bottom: 0; width: 260px; overflow-y: auto; z-index: 1000; padding: var(--space-6) 0;">
 
-    <!-- Sections -->
-    <div class="px-4 mb-5">
-        <div class="sidebar-heading text-white-50 text-uppercase fw-bold small tracking-wider mb-4">TỔNG QUAN</div>
-        <ul class="nav flex-column">
-            <li class="nav-item mb-2">
-                <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
-                   th:href="@{/LvsAdmin}" th:classappend="${activePage == 'dashboard'} ? 'active gradient-primary' : ''">
-                    <i class="fas fa-tachometer-alt me-4" style="width: 20px;"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="px-4 mb-5">
-        <div class="sidebar-heading text-white-50 text-uppercase fw-bold small tracking-wider mb-4">QUẢN LÝ</div>
-        <ul class="nav flex-column">
-            <li class="nav-item mb-2">
-                <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
-                   th:href="@{/LvsAdmin/LvsUsers}" th:classappend="${activePage == 'users'} ? 'active gradient-primary' : ''">
-                    <i class="fas fa-users me-4" style="width: 20px;"></i>
-                    <span>Quản lý User</span>
-                </a>
-            </li>
-            <li class="nav-item mb-2">
-                <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
-                   th:href="@{/LvsAdmin/LvsProject/LvsList}" th:classappend="${activePage == 'projects'} ? 'active gradient-primary' : ''">
-                    <i class="fas fa-box me-4" style="width: 20px;"></i>
-                    <span>Quản lý Dự án</span>
-                </a>
-            </li>
-            <li class="nav-item mb-2">
-                <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
-                   th:href="@{/LvsAdmin/LvsCategory/LvsList}" th:classappend="${activePage == 'categories'} ? 'active gradient-primary' : ''">
-                    <i class="fas fa-layer-group me-4" style="width: 20px;"></i>
-                    <span>Quản lý Danh mục</span>
-                </a>
-            </li>
-                <li class="nav-item">
-                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-2 px-3 rounded-3 mb-1"
-                        href="#">
-                        <i class="fas fa-shopping-cart me-3" style="width: 20px;"></i>
-                        <span>Quản lý Đơn hàng</span>
+        <!-- Tổng quan Section -->
+        <div class="px-4 mb-5">
+            <div class="sidebar-heading text-white-50 text-uppercase fw-bold small tracking-wider mb-4">TỔNG QUAN</div>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsDashboard}"
+                        th:classappend="${activePage == 'dashboard'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-tachometer-alt me-4" style="width: 20px;"></i>
+                        <span>Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-2 px-3 rounded-3 mb-1"
-                        href="#">
-                        <i class="fas fa-comments me-3" style="width: 20px;"></i>
+            </ul>
+        </div>
+
+        <!-- Quản lý Section -->
+        <div class="px-4 mb-5">
+            <div class="sidebar-heading text-white-50 text-uppercase fw-bold small tracking-wider mb-4">QUẢN LÝ</div>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsUsers/LvsList}"
+                        th:classappend="${activePage == 'users'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-users me-4" style="width: 20px;"></i>
+                        <span>Quản lý User</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsProject/LvsList}"
+                        th:classappend="${activePage == 'projects'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-box me-4" style="width: 20px;"></i>
+                        <span>Quản lý Dự án</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsCategory/LvsList}"
+                        th:classappend="${activePage == 'categories'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-layer-group me-4" style="width: 20px;"></i>
+                        <span>Quản lý Danh mục</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsPost/LvsList}"
+                        th:classappend="${activePage == 'posts'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-file-alt me-4" style="width: 20px;"></i>
                         <span>Quản lý Bài viết</span>
                     </a>
                 </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsComment/LvsList}"
+                        th:classappend="${activePage == 'comments'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-comments me-4" style="width: 20px;"></i>
+                        <span>Quản lý Bình luận</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsOrder/LvsList}"
+                        th:classappend="${activePage == 'orders'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-shopping-cart me-4" style="width: 20px;"></i>
+                        <span>Quản lý Đơn hàng</span>
+                    </a>
+                </li>
             </ul>
         </div>
 
-        <!-- System Section -->
-        <div class="px-3 mb-4">
-            <div class="sidebar-heading text-white-50 text-uppercase fw-bold"
-                style="font-size: 0.7rem; letter-spacing: 0.1em; margin-bottom: 0.75rem;">
-                HỆ THỐNG
-            </div>
+        <!-- Giao dịch & Đánh giá Section -->
+        <div class="px-4 mb-5">
+            <div class="sidebar-heading text-white-50 text-uppercase fw-bold small tracking-wider mb-4">GIAO DỊCH</div>
             <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-2 px-3 rounded-3 mb-1"
-                        href="#">
-                        <i class="fas fa-cog me-3" style="width: 20px;"></i>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsTransaction/LvsList}"
+                        th:classappend="${activePage == 'transactions'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-exchange-alt me-4" style="width: 20px;"></i>
+                        <span>Quản lý Giao dịch</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsReview/LvsList}"
+                        th:classappend="${activePage == 'reviews'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-star me-4" style="width: 20px;"></i>
+                        <span>Quản lý Đánh giá</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsPromotion/LvsList}"
+                        th:classappend="${activePage == 'promotions'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-tags me-4" style="width: 20px;"></i>
+                        <span>Quản lý Khuyến mãi</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Hỗ trợ Section -->
+        <div class="px-4 mb-5">
+            <div class="sidebar-heading text-white-50 text-uppercase fw-bold small tracking-wider mb-4">HỖ TRỢ</div>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsReport/LvsList}"
+                        th:classappend="${activePage == 'reports'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-flag me-4" style="width: 20px;"></i>
+                        <span>Quản lý Báo cáo</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsMessage/LvsList}"
+                        th:classappend="${activePage == 'messages'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-envelope me-4" style="width: 20px;"></i>
+                        <span>Quản lý Tin nhắn</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Hệ thống Section -->
+        <div class="px-4 mb-5">
+            <div class="sidebar-heading text-white-50 text-uppercase fw-bold small tracking-wider mb-4">HỆ THỐNG</div>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsSetting/LvsList}"
+                        th:classappend="${activePage == 'settings'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-cog me-4" style="width: 20px;"></i>
                         <span>Cài đặt hệ thống</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-2 px-3 rounded-3 mb-1"
-                        href="#">
-                        <i class="fas fa-chart-bar me-3" style="width: 20px;"></i>
-                        <span>Thống kê</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-2 px-3 rounded-3 mb-1"
-                        href="#">
-                        <i class="fas fa-history me-3" style="width: 20px;"></i>
-                        <span>Nhật ký hoạt động</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Reports Section -->
-        <div class="px-3 mb-4">
-            <div class="sidebar-heading text-white-50 text-uppercase fw-bold"
-                style="font-size: 0.7rem; letter-spacing: 0.1em; margin-bottom: 0.75rem;">
-                BÁO CÁO
-            </div>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-2 px-3 rounded-3 mb-1"
-                        href="#">
-                        <i class="fas fa-file-alt me-3" style="width: 20px;"></i>
-                        <span>Báo cáo doanh thu</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-2 px-3 rounded-3 mb-1"
-                        href="#">
-                        <i class="fas fa-chart-line me-3" style="width: 20px;"></i>
-                        <span>Biểu đồ thống kê</span>
                     </a>
                 </li>
             </ul>
         </div>
     </div>
 
-<style>
-    .sidebar-link {
-        transition: all var(--transition-base);
-        font-weight: 500;
-        position: relative;
-    }
+    <style>
+        .sidebar-link {
+            transition: all var(--transition-base);
+            font-weight: 500;
+            position: relative;
+        }
 
-    .sidebar-link:hover {
-        background: rgba(255, 255, 255, 0.15) !important;
-        transform: translateX(8px);
-    }
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.15) !important;
+            transform: translateX(8px);
+        }
 
-    .sidebar-link.active {
-        background: var(--gradient-primary) !important;
-        box-shadow: var(--shadow-xl);
-        font-weight: 600;
-    }
+        .sidebar-link.active {
+            background: var(--gradient-primary) !important;
+            box-shadow: var(--shadow-xl);
+            font-weight: 600;
+        }
 
-    .sidebar-heading {
-        font-size: 0.75rem;
-        letter-spacing: 0.1em;
-    }
-</style>
+        .sidebar-heading {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+        }
+    </style>
 </body>
 
 </html>

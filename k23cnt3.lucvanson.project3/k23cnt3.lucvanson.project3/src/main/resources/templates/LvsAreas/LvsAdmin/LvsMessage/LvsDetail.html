@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Chi tiết Tin nhắn</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Chi tiết Tin nhắn</h1>
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>Người gửi:</strong> <span th:text="${LvsMessage.lvsSender?.lvsUsername}"></span></p>
+                    <p><strong>Người nhận:</strong> <span th:text="${LvsMessage.lvsReceiver?.lvsUsername}"></span></p>
+                    <p><strong>Nội dung:</strong></p>
+                    <p th:text="${LvsMessage.lvsContent}"></p>
+                    <p class="text-muted"><i class="fas fa-calendar"></i> <span
+                            th:text="${#temporals.format(LvsMessage.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

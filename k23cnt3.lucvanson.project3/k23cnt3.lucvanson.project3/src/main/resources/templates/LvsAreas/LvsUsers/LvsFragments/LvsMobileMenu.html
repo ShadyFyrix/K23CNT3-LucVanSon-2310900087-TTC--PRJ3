@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body th:fragment="mobile-menu">
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobile-menu"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden lg:hidden transition-opacity duration-300">
+        <!-- Slide-in Menu -->
+        <div id="mobile-menu-content"
+            class="fixed inset-y-0 left-0 w-80 bg-gradient-to-b from-[#2b2b2b] to-[#1e1e1e] shadow-2xl transform -translate-x-full transition-transform duration-300 ease-out overflow-y-auto">
+            <!-- Header -->
+            <div
+                class="flex items-center justify-between p-6 border-b border-[#444]/50 bg-[#1e1e1e]/50 backdrop-blur-sm sticky top-0 z-10">
+                <h2 class="text-xl font-bold text-white">Menu</h2>
+                <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- User Info -->
+            <div class="p-6 border-b border-[#444]/50" th:if="${session.LvsCurrentUser}">
+                <div class="flex items-center gap-4 mb-4">
+                    <div
+                        class="w-14 h-14 rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center text-black font-bold text-2xl shadow-lg">
+                        <span
+                            th:text="${#strings.substring(session.LvsCurrentUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-bold text-lg truncate"
+                            th:text="${session.LvsCurrentUser.lvsUsername}">Username</p>
+                        <p class="text-gray-400 text-sm truncate" th:text="${session.LvsCurrentUser.lvsEmail}">
+                            email@example.com</p>
+                    </div>
+                </div>
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-[#333]/30 rounded-lg p-2">
+                        <p class="text-[#fed700] font-bold" th:text="${session.LvsCurrentUser.lvsCoin ?: 0}">0</p>
+                        <p class="text-gray-500 text-xs">Coins</p>
+                    </div>
+                    <div class="bg-[#333]/30 rounded-lg p-2">
+                        <p class="text-[#fed700] font-bold" th:text="${session.LvsUnreadCount ?: 0}">0</p>
+                        <p class="text-gray-500 text-xs">Messages</p>
+                    </div>
+                    <div class="bg-[#333]/30 rounded-lg p-2">
+                        <p class="text-[#fed700] font-bold">0</p>
+                        <p class="text-gray-500 text-xs">Orders</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-4 space-y-1">
+                <!-- Dashboard -->
+                <a th:href="@{/LvsUser/LvsDashboard}" onclick="toggleMobileMenu()"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
+                    <i class="fas fa-home text-[#fed700] text-lg"></i>
+                    <span class="text-white font-medium">Dashboard</span>
+                </a>
+
+                <!-- Account -->
+                <div class="pt-2">
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-2">Account</p>
+                    <a th:href="@{/LvsUser/LvsProfile/LvsView}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-user text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">My Profile</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsProfile/LvsEdit}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-edit text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">Edit Profile</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsProfile/LvsChangePassword}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-key text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">Change Password</span>
+                    </a>
+                </div>
+
+                <!-- Shopping -->
+                <div class="pt-2">
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-2">Shopping</p>
+                    <a th:href="@{/LvsUser/LvsCart/LvsView}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-shopping-cart text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">Shopping Cart</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsOrder/LvsMyOrders}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-box text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">My Orders</span>
+                    </a>
+                </div>
+
+                <!-- Projects -->
+                <div class="pt-2">
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-2">Projects</p>
+                    <a th:href="@{/LvsUser/LvsProject/LvsList}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-th-large text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">Browse Projects</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsProject/LvsMyProjects}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-folder text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">My Projects</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsProject/LvsAdd}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-plus-circle text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">Add Project</span>
+                    </a>
+                </div>
+
+                <!-- Communication -->
+                <div class="pt-2">
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-2">Communication</p>
+                    <a th:href="@{/LvsUser/LvsMessage/LvsInbox}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-envelope text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">Messages</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsComment/LvsMyComments}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-comments text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">My Comments</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsReview/LvsMyReviews}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-star text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">My Reviews</span>
+                    </a>
+                </div>
+
+                <!-- Social -->
+                <div class="pt-2">
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-2">Social</p>
+                    <a th:href="@{/LvsUser/LvsFollow/LvsMyFollowers}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-users text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">Followers</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsFollow/LvsMyFollowing}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-user-friends text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">Following</span>
+                    </a>
+                </div>
+
+                <!-- Finance -->
+                <div class="pt-2">
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-2">Finance</p>
+                    <a th:href="@{/LvsUser/LvsTransaction/LvsHistory}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-history text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">Transactions</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsProfile/LvsRevenue}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-chart-line text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">Revenue</span>
+                    </a>
+                </div>
+
+                <!-- Support -->
+                <div class="pt-2 pb-20">
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-2">Support</p>
+                    <a th:href="@{/LvsUser/LvsReport/LvsMy}" onclick="toggleMobileMenu()"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
+                        <i class="fas fa-flag text-gray-400"></i>
+                        <span class="text-gray-300 text-sm">My Reports</span>
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Logout Button (Fixed at bottom) -->
+            <div
+                class="fixed bottom-0 left-0 right-0 w-80 p-4 bg-gradient-to-t from-[#1e1e1e] via-[#1e1e1e] to-transparent">
+                <a th:href="@{/LvsAuth/LvsLogout}"
+                    class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 transition-all duration-200">
+                    <i class="fas fa-sign-out-alt text-red-400"></i>
+                    <span class="text-red-400 font-medium">Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const content = document.getElementById('mobile-menu-content');
+
+            if (menu.classList.contains('hidden')) {
+                // Show menu
+                menu.classList.remove('hidden');
+                setTimeout(() => {
+                    content.classList.remove('-translate-x-full');
+                }, 10);
+            } else {
+                // Hide menu
+                content.classList.add('-translate-x-full');
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        // Close menu when clicking outside
+        document.getElementById('mobile-menu')?.addEventListener('click', function (e) {
+            if (e.target === this) {
+                toggleMobileMenu();
+            }
+        });
+
+        // Close menu on escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                const menu = document.getElementById('mobile-menu');
+                if (!menu.classList.contains('hidden')) {
+                    toggleMobileMenu();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

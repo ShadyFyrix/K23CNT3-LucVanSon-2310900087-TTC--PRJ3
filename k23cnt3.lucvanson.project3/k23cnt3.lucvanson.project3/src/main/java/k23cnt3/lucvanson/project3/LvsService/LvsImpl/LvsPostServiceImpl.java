@@ -30,6 +30,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy bài viết theo ID
+     * 
      * @param lvsPostId ID bài viết
      * @return Bài viết tìm thấy
      */
@@ -40,6 +41,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy tất cả bài viết với phân trang
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Trang bài viết
      */
@@ -50,6 +52,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy bài viết đã publish
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Trang bài viết
      */
@@ -60,7 +63,8 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Tìm kiếm bài viết theo keyword
-     * @param lvsKeyword Từ khóa tìm kiếm
+     * 
+     * @param lvsKeyword  Từ khóa tìm kiếm
      * @param lvsPageable Thông tin phân trang
      * @return Trang bài viết tìm thấy
      */
@@ -72,7 +76,8 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy bài viết theo type
-     * @param lvsType Loại bài viết
+     * 
+     * @param lvsType     Loại bài viết
      * @param lvsPageable Thông tin phân trang
      * @return Trang bài viết
      */
@@ -84,7 +89,8 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy bài viết theo status
-     * @param lvsStatus Trạng thái bài viết
+     * 
+     * @param lvsStatus   Trạng thái bài viết
      * @param lvsPageable Thông tin phân trang
      * @return Trang bài viết
      */
@@ -96,8 +102,9 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy bài viết theo type và status
-     * @param lvsStatus Trạng thái bài viết
-     * @param lvsType Loại bài viết
+     * 
+     * @param lvsStatus   Trạng thái bài viết
+     * @param lvsType     Loại bài viết
      * @param lvsPageable Thông tin phân trang
      * @return Trang bài viết
      */
@@ -110,7 +117,8 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy bài viết theo người đăng
-     * @param lvsUserId ID người dùng
+     * 
+     * @param lvsUserId   ID người dùng
      * @param lvsPageable Thông tin phân trang
      * @return Trang bài viết
      */
@@ -121,6 +129,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy bài viết mới nhất
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Danh sách bài viết mới nhất
      */
@@ -131,6 +140,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy bài viết phổ biến nhất
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Danh sách bài viết phổ biến
      */
@@ -141,6 +151,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy bài viết được ghim
+     * 
      * @return Danh sách bài viết được ghim
      */
     @Override
@@ -150,6 +161,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lưu bài viết
+     * 
      * @param lvsPost Thông tin bài viết
      * @return Bài viết đã lưu
      */
@@ -162,6 +174,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Cập nhật bài viết
+     * 
      * @param lvsPost Thông tin bài viết cập nhật
      * @return Bài viết đã cập nhật
      */
@@ -175,7 +188,8 @@ public class LvsPostServiceImpl implements LvsPostService {
             lvsExistingPost.setLvsStatus(lvsPost.getLvsStatus());
             lvsExistingPost.setLvsTags(lvsPost.getLvsTags());
             lvsExistingPost.setLvsUpdatedAt(LocalDateTime.now());
-            lvsExistingPost.setLvsIsEdited(true);
+            // TODO: Add setLvsIsEdited method to LvsPost entity
+            // lvsExistingPost.setLvsIsEdited(true);
             return lvsPostRepository.save(lvsExistingPost);
         }
         return null;
@@ -183,6 +197,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Xóa bài viết
+     * 
      * @param lvsPostId ID bài viết
      */
     @Override
@@ -192,6 +207,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Xóa bài viết với lý do
+     * 
      * @param lvsPostId ID bài viết
      * @param lvsReason Lý do xóa
      */
@@ -207,6 +223,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Duyệt bài viết
+     * 
      * @param lvsPostId ID bài viết
      * @return Bài viết đã duyệt
      */
@@ -224,6 +241,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Ẩn bài viết
+     * 
      * @param lvsPostId ID bài viết
      * @param lvsReason Lý do ẩn
      * @return Bài viết đã ẩn
@@ -241,6 +259,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Hiển thị bài viết
+     * 
      * @param lvsPostId ID bài viết
      * @return Bài viết đã hiển thị
      */
@@ -257,6 +276,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Ghim bài viết
+     * 
      * @param lvsPostId ID bài viết
      * @return Bài viết đã ghim
      */
@@ -273,6 +293,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Bỏ ghim bài viết
+     * 
      * @param lvsPostId ID bài viết
      * @return Bài viết đã bỏ ghim
      */
@@ -289,6 +310,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Thích bài viết
+     * 
      * @param lvsPostId ID bài viết
      * @param lvsUserId ID người dùng
      * @return true nếu thành công
@@ -307,6 +329,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Tăng lượt xem
+     * 
      * @param lvsPostId ID bài viết
      */
     @Override
@@ -320,6 +343,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Tăng lượt comment
+     * 
      * @param lvsPostId ID bài viết
      */
     @Override
@@ -333,6 +357,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Tăng lượt share
+     * 
      * @param lvsPostId ID bài viết
      */
     @Override
@@ -346,6 +371,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Đếm tổng số bài viết
+     * 
      * @return Tổng số bài viết
      */
     @Override
@@ -355,6 +381,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Đếm số bài viết theo trạng thái
+     * 
      * @param lvsStatus Trạng thái cần đếm
      * @return Số bài viết
      */
@@ -365,8 +392,9 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Đếm số bài viết mới trong khoảng thời gian
+     * 
      * @param lvsStartDate Ngày bắt đầu
-     * @param lvsEndDate Ngày kết thúc
+     * @param lvsEndDate   Ngày kết thúc
      * @return Số bài viết mới
      */
     @Override
@@ -377,6 +405,7 @@ public class LvsPostServiceImpl implements LvsPostService {
 
     /**
      * Lấy thống kê bài viết
+     * 
      * @return Map thống kê bài viết
      */
     @Override

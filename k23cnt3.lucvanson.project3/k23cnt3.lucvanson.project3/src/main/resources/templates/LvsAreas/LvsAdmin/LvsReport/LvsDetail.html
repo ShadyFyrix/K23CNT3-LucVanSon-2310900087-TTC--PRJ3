@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Chi tiết Báo cáo</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Chi tiết Báo cáo #<span th:text="${LvsReport.lvsReportId}"></span></h1>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <p><strong>Loại:</strong> <span th:text="${LvsReport.lvsReportType}"></span></p>
+                            <p><strong>Người báo cáo:</strong> <span
+                                    th:text="${LvsReport.lvsReporter?.lvsUsername}"></span></p>
+                            <p><strong>Lý do:</strong></p>
+                            <p th:text="${LvsReport.lvsReason}"></p>
+                            <p><strong>Trạng thái:</strong> <span th:text="${LvsReport.lvsStatus}"></span></p>
+                            <p class="text-muted"><i class="fas fa-calendar"></i> <span
+                                    th:text="${#temporals.format(LvsReport.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Thao tác</h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/LvsAdmin/LvsReport/LvsHandle/{id}(id=${LvsReport.lvsReportId})}"
+                                method="post">
+                                <div class="mb-3">
+                                    <select class="form-select" name="lvsStatus">
+                                        <option
+                                            th:each="status : ${T(k23cnt3.lucvanson.project3.LvsEntity.LvsReport.LvsReportStatus).values()}"
+                                            th:value="${status}" th:text="${status}"></option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <textarea class="form-control" name="lvsAdminNote" rows="3"
+                                        placeholder="Ghi chú admin"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-check"></i> Xử
+                                    lý</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

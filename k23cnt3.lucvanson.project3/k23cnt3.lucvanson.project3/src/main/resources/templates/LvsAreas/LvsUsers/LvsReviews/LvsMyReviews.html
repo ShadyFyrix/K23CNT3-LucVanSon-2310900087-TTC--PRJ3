@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Đánh giá của tôi - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-3xl font-bold text-white">
+                    <i class="fas fa-star mr-3 text-[#fed700]"></i>Đánh giá của tôi
+                </h1>
+                <a href="/lvsforum/LvsUser/LvsProjects/LvsList"
+                    class="bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-4 py-2 rounded-lg font-semibold transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Viết đánh giá mới
+                </a>
+            </div>
+
+            <div class="space-y-4">
+                <div th:each="review : ${LvsReviews.content}" class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <h3 class="text-white font-bold text-lg mb-2" th:text="${review.lvsProject.lvsProjectName}">
+                                Project Name</h3>
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="flex gap-1">
+                                    <i th:each="i : ${#numbers.sequence(1, 5)}"
+                                        th:classappend="${i <= review.lvsRating} ? 'text-[#fed700]' : 'text-gray-600'"
+                                        class="fas fa-star"></i>
+                                </div>
+                                <span class="text-gray-400 text-sm"
+                                    th:text="${#temporals.format(review.lvsCreatedAt, 'dd/MM/yyyy')}">Date</span>
+                            </div>
+                            <p class="text-gray-300" th:text="${review.lvsComment}">Review comment...</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <a th:href="@{/LvsUser/LvsReview/LvsEdit/{id}(id=${review.lvsReviewId})}"
+                                class="text-blue-400 hover:text-blue-300">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form th:action="@{/LvsUser/LvsReview/LvsDelete/{id}(id=${review.lvsReviewId})}"
+                                method="post" class="inline">
+                                <button type="submit" class="text-red-400 hover:text-red-300"
+                                    onclick="return confirm('Xóa đánh giá này?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div th:if="${LvsReviews.totalPages > 1}" class="mt-8 flex justify-center gap-2">
+                <a th:each="i : ${#numbers.sequence(0, LvsReviews.totalPages - 1)}"
+                    th:href="@{/LvsUser/LvsReview/LvsMy(page=${i})}"
+                    th:classappend="${i == LvsCurrentPage} ? 'bg-[#fed700] text-[#1e1e1e]' : 'bg-[#2b2b2b] text-white hover:bg-[#333]'"
+                    class="px-4 py-2 rounded-lg transition-colors" th:text="${i + 1}">1</a>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${LvsReviews.empty}" class="text-center py-16">
+                <i class="fas fa-star-half-alt text-6xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400 text-lg mb-4">Bạn chưa viết đánh giá nào</p>
+                <a href="/lvsforum/LvsUser/LvsProjects/LvsList"
+                    class="bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-6 py-3 rounded-lg font-semibold transition-colors inline-block">
+                    Khám phá dự án
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Đơn hàng của User</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Đơn hàng của User: <span th:text="${LvsUser.lvsUsername}"></span></h1>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã đơn</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${LvsOrders.content}">
+                                <td th:text="${order.lvsOrderCode}"></td>
+                                <td
+                                    th:text="${#numbers.formatDecimal(order.lvsFinalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
+                                </td>
+                                <td><span class="badge bg-info" th:text="${order.lvsStatus}"></span></td>
+                                <td th:text="${#temporals.format(order.lvsCreatedAt, 'dd/MM/yyyy')}"></td>
+                                <td><a th:href="@{/LvsAdmin/LvsOrder/LvsDetail/{id}(id=${order.lvsOrderId})}"
+                                        class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

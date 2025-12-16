@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
+
+<head>
+    <title>Tạo Giao dịch</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <h1 class="h3 mb-4">Tạo Giao dịch thủ công</h1>
+            <div class="card">
+                <div class="card-body">
+                    <form th:action="@{/LvsAdmin/LvsTransaction/LvsAdd}" th:object="${LvsTransaction}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">User</label>
+                            <select class="form-select" name="lvsUserId" required>
+                                <option value="">Chọn user...</option>
+                                <option th:each="user : ${LvsUsers}" th:value="${user.lvsUserId}"
+                                    th:text="${user.lvsUsername}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Loại giao dịch</label>
+                            <select class="form-select" th:field="*{lvsType}" required>
+                                <option th:each="type : ${LvsTransactionTypes}" th:value="${type}" th:text="${type}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số tiền</label>
+                            <input type="number" class="form-control" th:field="*{lvsAmount}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ghi chú</label>
+                            <textarea class="form-control" th:field="*{lvsDescription}" rows="3"></textarea>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <a th:href="@{/LvsAdmin/LvsTransaction/LvsList}" class="btn btn-secondary">Hủy</a>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Tạo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

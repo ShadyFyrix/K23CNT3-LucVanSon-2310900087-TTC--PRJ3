@@ -42,18 +42,20 @@ public class LvsSecurityConfig {
                                                 // Các trang public
                                                 .requestMatchers("/", "/home", "/about", "/lvsforum").permitAll()
                                                 // Auth pages - IMPORTANT: Permit all login/register endpoints
-                                                .requestMatchers("/LvsLogin", "/LvsRegister", "/error", "/403",
+                                                .requestMatchers("/LvsAuth/**", "/LvsLogin", "/LvsRegister", "/error",
+                                                                "/403",
                                                                 "/LvsAdmin/LvsLogin", "/LvsUser/LvsLogin",
                                                                 "/LvsUser/LvsRegister", "/LvsUser/LvsForgotPassword")
                                                 .permitAll()
                                                 // Logout endpoints
-                                                .requestMatchers("/LvsAdmin/LvsLogout", "/LvsUser/LvsLogout")
+                                                .requestMatchers("/LvsAdmin/LvsLogout", "/LvsUser/LvsLogout",
+                                                                "/LvsLogout")
                                                 .permitAll()
                                                 // Admin pages - yêu cầu ROLE_ADMIN
                                                 .requestMatchers("/LvsAdmin/**").hasAuthority("ROLE_ADMIN")
                                                 // Moderator pages - yêu cầu ROLE_MODERATOR
                                                 .requestMatchers("/LvsModerator/**").hasAuthority("ROLE_MODERATOR")
-                                                // User pages - yêu cầu authenticated
+                                                // User pages - yêu cầu authenticated (any logged in user)
                                                 .requestMatchers("/LvsUser/**").authenticated()
                                                 // Tất cả các request khác cần xác thực
                                                 .anyRequest().authenticated())
