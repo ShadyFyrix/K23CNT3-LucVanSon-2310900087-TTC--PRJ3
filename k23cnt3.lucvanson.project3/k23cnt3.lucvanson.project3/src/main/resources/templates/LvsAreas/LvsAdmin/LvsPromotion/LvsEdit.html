@@ -19,6 +19,10 @@
                             <input type="text" class="form-control" th:field="*{lvsCode}" required>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Tên khuyến mãi</label>
+                            <input type="text" class="form-control" th:field="*{lvsName}" required>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Loại giảm giá</label>
                             <select class="form-select" th:field="*{lvsDiscountType}">
                                 <option th:each="type : ${LvsDiscountTypes}" th:value="${type}" th:text="${type}">
@@ -27,11 +31,24 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Giá trị giảm</label>
-                            <input type="number" class="form-control" th:field="*{lvsDiscountValue}" required>
+                            <input type="number" step="0.01" class="form-control" th:field="*{lvsDiscountValue}"
+                                required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Hạn sử dụng</label>
-                            <input type="date" class="form-control" th:field="*{lvsValidTo}" required>
+                            <label class="form-label">Giá trị đơn hàng tối thiểu</label>
+                            <input type="number" step="0.01" class="form-control" th:field="*{lvsMinOrderValue}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ngày bắt đầu</label>
+                            <input type="date" class="form-control" th:field="*{lvsStartDate}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ngày kết thúc</label>
+                            <input type="date" class="form-control" th:field="*{lvsEndDate}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Giới hạn sử dụng</label>
+                            <input type="number" class="form-control" th:field="*{lvsUsageLimit}" required>
                         </div>
                         <div class="d-flex justify-content-end gap-2">
                             <a th:href="@{/LvsAdmin/LvsPromotion/LvsDetail/{id}(id=${LvsPromotion.lvsPromotionId})}"

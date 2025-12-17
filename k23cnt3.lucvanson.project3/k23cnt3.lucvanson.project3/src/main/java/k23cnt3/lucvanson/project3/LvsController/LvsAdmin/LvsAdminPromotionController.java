@@ -3,6 +3,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsAdmin;
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/LvsAdmin/LvsPromotion")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class LvsAdminPromotionController {
 
     @Autowired
@@ -36,13 +38,7 @@ public class LvsAdminPromotionController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) Boolean lvsIsActive,
-            Model model,
-            HttpSession session) {
-
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsPromotion> lvsPromotions;
 
@@ -60,11 +56,7 @@ public class LvsAdminPromotionController {
     }
 
     @GetMapping("/LvsAdd")
-    public String lvsShowAddPromotionForm(Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsShowAddPromotionForm(Model model) {
         model.addAttribute("LvsPromotion", new LvsPromotion());
         model.addAttribute("LvsDiscountTypes", LvsPromotion.LvsDiscountType.values());
 
@@ -72,12 +64,7 @@ public class LvsAdminPromotionController {
     }
 
     @PostMapping("/LvsAdd")
-    public String lvsAddPromotion(@ModelAttribute LvsPromotion lvsPromotion,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsAddPromotion(@ModelAttribute LvsPromotion lvsPromotion, Model model) {
         try {
             lvsPromotion.setLvsIsActive(true);
             LvsPromotion lvsSavedPromotion = lvsPromotionService.lvsSavePromotion(lvsPromotion);
@@ -91,11 +78,7 @@ public class LvsAdminPromotionController {
     }
 
     @GetMapping("/LvsDetail/{id}")
-    public String lvsViewPromotionDetail(@PathVariable Integer id, Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsViewPromotionDetail(@PathVariable Integer id, Model model) {
         LvsPromotion lvsPromotion = lvsPromotionService.lvsGetPromotionById(id);
         if (lvsPromotion == null) {
             return "redirect:/LvsAdmin/LvsPromotion/LvsList";
@@ -106,11 +89,7 @@ public class LvsAdminPromotionController {
     }
 
     @GetMapping("/LvsEdit/{id}")
-    public String lvsShowEditPromotionForm(@PathVariable Integer id, Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsShowEditPromotionForm(@PathVariable Integer id, Model model) {
         LvsPromotion lvsPromotion = lvsPromotionService.lvsGetPromotionById(id);
         if (lvsPromotion == null) {
             return "redirect:/LvsAdmin/LvsPromotion/LvsList";
@@ -123,12 +102,7 @@ public class LvsAdminPromotionController {
     }
 
     @PostMapping("/LvsEdit/{id}")
-    public String lvsEditPromotion(@PathVariable Integer id, @ModelAttribute LvsPromotion lvsPromotion,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsEditPromotion(@PathVariable Integer id, @ModelAttribute LvsPromotion lvsPromotion, Model model) {
         try {
             lvsPromotion.setLvsPromotionId(id);
             lvsPromotionService.lvsSavePromotion(lvsPromotion);
@@ -142,11 +116,7 @@ public class LvsAdminPromotionController {
     }
 
     @PostMapping("/LvsDelete/{id}")
-    public String lvsDeletePromotion(@PathVariable Integer id, HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsDeletePromotion(@PathVariable Integer id, Model model) {
         try {
             lvsPromotionService.lvsDeletePromotion(id);
             model.addAttribute("LvsSuccess", "Đã xóa khuyến mãi!");
@@ -158,11 +128,7 @@ public class LvsAdminPromotionController {
     }
 
     @PostMapping("/LvsToggleActive/{id}")
-    public String lvsTogglePromotionActive(@PathVariable Integer id, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsTogglePromotionActive(@PathVariable Integer id) {
         lvsPromotionService.lvsTogglePromotionActive(id);
         return "redirect:/LvsAdmin/LvsPromotion/LvsDetail/" + id;
     }
@@ -175,11 +141,7 @@ public class LvsAdminPromotionController {
     }
 
     @GetMapping("/LvsStatistics/{id}")
-    public String lvsViewPromotionStatistics(@PathVariable Integer id, Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsViewPromotionStatistics(@PathVariable Integer id, Model model) {
         LvsPromotion lvsPromotion = lvsPromotionService.lvsGetPromotionById(id);
         if (lvsPromotion == null) {
             return "redirect:/LvsAdmin/LvsPromotion/LvsList";

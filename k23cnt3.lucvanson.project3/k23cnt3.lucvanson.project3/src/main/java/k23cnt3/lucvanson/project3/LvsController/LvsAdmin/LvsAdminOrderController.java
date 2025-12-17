@@ -3,6 +3,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsAdmin;
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,18 +15,19 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
- * Controller quản lý Đơn hàng (Order) trong Admin Panel
+ * Controller quáº£n lÃ½ ÄÆ¡n hÃ ng (Order) trong Admin Panel
  * 
  * <p>
- * Chức năng chính:
+ * Chá»©c nÄƒng chÃ­nh:
  * </p>
  * <ul>
- * <li>Hiển thị danh sách đơn hàng với phân trang, tìm kiếm và lọc</li>
- * <li>Xem chi tiết đơn hàng và items</li>
- * <li>Cập nhật trạng thái đơn hàng</li>
- * <li>Hủy đơn hàng</li>
- * <li>Hoàn tiền</li>
- * <li>Xuất hóa đơn</li>
+ * <li>Hiá»ƒn thá»‹ danh sÃ¡ch Ä‘Æ¡n hÃ ng vá»›i phÃ¢n trang, tÃ¬m kiáº¿m vÃ 
+ * lá»c</li>
+ * <li>Xem chi tiáº¿t Ä‘Æ¡n hÃ ng vÃ  items</li>
+ * <li>Cáº­p nháº­t tráº¡ng thÃ¡i Ä‘Æ¡n hÃ ng</li>
+ * <li>Há»§y Ä‘Æ¡n hÃ ng</li>
+ * <li>HoÃ n tiá»n</li>
+ * <li>Xuáº¥t hÃ³a Ä‘Æ¡n</li>
  * </ul>
  * 
  * <p>
@@ -42,6 +44,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/LvsAdmin/LvsOrder")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class LvsAdminOrderController {
 
     @Autowired
@@ -51,7 +54,7 @@ public class LvsAdminOrderController {
     private LvsUserService lvsUserService;
 
     /**
-     * Hiển thị danh sách đơn hàng
+     * Hiá»ƒn thá»‹ danh sÃ¡ch Ä‘Æ¡n hÃ ng
      */
     @GetMapping("/LvsList")
     public String lvsListOrders(
@@ -59,13 +62,7 @@ public class LvsAdminOrderController {
             @RequestParam(defaultValue = "30") int size,
             @RequestParam(required = false) String lvsStatus,
             @RequestParam(required = false) String lvsKeyword,
-            Model model,
-            HttpSession session) {
-
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsOrder> lvsOrders;
 
@@ -87,16 +84,11 @@ public class LvsAdminOrderController {
     }
 
     /**
-     * Xem chi tiết đơn hàng
+     * Xem chi tiáº¿t Ä‘Æ¡n hÃ ng
      */
     @GetMapping("/LvsDetail/{id}")
     public String lvsViewOrderDetail(@PathVariable Long id,
-            Model model,
-            HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         LvsOrder lvsOrder = lvsOrderService.lvsGetOrderById(id);
 
         if (lvsOrder == null) {
@@ -112,86 +104,66 @@ public class LvsAdminOrderController {
     }
 
     /**
-     * Cập nhật trạng thái đơn hàng
+     * Cáº­p nháº­t tráº¡ng thÃ¡i Ä‘Æ¡n hÃ ng
      */
     @PostMapping("/LvsUpdateStatus/{id}")
     public String lvsUpdateOrderStatus(@PathVariable Long id,
             @RequestParam LvsOrder.LvsOrderStatus lvsStatus,
             @RequestParam(required = false) String lvsNotes,
-            HttpSession session,
             Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
         try {
             lvsOrderService.lvsUpdateOrderStatus(id, lvsStatus, lvsNotes);
-            model.addAttribute("LvsSuccess", "Đã cập nhật trạng thái đơn hàng!");
+            model.addAttribute("LvsSuccess", "ÄÃ£ cáº­p nháº­t tráº¡ng thÃ¡i Ä‘Æ¡n hÃ ng!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "Lá»—i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsOrder/LvsDetail/" + id;
     }
 
     /**
-     * Hủy đơn hàng
+     * Há»§y Ä‘Æ¡n hÃ ng
      */
     @PostMapping("/LvsCancel/{id}")
     public String lvsCancelOrder(@PathVariable Long id,
             @RequestParam String lvsReason,
-            HttpSession session,
             Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
         try {
             lvsOrderService.lvsCancelOrderByAdmin(id, lvsReason);
-            model.addAttribute("LvsSuccess", "Đã hủy đơn hàng!");
+            model.addAttribute("LvsSuccess", "ÄÃ£ há»§y Ä‘Æ¡n hÃ ng!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "Lá»—i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsOrder/LvsDetail/" + id;
     }
 
     /**
-     * Hoàn tiền đơn hàng
+     * HoÃ n tiá»n Ä‘Æ¡n hÃ ng
      */
     @PostMapping("/LvsRefund/{id}")
     public String lvsRefundOrder(@PathVariable Long id,
             @RequestParam Double lvsAmount,
             @RequestParam String lvsReason,
-            HttpSession session,
             Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
         try {
             LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
             lvsOrderService.lvsRefundOrder(id, lvsAmount, lvsReason, lvsAdmin.getLvsUserId());
 
-            model.addAttribute("LvsSuccess", "Đã hoàn tiền đơn hàng!");
+            model.addAttribute("LvsSuccess", "ÄÃ£ hoÃ n tiá»n Ä‘Æ¡n hÃ ng!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "Lá»—i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsOrder/LvsDetail/" + id;
     }
 
     /**
-     * Xuất hóa đơn
+     * Xuáº¥t hÃ³a Ä‘Æ¡n
      */
     @GetMapping("/LvsInvoice/{id}")
     public String lvsGenerateInvoice(@PathVariable Long id,
-            Model model,
-            HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         LvsOrder lvsOrder = lvsOrderService.lvsGetOrderById(id);
 
         if (lvsOrder == null) {
@@ -204,18 +176,13 @@ public class LvsAdminOrderController {
     }
 
     /**
-     * Tìm kiếm đơn hàng theo user
+     * TÃ¬m kiáº¿m Ä‘Æ¡n hÃ ng theo user
      */
     @GetMapping("/LvsSearchByUser")
     public String lvsSearchOrdersByUser(@RequestParam Long lvsUserId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            Model model,
-            HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsOrder> lvsOrders = lvsOrderService.lvsGetOrdersByUser(lvsUserId, lvsPageable);
 

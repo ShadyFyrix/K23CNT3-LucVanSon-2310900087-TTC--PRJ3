@@ -10,8 +10,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 /**
  * Controller quản lý User (Người dùng) trong Admin Panel
@@ -48,10 +56,10 @@ import jakarta.servlet.http.HttpServletRequest;
  * Template paths:
  * </p>
  * <ul>
- * <li>List: LvsAreas/LvsAdmin/LvsUsers/LvsList.html</li>
- * <li>Detail: LvsAreas/LvsAdmin/LvsUsers/LvsDetail.html</li>
- * <li>Create: LvsAreas/LvsAdmin/LvsUsers/LvsCreate.html</li>
- * <li>Edit: LvsAreas/LvsAdmin/LvsUsers/LvsEdit.html</li>
+ * <li>List: LvsAreas/LvsAdmin/LvsUser/LvsList.html</li>
+ * <li>Detail: LvsAreas/LvsAdmin/LvsUser/LvsDetail.html</li>
+ * <li>Create: LvsAreas/LvsAdmin/LvsUser/LvsCreate.html</li>
+ * <li>Edit: LvsAreas/LvsAdmin/LvsUser/LvsEdit.html</li>
  * </ul>
  * 
  * @author LucVanSon
@@ -59,7 +67,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * @since 2024
  */
 @Controller
-@RequestMapping("/LvsAdmin/LvsUsers")
+@RequestMapping("/LvsAdmin/LvsUser")
 public class LvsAdminUserController {
 
     /**
@@ -67,6 +75,46 @@ public class LvsAdminUserController {
      */
     @Autowired
     private LvsUserService lvsUserService;
+
+    /**
+     * Upload directory for avatar images
+     */
+    private static final String UPLOAD_DIR = "src/main/resources/static/uploads/avatars/";
+
+    /**
+     * Save uploaded avatar file
+     * 
+     * @param file   Uploaded file
+     * @param userId User ID (can be null for new users)
+     * @return Relative path to saved file
+     */
+    private String lvsSaveAvatarFile(MultipartFile file, Long userId) throws IOException {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+
+        // Create upload directory if not exists
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
+        // Generate unique filename
+        String originalFilename = file.getOriginalFilename();
+        String extension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+        String filename = (userId != null ? "user_" + userId : "user_new") + "_" +
+                System.currentTimeMillis() + extension;
+
+        // Save file
+        Path filePath = Paths.get(UPLOAD_DIR + filename);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // Return relative path for URL
+        return "/uploads/avatars/" + filename;
+    }
 
     /**
      * Hiển thị danh sách users với phân trang, tìm kiếm và lọc
@@ -105,7 +153,7 @@ public class LvsAdminUserController {
      * @param role    Role để lọc (optional)
      * @param status  Status để lọc (optional)
      * @param model   Model để truyền dữ liệu ra view
-     * @return Template path: LvsAreas/LvsAdmin/LvsUsers/LvsList
+     * @return Template path: LvsAreas/LvsAdmin/LvsUser/LvsList
      * 
      *         <p>
      *         Model attributes:
@@ -121,7 +169,7 @@ public class LvsAdminUserController {
      *         <li>lvsStatuses: LvsUserStatus[] - Tất cả statuses có thể</li>
      *         </ul>
      */
-    @GetMapping
+    @GetMapping("/LvsList")
     public String lvsListUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String keyword,
@@ -160,7 +208,7 @@ public class LvsAdminUserController {
         model.addAttribute("lvsRoles", LvsUser.LvsRole.values());
         model.addAttribute("lvsStatuses", LvsUser.LvsUserStatus.values());
 
-        return "LvsAreas/LvsAdmin/LvsUsers/LvsList";
+        return "LvsAreas/LvsAdmin/LvsUser/LvsList";
     }
 
     /**
@@ -176,11 +224,11 @@ public class LvsAdminUserController {
      * </ul>
      * 
      * <p>
-     * URL: GET /LvsAdmin/LvsUsers/LvsCreate
+     * URL: GET /LvsAdmin/LvsUser/LvsCreate
      * </p>
      * 
      * @param model Model để truyền dữ liệu ra view
-     * @return Template path: LvsAreas/LvsAdmin/LvsUsers/LvsCreate
+     * @return Template path: LvsAreas/LvsAdmin/LvsUser/LvsCreate
      * 
      *         <p>
      *         Model attributes:
@@ -200,7 +248,7 @@ public class LvsAdminUserController {
         model.addAttribute("lvsRoles", LvsUser.LvsRole.values());
         model.addAttribute("lvsStatuses", LvsUser.LvsUserStatus.values());
 
-        return "LvsAreas/LvsAdmin/LvsUsers/LvsCreate";
+        return "LvsAreas/LvsAdmin/LvsUser/LvsCreate";
     }
 
     /**
@@ -226,7 +274,7 @@ public class LvsAdminUserController {
      * </ul>
      * 
      * <p>
-     * URL: POST /LvsAdmin/LvsUsers/LvsCreate
+     * URL: POST /LvsAdmin/LvsUser/LvsCreate
      * </p>
      * 
      * @param lvsUser               Object LvsUser được binding từ form
@@ -235,24 +283,36 @@ public class LvsAdminUserController {
      * @return Redirect về list nếu thành công, hoặc create page nếu lỗi
      * 
      *         <p>
-     *         Success: redirect:/LvsAdmin/LvsUsers
+     *         Success: redirect:/LvsAdmin/LvsUser
      *         </p>
      *         <p>
-     *         Error: redirect:/LvsAdmin/LvsUsers/LvsCreate
+     *         Error: redirect:/LvsAdmin/LvsUser/LvsCreate
      *         </p>
      */
     @PostMapping("/LvsCreate")
     public String lvsCreateUser(@ModelAttribute LvsUser lvsUser,
             @RequestParam String lvsConfirmPassword,
+            @RequestParam(required = false) MultipartFile lvsAvatarFile,
             RedirectAttributes lvsRedirectAttributes) {
 
         // Validate password confirmation
         if (!lvsUser.getLvsPassword().equals(lvsConfirmPassword)) {
             lvsRedirectAttributes.addFlashAttribute("lvsError", "Mật khẩu xác nhận không khớp!");
-            return "redirect:/LvsAdmin/LvsUsers/LvsCreate";
+            return "redirect:/LvsAdmin/LvsUser/LvsCreate";
         }
 
         try {
+            // Handle avatar upload
+            if (lvsAvatarFile != null && !lvsAvatarFile.isEmpty()) {
+                try {
+                    String avatarPath = lvsSaveAvatarFile(lvsAvatarFile, null);
+                    lvsUser.setLvsAvatarUrl(avatarPath);
+                } catch (IOException e) {
+                    lvsRedirectAttributes.addFlashAttribute("lvsError", "Lỗi upload avatar: " + e.getMessage());
+                    return "redirect:/LvsAdmin/LvsUser/LvsCreate";
+                }
+            }
+
             // Tạo user mới (service sẽ tự động mã hóa password)
             lvsUserService.lvsCreateUser(lvsUser);
 
@@ -263,7 +323,7 @@ public class LvsAdminUserController {
             lvsRedirectAttributes.addFlashAttribute("lvsError", "Lỗi: " + e.getMessage());
         }
 
-        return "redirect:/LvsAdmin/LvsUsers";
+        return "redirect:/LvsAdmin/LvsUser/LvsList";
     }
 
     /**
@@ -281,15 +341,15 @@ public class LvsAdminUserController {
      * </ul>
      * 
      * <p>
-     * URL: GET /LvsAdmin/LvsUsers/{lvsUserId}/LvsDetail
+     * URL: GET /LvsAdmin/LvsUser/{lvsUserId}/LvsDetail
      * </p>
      * <p>
-     * Ví dụ: /LvsAdmin/LvsUsers/1/LvsDetail
+     * Ví dụ: /LvsAdmin/LvsUser/1/LvsDetail
      * </p>
      * 
      * @param lvsUserId ID của user cần xem
      * @param model     Model để truyền dữ liệu ra view
-     * @return Template path: LvsAreas/LvsAdmin/LvsUsers/LvsDetail
+     * @return Template path: LvsAreas/LvsAdmin/LvsUser/LvsDetail
      *         hoặc redirect về list nếu không tìm thấy
      * 
      *         <p>
@@ -310,10 +370,10 @@ public class LvsAdminUserController {
             model.addAttribute("lvsUser", lvsUser);
             model.addAttribute("lvsPageTitle", "Chi tiết User: " + lvsUser.getLvsUsername());
 
-            return "LvsAreas/LvsAdmin/LvsUsers/LvsDetail";
+            return "LvsAreas/LvsAdmin/LvsUser/LvsDetail";
         } catch (Exception e) {
             // Nếu không tìm thấy user, redirect về list với thông báo lỗi
-            return "redirect:/LvsAdmin/LvsUsers?error=User+not+found";
+            return "redirect:/LvsAdmin/LvsUser?error=User+not+found";
         }
     }
 
@@ -330,15 +390,15 @@ public class LvsAdminUserController {
      * </ul>
      * 
      * <p>
-     * URL: GET /LvsAdmin/LvsUsers/{lvsUserId}/LvsEdit
+     * URL: GET /LvsAdmin/LvsUser/{lvsUserId}/LvsEdit
      * </p>
      * <p>
-     * Ví dụ: /LvsAdmin/LvsUsers/1/LvsEdit
+     * Ví dụ: /LvsAdmin/LvsUser/1/LvsEdit
      * </p>
      * 
      * @param lvsUserId ID của user cần chỉnh sửa
      * @param model     Model để truyền dữ liệu ra view
-     * @return Template path: LvsAreas/LvsAdmin/LvsUsers/LvsEdit
+     * @return Template path: LvsAreas/LvsAdmin/LvsUser/LvsEdit
      *         hoặc redirect về list nếu không tìm thấy
      * 
      *         <p>
@@ -363,10 +423,10 @@ public class LvsAdminUserController {
             model.addAttribute("lvsRoles", LvsUser.LvsRole.values());
             model.addAttribute("lvsStatuses", LvsUser.LvsUserStatus.values());
 
-            return "LvsAreas/LvsAdmin/LvsUsers/LvsEdit";
+            return "LvsAreas/LvsAdmin/LvsUser/LvsEdit";
         } catch (Exception e) {
             // Nếu không tìm thấy user, redirect về list
-            return "redirect:/LvsAdmin/LvsUsers?error=User+not+found";
+            return "redirect:/LvsAdmin/LvsUser?error=User+not+found";
         }
     }
 
@@ -395,7 +455,7 @@ public class LvsAdminUserController {
      * </ol>
      * 
      * <p>
-     * URL: POST /LvsAdmin/LvsUsers/{lvsUserId}/LvsEdit
+     * URL: POST /LvsAdmin/LvsUser/{lvsUserId}/LvsEdit
      * </p>
      * 
      * @param lvsUserId             ID của user đang chỉnh sửa
@@ -405,13 +465,14 @@ public class LvsAdminUserController {
      * @return Redirect về detail page nếu thành công
      * 
      *         <p>
-     *         Success: redirect:/LvsAdmin/LvsUsers/{id}/LvsDetail
+     *         Success: redirect:/LvsAdmin/LvsUser/{id}/LvsDetail
      *         </p>
      */
     @PostMapping("/{lvsUserId}/LvsEdit")
     public String lvsUpdateUser(@PathVariable Long lvsUserId,
             @ModelAttribute LvsUser lvsUser,
             @RequestParam(required = false) String lvsNewPassword,
+            @RequestParam(required = false) MultipartFile lvsAvatarFile,
             RedirectAttributes lvsRedirectAttributes) {
 
         try {
@@ -429,6 +490,18 @@ public class LvsAdminUserController {
             lvsExistingUser.setLvsStatus(lvsUser.getLvsStatus());
             lvsExistingUser.setLvsCoin(lvsUser.getLvsCoin());
             lvsExistingUser.setLvsBalance(lvsUser.getLvsBalance());
+
+            // ===== CẬP NHẬT AVATAR (NẾU CÓ FILE MỚI) =====
+            if (lvsAvatarFile != null && !lvsAvatarFile.isEmpty()) {
+                try {
+                    String avatarPath = lvsSaveAvatarFile(lvsAvatarFile, lvsUserId);
+                    lvsExistingUser.setLvsAvatarUrl(avatarPath);
+                } catch (IOException e) {
+                    lvsRedirectAttributes.addFlashAttribute("lvsError", "Lỗi upload avatar: " + e.getMessage());
+                    return "redirect:/LvsAdmin/LvsUser/" + lvsUserId + "/LvsEdit";
+                }
+            }
+            // Nếu không có file mới, giữ nguyên avatar cũ (không cần set lại)
 
             // ===== CẬP NHẬT PASSWORD (NẾU CÓ) =====
             if (lvsNewPassword != null && !lvsNewPassword.trim().isEmpty()) {
@@ -448,7 +521,7 @@ public class LvsAdminUserController {
             lvsRedirectAttributes.addFlashAttribute("lvsError", "Lỗi: " + e.getMessage());
         }
 
-        return "redirect:/LvsAdmin/LvsUsers/" + lvsUserId + "/LvsDetail";
+        return "redirect:/LvsAdmin/LvsUser/" + lvsUserId + "/LvsDetail";
     }
 
     /**
@@ -473,7 +546,7 @@ public class LvsAdminUserController {
      * </ul>
      * 
      * <p>
-     * URL: POST /LvsAdmin/LvsUsers/{lvsUserId}/LvsDelete
+     * URL: POST /LvsAdmin/LvsUser/{lvsUserId}/LvsDelete
      * </p>
      * 
      * @param lvsUserId             ID của user cần xóa
@@ -511,7 +584,7 @@ public class LvsAdminUserController {
             lvsRedirectAttributes.addFlashAttribute("lvsError", "Lỗi: " + e.getMessage());
         }
 
-        return "redirect:/LvsAdmin/LvsUsers";
+        return "redirect:/LvsAdmin/LvsUser/LvsList";
     }
 
     /**
@@ -538,7 +611,7 @@ public class LvsAdminUserController {
      * </ul>
      * 
      * <p>
-     * URL: POST /LvsAdmin/LvsUsers/{lvsUserId}/LvsHardDelete
+     * URL: POST /LvsAdmin/LvsUser/{lvsUserId}/LvsHardDelete
      * </p>
      * 
      * @param lvsUserId             ID của user cần xóa vĩnh viễn
@@ -576,7 +649,7 @@ public class LvsAdminUserController {
             lvsRedirectAttributes.addFlashAttribute("lvsError", "Lỗi: " + e.getMessage());
         }
 
-        return "redirect:/LvsAdmin/LvsUsers";
+        return "redirect:/LvsAdmin/LvsUser/LvsList";
     }
 
     /**
@@ -601,7 +674,7 @@ public class LvsAdminUserController {
      * </ul>
      * 
      * <p>
-     * URL: POST /LvsAdmin/LvsUsers/{lvsUserId}/lvs-ban
+     * URL: POST /LvsAdmin/LvsUser/{lvsUserId}/lvs-ban
      * </p>
      * 
      * @param lvsUserId             ID của user cần khóa
@@ -629,7 +702,7 @@ public class LvsAdminUserController {
             lvsRedirectAttributes.addFlashAttribute("lvsError", "Lỗi: " + e.getMessage());
         }
 
-        return "redirect:/LvsAdmin/LvsUsers/" + lvsUserId + "/LvsDetail";
+        return "redirect:/LvsAdmin/LvsUser/" + lvsUserId + "/LvsDetail";
     }
 
     /**
@@ -645,7 +718,7 @@ public class LvsAdminUserController {
      * </ul>
      * 
      * <p>
-     * URL: POST /LvsAdmin/LvsUsers/{lvsUserId}/lvs-unban
+     * URL: POST /LvsAdmin/LvsUser/{lvsUserId}/lvs-unban
      * </p>
      * 
      * @param lvsUserId             ID của user cần mở khóa
@@ -667,6 +740,6 @@ public class LvsAdminUserController {
             lvsRedirectAttributes.addFlashAttribute("lvsError", "Lỗi: " + e.getMessage());
         }
 
-        return "redirect:/LvsAdmin/LvsUsers/" + lvsUserId + "/LvsDetail";
+        return "redirect:/LvsAdmin/LvsUser/" + lvsUserId + "/LvsDetail";
     }
 }

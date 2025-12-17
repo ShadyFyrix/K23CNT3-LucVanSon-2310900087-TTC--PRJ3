@@ -3,6 +3,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsAdmin;
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/LvsAdmin/LvsReview")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class LvsAdminReviewController {
 
     @Autowired
@@ -39,13 +41,7 @@ public class LvsAdminReviewController {
             @RequestParam(defaultValue = "30") int size,
             @RequestParam(required = false) Boolean lvsIsApproved,
             @RequestParam(required = false) Long lvsProjectId,
-            Model model,
-            HttpSession session) {
-
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsReview> lvsReviews;
 
@@ -66,11 +62,7 @@ public class LvsAdminReviewController {
     }
 
     @GetMapping("/LvsDetail/{id}")
-    public String lvsViewReviewDetail(@PathVariable Long id, Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsViewReviewDetail(@PathVariable Long id, Model model) {
         LvsReview lvsReview = lvsReviewService.lvsGetReviewById(id);
         if (lvsReview == null) {
             return "redirect:/LvsAdmin/LvsReview/LvsList";
@@ -81,11 +73,7 @@ public class LvsAdminReviewController {
     }
 
     @PostMapping("/LvsApprove/{id}")
-    public String lvsApproveReview(@PathVariable Long id, HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsApproveReview(@PathVariable Long id, Model model) {
         try {
             lvsReviewService.lvsApproveReview(id);
             model.addAttribute("LvsSuccess", "Đã duyệt đánh giá!");
@@ -97,12 +85,7 @@ public class LvsAdminReviewController {
     }
 
     @PostMapping("/LvsHide/{id}")
-    public String lvsHideReview(@PathVariable Long id, @RequestParam(required = false) String lvsReason,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsHideReview(@PathVariable Long id, @RequestParam(required = false) String lvsReason, Model model) {
         try {
             lvsReviewService.lvsHideReview(id, lvsReason);
             model.addAttribute("LvsSuccess", "Đã ẩn đánh giá!");
@@ -114,12 +97,7 @@ public class LvsAdminReviewController {
     }
 
     @PostMapping("/LvsDelete/{id}")
-    public String lvsDeleteReview(@PathVariable Long id, @RequestParam(required = false) String lvsReason,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsDeleteReview(@PathVariable Long id, @RequestParam(required = false) String lvsReason, Model model) {
         try {
             LvsReview lvsReview = lvsReviewService.lvsGetReviewById(id);
             Long lvsProjectId = lvsReview.getLvsProject().getLvsProjectId();
@@ -136,11 +114,7 @@ public class LvsAdminReviewController {
     }
 
     @GetMapping("/LvsEdit/{id}")
-    public String lvsShowEditReviewForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsShowEditReviewForm(@PathVariable Long id, Model model) {
         LvsReview lvsReview = lvsReviewService.lvsGetReviewById(id);
         if (lvsReview == null) {
             return "redirect:/LvsAdmin/LvsReview/LvsList";
@@ -151,12 +125,7 @@ public class LvsAdminReviewController {
     }
 
     @PostMapping("/LvsEdit/{id}")
-    public String lvsEditReview(@PathVariable Long id, @ModelAttribute LvsReview lvsReview,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsEditReview(@PathVariable Long id, @ModelAttribute LvsReview lvsReview, Model model) {
         try {
             LvsReview lvsExistingReview = lvsReviewService.lvsGetReviewById(id);
 
@@ -179,11 +148,7 @@ public class LvsAdminReviewController {
     public String lvsViewProjectReviews(@PathVariable Long projectId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "30") int size,
-            Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         LvsProject lvsProject = lvsProjectService.lvsGetProjectById(projectId);
         if (lvsProject == null) {
             return "redirect:/LvsAdmin/LvsReview/LvsList";
@@ -205,11 +170,7 @@ public class LvsAdminReviewController {
     public String lvsViewUserReviews(@PathVariable Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "30") int size,
-            Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         LvsUser lvsUser = lvsUserService.lvsGetUserById(userId);
         if (lvsUser == null) {
             return "redirect:/LvsAdmin/LvsReview/LvsList";

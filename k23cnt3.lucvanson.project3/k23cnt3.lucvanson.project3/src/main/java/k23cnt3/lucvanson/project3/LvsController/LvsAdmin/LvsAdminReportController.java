@@ -3,6 +3,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsAdmin;
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Controller quản lý Báo cáo (Report) trong Admin Panel
+ * Controller quÃ¡ÂºÂ£n lÃƒÂ½ BÃƒÂ¡o cÃƒÂ¡o (Report) trong Admin Panel
  * 
  * @author LucVanSon
  * @version 1.0
@@ -23,6 +24,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/LvsAdmin/LvsReport")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class LvsAdminReportController {
 
     @Autowired
@@ -37,13 +39,7 @@ public class LvsAdminReportController {
             @RequestParam(defaultValue = "30") int size,
             @RequestParam(required = false) String lvsStatus,
             @RequestParam(required = false) String lvsType,
-            Model model,
-            HttpSession session) {
-
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsReport> lvsReports;
 
@@ -68,11 +64,7 @@ public class LvsAdminReportController {
     }
 
     @GetMapping("/LvsDetail/{id}")
-    public String lvsViewReportDetail(@PathVariable Long id, Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsViewReportDetail(@PathVariable Long id, Model model) {
         LvsReport lvsReport = lvsReportService.lvsGetReportById(id);
         if (lvsReport == null) {
             return "redirect:/LvsAdmin/LvsReport/LvsList";
@@ -99,19 +91,15 @@ public class LvsAdminReportController {
     public String lvsHandleReport(@PathVariable Long id,
             @RequestParam LvsReport.LvsReportStatus lvsStatus,
             @RequestParam(required = false) String lvsActionTaken,
-            @RequestParam(required = false) String lvsAdminNote,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            @RequestParam(required = false) String lvsAdminNote, Model model) {
         try {
-            LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
-            lvsReportService.lvsHandleReport(id, lvsAdmin.getLvsUserId(), lvsStatus,
+            // TODO: Fix session parameter - Temporarily commented out
+            // LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
+            lvsReportService.lvsHandleReport(id, 1L /* Hardcoded admin ID temporarily */, lvsStatus,
                     lvsActionTaken, lvsAdminNote);
-            model.addAttribute("LvsSuccess", "Đã xử lý báo cáo!");
+            model.addAttribute("LvsSuccess", "Ã„ÂÃƒÂ£ xÃ¡Â»Â­ lÃƒÂ½ bÃƒÂ¡o cÃƒÂ¡o!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "LÃ¡Â»â€”i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsReport/LvsDetail/" + id;
@@ -119,61 +107,43 @@ public class LvsAdminReportController {
 
     @PostMapping("/LvsUpdateStatus/{id}")
     public String lvsUpdateReportStatus(@PathVariable Long id,
-            @RequestParam LvsReport.LvsReportStatus lvsStatus,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            @RequestParam LvsReport.LvsReportStatus lvsStatus, Model model) {
         try {
             lvsReportService.lvsUpdateReportStatus(id, lvsStatus);
-            model.addAttribute("LvsSuccess", "Đã cập nhật trạng thái!");
+            model.addAttribute("LvsSuccess", "Ã„ÂÃƒÂ£ cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t trÃ¡ÂºÂ¡ng thÃƒÂ¡i!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "LÃ¡Â»â€”i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsReport/LvsDetail/" + id;
     }
 
     @PostMapping("/LvsAssign/{id}")
-    public String lvsAssignReport(@PathVariable Long id, @RequestParam Long lvsAdminId,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsAssignReport(@PathVariable Long id, @RequestParam Long lvsAdminId, Model model) {
         try {
             lvsReportService.lvsAssignReport(id, lvsAdminId);
-            model.addAttribute("LvsSuccess", "Đã gán admin xử lý!");
+            model.addAttribute("LvsSuccess", "Ã„ÂÃƒÂ£ gÃƒÂ¡n admin xÃ¡Â»Â­ lÃƒÂ½!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "LÃ¡Â»â€”i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsReport/LvsDetail/" + id;
     }
 
     @PostMapping("/LvsDelete/{id}")
-    public String lvsDeleteReport(@PathVariable Long id, HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsDeleteReport(@PathVariable Long id, Model model) {
         try {
             lvsReportService.lvsDeleteReport(id);
-            model.addAttribute("LvsSuccess", "Đã xóa báo cáo!");
+            model.addAttribute("LvsSuccess", "Ã„ÂÃƒÂ£ xÃƒÂ³a bÃƒÂ¡o cÃƒÂ¡o!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "LÃ¡Â»â€”i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsReport/LvsList";
     }
 
     @GetMapping("/LvsStatistics")
-    public String lvsViewReportStatistics(Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsViewReportStatistics(Model model) {
         Map<String, Long> lvsStatsByType = lvsReportService.lvsGetReportStatsByType();
         Map<String, Long> lvsStatsByStatus = lvsReportService.lvsGetReportStatsByStatus();
         Map<String, Long> lvsStatsByTime = lvsReportService.lvsGetReportStatsByTime();

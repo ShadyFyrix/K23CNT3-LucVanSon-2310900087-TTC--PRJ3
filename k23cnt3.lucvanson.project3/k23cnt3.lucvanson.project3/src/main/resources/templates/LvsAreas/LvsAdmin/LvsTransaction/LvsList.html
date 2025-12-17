@@ -1,88 +1,126 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
-
 <head>
+    <meta charset="UTF-8">
     <title>Quản lý Giao dịch</title>
 </head>
-
 <body>
     <div layout:fragment="content">
         <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
-            <h1 class="h3 mb-4">Quản lý Giao dịch</h1>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">Quản lý Giao dịch</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsDashboard}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Giao dịch</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div>
+                    <a th:href="@{/LvsAdmin/LvsTransaction/LvsCreate}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tạo giao dịch mới
+                    </a>
+                </div>
+            </div>
             <div class="card mb-4">
                 <div class="card-body">
                     <form th:action="@{/LvsAdmin/LvsTransaction/LvsList}" method="get" class="row g-3">
-                        <div class="col-md-3"><input type="text" class="form-control" name="lvsKeyword"
-                                th:value="${LvsKeyword}" placeholder="Tìm kiếm..."></div>
                         <div class="col-md-3">
+                            <label class="form-label">Loại giao dịch</label>
                             <select class="form-select" name="lvsType">
-                                <option value="">Tất cả loại</option>
-                                <option th:each="type : ${LvsTypes}" th:value="${type}" th:text="${type}"
-                                    th:selected="${type.toString() == LvsSelectedType}"></option>
+                                <option value="">Tất cả</option>
+                                <option value="DEPOSIT">Nạp tiền</option>
+                                <option value="WITHDRAW">Rút tiền</option>
+                                <option value="PURCHASE">Mua hàng</option>
+                                <option value="REFUND">Hoàn tiền</option>
                             </select>
                         </div>
                         <div class="col-md-3">
+                            <label class="form-label">Trạng thái</label>
                             <select class="form-select" name="lvsStatus">
-                                <option value="">Tất cả trạng thái</option>
-                                <option th:each="status : ${LvsStatuses}" th:value="${status}" th:text="${status}"
-                                    th:selected="${status.toString() == LvsSelectedStatus}"></option>
+                                <option value="">Tất cả</option>
+                                <option value="PENDING">Chờ xử lý</option>
+                                <option value="COMPLETED">Hoàn thành</option>
+                                <option value="FAILED">Thất bại</option>
+                                <option value="CANCELLED">Đã hủy</option>
                             </select>
                         </div>
-                        <div class="col-md-3"><button type="submit" class="btn btn-primary w-100"><i
-                                    class="fas fa-search"></i> Tìm</button></div>
+                        <div class="col-md-2">
+                            <label class="form-label">Người dùng</label>
+                            <input type="text" class="form-control" name="lvsUser" placeholder="Tên user...">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Từ ngày</label>
+                            <input type="date" class="form-control" name="lvsFromDate">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Tìm
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
             <div class="card">
                 <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>User</th>
-                                <th>Loại</th>
-                                <th>Số tiền</th>
-                                <th>Trạng thái</th>
-                                <th>Ngày</th>
-                                <th>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="tx : ${LvsTransactions.content}">
-                                <td th:text="${tx.lvsTransactionId}"></td>
-                                <td th:text="${tx.lvsUser?.lvsUsername}"></td>
-                                <td><span class="badge bg-info" th:text="${tx.lvsType}"></span></td>
-                                <td th:text="${#numbers.formatDecimal(tx.lvsAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
-                                </td>
-                                <td>
-                                    <span th:if="${tx.lvsStatus.name() == 'PENDING'}"
-                                        class="badge bg-warning">Chờ</span>
-                                    <span th:if="${tx.lvsStatus.name() == 'SUCCESS'}" class="badge bg-success">Thành
-                                        công</span>
-                                    <span th:if="${tx.lvsStatus.name() == 'FAILED'}" class="badge bg-danger">Thất
-                                        bại</span>
-                                </td>
-                                <td th:text="${#temporals.format(tx.lvsCreatedAt, 'dd/MM/yyyy')}"></td>
-                                <td><a th:href="@{/LvsAdmin/LvsTransaction/LvsDetail/{id}(id=${tx.lvsTransactionId})}"
-                                        class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Người dùng</th>
+                                    <th>Loại</th>
+                                    <th>Số tiền</th>
+                                    <th>Phương thức</th>
+                                    <th>Ngày giao dịch</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="trans : ${LvsTransactions.content}">
+                                    <td th:text="${trans.lvsTransactionId}"></td>
+                                    <td th:text="${trans.lvsUser?.lvsUsername}"></td>
+                                    <td>
+                                        <span th:if="${trans.lvsType?.name() == 'DEPOSIT'}" class="badge bg-success">Nạp tiền</span>
+                                        <span th:if="${trans.lvsType?.name() == 'WITHDRAW'}" class="badge bg-warning">Rút tiền</span>
+                                        <span th:if="${trans.lvsType?.name() == 'PURCHASE'}" class="badge bg-primary">Mua hàng</span>
+                                        <span th:if="${trans.lvsType?.name() == 'REFUND'}" class="badge bg-info">Hoàn tiền</span>
+                                    </td>
+                                    <td>
+                                        <strong th:text="${trans.lvsAmount + ' đ'}"></strong>
+                                    </td>
+                                    <td th:text="${trans.lvsPaymentMethod}"></td>
+                                    <td th:text="${#temporals.format(trans.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}"></td>
+                                    <td>
+                                        <span th:if="${trans.lvsStatus?.name() == 'PENDING'}" class="badge bg-warning">Chờ xử lý</span>
+                                        <span th:if="${trans.lvsStatus?.name() == 'COMPLETED'}" class="badge bg-success">Hoàn thành</span>
+                                        <span th:if="${trans.lvsStatus?.name() == 'FAILED'}" class="badge bg-danger">Thất bại</span>
+                                        <span th:if="${trans.lvsStatus?.name() == 'CANCELLED'}" class="badge bg-secondary">Đã hủy</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/LvsAdmin/LvsTransaction/LvsDetail/{id}(id=${trans.lvsTransactionId})}"
+                                            class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                        <a th:href="@{/LvsAdmin/LvsTransaction/LvsEdit/{id}(id=${trans.lvsTransactionId})}"
+                                            class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <nav th:if="${LvsTransactions.totalPages > 1}">
                         <ul class="pagination justify-content-center">
                             <li class="page-item" th:classappend="${LvsTransactions.first} ? 'disabled'">
-                                <a class="page-link"
-                                    th:href="@{/LvsAdmin/LvsTransaction/LvsList(page=${LvsCurrentPage - 1})}">Trước</a>
+                                <a class="page-link" th:href="@{/LvsAdmin/LvsTransaction/LvsList(page=${LvsCurrentPage - 1})}">Trước</a>
                             </li>
                             <li class="page-item" th:each="i : ${#numbers.sequence(0, LvsTransactions.totalPages - 1)}"
                                 th:classappend="${i == LvsCurrentPage} ? 'active'">
-                                <a class="page-link" th:href="@{/LvsAdmin/LvsTransaction/LvsList(page=${i})}"
-                                    th:text="${i + 1}"></a>
+                                <a class="page-link" th:href="@{/LvsAdmin/LvsTransaction/LvsList(page=${i})}" th:text="${i + 1}"></a>
                             </li>
                             <li class="page-item" th:classappend="${LvsTransactions.last} ? 'disabled'">
-                                <a class="page-link"
-                                    th:href="@{/LvsAdmin/LvsTransaction/LvsList(page=${LvsCurrentPage + 1})}">Sau</a>
+                                <a class="page-link" th:href="@{/LvsAdmin/LvsTransaction/LvsList(page=${LvsCurrentPage + 1})}">Sau</a>
                             </li>
                         </ul>
                     </nav>
@@ -91,5 +129,5 @@
         </div>
     </div>
 </body>
-
 </html>
+

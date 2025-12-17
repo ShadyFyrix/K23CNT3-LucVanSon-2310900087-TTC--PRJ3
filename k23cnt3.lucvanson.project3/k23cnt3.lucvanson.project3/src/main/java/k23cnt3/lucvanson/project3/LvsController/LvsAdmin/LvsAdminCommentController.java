@@ -3,6 +3,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsAdmin;
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/LvsAdmin/LvsComment")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class LvsAdminCommentController {
 
     @Autowired
@@ -75,13 +77,7 @@ public class LvsAdminCommentController {
             @RequestParam(defaultValue = "50") int size,
             @RequestParam(required = false) Boolean lvsIsApproved,
             @RequestParam(required = false) Long lvsPostId,
-            Model model,
-            HttpSession session) {
-
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsComment> lvsComments;
 
@@ -106,12 +102,7 @@ public class LvsAdminCommentController {
      */
     @GetMapping("/LvsDetail/{id}")
     public String lvsViewCommentDetail(@PathVariable Long id,
-            Model model,
-            HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         LvsComment lvsComment = lvsCommentService.lvsGetCommentById(id);
 
         if (lvsComment == null) {
@@ -131,12 +122,7 @@ public class LvsAdminCommentController {
      */
     @PostMapping("/LvsApprove/{id}")
     public String lvsApproveComment(@PathVariable Long id,
-            HttpSession session,
             Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
         try {
             lvsCommentService.lvsApproveComment(id);
             model.addAttribute("LvsSuccess", "Đã duyệt bình luận!");
@@ -153,12 +139,7 @@ public class LvsAdminCommentController {
     @PostMapping("/LvsHide/{id}")
     public String lvsHideComment(@PathVariable Long id,
             @RequestParam(required = false) String lvsReason,
-            HttpSession session,
             Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
         try {
             lvsCommentService.lvsHideComment(id, lvsReason);
             model.addAttribute("LvsSuccess", "Đã ẩn bình luận!");
@@ -175,12 +156,7 @@ public class LvsAdminCommentController {
     @PostMapping("/LvsDelete/{id}")
     public String lvsDeleteComment(@PathVariable Long id,
             @RequestParam(required = false) String lvsReason,
-            HttpSession session,
             Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
         try {
             lvsCommentService.lvsDeleteComment(id, lvsReason);
             model.addAttribute("LvsSuccess", "Đã xóa bình luận!");
@@ -196,12 +172,7 @@ public class LvsAdminCommentController {
      */
     @GetMapping("/LvsEdit/{id}")
     public String lvsShowEditCommentForm(@PathVariable Long id,
-            Model model,
-            HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         LvsComment lvsComment = lvsCommentService.lvsGetCommentById(id);
 
         if (lvsComment == null) {
@@ -219,12 +190,7 @@ public class LvsAdminCommentController {
     @PostMapping("/LvsEdit/{id}")
     public String lvsEditComment(@PathVariable Long id,
             @ModelAttribute LvsComment lvsComment,
-            HttpSession session,
             Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
         try {
             lvsComment.setLvsCommentId(id);
             lvsComment.setLvsIsEdited(true);
@@ -245,12 +211,7 @@ public class LvsAdminCommentController {
     public String lvsViewPostComments(@PathVariable Long postId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            Model model,
-            HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         LvsPost lvsPost = lvsPostService.lvsGetPostById(postId);
         if (lvsPost == null) {
             return "redirect:/LvsAdmin/LvsComment/LvsList";
@@ -273,12 +234,7 @@ public class LvsAdminCommentController {
     public String lvsViewUserComments(@PathVariable Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            Model model,
-            HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         LvsUser lvsUser = lvsUserService.lvsGetUserById(userId);
         if (lvsUser == null) {
             return "redirect:/LvsAdmin/LvsComment/LvsList";

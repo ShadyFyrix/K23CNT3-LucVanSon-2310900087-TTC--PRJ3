@@ -3,6 +3,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsAdmin;
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/LvsAdmin/LvsSetting")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class LvsAdminSettingController {
 
     @Autowired
@@ -30,11 +32,7 @@ public class LvsAdminSettingController {
 
     @GetMapping("/LvsList")
     public String lvsListSettings(@RequestParam(required = false) String lvsGroup,
-            Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         List<LvsSetting> lvsSettings;
 
         if (lvsGroup != null && !lvsGroup.isEmpty()) {
@@ -53,11 +51,7 @@ public class LvsAdminSettingController {
     }
 
     @GetMapping("/LvsEdit/{id}")
-    public String lvsShowEditSettingForm(@PathVariable Integer id, Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsShowEditSettingForm(@PathVariable Integer id, Model model) {
         LvsSetting lvsSetting = lvsSettingService.lvsGetSettingById(id);
         if (lvsSetting == null) {
             return "redirect:/LvsAdmin/LvsSetting/LvsList";
@@ -68,12 +62,7 @@ public class LvsAdminSettingController {
     }
 
     @PostMapping("/LvsEdit/{id}")
-    public String lvsEditSetting(@PathVariable Integer id, @ModelAttribute LvsSetting lvsSetting,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsEditSetting(@PathVariable Integer id, @ModelAttribute LvsSetting lvsSetting, Model model) {
         try {
             lvsSetting.setLvsSettingId(id);
             lvsSettingService.lvsSaveSetting(lvsSetting);
@@ -87,22 +76,13 @@ public class LvsAdminSettingController {
     }
 
     @GetMapping("/LvsAdd")
-    public String lvsShowAddSettingForm(Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsShowAddSettingForm(Model model) {
         model.addAttribute("LvsSetting", new LvsSetting());
         return "LvsAreas/LvsAdmin/LvsSetting/LvsCreate";
     }
 
     @PostMapping("/LvsAdd")
-    public String lvsAddSetting(@ModelAttribute LvsSetting lvsSetting,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsAddSetting(@ModelAttribute LvsSetting lvsSetting, Model model) {
         try {
             lvsSettingService.lvsSaveSetting(lvsSetting);
 
@@ -115,11 +95,7 @@ public class LvsAdminSettingController {
     }
 
     @PostMapping("/LvsDelete/{id}")
-    public String lvsDeleteSetting(@PathVariable Integer id, HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsDeleteSetting(@PathVariable Integer id, Model model) {
         try {
             lvsSettingService.lvsDeleteSetting(id);
             model.addAttribute("LvsSuccess", "Đã xóa cài đặt!");
@@ -131,12 +107,7 @@ public class LvsAdminSettingController {
     }
 
     @PostMapping("/LvsBatchSave")
-    public String lvsBatchSaveSettings(@RequestParam Map<String, String> lvsSettings,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsBatchSaveSettings(@RequestParam Map<String, String> lvsSettings, Model model) {
         try {
             lvsSettingService.lvsBatchSaveSettings(lvsSettings);
             model.addAttribute("LvsSuccess", "Đã lưu cài đặt thành công!");
@@ -148,11 +119,7 @@ public class LvsAdminSettingController {
     }
 
     @GetMapping("/LvsSystem")
-    public String lvsSystemSettings(Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsSystemSettings(Model model) {
         List<LvsSetting> lvsSystemSettings = lvsSettingService.lvsGetSettingsByGroup("system");
         List<LvsSetting> lvsEmailSettings = lvsSettingService.lvsGetSettingsByGroup("email");
         List<LvsSetting> lvsPaymentSettings = lvsSettingService.lvsGetSettingsByGroup("payment");
@@ -165,11 +132,7 @@ public class LvsAdminSettingController {
     }
 
     @GetMapping("/LvsBackup")
-    public String lvsBackupSettings(Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsBackupSettings(Model model) {
         try {
             String lvsBackupData = lvsSettingService.lvsBackupSettings();
             model.addAttribute("LvsBackupData", lvsBackupData);
@@ -182,12 +145,7 @@ public class LvsAdminSettingController {
     }
 
     @PostMapping("/LvsRestore")
-    public String lvsRestoreSettings(@RequestParam String lvsBackupData,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsRestoreSettings(@RequestParam String lvsBackupData, Model model) {
         try {
             lvsSettingService.lvsRestoreSettings(lvsBackupData);
             model.addAttribute("LvsSuccess", "Khôi phục thành công!");

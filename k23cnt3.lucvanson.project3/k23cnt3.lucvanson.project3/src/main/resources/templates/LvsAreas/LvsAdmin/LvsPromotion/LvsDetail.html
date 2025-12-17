@@ -15,8 +15,8 @@
                     <p><strong>Mã:</strong> <code th:text="${LvsPromotion.lvsCode}"></code></p>
                     <p><strong>Loại giảm giá:</strong> <span th:text="${LvsPromotion.lvsDiscountType}"></span></p>
                     <p><strong>Giá trị:</strong> <span th:text="${LvsPromotion.lvsDiscountValue}"></span></p>
-                    <p><strong>Hạn sử dụng:</strong> <span
-                            th:text="${#temporals.format(LvsPromotion.lvsValidTo, 'dd/MM/yyyy')}"></span></p>
+                    <p><strong>Ngày kết thúc:</strong> <span
+                            th:text="${#temporals.format(LvsPromotion.lvsEndDate, 'dd/MM/yyyy')}"></span></p>
                     <p><strong>Đã sử dụng:</strong> <span
                             th:text="${LvsPromotion.lvsUsedCount} + '/' + ${LvsPromotion.lvsUsageLimit}"></span></p>
                 </div>

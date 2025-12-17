@@ -3,6 +3,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsAdmin;
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/LvsAdmin/LvsMessage")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class LvsAdminMessageController {
 
     @Autowired
@@ -36,13 +38,7 @@ public class LvsAdminMessageController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
             @RequestParam(required = false) Long lvsUserId,
-            Model model,
-            HttpSession session) {
-
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsMessage> lvsMessages;
 
@@ -60,11 +56,7 @@ public class LvsAdminMessageController {
     }
 
     @GetMapping("/LvsDetail/{id}")
-    public String lvsViewMessageDetail(@PathVariable Long id, Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsViewMessageDetail(@PathVariable Long id, Model model) {
         LvsMessage lvsMessage = lvsMessageService.lvsGetMessageById(id);
         if (lvsMessage == null) {
             return "redirect:/LvsAdmin/LvsMessage/LvsList";
@@ -75,11 +67,7 @@ public class LvsAdminMessageController {
     }
 
     @PostMapping("/LvsDelete/{id}")
-    public String lvsDeleteMessage(@PathVariable Long id, HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsDeleteMessage(@PathVariable Long id, Model model) {
         try {
             lvsMessageService.lvsDeleteMessage(id);
             model.addAttribute("LvsSuccess", "Đã xóa tin nhắn!");
@@ -94,11 +82,7 @@ public class LvsAdminMessageController {
     public String lvsViewConversation(@RequestParam Long lvsUserId1, @RequestParam Long lvsUserId2,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsMessage> lvsMessages = lvsMessageService.lvsGetConversation(lvsUserId1, lvsUserId2, lvsPageable);
 
@@ -117,11 +101,7 @@ public class LvsAdminMessageController {
     public String lvsSearchMessages(@RequestParam String lvsKeyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+            Model model) {
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsMessage> lvsMessages = lvsMessageService.lvsSearchMessages(lvsKeyword, lvsPageable);
 
@@ -133,12 +113,7 @@ public class LvsAdminMessageController {
     }
 
     @PostMapping("/LvsDeleteConversation")
-    public String lvsDeleteConversation(@RequestParam Long lvsUserId1, @RequestParam Long lvsUserId2,
-            HttpSession session, Model model) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsDeleteConversation(@RequestParam Long lvsUserId1, @RequestParam Long lvsUserId2, Model model) {
         try {
             lvsMessageService.lvsDeleteConversation(lvsUserId1, lvsUserId2);
             model.addAttribute("LvsSuccess", "Đã xóa cuộc trò chuyện!");
@@ -150,11 +125,7 @@ public class LvsAdminMessageController {
     }
 
     @GetMapping("/LvsStatistics")
-    public String lvsViewMessageStatistics(Model model, HttpSession session) {
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
+    public String lvsViewMessageStatistics(Model model) {
         Long lvsTotalMessages = lvsMessageService.lvsCountTotalMessages();
         Long lvsTodayMessages = lvsMessageService.lvsCountTodayMessages();
         Long lvsUnreadMessages = lvsMessageService.lvsCountUnreadMessages();

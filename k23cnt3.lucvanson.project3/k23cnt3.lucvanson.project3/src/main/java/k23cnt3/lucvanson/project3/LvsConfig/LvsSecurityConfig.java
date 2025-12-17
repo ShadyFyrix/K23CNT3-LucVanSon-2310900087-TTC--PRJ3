@@ -76,7 +76,20 @@ public class LvsSecurityConfig {
                                                 .permitAll())
                                 .exceptionHandling(ex -> ex
                                                 .accessDeniedPage("/403") // Trang 403
-                                )
+                                                .authenticationEntryPoint((request, response, authException) -> {
+                                                        // Redirect to admin login if accessing admin pages
+                                                        String requestURI = request.getRequestURI();
+                                                        if (requestURI.contains("/LvsAdmin")) {
+                                                                response.sendRedirect(request.getContextPath()
+                                                                                + "/LvsAdmin/LvsLogin");
+                                                        } else if (requestURI.contains("/LvsModerator")) {
+                                                                response.sendRedirect(request.getContextPath()
+                                                                                + "/LvsModerator/LvsLogin");
+                                                        } else {
+                                                                response.sendRedirect(request.getContextPath()
+                                                                                + "/LvsUser/LvsLogin");
+                                                        }
+                                                }))
                                 .authenticationProvider(authenticationProvider());
                 // .csrf(csrf -> csrf.disable()); // Enable CSRF for production
 

@@ -3,6 +3,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsAdmin;
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,29 +15,29 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
- * Controller quản lý Bài viết (Post) trong Admin Panel
+ * Controller quáº£n lÃ½ BÃ i viáº¿t (Post) trong Admin Panel
  * 
  * <p>
- * Chức năng chính:
+ * Chá»©c nÄƒng chÃ­nh:
  * </p>
  * <ul>
- * <li>Hiển thị danh sách bài viết với phân trang, tìm kiếm và lọc</li>
- * <li>Xem chi tiết bài viết</li>
- * <li>Chỉnh sửa bài viết</li>
- * <li>Duyệt/ẩn/hiển thị bài viết</li>
- * <li>Xóa bài viết</li>
- * <li>Ghim/bỏ ghim bài viết</li>
+ * <li>Hiá»ƒn thá»‹ danh sÃ¡ch bÃ i viáº¿t vá»›i phÃ¢n trang, tÃ¬m kiáº¿m vÃ  lá»c</li>
+ * <li>Xem chi tiáº¿t bÃ i viáº¿t</li>
+ * <li>Chá»‰nh sá»­a bÃ i viáº¿t</li>
+ * <li>Duyá»‡t/áº©n/hiá»ƒn thá»‹ bÃ i viáº¿t</li>
+ * <li>XÃ³a bÃ i viáº¿t</li>
+ * <li>Ghim/bá» ghim bÃ i viáº¿t</li>
  * </ul>
  * 
  * <p>
- * Tính năng đặc biệt:
+ * TÃ­nh nÄƒng Ä‘áº·c biá»‡t:
  * </p>
  * <ul>
- * <li><strong>Moderation:</strong> Duyệt, ẩn, hiển thị bài viết</li>
- * <li><strong>Pin:</strong> Ghim bài viết quan trọng lên đầu</li>
- * <li><strong>Filter:</strong> Lọc theo status (PENDING, APPROVED, HIDDEN) và
+ * <li><strong>Moderation:</strong> Duyá»‡t, áº©n, hiá»ƒn thá»‹ bÃ i viáº¿t</li>
+ * <li><strong>Pin:</strong> Ghim bÃ i viáº¿t quan trá»ng lÃªn Ä‘áº§u</li>
+ * <li><strong>Filter:</strong> Lá»c theo status (PENDING, APPROVED, HIDDEN) vÃ 
  * type (DISCUSSION, QUESTION, TUTORIAL)</li>
- * <li><strong>Search:</strong> Tìm kiếm theo tiêu đề và nội dung</li>
+ * <li><strong>Search:</strong> TÃ¬m kiáº¿m theo tiÃªu Ä‘á» vÃ  ná»™i dung</li>
  * </ul>
  * 
  * <p>
@@ -54,45 +55,46 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/LvsAdmin/LvsPost")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class LvsAdminPostController {
 
     /**
-     * Service xử lý logic nghiệp vụ cho Post
+     * Service xá»­ lÃ½ logic nghiá»‡p vá»¥ cho Post
      */
     @Autowired
     private LvsPostService lvsPostService;
 
     /**
-     * Service xử lý logic nghiệp vụ cho User (để check quyền admin)
+     * Service xá»­ lÃ½ logic nghiá»‡p vá»¥ cho User (Ä‘á»ƒ check quyá»n admin)
      */
     @Autowired
     private LvsUserService lvsUserService;
 
     /**
-     * Hiển thị danh sách bài viết với phân trang, tìm kiếm và lọc
+     * Hiá»ƒn thá»‹ danh sÃ¡ch bÃ i viáº¿t vá»›i phÃ¢n trang, tÃ¬m kiáº¿m vÃ  lá»c
      * 
      * <p>
-     * Chức năng:
+     * Chá»©c nÄƒng:
      * </p>
      * <ul>
-     * <li>Lấy danh sách bài viết theo trang</li>
-     * <li>Tìm kiếm theo keyword (tiêu đề, nội dung)</li>
-     * <li>Lọc theo status (PENDING, APPROVED, HIDDEN)</li>
-     * <li>Lọc theo type (DISCUSSION, QUESTION, TUTORIAL)</li>
-     * <li>Kết hợp nhiều điều kiện lọc</li>
+     * <li>Láº¥y danh sÃ¡ch bÃ i viáº¿t theo trang</li>
+     * <li>TÃ¬m kiáº¿m theo keyword (tiÃªu Ä‘á», ná»™i dung)</li>
+     * <li>Lá»c theo status (PENDING, APPROVED, HIDDEN)</li>
+     * <li>Lá»c theo type (DISCUSSION, QUESTION, TUTORIAL)</li>
+     * <li>Káº¿t há»£p nhiá»u Ä‘iá»u kiá»‡n lá»c</li>
      * </ul>
      * 
      * <p>
      * URL: GET /LvsAdmin/LvsPost/LvsList
      * </p>
      * 
-     * @param page       Số trang hiện tại (mặc định = 0)
-     * @param size       Số items mỗi trang (mặc định = 20)
-     * @param lvsStatus  Status để lọc (optional)
-     * @param lvsType    Type để lọc (optional)
-     * @param lvsKeyword Từ khóa tìm kiếm (optional)
-     * @param model      Model để truyền dữ liệu ra view
-     * @param session    HttpSession để check quyền admin
+     * @param page       Sá»‘ trang hiá»‡n táº¡i (máº·c Ä‘á»‹nh = 0)
+     * @param size       Sá»‘ items má»—i trang (máº·c Ä‘á»‹nh = 20)
+     * @param lvsStatus  Status Ä‘á»ƒ lá»c (optional)
+     * @param lvsType    Type Ä‘á»ƒ lá»c (optional)
+     * @param lvsKeyword Tá»« khÃ³a tÃ¬m kiáº¿m (optional)
+     * @param model      Model Ä‘á»ƒ truyá»n dá»¯ liá»‡u ra view
+     * @param session    HttpSession Ä‘á»ƒ check quyá»n admin
      * @return Template path: LvsAreas/LvsAdmin/LvsPost/LvsList
      */
     @GetMapping("/LvsList")
@@ -102,37 +104,31 @@ public class LvsAdminPostController {
             @RequestParam(required = false) String lvsStatus,
             @RequestParam(required = false) String lvsType,
             @RequestParam(required = false) String lvsKeyword,
-            Model model,
-            HttpSession session) {
+            Model model) {
 
-        // Kiểm tra quyền admin
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
-
-        // Tạo Pageable object
+        // Táº¡o Pageable object
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsPost> lvsPosts;
 
-        // Xử lý theo thứ tự ưu tiên
+        // Xá»­ lÃ½ theo thá»© tá»± Æ°u tiÃªn
         if (lvsKeyword != null && !lvsKeyword.isEmpty()) {
-            // Tìm kiếm theo keyword
+            // TÃ¬m kiáº¿m theo keyword
             lvsPosts = lvsPostService.lvsSearchPosts(lvsKeyword, lvsPageable);
         } else if (lvsStatus != null && !lvsStatus.isEmpty() && lvsType != null && !lvsType.isEmpty()) {
-            // Lọc theo cả status và type
+            // Lá»c theo cáº£ status vÃ  type
             lvsPosts = lvsPostService.lvsGetPostsByStatusAndType(lvsStatus, lvsType, lvsPageable);
         } else if (lvsStatus != null && !lvsStatus.isEmpty()) {
-            // Lọc chỉ theo status
+            // Lá»c chá»‰ theo status
             lvsPosts = lvsPostService.lvsGetPostsByStatus(lvsStatus, lvsPageable);
         } else if (lvsType != null && !lvsType.isEmpty()) {
-            // Lọc chỉ theo type
+            // Lá»c chá»‰ theo type
             lvsPosts = lvsPostService.lvsGetPostsByType(lvsType, lvsPageable);
         } else {
-            // Lấy tất cả
+            // Láº¥y táº¥t cáº£
             lvsPosts = lvsPostService.lvsGetAllPosts(lvsPageable);
         }
 
-        // Truyền dữ liệu ra view
+        // Truyá»n dá»¯ liá»‡u ra view
         model.addAttribute("LvsPosts", lvsPosts);
         model.addAttribute("LvsStatuses", LvsPost.LvsPostStatus.values());
         model.addAttribute("LvsTypes", LvsPost.LvsPostType.values());
@@ -145,196 +141,184 @@ public class LvsAdminPostController {
     }
 
     /**
-     * Hiển thị chi tiết bài viết
+     * Hiá»ƒn thá»‹ chi tiáº¿t bÃ i viáº¿t
      * 
      * <p>
-     * Chức năng:
+     * Chá»©c nÄƒng:
      * </p>
      * <ul>
-     * <li>Lấy thông tin đầy đủ của bài viết</li>
-     * <li>Hiển thị tác giả, thời gian đăng</li>
-     * <li>Hiển thị số lượt xem, like, comment</li>
-     * <li>Hiển thị trạng thái duyệt</li>
+     * <li>Láº¥y thÃ´ng tin Ä‘áº§y Ä‘á»§ cá»§a bÃ i viáº¿t</li>
+     * <li>Hiá»ƒn thá»‹ tÃ¡c giáº£, thá»i gian Ä‘Äƒng</li>
+     * <li>Hiá»ƒn thá»‹ sá»‘ lÆ°á»£t xem, like, comment</li>
+     * <li>Hiá»ƒn thá»‹ tráº¡ng thÃ¡i duyá»‡t</li>
      * </ul>
      * 
      * <p>
      * URL: GET /LvsAdmin/LvsPost/LvsDetail/{id}
      * </p>
      * 
-     * @param id      ID của bài viết cần xem
-     * @param model   Model để truyền dữ liệu ra view
-     * @param session HttpSession để check quyền admin
+     * @param id      ID cá»§a bÃ i viáº¿t cáº§n xem
+     * @param model   Model Ä‘á»ƒ truyá»n dá»¯ liá»‡u ra view
+     * @param session HttpSession Ä‘á»ƒ check quyá»n admin
      * @return Template path: LvsAreas/LvsAdmin/LvsPost/LvsDetail
      */
     @GetMapping("/LvsDetail/{id}")
     public String lvsViewPostDetail(@PathVariable Long id,
-            Model model,
-            HttpSession session) {
-        // Kiểm tra quyền admin
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
+            Model model) {
+        // Kiá»ƒm tra quyá»n admin
+        // TODO: Fix session parameter - Temporarily commented out
+        // if (!lvsUserService.lvsIsAdmin(session)) { return "redirect:/LvsAuth/LvsLogin.html"; }
 
-        // Lấy thông tin bài viết
+        // Láº¥y thÃ´ng tin bÃ i viáº¿t
         LvsPost lvsPost = lvsPostService.lvsGetPostById(id);
 
-        // Nếu không tìm thấy, redirect về list
+        // Náº¿u khÃ´ng tÃ¬m tháº¥y, redirect vá» list
         if (lvsPost == null) {
             return "redirect:/LvsAdmin/LvsPost/LvsList";
         }
 
-        // Truyền dữ liệu ra view
+        // Truyá»n dá»¯ liá»‡u ra view
         model.addAttribute("LvsPost", lvsPost);
 
         return "LvsAreas/LvsAdmin/LvsPost/LvsDetail";
     }
 
     /**
-     * Duyệt bài viết (chuyển status sang APPROVED)
+     * Duyá»‡t bÃ i viáº¿t (chuyá»ƒn status sang APPROVED)
      * 
      * <p>
      * URL: POST /LvsAdmin/LvsPost/LvsApprove/{id}
      * </p>
      * 
-     * @param id      ID của bài viết cần duyệt
-     * @param session HttpSession để check quyền admin
-     * @param model   Model để truyền thông báo
-     * @return Redirect về trang chi tiết
+     * @param id      ID cá»§a bÃ i viáº¿t cáº§n duyá»‡t
+     * @param session HttpSession Ä‘á»ƒ check quyá»n admin
+     * @param model   Model Ä‘á»ƒ truyá»n thÃ´ng bÃ¡o
+     * @return Redirect vá» trang chi tiáº¿t
      */
     @PostMapping("/LvsApprove/{id}")
     public String lvsApprovePost(@PathVariable Long id,
-            HttpSession session,
             Model model) {
-        // Kiểm tra quyền admin
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
+        // Kiá»ƒm tra quyá»n admin
+        // TODO: Fix session parameter - Temporarily commented out
+        // if (!lvsUserService.lvsIsAdmin(session)) { return "redirect:/LvsAuth/LvsLogin.html"; }
 
         try {
             lvsPostService.lvsApprovePost(id);
-            model.addAttribute("LvsSuccess", "Đã duyệt bài viết!");
+            model.addAttribute("LvsSuccess", "ÄÃ£ duyá»‡t bÃ i viáº¿t!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "Lá»—i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsPost/LvsDetail/" + id;
     }
 
     /**
-     * Ẩn bài viết (chuyển status sang HIDDEN)
+     * áº¨n bÃ i viáº¿t (chuyá»ƒn status sang HIDDEN)
      * 
      * <p>
      * URL: POST /LvsAdmin/LvsPost/LvsHide/{id}
      * </p>
      * 
-     * @param id        ID của bài viết cần ẩn
-     * @param lvsReason Lý do ẩn (optional)
-     * @param session   HttpSession để check quyền admin
-     * @param model     Model để truyền thông báo
-     * @return Redirect về trang chi tiết
+     * @param id        ID cá»§a bÃ i viáº¿t cáº§n áº©n
+     * @param lvsReason LÃ½ do áº©n (optional)
+     * @param session   HttpSession Ä‘á»ƒ check quyá»n admin
+     * @param model     Model Ä‘á»ƒ truyá»n thÃ´ng bÃ¡o
+     * @return Redirect vá» trang chi tiáº¿t
      */
     @PostMapping("/LvsHide/{id}")
     public String lvsHidePost(@PathVariable Long id,
             @RequestParam(required = false) String lvsReason,
-            HttpSession session,
             Model model) {
-        // Kiểm tra quyền admin
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
+        // Kiá»ƒm tra quyá»n admin
+        // TODO: Fix session parameter - Temporarily commented out
+        // if (!lvsUserService.lvsIsAdmin(session)) { return "redirect:/LvsAuth/LvsLogin.html"; }
 
         try {
             lvsPostService.lvsHidePost(id, lvsReason);
-            model.addAttribute("LvsSuccess", "Đã ẩn bài viết!");
+            model.addAttribute("LvsSuccess", "ÄÃ£ áº©n bÃ i viáº¿t!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "Lá»—i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsPost/LvsDetail/" + id;
     }
 
     /**
-     * Hiển thị lại bài viết (chuyển status từ HIDDEN sang APPROVED)
+     * Hiá»ƒn thá»‹ láº¡i bÃ i viáº¿t (chuyá»ƒn status tá»« HIDDEN sang APPROVED)
      * 
      * <p>
      * URL: POST /LvsAdmin/LvsPost/LvsShow/{id}
      * </p>
      * 
-     * @param id      ID của bài viết cần hiển thị
-     * @param session HttpSession để check quyền admin
-     * @param model   Model để truyền thông báo
-     * @return Redirect về trang chi tiết
+     * @param id      ID cá»§a bÃ i viáº¿t cáº§n hiá»ƒn thá»‹
+     * @param session HttpSession Ä‘á»ƒ check quyá»n admin
+     * @param model   Model Ä‘á»ƒ truyá»n thÃ´ng bÃ¡o
+     * @return Redirect vá» trang chi tiáº¿t
      */
     @PostMapping("/LvsShow/{id}")
     public String lvsShowPost(@PathVariable Long id,
-            HttpSession session,
             Model model) {
-        // Kiểm tra quyền admin
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
+        // Kiá»ƒm tra quyá»n admin
+        // TODO: Fix session parameter - Temporarily commented out
+        // if (!lvsUserService.lvsIsAdmin(session)) { return "redirect:/LvsAuth/LvsLogin.html"; }
 
         try {
             lvsPostService.lvsShowPost(id);
-            model.addAttribute("LvsSuccess", "Đã hiển thị bài viết!");
+            model.addAttribute("LvsSuccess", "ÄÃ£ hiá»ƒn thá»‹ bÃ i viáº¿t!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "Lá»—i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsPost/LvsDetail/" + id;
     }
 
     /**
-     * Xóa bài viết
+     * XÃ³a bÃ i viáº¿t
      * 
      * <p>
      * URL: POST /LvsAdmin/LvsPost/LvsDelete/{id}
      * </p>
      * 
-     * @param id        ID của bài viết cần xóa
-     * @param lvsReason Lý do xóa (optional)
-     * @param session   HttpSession để check quyền admin
-     * @param model     Model để truyền thông báo
-     * @return Redirect về trang danh sách
+     * @param id        ID cá»§a bÃ i viáº¿t cáº§n xÃ³a
+     * @param lvsReason LÃ½ do xÃ³a (optional)
+     * @param session   HttpSession Ä‘á»ƒ check quyá»n admin
+     * @param model     Model Ä‘á»ƒ truyá»n thÃ´ng bÃ¡o
+     * @return Redirect vá» trang danh sÃ¡ch
      */
     @PostMapping("/LvsDelete/{id}")
     public String lvsDeletePost(@PathVariable Long id,
             @RequestParam(required = false) String lvsReason,
-            HttpSession session,
             Model model) {
-        // Kiểm tra quyền admin
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
+        // Kiá»ƒm tra quyá»n admin
+        // TODO: Fix session parameter - Temporarily commented out
+        // if (!lvsUserService.lvsIsAdmin(session)) { return "redirect:/LvsAuth/LvsLogin.html"; }
 
         try {
             lvsPostService.lvsDeletePost(id, lvsReason);
-            model.addAttribute("LvsSuccess", "Đã xóa bài viết!");
+            model.addAttribute("LvsSuccess", "ÄÃ£ xÃ³a bÃ i viáº¿t!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "Lá»—i: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsPost/LvsList";
     }
 
     /**
-     * Ghim bài viết (đánh dấu quan trọng, hiển thị ưu tiên)
+     * Ghim bÃ i viáº¿t (Ä‘Ã¡nh dáº¥u quan trá»ng, hiá»ƒn thá»‹ Æ°u tiÃªn)
      * 
      * <p>
      * URL: POST /LvsAdmin/LvsPost/LvsPin/{id}
      * </p>
      * 
-     * @param id      ID của bài viết cần ghim
-     * @param session HttpSession để check quyền admin
-     * @return Redirect về trang chi tiết
+     * @param id      ID cá»§a bÃ i viáº¿t cáº§n ghim
+     * @param session HttpSession Ä‘á»ƒ check quyá»n admin
+     * @return Redirect vá» trang chi tiáº¿t
      */
     @PostMapping("/LvsPin/{id}")
-    public String lvsPinPost(@PathVariable Long id,
-            HttpSession session) {
-        // Kiểm tra quyền admin
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
+    public String lvsPinPost(@PathVariable Long id) {
+        // Kiá»ƒm tra quyá»n admin
+        // TODO: Fix session parameter - Temporarily commented out
+        // if (!lvsUserService.lvsIsAdmin(session)) { return "redirect:/LvsAuth/LvsLogin.html"; }
 
         lvsPostService.lvsPinPost(id);
 
@@ -342,23 +326,21 @@ public class LvsAdminPostController {
     }
 
     /**
-     * Bỏ ghim bài viết
+     * Bá» ghim bÃ i viáº¿t
      * 
      * <p>
      * URL: POST /LvsAdmin/LvsPost/LvsUnpin/{id}
      * </p>
      * 
-     * @param id      ID của bài viết cần bỏ ghim
-     * @param session HttpSession để check quyền admin
-     * @return Redirect về trang chi tiết
+     * @param id      ID cá»§a bÃ i viáº¿t cáº§n bá» ghim
+     * @param session HttpSession Ä‘á»ƒ check quyá»n admin
+     * @return Redirect vá» trang chi tiáº¿t
      */
     @PostMapping("/LvsUnpin/{id}")
-    public String lvsUnpinPost(@PathVariable Long id,
-            HttpSession session) {
-        // Kiểm tra quyền admin
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
+    public String lvsUnpinPost(@PathVariable Long id) {
+        // Kiá»ƒm tra quyá»n admin
+        // TODO: Fix session parameter - Temporarily commented out
+        // if (!lvsUserService.lvsIsAdmin(session)) { return "redirect:/LvsAuth/LvsLogin.html"; }
 
         lvsPostService.lvsUnpinPost(id);
 
@@ -366,35 +348,33 @@ public class LvsAdminPostController {
     }
 
     /**
-     * Hiển thị form chỉnh sửa bài viết
+     * Hiá»ƒn thá»‹ form chá»‰nh sá»­a bÃ i viáº¿t
      * 
      * <p>
      * URL: GET /LvsAdmin/LvsPost/LvsEdit/{id}
      * </p>
      * 
-     * @param id      ID của bài viết cần chỉnh sửa
-     * @param model   Model để truyền dữ liệu ra view
-     * @param session HttpSession để check quyền admin
+     * @param id      ID cá»§a bÃ i viáº¿t cáº§n chá»‰nh sá»­a
+     * @param model   Model Ä‘á»ƒ truyá»n dá»¯ liá»‡u ra view
+     * @param session HttpSession Ä‘á»ƒ check quyá»n admin
      * @return Template path: LvsAreas/LvsAdmin/LvsPost/LvsEdit
      */
     @GetMapping("/LvsEdit/{id}")
     public String lvsShowEditPostForm(@PathVariable Long id,
-            Model model,
-            HttpSession session) {
-        // Kiểm tra quyền admin
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
+            Model model) {
+        // Kiá»ƒm tra quyá»n admin
+        // TODO: Fix session parameter - Temporarily commented out
+        // if (!lvsUserService.lvsIsAdmin(session)) { return "redirect:/LvsAuth/LvsLogin.html"; }
 
-        // Lấy thông tin bài viết
+        // Láº¥y thÃ´ng tin bÃ i viáº¿t
         LvsPost lvsPost = lvsPostService.lvsGetPostById(id);
 
-        // Nếu không tìm thấy, redirect về list
+        // Náº¿u khÃ´ng tÃ¬m tháº¥y, redirect vá» list
         if (lvsPost == null) {
             return "redirect:/LvsAdmin/LvsPost/LvsList";
         }
 
-        // Truyền dữ liệu ra view
+        // Truyá»n dá»¯ liá»‡u ra view
         model.addAttribute("LvsPost", lvsPost);
         model.addAttribute("LvsPostTypes", LvsPost.LvsPostType.values());
 
@@ -402,37 +382,35 @@ public class LvsAdminPostController {
     }
 
     /**
-     * Xử lý submit form chỉnh sửa bài viết
+     * Xá»­ lÃ½ submit form chá»‰nh sá»­a bÃ i viáº¿t
      * 
      * <p>
      * URL: POST /LvsAdmin/LvsPost/LvsEdit/{id}
      * </p>
      * 
-     * @param id      ID của bài viết đang chỉnh sửa
-     * @param lvsPost Object LvsPost được binding từ form
-     * @param session HttpSession để check quyền admin
-     * @param model   Model để truyền thông báo
-     * @return Redirect về detail nếu thành công, hoặc edit nếu lỗi
+     * @param id      ID cá»§a bÃ i viáº¿t Ä‘ang chá»‰nh sá»­a
+     * @param lvsPost Object LvsPost Ä‘Æ°á»£c binding tá»« form
+     * @param session HttpSession Ä‘á»ƒ check quyá»n admin
+     * @param model   Model Ä‘á»ƒ truyá»n thÃ´ng bÃ¡o
+     * @return Redirect vá» detail náº¿u thÃ nh cÃ´ng, hoáº·c edit náº¿u lá»—i
      */
     @PostMapping("/LvsEdit/{id}")
     public String lvsEditPost(@PathVariable Long id,
             @ModelAttribute LvsPost lvsPost,
-            HttpSession session,
             Model model) {
-        // Kiểm tra quyền admin
-        if (!lvsUserService.lvsIsAdmin(session)) {
-            return "redirect:/LvsAuth/LvsLogin.html";
-        }
+        // Kiá»ƒm tra quyá»n admin
+        // TODO: Fix session parameter - Temporarily commented out
+        // if (!lvsUserService.lvsIsAdmin(session)) { return "redirect:/LvsAuth/LvsLogin.html"; }
 
         try {
-            // Set ID để đảm bảo update đúng record
+            // Set ID Ä‘á»ƒ Ä‘áº£m báº£o update Ä‘Ãºng record
             lvsPost.setLvsPostId(id);
             lvsPostService.lvsUpdatePost(lvsPost);
 
-            model.addAttribute("LvsSuccess", "Cập nhật bài viết thành công!");
+            model.addAttribute("LvsSuccess", "Cáº­p nháº­t bÃ i viáº¿t thÃ nh cÃ´ng!");
             return "redirect:/LvsAdmin/LvsPost/LvsDetail/" + id;
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsError", "Lá»—i: " + e.getMessage());
             return "LvsAreas/LvsAdmin/LvsPost/LvsEdit";
         }
     }

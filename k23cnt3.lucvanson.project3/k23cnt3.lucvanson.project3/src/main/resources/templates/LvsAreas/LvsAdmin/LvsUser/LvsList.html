@@ -106,14 +106,14 @@
                     <h1 class="h3 mb-0" th:text="${lvsPageTitle}">Quản lý User</h1>
                     <p class="text-muted mb-0">Tổng số user: <span th:text="${lvsUsers.totalElements}"></span></p>
                 </div>
-                <a th:href="@{/LvsAdmin/LvsUsers/LvsCreate}" class="btn btn-primary">
+                <a th:href="@{/LvsAdmin/LvsUser/LvsCreate}" class="btn btn-primary">
                     <i class="fas fa-plus me-1"></i> Thêm User mới
                 </a>
             </div>
 
             <!-- Search & Filter Form -->
             <div class="search-form">
-                <form th:action="@{/LvsAdmin/LvsUsers}" method="get" class="row g-3">
+                <form th:action="@{/LvsAdmin/LvsUser/LvsList}" method="get" class="row g-3">
                     <div class="col-md-4">
                         <label for="keyword" class="form-label">Tìm kiếm</label>
                         <input type="text" class="form-control" id="keyword" name="keyword" th:value="${lvsKeyword}"
@@ -166,22 +166,25 @@
                                     <td th:text="${user.lvsUserId}">1</td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img th:src="${user.lvsAvatarUrl != null} ? ${user.lvsAvatarUrl} : 'https://via.placeholder.com/40'"
-                                                class="user-avatar me-2" alt="Avatar">
+                                            <img th:src="${user.lvsAvatarUrl != null and user.lvsAvatarUrl != ''} ? @{${user.lvsAvatarUrl}} : 'https://via.placeholder.com/40'"
+                                                class="user-avatar me-2 rounded-circle" width="40" height="40"
+                                                alt="Avatar">
                                             <div>
                                                 <strong th:text="${user.lvsUsername}">username</strong><br>
-                                                <small class="text-muted" th:text="${user.lvsFullName}">Họ tên</small>
+                                                <small class="text-muted" th:text="${user.lvsFullName}">Họ
+                                                    tên</small>
                                             </div>
                                         </div>
                                     </td>
                                     <td th:text="${user.lvsEmail}">email@example.com</td>
                                     <td>
-                                        <span th:classappend="'role-badge role-' + ${user.lvsRole.name().toLowerCase()}"
+                                        <span
+                                            th:classappend="'role-badge role-' + ${user.lvsRole.toString().toLowerCase()}"
                                             th:text="${user.lvsRole}">USER</span>
                                     </td>
                                     <td>
                                         <span
-                                            th:classappend="'status-badge status-' + ${user.lvsStatus.name().toLowerCase()}"
+                                            th:classappend="'status-badge status-' + ${user.lvsStatus.toString().toLowerCase()}"
                                             th:text="${user.lvsStatus}">ACTIVE</span>
                                     </td>
                                     <td class="coin-balance"
@@ -195,11 +198,11 @@
                                         01/01/2023
                                     </td>
                                     <td class="table-actions">
-                                        <a th:href="@{/LvsAdmin/LvsUsers/{id}/LvsDetail(id=${user.lvsUserId})}"
+                                        <a th:href="@{/LvsAdmin/LvsUser/{id}/LvsDetail(id=${user.lvsUserId})}"
                                             class="btn btn-sm btn-info" title="Xem chi tiết">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a th:href="@{/LvsAdmin/LvsUsers/{id}/LvsEdit(id=${user.lvsUserId})}"
+                                        <a th:href="@{/LvsAdmin/LvsUser/{id}/LvsEdit(id=${user.lvsUserId})}"
                                             class="btn btn-sm btn-warning" title="Chỉnh sửa">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -226,13 +229,13 @@
                         <ul class="pagination justify-content-center">
                             <li class="page-item" th:classappend="${lvsUsers.first} ? 'disabled' : ''">
                                 <a class="page-link"
-                                    th:href="@{/LvsAdmin/LvsUsers(page=0, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
+                                    th:href="@{/LvsAdmin/LvsUser/LvsList(page=0, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
                                     <i class="fas fa-angle-double-left"></i>
                                 </a>
                             </li>
                             <li class="page-item" th:classappend="${lvsUsers.first} ? 'disabled' : ''">
                                 <a class="page-link"
-                                    th:href="@{/LvsAdmin/LvsUsers(page=${lvsUsers.number-1}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
+                                    th:href="@{/LvsAdmin/LvsUser/LvsList(page=${lvsUsers.number-1}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
                                     <i class="fas fa-angle-left"></i>
                                 </a>
                             </li>
@@ -240,19 +243,19 @@
                             <li th:each="page : ${#numbers.sequence(0, lvsUsers.totalPages-1)}" class="page-item"
                                 th:classappend="${page == lvsUsers.number} ? 'active' : ''">
                                 <a class="page-link"
-                                    th:href="@{/LvsAdmin/LvsUsers(page=${page}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}"
+                                    th:href="@{/LvsAdmin/LvsUser/LvsList(page=${page}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}"
                                     th:text="${page+1}">1</a>
                             </li>
 
                             <li class="page-item" th:classappend="${lvsUsers.last} ? 'disabled' : ''">
                                 <a class="page-link"
-                                    th:href="@{/LvsAdmin/LvsUsers(page=${lvsUsers.number+1}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
+                                    th:href="@{/LvsAdmin/LvsUser/LvsList(page=${lvsUsers.number+1}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
                                     <i class="fas fa-angle-right"></i>
                                 </a>
                             </li>
                             <li class="page-item" th:classappend="${lvsUsers.last} ? 'disabled' : ''">
                                 <a class="page-link"
-                                    th:href="@{/LvsAdmin/LvsUsers(page=${lvsUsers.totalPages-1}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
+                                    th:href="@{/LvsAdmin/LvsUser/LvsList(page=${lvsUsers.totalPages-1}, keyword=${lvsKeyword}, role=${lvsSelectedRole}, status=${lvsSelectedStatus})}">
                                     <i class="fas fa-angle-double-right"></i>
                                 </a>
                             </li>
@@ -290,8 +293,8 @@
                                     value="hard">
                                 <label class="form-check-label" for="hardDelete">
                                     <strong>Xóa vĩnh viễn (Hard Delete)</strong><br>
-                                    <small class="text-muted text-danger">Tất cả dữ liệu của user sẽ bị xóa vĩnh viễn và
-                                        không thể khôi phục.</small>
+                                    <small class="text-muted text-danger">Tất cả dữ liệu của user sẽ bị
+                                        xóa vĩnh viễn và không thể khôi phục.</small>
                                 </label>
                             </div>
                         </div>
@@ -369,10 +372,10 @@
 
                     // Xác định URL dựa trên loại xóa
                     if (deleteType === 'hard') {
-                        form.action = '/lvsforum/LvsAdmin/LvsUsers/' + currentUserId + '/LvsHardDelete';
+                        form.action = '/lvsforum/LvsAdmin/LvsUser/' + currentUserId + '/LvsHardDelete';
                         console.log('Hard delete for user ID:', currentUserId);
                     } else {
-                        form.action = '/lvsforum/LvsAdmin/LvsUsers/' + currentUserId + '/LvsDelete';
+                        form.action = '/lvsforum/LvsAdmin/LvsUser/' + currentUserId + '/LvsDelete';
                         console.log('Soft delete for user ID:', currentUserId);
                     }
 

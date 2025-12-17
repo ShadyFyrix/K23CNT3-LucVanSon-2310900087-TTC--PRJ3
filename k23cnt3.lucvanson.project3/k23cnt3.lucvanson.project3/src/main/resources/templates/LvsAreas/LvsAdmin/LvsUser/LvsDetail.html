@@ -80,16 +80,17 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a th:href="@{/LvsAdmin}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsUsers}">Quản lý User</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsUser/LvsList}">Quản lý User</a>
+                            </li>
                             <li class="breadcrumb-item active" th:text="${lvsUser.lvsUsername}">Username</li>
                         </ol>
                     </nav>
                 </div>
                 <div>
-                    <a th:href="@{/LvsAdmin/LvsUsers}" class="btn btn-outline-secondary me-2">
+                    <a th:href="@{/LvsAdmin/LvsUser/LvsList}" class="btn btn-outline-secondary me-2">
                         <i class="fas fa-arrow-left me-1"></i> Quay lại
                     </a>
-                    <a th:href="@{/LvsAdmin/LvsUsers/{id}/LvsEdit(id=${lvsUser.lvsUserId})}"
+                    <a th:href="@{/LvsAdmin/LvsUser/{id}/LvsEdit(id=${lvsUser.lvsUserId})}"
                         class="btn btn-warning me-2">
                         <i class="fas fa-edit me-1"></i> Chỉnh sửa
                     </a>
@@ -106,9 +107,9 @@
                     <div class="card info-card">
                         <div class="card-body text-center">
                             <img th:if="${lvsUser.lvsAvatarUrl != null and lvsUser.lvsAvatarUrl != ''}"
-                                th:src="${lvsUser.lvsAvatarUrl}" class="profile-avatar mb-3" alt="Avatar">
+                                th:src="@{${lvsUser.lvsAvatarUrl}}" class="profile-avatar mb-3" alt="Avatar">
                             <img th:unless="${lvsUser.lvsAvatarUrl != null and lvsUser.lvsAvatarUrl != ''}"
-                                src="/images/default-avatar.png" class="profile-avatar mb-3" alt="Avatar">
+                                src="https://via.placeholder.com/150" class="profile-avatar mb-3" alt="Avatar">
 
                             <h3 th:if="${lvsUser.lvsFullName != null and lvsUser.lvsFullName != ''}"
                                 th:text="${lvsUser.lvsFullName}" class="mb-2">User Name</h3>
@@ -119,26 +120,26 @@
 
                             <div class="d-flex justify-content-center gap-2 mb-3">
                                 <!-- Role Badge - Sử dụng th:if thay vì ternary nested -->
-                                <span th:if="${lvsUser.lvsRole.name() == 'ADMIN'}" class="badge badge-custom bg-danger"
+                                <span th:if="${lvsUser.lvsRole == 'ADMIN'}" class="badge badge-custom bg-danger"
                                     th:text="${lvsUser.lvsRole}">ADMIN</span>
-                                <span th:if="${lvsUser.lvsRole.name() == 'MODERATOR'}"
-                                    class="badge badge-custom bg-warning" th:text="${lvsUser.lvsRole}">MODERATOR</span>
-                                <span th:if="${lvsUser.lvsRole.name() == 'USER'}" class="badge badge-custom bg-success"
+                                <span th:if="${lvsUser.lvsRole == 'MODERATOR'}" class="badge badge-custom bg-warning"
+                                    th:text="${lvsUser.lvsRole}">MODERATOR</span>
+                                <span th:if="${lvsUser.lvsRole == 'USER'}" class="badge badge-custom bg-success"
                                     th:text="${lvsUser.lvsRole}">USER</span>
 
                                 <!-- Status Badge - Sử dụng th:if thay vì ternary nested -->
-                                <span th:if="${lvsUser.lvsStatus.name() == 'ACTIVE'}"
-                                    class="badge badge-custom bg-success" th:text="${lvsUser.lvsStatus}">ACTIVE</span>
-                                <span th:if="${lvsUser.lvsStatus.name() == 'INACTIVE'}"
-                                    class="badge badge-custom bg-secondary"
+                                <span th:if="${lvsUser.lvsStatus == 'ACTIVE'}" class="badge badge-custom bg-success"
+                                    th:text="${lvsUser.lvsStatus}">ACTIVE</span>
+                                <span th:if="${lvsUser.lvsStatus == 'INACTIVE'}" class="badge badge-custom bg-secondary"
                                     th:text="${lvsUser.lvsStatus}">INACTIVE</span>
-                                <span th:if="${lvsUser.lvsStatus.name() == 'BANNED'}" class="badge badge-custom bg-dark"
+                                <span th:if="${lvsUser.lvsStatus == 'BANNED'}" class="badge badge-custom bg-dark"
                                     th:text="${lvsUser.lvsStatus}">BANNED</span>
                             </div>
 
                             <p class="mb-4" th:if="${lvsUser.lvsBio != null and lvsUser.lvsBio != ''}"
                                 th:text="${lvsUser.lvsBio}">User bio...</p>
-                            <p class="mb-4" th:unless="${lvsUser.lvsBio != null and lvsUser.lvsBio != ''}">Chưa có giới
+                            <p class="mb-4" th:unless="${lvsUser.lvsBio != null and lvsUser.lvsBio != ''}">Chưa có
+                                giới
                                 thiệu</p>
 
                             <div class="d-grid gap-2">
@@ -281,14 +282,13 @@
                                         <div class="col-md-6">
                                             <p class="mb-2"><span class="info-label">Trạng thái:</span>
                                                 <!-- Status Badge - Sử dụng th:if -->
-                                                <span th:if="${lvsUser.lvsStatus.name() == 'ACTIVE'}"
-                                                    class="badge bg-success"
+                                                <span th:if="${lvsUser.lvsStatus == 'ACTIVE'}" class="badge bg-success"
                                                     th:text="${lvsUser.lvsStatus}">ACTIVE</span>
-                                                <span th:if="${lvsUser.lvsStatus.name() == 'INACTIVE'}"
+                                                <span th:if="${lvsUser.lvsStatus == 'INACTIVE'}"
                                                     class="badge bg-secondary"
                                                     th:text="${lvsUser.lvsStatus}">INACTIVE</span>
-                                                <span th:if="${lvsUser.lvsStatus.name() == 'BANNED'}"
-                                                    class="badge bg-dark" th:text="${lvsUser.lvsStatus}">BANNED</span>
+                                                <span th:if="${lvsUser.lvsStatus == 'BANNED'}" class="badge bg-dark"
+                                                    th:text="${lvsUser.lvsStatus}">BANNED</span>
                                             </p>
                                         </div>
                                     </div>
@@ -350,17 +350,17 @@
                     </div>
                     <div class="modal-body">
                         <div class="list-group">
-                            <a th:if="${lvsUser.lvsStatus.name() != 'BANNED'}"
-                                th:href="@{/LvsAdmin/LvsUsers/{id}/lvs-ban(id=${lvsUser.lvsUserId})}"
+                            <a th:if="${lvsUser.lvsStatus != 'BANNED'}"
+                                th:href="@{/LvsAdmin/LvsUser/{id}/lvs-ban(id=${lvsUser.lvsUserId})}"
                                 class="list-group-item list-group-item-action text-danger">
                                 <i class="fas fa-ban me-2"></i> Khóa tài khoản
                             </a>
-                            <a th:if="${lvsUser.lvsStatus.name() == 'BANNED'}"
-                                th:href="@{/LvsAdmin/LvsUsers/{id}/lvs-unban(id=${lvsUser.lvsUserId})}"
+                            <a th:if="${lvsUser.lvsStatus == 'BANNED'}"
+                                th:href="@{/LvsAdmin/LvsUser/{id}/lvs-unban(id=${lvsUser.lvsUserId})}"
                                 class="list-group-item list-group-item-action text-success">
                                 <i class="fas fa-unlock me-2"></i> Mở khóa tài khoản
                             </a>
-                            <a th:href="@{/LvsAdmin/LvsUsers/{id}/LvsEdit(id=${lvsUser.lvsUserId})}"
+                            <a th:href="@{/LvsAdmin/LvsUser/{id}/LvsEdit(id=${lvsUser.lvsUserId})}"
                                 class="list-group-item list-group-item-action">
                                 <i class="fas fa-key me-2"></i> Reset mật khẩu
                             </a>
@@ -391,7 +391,7 @@
                         <h5 class="modal-title">Xác nhận xóa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form th:action="@{/LvsAdmin/LvsUsers/{id}/LvsDelete(id=${lvsUser.lvsUserId})}" method="post">
+                    <form th:action="@{/LvsAdmin/LvsUser/{id}/LvsDelete(id=${lvsUser.lvsUserId})}" method="post">
                         <div class="modal-body">
                             <p>Bạn có chắc chắn muốn xóa user <strong
                                     th:text="${lvsUser.lvsUsername}">username</strong>?

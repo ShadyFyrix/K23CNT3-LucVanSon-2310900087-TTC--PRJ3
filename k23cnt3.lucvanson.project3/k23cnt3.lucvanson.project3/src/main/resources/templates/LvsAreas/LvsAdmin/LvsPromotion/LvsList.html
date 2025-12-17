@@ -3,50 +3,198 @@
     layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
 
 <head>
-    <title>Quản lý Khuyến mãi</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quáº£n lÃ½ Khuyáº¿n mÃ£i</title>
 </head>
 
 <body>
     <div layout:fragment="content">
         <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
-            <h1 class="h3 mb-4">Quản lý Khuyến mãi</h1>
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">Quáº£n lÃ½ Khuyáº¿n mÃ£i</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsDashboard}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Khuyáº¿n mÃ£i</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div>
+                    <a th:href="@{/LvsAdmin/LvsPromotion/LvsAdd}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Táº¡o khuyáº¿n mÃ£i má»›i
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filter & Search -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form th:action="@{/LvsAdmin/LvsPromotion/LvsList}" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">TÃ¬m kiáº¿m</label>
+                            <input type="text" class="form-control" name="lvsKeyword" th:value="${LvsKeyword}"
+                                placeholder="TÃ¬m theo mÃ£ khuyáº¿n mÃ£i...">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Tráº¡ng thÃ¡i</label>
+                            <select class="form-select" name="lvsIsActive">
+                                <option value="">Táº¥t cáº£</option>
+                                <option value="true" th:selected="${LvsIsActive == true}">Hoáº¡t Ä‘á»™ng</option>
+                                <option value="false" th:selected="${LvsIsActive == false}">VÃ´ hiá»‡u</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Loáº¡i giáº£m giÃ¡</label>
+                            <select class="form-select" name="lvsDiscountType">
+                                <option value="">Táº¥t cáº£</option>
+                                <option value="PERCENTAGE" th:selected="${LvsDiscountType == 'PERCENTAGE'}">Pháº§n trÄƒm
+                                </option>
+                                <option value="FIXED_AMOUNT" th:selected="${LvsDiscountType == 'FIXED_AMOUNT'}">Sá»‘
+                                    tiá»n
+                                    cá»‘ Ä‘á»‹nh</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> TÃ¬m kiáº¿m
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Promotions Table -->
             <div class="card">
                 <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Mã</th>
-                                <th>Loại</th>
-                                <th>Giảm giá</th>
-                                <th>Hạn sử dụng</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="promo : ${LvsPromotions.content}">
-                                <td th:text="${promo.lvsPromotionId}"></td>
-                                <td><code th:text="${promo.lvsCode}"></code></td>
-                                <td th:text="${promo.lvsDiscountType}"></td>
-                                <td th:text="${promo.lvsDiscountValue}"></td>
-                                <td th:text="${#temporals.format(promo.lvsValidTo, 'dd/MM/yyyy')}"></td>
-                                <td>
-                                    <span th:if="${promo.lvsIsActive}" class="badge bg-success">Hoạt động</span>
-                                    <span th:unless="${promo.lvsIsActive}" class="badge bg-secondary">Vô hiệu</span>
-                                </td>
-                                <td>
-                                    <a th:href="@{/LvsAdmin/LvsPromotion/LvsDetail/{id}(id=${promo.lvsPromotionId})}"
-                                        class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
-                                    <a th:href="@{/LvsAdmin/LvsPromotion/LvsEdit/{id}(id=${promo.lvsPromotionId})}"
-                                        class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>MÃ£ khuyáº¿n mÃ£i</th>
+                                    <th>Loáº¡i</th>
+                                    <th>Giáº£m giÃ¡</th>
+                                    <th>Háº¡n sá»­ dá»¥ng</th>
+                                    <th>ÄÃ£ dÃ¹ng/Giá»›i háº¡n</th>
+                                    <th>Tráº¡ng thÃ¡i</th>
+                                    <th>Thao tÃ¡c</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="promo : ${LvsPromotions.content}">
+                                    <td th:text="${promo.lvsPromotionId}"></td>
+                                    <td>
+                                        <a
+                                            th:href="@{/LvsAdmin/LvsPromotion/LvsDetail/{id}(id=${promo.lvsPromotionId})}">
+                                            <code th:text="${promo.lvsCode}"></code>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info" th:text="${promo.lvsDiscountType}"></span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${promo.lvsDiscountType.name() == 'PERCENTAGE'}"
+                                            th:text="${promo.lvsDiscountValue + '%'}"></span>
+                                        <span th:unless="${promo.lvsDiscountType.name() == 'PERCENTAGE'}"
+                                            th:text="${#numbers.formatDecimal(promo.lvsDiscountValue, 0, 'COMMA', 0, 'POINT') + ' Ä‘'}"></span>
+                                    </td>
+                                    <td th:text="${#temporals.format(promo.lvsEndDate, 'dd/MM/yyyy')}"></td>
+                                    <td>
+                                        <span th:text="${promo.lvsUsedCount + '/' + promo.lvsUsageLimit}"></span>
+                                        <div class="progress" style="height: 5px;">
+                                            <div class="progress-bar" role="progressbar"
+                                                th:style="'width: ' + ${promo.lvsUsageLimit > 0 ? (promo.lvsUsedCount * 100.0 / promo.lvsUsageLimit) : 0} + '%'"
+                                                th:classappend="${promo.lvsUsedCount >= promo.lvsUsageLimit ? 'bg-danger' : 'bg-success'}">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span th:if="${promo.lvsIsActive}" class="badge bg-success">Hoáº¡t
+                                            Ä‘á»™ng</span>
+                                        <span th:unless="${promo.lvsIsActive}" class="badge bg-secondary">VÃ´
+                                            hiá»‡u</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/LvsAdmin/LvsPromotion/LvsDetail/{id}(id=${promo.lvsPromotionId})}"
+                                            class="btn btn-sm btn-info" title="Xem chi tiáº¿t">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/LvsAdmin/LvsPromotion/LvsEdit/{id}(id=${promo.lvsPromotionId})}"
+                                            class="btn btn-sm btn-warning" title="Chá»‰nh sá»­a">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a th:href="@{/LvsAdmin/LvsPromotion/LvsStatistics/{id}(id=${promo.lvsPromotionId})}"
+                                            class="btn btn-sm btn-success" title="Thá»‘ng kÃª">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                            th:onclick="'confirmDelete(' + ${promo.lvsPromotionId} + ', \'' + ${promo.lvsCode} + '\')'"
+                                            title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav th:if="${LvsPromotions.totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${LvsPromotions.first} ? 'disabled'">
+                                <a class="page-link"
+                                    th:href="@{/LvsAdmin/LvsPromotion/LvsList(page=${LvsCurrentPage - 1}, lvsIsActive=${LvsIsActive}, lvsDiscountType=${LvsDiscountType}, lvsKeyword=${LvsKeyword})}">TrÆ°á»›c</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, LvsPromotions.totalPages - 1)}"
+                                th:classappend="${i == LvsCurrentPage} ? 'active'">
+                                <a class="page-link"
+                                    th:href="@{/LvsAdmin/LvsPromotion/LvsList(page=${i}, lvsIsActive=${LvsIsActive}, lvsDiscountType=${LvsDiscountType}, lvsKeyword=${LvsKeyword})}"
+                                    th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${LvsPromotions.last} ? 'disabled'">
+                                <a class="page-link"
+                                    th:href="@{/LvsAdmin/LvsPromotion/LvsList(page=${LvsCurrentPage + 1}, lvsIsActive=${LvsIsActive}, lvsDiscountType=${LvsDiscountType}, lvsKeyword=${LvsKeyword})}">Sau</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn xóa khuyến mãi <strong id="deletePromotionCode"></strong>?</p>
+                    <p class="text-danger">Hành động này không thể hoàn tác!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <form id="deleteForm" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div layout:fragment="scripts">
+        <script th:inline="javascript">
+            function confirmDelete(id, code) {
+                document.getElementById('deletePromotionCode').textContent = code;
+                document.getElementById('deleteForm').action = '/lvsforum/LvsAdmin/LvsPromotion/LvsDelete/' + id;
+                tstrap.Modal(document.getElementById('deleteModal')).show();
+            }
+        </script>
     </div>
 </body>
 

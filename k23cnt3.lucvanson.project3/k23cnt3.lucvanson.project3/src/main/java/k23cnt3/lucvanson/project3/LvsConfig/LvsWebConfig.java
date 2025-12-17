@@ -27,15 +27,15 @@ public class LvsWebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        // Get absolute path to uploads directory
-        Path lvsUploadPath = Paths.get(lvsUploadDir).toAbsolutePath().normalize();
-        String lvsUploadLocation = "file:" + lvsUploadPath.toString() + "/";
-
-        // Map /uploads/** to the uploads directory
+        // Map /uploads/** to src/main/resources/static/uploads/
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations(lvsUploadLocation)
+                .addResourceLocations("file:src/main/resources/static/uploads/")
                 .setCachePeriod(3600); // Cache for 1 hour
 
-        System.out.println("[LVS CONFIG] Upload directory mapped: /uploads/** -> " + lvsUploadLocation);
+        // Also add classpath location as fallback
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("classpath:/static/uploads/");
+
+        System.out.println("[LVS CONFIG] Upload directory mapped: /uploads/** -> src/main/resources/static/uploads/");
     }
 }
