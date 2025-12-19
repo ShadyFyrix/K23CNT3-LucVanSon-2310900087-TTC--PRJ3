@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
 
@@ -26,6 +26,18 @@
                             <p><strong>Bài viết:</strong> <span th:text="${LvsComment.lvsPost?.lvsTitle}"></span></p>
                             <p><strong>Nội dung:</strong></p>
                             <div th:utext="${LvsComment.lvsContent}"></div>
+                            <!-- Comment Images -->
+                            <div th:if="${LvsComment.lvsImages != null and !LvsComment.lvsImages.isEmpty()}"
+                                class="mt-4">
+                                <p><strong><i class="fas fa-images"></i> Ảnh đính kèm:</strong></p>
+                                <div class="row g-2">
+                                    <div class="col-md-3 col-sm-4 col-6" th:each="img : ${LvsComment.lvsImages}">
+                                        <img th:src="@{${img.lvsImageUrl}}" class="img-fluid rounded shadow"
+                                            style="width:100%;height:150px;object-fit:cover;cursor:pointer">
+                                    </div>
+                                </div>
+                            </div>
+
                             <p class="text-muted mt-3"><i class="fas fa-calendar"></i> <span
                                     th:text="${#temporals.format(LvsComment.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}"></span>
                             </p>
@@ -56,31 +68,14 @@
                             </div>
                         </div>
                     </div>
+
+                    <p class="text-muted mt-3"><i class="fas fa-calendar"></i> <span
+                            th:text="${#temporals.format(LvsComment.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}"></span>
+                    </p>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="deleteModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Xóa bình luận</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <form th:action="@{/LvsAdmin/LvsComment/LvsDelete/{id}(id=${LvsComment.lvsCommentId})}"
-                        method="post">
-                        <div class="modal-body">
-                            <p>Bạn có chắc chắn muốn xóa bình luận này?</p>
-                            <textarea class="form-control" name="lvsReason" rows="3"
-                                placeholder="Lý do xóa (optional)"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                            <button type="submit" class="btn btn-danger">Xóa</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+    </div>
     </div>
 </body>
 

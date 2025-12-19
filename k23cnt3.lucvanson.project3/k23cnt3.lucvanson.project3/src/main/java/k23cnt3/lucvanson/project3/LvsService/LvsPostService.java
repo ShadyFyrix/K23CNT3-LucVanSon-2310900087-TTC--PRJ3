@@ -3,8 +3,10 @@ package k23cnt3.lucvanson.project3.LvsService;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsPost;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsPost.LvsPostStatus;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsPost.LvsPostType;
+import k23cnt3.lucvanson.project3.LvsEntity.LvsPostImage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,14 +14,13 @@ import java.util.Map;
 
 /**
  * Service interface cho quản lý bài viết
- * Xử lý CRUD bài viết, duyệt, ẩn, tìm kiếm
  */
 public interface LvsPostService {
 
     // Lấy bài viết theo ID
     LvsPost lvsGetPostById(Long lvsPostId);
 
-    // Lấy tất cả bài viết
+    // Lấy tất cả bài viết với phân trang
     Page<LvsPost> lvsGetAllPosts(Pageable lvsPageable);
 
     // Lấy bài viết đã publish
@@ -99,4 +100,18 @@ public interface LvsPostService {
 
     // Lấy thống kê bài viết
     Map<String, Long> lvsGetPostStats();
+
+    // ==================== IMAGE METHODS ====================
+
+    // Lưu bài viết kèm ảnh (tối đa 50 ảnh)
+    LvsPost lvsSavePostWithImages(LvsPost lvsPost, List<MultipartFile> images) throws Exception;
+
+    // Thêm ảnh vào bài viết đã tồn tại
+    void lvsAddImagesToPost(Long lvsPostId, List<MultipartFile> images) throws Exception;
+
+    // Xóa một ảnh của bài viết
+    void lvsDeletePostImage(Long lvsImageId);
+
+    // Lấy danh sách ảnh của bài viết
+    List<LvsPostImage> lvsGetPostImages(Long lvsPostId);
 }

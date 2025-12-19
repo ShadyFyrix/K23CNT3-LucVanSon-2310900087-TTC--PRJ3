@@ -41,7 +41,7 @@ public class LvsOrderServiceImpl implements LvsOrderService {
      */
     @Override
     public LvsOrder lvsGetOrderById(Long lvsOrderId) {
-        return lvsOrderRepository.findById(lvsOrderId).orElse(null);
+        return lvsOrderRepository.findByIdWithDetails(lvsOrderId).orElse(null);
     }
 
     /**

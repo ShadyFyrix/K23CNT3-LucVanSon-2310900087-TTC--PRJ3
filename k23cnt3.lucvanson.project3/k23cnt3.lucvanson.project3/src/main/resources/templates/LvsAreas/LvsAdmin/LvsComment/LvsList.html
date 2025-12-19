@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
 
@@ -10,7 +10,8 @@
     <div layout:fragment="content">
         <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">Quản lý Bình luận</h1>
+                <h1 class="h3 mb-0">Quản lý Bình luận</h1>`r`n <a th:href="@{/LvsAdmin/LvsComment/LvsCreate}"
+                    class="btn btn-primary">`r`n <i class="fas fa-plus"></i> Tạo bình luận mới`r`n </a>
             </div>
             <div class="card mb-4">
                 <div class="card-body">
@@ -39,7 +40,7 @@
                                 <th>Nội dung</th>
                                 <th>Tác giả</th>
                                 <th>Bài viết</th>
-                                <th>Trạng thái</th>
+                                <th>Ảnh</th>`r`n <th>Trạng thái</th>
                                 <th>Ngày tạo</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -50,6 +51,21 @@
                                 <td th:text="${#strings.abbreviate(comment.lvsContent, 50)}"></td>
                                 <td th:text="${comment.lvsUser?.lvsUsername}"></td>
                                 <td th:text="${comment.lvsPost?.lvsTitle}"></td>
+                                <td>
+                                    <div th:if="${comment.lvsImages != null and !comment.lvsImages.isEmpty()}"
+                                        class="d-flex gap-1">
+                                        <img th:each="img,iterStat : ${comment.lvsImages}" th:if="${iterStat.index < 3}"
+                                            th:src="@{${img.lvsImageUrl}}"
+                                            style="width:40px;height:40px;object-fit:cover" class="rounded">
+                                        <span th:if="${comment.lvsImages.size() > 3}"
+                                            class="badge bg-secondary align-self-center">
+                                            +${comment.lvsImages.size() - 3}
+                                        </span>
+                                    </div>
+                                    <span th:unless="${comment.lvsImages != null and !comment.lvsImages.isEmpty()}"
+                                        class="text-muted">-</span>
+                                </td>
+
                                 <td>
                                     <span th:if="${comment.lvsIsApproved}" class="badge bg-success">Đã duyệt</span>
                                     <span th:unless="${comment.lvsIsApproved}" class="badge bg-warning">Chờ duyệt</span>
@@ -82,11 +98,7 @@
                         </ul>
                     </nav>
                 </div>
-                <div>
-                    <a th:href="@{/LvsAdmin/LvsComment/LvsCreate}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> T?o b�nh lu?n m?i
-                    </a>
-                </div>
+
             </div>
         </div>
     </div>

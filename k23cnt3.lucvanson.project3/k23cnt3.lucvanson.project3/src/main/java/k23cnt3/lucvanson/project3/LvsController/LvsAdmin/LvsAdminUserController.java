@@ -112,8 +112,8 @@ public class LvsAdminUserController {
         Path filePath = Paths.get(UPLOAD_DIR + filename);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // Return relative path for URL
-        return "/uploads/avatars/" + filename;
+        // Return relative path for URL (include context path)
+        return "/lvsforum/uploads/avatars/" + filename;
     }
 
     /**

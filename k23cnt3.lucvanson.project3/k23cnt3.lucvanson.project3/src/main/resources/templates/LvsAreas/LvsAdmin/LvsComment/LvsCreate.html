@@ -8,27 +8,93 @@
 
 <body>
     <div layout:fragment="content">
-        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+        <div class="dashboard-container" style="max-width: 1000px; margin: 2rem auto; padding: 1rem;">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">Tạo Bình luận mới</h1>
-                <a th:href="@{/LvsAdmin/LvsComment/LvsList}" class="btn btn-outline-secondary"><i
-                        class="fas fa-arrow-left"></i> Quay lại</a>
+                <a th:href="@{/LvsAdmin/LvsComment/LvsList}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
             </div>
+
             <div class="card">
                 <div class="card-body">
-                    <form th:action="@{/LvsAdmin/LvsComment/LvsCreate}" method="post">
+                    <form th:action="@{/LvsAdmin/LvsComment/LvsCreate}" method="post" enctype="multipart/form-data">
+                        <!-- Post Selection -->
                         <div class="mb-3">
-                            <label class="form-label">Nội dung</label>
-                            <textarea class="form-control" name="lvsContent" rows="10" required></textarea>
+                            <label class="form-label">Bài viết <span class="text-danger">*</span></label>
+                            <select class="form-select" name="lvsPostId" required>
+                                <option value="">-- Chọn bài viết --</option>
+                                <option th:each="post : ${LvsPosts}" th:value="${post.lvsPostId}"
+                                    th:text="${post.lvsTitle}">Post</option>
+                            </select>
                         </div>
+
+                        <!-- User Selection -->
+                        <div class="mb-3">
+                            <label class="form-label">Người dùng <span class="text-danger">*</span></label>
+                            <select class="form-select" name="lvsUserId" required>
+                                <option value="">-- Chọn người dùng --</option>
+                                <option th:each="user : ${LvsUsers}" th:value="${user.lvsUserId}"
+                                    th:text="${user.lvsUsername}">User</option>
+                            </select>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="mb-3">
+                            <label class="form-label">Nội dung <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="lvsContent" rows="8" required
+                                placeholder="Nhập nội dung bình luận..."></textarea>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-images"></i> Đính kèm ảnh (tối đa 5 ảnh)
+                            </label>
+                            <input type="file" class="form-control" name="images" id="imgs" accept="image/*" multiple>
+                            <small class="text-muted">JPG, PNG, GIF, WEBP. Max 5 ảnh, 5MB/ảnh</small>
+                            <div id="preview" class="row g-2 mt-2"></div>
+                        </div>
+
+                        <!-- Approval -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="lvsIsApproved" id="approve"
+                                    checked>
+                                <label class="form-check-label" for="approve">Duyệt ngay</label>
+                            </div>
+                        </div>
+
                         <div class="d-flex justify-content-end gap-2">
                             <a th:href="@{/LvsAdmin/LvsComment/LvsList}" class="btn btn-secondary">Hủy</a>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Tạo</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Tạo bình luận
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div layout:fragment="scripts">
+        <script>
+            document.getElementById('imgs').onchange = function (e) {
+                const preview = document.getElementById('preview');
+                preview.innerHTML = '';
+                [...e.target.files].slice(0, 5).forEach((f, i) => {
+                    if (f.size > 5 * 1024 * 1024) { alert(f.name + ' quá lớn!'); return; }
+                    let r = new FileReader();
+                    r.onload = x => {
+                        let d = document.createElement('div');
+                        d.className = 'col-2';
+                        d.innerHTML = `<div class="position-relative"><img src="${x.target.result}" class="img-fluid rounded shadow" style="height:100px;object-fit:cover"><span class="position-absolute top-0 start-0 m-1 badge bg-primary">${i + 1}</span></div>`;
+                        preview.appendChild(d);
+                    };
+                    r.readAsDataURL(f);
+                });
+            };
+        </script>
     </div>
 </body>
 

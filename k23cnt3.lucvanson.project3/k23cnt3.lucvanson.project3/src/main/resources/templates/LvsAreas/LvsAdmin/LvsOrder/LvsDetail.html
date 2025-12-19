@@ -21,7 +21,8 @@
                             <h5>Thông tin đơn hàng</h5>
                         </div>
                         <div class="card-body">
-                            <p><strong>Khách hàng:</strong> <span th:text="${LvsOrder.lvsUser?.lvsUsername}"></span></p>
+                            <p><strong>Khách hàng:</strong> <span th:text="${LvsOrder.lvsBuyer?.lvsUsername}"></span>
+                            </p>
                             <p><strong>Trạng thái:</strong> <span th:text="${LvsOrder.lvsStatus}"></span></p>
                             <p><strong>Tổng tiền:</strong> <span
                                     th:text="${#numbers.formatDecimal(LvsOrder.lvsTotalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>

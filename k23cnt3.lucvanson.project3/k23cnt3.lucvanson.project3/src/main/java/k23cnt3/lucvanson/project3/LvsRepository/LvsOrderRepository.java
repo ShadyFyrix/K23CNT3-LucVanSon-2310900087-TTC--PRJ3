@@ -21,6 +21,14 @@ import java.util.Optional;
 @Repository
 public interface LvsOrderRepository extends JpaRepository<LvsOrder, Long> {
 
+        // Tìm đơn hàng theo ID với eager loading
+        @Query("SELECT o FROM LvsOrder o LEFT JOIN FETCH o.lvsBuyer LEFT JOIN FETCH o.lvsOrderItems WHERE o.lvsOrderId = :id")
+        Optional<LvsOrder> findByIdWithDetails(@Param("id") Long id);
+
+        // Tìm tất cả đơn hàng với eager loading buyer
+        @Query("SELECT DISTINCT o FROM LvsOrder o LEFT JOIN FETCH o.lvsBuyer")
+        List<LvsOrder> findAllWithBuyer();
+
         // Tìm đơn hàng theo mã
         Optional<LvsOrder> findByLvsOrderCode(String lvsOrderCode);
 

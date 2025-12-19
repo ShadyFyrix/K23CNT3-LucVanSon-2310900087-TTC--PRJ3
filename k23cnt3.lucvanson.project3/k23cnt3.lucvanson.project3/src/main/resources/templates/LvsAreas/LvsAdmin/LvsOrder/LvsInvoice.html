@@ -36,12 +36,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="item : ${LvsOrder.lvsOrderItems}">
+                            <tr th:each="item : ${LvsOrder.getLvsOrderItems()}">
                                 <td th:text="${item.lvsProject?.lvsTitle}"></td>
-                                <td>1</td>
+                                <td th:text="${item.lvsQuantity}"></td>
                                 <td th:text="${#numbers.formatDecimal(item.lvsPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
                                 </td>
-                                <td th:text="${#numbers.formatDecimal(item.lvsPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
+                                <td
+                                    th:text="${#numbers.formatDecimal(item.lvsQuantity * item.lvsPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
                                 </td>
                             </tr>
                         </tbody>

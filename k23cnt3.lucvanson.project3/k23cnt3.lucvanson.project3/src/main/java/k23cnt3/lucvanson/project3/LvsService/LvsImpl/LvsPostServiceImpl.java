@@ -3,8 +3,11 @@ package k23cnt3.lucvanson.project3.LvsService.LvsImpl;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsPost;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsPost.LvsPostStatus;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsPost.LvsPostType;
+import k23cnt3.lucvanson.project3.LvsEntity.LvsPostImage;
 import k23cnt3.lucvanson.project3.LvsRepository.LvsPostRepository;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsPostImageRepository;
 import k23cnt3.lucvanson.project3.LvsService.LvsPostService;
+import k23cnt3.lucvanson.project3.LvsService.LvsFileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +30,8 @@ import java.util.Map;
 public class LvsPostServiceImpl implements LvsPostService {
 
     private final LvsPostRepository lvsPostRepository;
+    private final LvsPostImageRepository lvsPostImageRepository;
+    private final LvsFileUploadService lvsFileUploadService;
 
     /**
      * Lấy bài viết theo ID
@@ -425,5 +430,109 @@ public class LvsPostServiceImpl implements LvsPostService {
         }
 
         return lvsStats;
+    }
+
+    // ==================== IMAGE METHODS IMPLEMENTATION ====================
+
+    /**
+     * Lưu bài viết kèm ảnh (tối đa 50 ảnh)
+     */
+    @Override
+    public LvsPost lvsSavePostWithImages(LvsPost lvsPost,
+            java.util.List<org.springframework.web.multipart.MultipartFile> images) throws Exception {
+        // Lưu bài viết trước
+        LvsPost savedPost = lvsSavePost(lvsPost);
+
+        // Upload và lưu ảnh
+        if (images != null && !images.isEmpty()) {
+            // Giới hạn 50 ảnh
+            int maxImages = Math.min(images.size(), 50);
+
+            for (int i = 0; i < maxImages; i++) {
+                org.springframework.web.multipart.MultipartFile file = images.get(i);
+
+                if (file != null && !file.isEmpty()) {
+                    // Upload file
+                    String imageUrl = lvsFileUploadService.lvsSaveFile(file, "posts");
+
+                    // Tạo PostImage entity
+                    k23cnt3.lucvanson.project3.LvsEntity.LvsPostImage postImage = new k23cnt3.lucvanson.project3.LvsEntity.LvsPostImage();
+                    postImage.setLvsPost(savedPost);
+                    postImage.setLvsImageUrl(imageUrl);
+                    postImage.setLvsImageOrder(i);
+
+                    lvsPostImageRepository.save(postImage);
+
+                    // Set thumbnail là ảnh đầu tiên
+                    if (i == 0) {
+                        savedPost.setLvsThumbnailUrl(imageUrl);
+                        lvsPostRepository.save(savedPost);
+                    }
+                }
+            }
+        }
+
+        return savedPost;
+    }
+
+    /**
+     * Thêm ảnh vào bài viết đã tồn tại
+     */
+    @Override
+    public void lvsAddImagesToPost(Long lvsPostId,
+            java.util.List<org.springframework.web.multipart.MultipartFile> images) throws Exception {
+        LvsPost post = lvsGetPostById(lvsPostId);
+        if (post == null) {
+            throw new Exception("Không tìm thấy bài viết");
+        }
+
+        // Đếm số ảnh hiện tại
+        long currentImageCount = lvsPostImageRepository.countByLvsPost(post);
+
+        if (images != null && !images.isEmpty()) {
+            int startOrder = (int) currentImageCount;
+            int maxNewImages = Math.min(images.size(), 50 - (int) currentImageCount);
+
+            for (int i = 0; i < maxNewImages; i++) {
+                org.springframework.web.multipart.MultipartFile file = images.get(i);
+
+                if (file != null && !file.isEmpty()) {
+                    String imageUrl = lvsFileUploadService.lvsSaveFile(file, "posts");
+
+                    k23cnt3.lucvanson.project3.LvsEntity.LvsPostImage postImage = new k23cnt3.lucvanson.project3.LvsEntity.LvsPostImage();
+                    postImage.setLvsPost(post);
+                    postImage.setLvsImageUrl(imageUrl);
+                    postImage.setLvsImageOrder(startOrder + i);
+
+                    lvsPostImageRepository.save(postImage);
+                }
+            }
+        }
+    }
+
+    /**
+     * Xóa một ảnh của bài viết
+     */
+    @Override
+    public void lvsDeletePostImage(Long lvsImageId) {
+        lvsPostImageRepository.findById(lvsImageId).ifPresent(image -> {
+            // Xóa file vật lý
+            lvsFileUploadService.lvsDeleteFile(image.getLvsImageUrl());
+
+            // Xóa record trong database
+            lvsPostImageRepository.delete(image);
+        });
+    }
+
+    /**
+     * Lấy danh sách ảnh của bài viết
+     */
+    @Override
+    public java.util.List<k23cnt3.lucvanson.project3.LvsEntity.LvsPostImage> lvsGetPostImages(Long lvsPostId) {
+        LvsPost post = lvsGetPostById(lvsPostId);
+        if (post != null) {
+            return lvsPostImageRepository.findByLvsPostOrderByLvsImageOrderAsc(post);
+        }
+        return new java.util.ArrayList<>();
     }
 }

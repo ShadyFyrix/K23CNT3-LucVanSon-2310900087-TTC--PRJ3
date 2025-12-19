@@ -84,6 +84,29 @@ public class LvsAdminOrderController {
     }
 
     /**
+     * Hiển thị form tạo đơn hàng mới
+     */
+    @GetMapping("/LvsCreate")
+    public String lvsShowCreateForm(Model model) {
+        return "LvsAreas/LvsAdmin/LvsOrder/LvsCreate";
+    }
+
+    /**
+     * Hiển thị form chỉnh sửa đơn hàng
+     */
+    @GetMapping("/LvsEdit/{id}")
+    public String lvsShowEditForm(@PathVariable Long id, Model model) {
+        LvsOrder lvsOrder = lvsOrderService.lvsGetOrderById(id);
+
+        if (lvsOrder == null) {
+            return "redirect:/LvsAdmin/LvsOrder/LvsList";
+        }
+
+        model.addAttribute("LvsOrder", lvsOrder);
+        return "LvsAreas/LvsAdmin/LvsOrder/LvsEdit";
+    }
+
+    /**
      * Xem chi tiáº¿t Ä‘Æ¡n hÃ ng
      */
     @GetMapping("/LvsDetail/{id}")
@@ -145,6 +168,7 @@ public class LvsAdminOrderController {
     public String lvsRefundOrder(@PathVariable Long id,
             @RequestParam Double lvsAmount,
             @RequestParam String lvsReason,
+            HttpSession session,
             Model model) {
         try {
             LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");

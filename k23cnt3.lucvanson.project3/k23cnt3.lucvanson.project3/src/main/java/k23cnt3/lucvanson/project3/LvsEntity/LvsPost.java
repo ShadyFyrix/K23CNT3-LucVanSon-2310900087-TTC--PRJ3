@@ -63,6 +63,10 @@ public class LvsPost {
     @Column(name = "LvsTags", length = 500)
     private String lvsTags;
 
+    // Ảnh đại diện
+    @Column(name = "LvsThumbnailUrl", length = 500)
+    private String lvsThumbnailUrl;
+
     // Thời gian
     @Column(name = "LvsCreatedAt")
     private LocalDateTime lvsCreatedAt = LocalDateTime.now();
@@ -73,6 +77,9 @@ public class LvsPost {
     // Quan hệ
     @OneToMany(mappedBy = "lvsPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<LvsComment> lvsComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lvsPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<LvsPostImage> lvsImages = new ArrayList<>();
 
     // Enum
     public enum LvsPostType {
@@ -221,4 +228,19 @@ public class LvsPost {
         this.lvsComments = lvsComments;
     }
 
+    public String getLvsThumbnailUrl() {
+        return lvsThumbnailUrl;
+    }
+
+    public void setLvsThumbnailUrl(String lvsThumbnailUrl) {
+        this.lvsThumbnailUrl = lvsThumbnailUrl;
+    }
+
+    public List<LvsPostImage> getLvsImages() {
+        return lvsImages;
+    }
+
+    public void setLvsImages(List<LvsPostImage> lvsImages) {
+        this.lvsImages = lvsImages;
+    }
 }

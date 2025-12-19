@@ -35,6 +35,7 @@ public class LvsUserCommentController {
     public String lvsAddComment(@RequestParam Long lvsPostId,
             @RequestParam String lvsContent,
             @RequestParam(required = false) Long lvsParentId,
+            @RequestParam(value = "images", required = false) org.springframework.web.multipart.MultipartFile[] images,
             HttpSession session,
             Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
@@ -54,7 +55,8 @@ public class LvsUserCommentController {
                 lvsComment.setLvsParent(lvsParent);
             }
 
-            lvsCommentService.lvsSaveComment(lvsComment);
+            // Lưu comment với ảnh
+            lvsCommentService.lvsSaveCommentWithImages(lvsComment, images);
 
             model.addAttribute("LvsSuccess", "Đã thêm bình luận!");
         } catch (Exception e) {

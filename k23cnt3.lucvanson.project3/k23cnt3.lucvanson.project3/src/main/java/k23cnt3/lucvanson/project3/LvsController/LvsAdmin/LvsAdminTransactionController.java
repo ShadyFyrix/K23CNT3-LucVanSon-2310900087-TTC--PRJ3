@@ -177,7 +177,8 @@ public class LvsAdminTransactionController {
             // LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
 
             lvsTransaction.setLvsUser(lvsUser);
-            lvsTransaction.setLvsAdminApprover(lvsAdmin);
+            // lvsTransaction.setLvsAdminApprover(lvsAdmin); // Temporarily commented out
+            lvsTransaction.setLvsAdminApprover(null); // Set to null temporarily
             lvsTransaction.setLvsStatus(LvsTransaction.LvsTransactionStatus.SUCCESS);
             lvsTransaction.setLvsApprovedAt(java.time.LocalDateTime.now());
 

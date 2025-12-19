@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -55,6 +54,47 @@ public class LvsAdminCommentController {
 
     @Autowired
     private LvsPostService lvsPostService;
+
+    /**
+     * Hiển thị form tạo comment
+     */
+    @GetMapping("/LvsCreate")
+    public String lvsShowCreateForm(Model model) {
+        model.addAttribute("LvsPosts", lvsPostService.lvsGetAllPosts(PageRequest.of(0, 100)).getContent());
+        model.addAttribute("LvsUsers", lvsUserService.lvsGetAllUsers(PageRequest.of(0, 100)).getContent());
+        return "LvsAreas/LvsAdmin/LvsComment/LvsCreate";
+    }
+
+    /**
+     * Xử lý tạo comment
+     */
+    @PostMapping("/LvsCreate")
+    public String lvsCreateComment(
+            @RequestParam Long lvsPostId,
+            @RequestParam Long lvsUserId,
+            @RequestParam String lvsContent,
+            @RequestParam(required = false) Boolean lvsIsApproved,
+            @RequestParam(value = "images", required = false) org.springframework.web.multipart.MultipartFile[] images,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            LvsPost post = lvsPostService.lvsGetPostById(lvsPostId);
+            LvsUser user = lvsUserService.lvsGetUserById(lvsUserId);
+
+            LvsComment comment = new LvsComment();
+            comment.setLvsPost(post);
+            comment.setLvsUser(user);
+            comment.setLvsContent(lvsContent);
+            comment.setLvsIsApproved(lvsIsApproved != null ? lvsIsApproved : false);
+
+            lvsCommentService.lvsSaveCommentWithImages(comment, images);
+
+            redirectAttributes.addFlashAttribute("LvsSuccess", "Tạo bình luận thành công!");
+            return "redirect:/LvsAdmin/LvsComment/LvsList";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("LvsError", "Lỗi: " + e.getMessage());
+            return "redirect:/LvsAdmin/LvsComment/LvsCreate";
+        }
+    }
 
     /**
      * Hiển thị danh sách bình luận
@@ -156,12 +196,20 @@ public class LvsAdminCommentController {
     @PostMapping("/LvsDelete/{id}")
     public String lvsDeleteComment(@PathVariable Long id,
             @RequestParam(required = false) String lvsReason,
-            Model model) {
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         try {
+            System.out.println("=== DELETE COMMENT START ===");
+            System.out.println("Comment ID: " + id);
+            System.out.println("Reason: " + lvsReason);
+
             lvsCommentService.lvsDeleteComment(id, lvsReason);
-            model.addAttribute("LvsSuccess", "Đã xóa bình luận!");
+
+            redirectAttributes.addFlashAttribute("LvsSuccess", "Đã xóa bình luận!");
+            System.out.println("=== DELETE COMMENT SUCCESS ===");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            System.err.println("=== DELETE COMMENT ERROR ===");
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("LvsError", "Lỗi: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsComment/LvsList";
@@ -190,17 +238,49 @@ public class LvsAdminCommentController {
     @PostMapping("/LvsEdit/{id}")
     public String lvsEditComment(@PathVariable Long id,
             @ModelAttribute LvsComment lvsComment,
-            Model model) {
+            @RequestParam(value = "images", required = false) org.springframework.web.multipart.MultipartFile[] images,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         try {
-            lvsComment.setLvsCommentId(id);
-            lvsComment.setLvsIsEdited(true);
-            lvsCommentService.lvsSaveComment(lvsComment);
+            System.out.println("=== EDIT COMMENT START ===");
+            System.out.println("Comment ID: " + id);
+            System.out.println("Content: " + lvsComment.getLvsContent());
+            System.out.println("Images count: " + (images != null ? images.length : 0));
 
-            model.addAttribute("LvsSuccess", "Cập nhật bình luận thành công!");
+            // USE UPDATE instead of SAVE to preserve User/Post
+            lvsCommentService.lvsUpdateComment(id, lvsComment.getLvsContent());
+            System.out.println("Comment updated successfully");
+
+            // Add new images if provided
+            if (images != null && images.length > 0) {
+                System.out.println("Adding " + images.length + " new images...");
+                lvsCommentService.lvsAddImagesToComment(id, images);
+                System.out.println("Images added successfully");
+            }
+
+            redirectAttributes.addFlashAttribute("LvsSuccess", "Cập nhật bình luận thành công!");
+            System.out.println("=== EDIT COMMENT SUCCESS ===");
             return "redirect:/LvsAdmin/LvsComment/LvsDetail/" + id;
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
-            return "LvsAreas/LvsAdmin/LvsComment/LvsEdit";
+            System.err.println("=== EDIT COMMENT ERROR ===");
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("LvsError", "Lỗi: " + e.getMessage());
+            return "redirect:/LvsAdmin/LvsComment/LvsEdit/" + id;
+        }
+    }
+
+    /**
+     * Xóa ảnh của comment
+     */
+    @PostMapping("/LvsDeleteImage/{imageId}")
+    public String lvsDeleteCommentImage(@PathVariable Long imageId,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            Long commentId = lvsCommentService.lvsDeleteCommentImage(imageId);
+            redirectAttributes.addFlashAttribute("LvsSuccess", "Đã xóa ảnh!");
+            return "redirect:/LvsAdmin/LvsComment/LvsEdit/" + commentId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("LvsError", "Lỗi: " + e.getMessage());
+            return "redirect:/LvsAdmin/LvsComment/LvsList";
         }
     }
 

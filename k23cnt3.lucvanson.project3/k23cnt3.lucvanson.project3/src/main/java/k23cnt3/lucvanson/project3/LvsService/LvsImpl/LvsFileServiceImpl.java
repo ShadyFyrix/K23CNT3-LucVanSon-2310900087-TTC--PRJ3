@@ -241,7 +241,7 @@ public class LvsFileServiceImpl implements LvsFileService {
      */
     @Override
     public String lvsGetFileUrl(String lvsFilePath) {
-        return "/uploads/" + lvsFilePath;
+        return "/lvsforum/uploads/" + lvsFilePath;
     }
 
     /**

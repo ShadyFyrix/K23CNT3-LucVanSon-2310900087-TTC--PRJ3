@@ -71,6 +71,7 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Ảnh</th>
                                     <th>Tiêu đề</th>
                                     <th>Tác giả</th>
                                     <th>Loại</th>
@@ -83,6 +84,29 @@
                             <tbody>
                                 <tr th:each="post : ${LvsPosts.content}">
                                     <td th:text="${post.lvsPostId}"></td>
+                                    <td style="min-width: 150px;">
+                                        <!-- Multiple Images Display -->
+                                        <div th:if="${post.lvsImages != null and !post.lvsImages.isEmpty()}"
+                                            class="d-flex flex-wrap gap-1">
+                                            <!-- Show first 4 images -->
+                                            <div th:each="image, iterStat : ${post.lvsImages}"
+                                                th:if="${iterStat.index < 4}" class="position-relative">
+                                                <img th:src="@{${image.lvsImageUrl}}" alt="Image"
+                                                    style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6;">
+                                                <!-- Show +N badge on last image if more exist -->
+                                                <span th:if="${iterStat.index == 3 and post.lvsImages.size() > 4}"
+                                                    class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                                                    style="background: rgba(0,0,0,0.6); border-radius: 4px; color: white; font-weight: bold; font-size: 12px;">
+                                                    +<span th:text="${post.lvsImages.size() - 4}">0</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- Placeholder if no images -->
+                                        <div th:unless="${post.lvsImages != null and !post.lvsImages.isEmpty()}"
+                                            class="text-center text-muted">
+                                            <i class="fas fa-image fa-2x"></i>
+                                        </div>
+                                    </td>
                                     <td>
                                         <a th:href="@{/LvsAdmin/LvsPost/LvsDetail/{id}(id=${post.lvsPostId})}"
                                             th:text="${post.lvsTitle}"></a>

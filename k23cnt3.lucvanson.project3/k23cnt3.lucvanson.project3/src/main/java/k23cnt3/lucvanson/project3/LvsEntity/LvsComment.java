@@ -53,6 +53,9 @@ public class LvsComment {
     @OneToMany(mappedBy = "lvsParent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<LvsComment> lvsReplies = new ArrayList<>();
 
+    @OneToMany(mappedBy = "lvsComment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<LvsCommentImage> lvsImages = new ArrayList<>();
+
     // Getters and Setters
 
     public Long getLvsCommentId() {
@@ -143,4 +146,11 @@ public class LvsComment {
         this.lvsReplies = lvsReplies;
     }
 
+    public List<LvsCommentImage> getLvsImages() {
+        return lvsImages;
+    }
+
+    public void setLvsImages(List<LvsCommentImage> lvsImages) {
+        this.lvsImages = lvsImages;
+    }
 }
