@@ -3,45 +3,274 @@
     layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
 
 <head>
-    <title>Chi tiết dự án - Electro Store</title>
+    <title th:text="${project.lvsProjectName} + ' - Electro Store'">Project Detail - Electro Store</title>
 </head>
 
 <body>
-    <div layout:fragment="content">
-        <div class="container mx-auto px-4 py-8 max-w-6xl">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <div
-                        class="h-96 bg-[#2b2b2b] border border-[#333] rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-image text-8xl text-gray-600"></i>
+    <div layout:fragment="content" class="min-h-screen">
+        <!-- Success/Error Messages -->
+        <div th:if="${param.success}" class="container mx-auto px-4 pt-4">
+            <div class="bg-green-500/20 border border-green-500 text-green-400 px-6 py-4 rounded-lg mb-4">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span th:text="${param.success}">Success message</span>
+            </div>
+        </div>
+        <div th:if="${param.error}" class="container mx-auto px-4 pt-4">
+            <div class="bg-red-500/20 border border-red-500 text-red-400 px-6 py-4 rounded-lg mb-4">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span th:text="${param.error}">Error message</span>
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div class="bg-[#1e1e1e] border-b border-[#333]">
+            <div class="container mx-auto px-4 py-4 flex items-center gap-2 text-sm text-gray-400">
+                <a th:href="@{/LvsUser/LvsDashboard}" class="hover:text-[#fed700] transition">
+                    <i class="fas fa-home mr-1"></i>Home
+                </a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <a th:href="@{/LvsUser/LvsProject/LvsList}" class="hover:text-[#fed700] transition">Browse Projects</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-white font-medium" th:text="${project.lvsProjectName}">Project Name</span>
+            </div>
+        </div>
+
+        <section class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Content -->
+                <div class="lg:col-span-2">
+                    <!-- Project Header -->
+                    <div class="bg-[#2b2b2b] rounded-xl border border-[#333] p-8 mb-6">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span th:if="${project.lvsCategory}"
+                                        class="text-[#fed700] text-xs font-bold px-3 py-1 border border-[#fed700] rounded-full uppercase tracking-wider"
+                                        th:text="${project.lvsCategory.lvsCategoryName}">Category</span>
+                                    <span
+                                        class="text-green-400 text-xs font-bold px-3 py-1 bg-green-500/20 border border-green-500 rounded-full">
+                                        <i class="fas fa-check-circle mr-1"></i>VERIFIED
+                                    </span>
+                                </div>
+                                <h1 class="text-4xl font-bold text-white mb-2" th:text="${project.lvsProjectName}">
+                                    Project Name</h1>
+                                <p class="text-gray-400">
+                                    by <a href="#" class="text-[#fed700] hover:underline"
+                                        th:text="${project.lvsCreator?.lvsUsername ?: 'Unknown'}">Creator</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Project Image -->
+                        <div class="border border-[#333] rounded-lg overflow-hidden bg-[#1e1e1e] mb-6">
+                            <img th:if="${project.lvsThumbnailUrl}" th:src="@{${project.lvsThumbnailUrl}}"
+                                class="w-full h-96 object-cover" alt="Project Thumbnail">
+                            <div th:unless="${project.lvsThumbnailUrl}"
+                                class="w-full h-96 flex items-center justify-center">
+                                <i class="fas fa-gamepad text-gray-600 text-9xl"></i>
+                            </div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-4 mb-6">
+                            <div class="bg-[#1e1e1e] border border-[#333] rounded-lg p-4 text-center">
+                                <div class="flex text-[#fed700] text-sm justify-center mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <p class="text-gray-400 text-xs" th:text="${project.lvsReviewCount ?: 0} + ' Reviews'">0
+                                    Reviews</p>
+                            </div>
+                            <div class="bg-[#1e1e1e] border border-[#333] rounded-lg p-4 text-center">
+                                <i class="fas fa-download text-[#fed700] text-2xl mb-2"></i>
+                                <p class="text-gray-400 text-xs">1.2K Downloads</p>
+                            </div>
+                            <div class="bg-[#1e1e1e] border border-[#333] rounded-lg p-4 text-center">
+                                <i class="fas fa-heart text-[#fed700] text-2xl mb-2"></i>
+                                <p class="text-gray-400 text-xs">234 Favorites</p>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="border-t border-[#333] pt-6">
+                            <h2 class="text-xl font-bold text-white mb-4">
+                                <i class="fas fa-info-circle text-[#fed700] mr-2"></i>About This Project
+                            </h2>
+                            <p class="text-gray-400 leading-relaxed whitespace-pre-line"
+                                th:text="${project.lvsDescription}">
+                                Project description goes here.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <h1 class="text-3xl font-bold text-white mb-4" th:text="${LvsProject.lvsProjectName}">Project Name
-                    </h1>
-                    <p class="text-[#fed700] font-bold text-4xl mb-6"
-                        th:text="${#numbers.formatCurrency(LvsProject.lvsPrice)}">$0</p>
+                <!-- Sidebar - Purchase Section -->
+                <div class="lg:col-span-1">
+                    <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 sticky top-4">
+                        <!-- Price -->
+                        <div class="text-center mb-6 pb-6 border-b border-[#333]">
+                            <div class="text-5xl font-bold text-[#fed700] mb-2"
+                                th:text="${#numbers.formatDecimal(project.lvsPrice, 0, 'COMMA', 0, 'POINT')}">0</div>
+                            <p class="text-gray-400 text-sm">
+                                <i class="fas fa-coins text-[#fed700]"></i> Coins
+                            </p>
+                        </div>
 
-                    <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 mb-6">
-                        <h2 class="text-xl font-bold text-white mb-3">Mô tả</h2>
-                        <p class="text-gray-300" th:text="${LvsProject.lvsDescription}">Description</p>
-                    </div>
+                        <!-- Your Balance -->
+                        <div th:if="${session.LvsCurrentUser}"
+                            class="bg-[#1e1e1e] border border-[#333] rounded-lg p-4 mb-6">
+                            <p class="text-gray-400 text-sm mb-1">Your Balance:</p>
+                            <p class="text-white font-bold text-xl">
+                                <i class="fas fa-wallet text-[#fed700] mr-2"></i>
+                                <span
+                                    th:text="${#numbers.formatDecimal(session.LvsCurrentUser.lvsCoin ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                <span class="text-sm text-gray-400">coins</span>
+                            </p>
+                        </div>
 
-                    <div class="flex gap-4">
+                        <!-- Buy Now Form -->
+                        <form th:if="${session.LvsCurrentUser}" th:action="@{/LvsUser/LvsOrder/LvsBuyNow}" method="post"
+                            id="buyNowForm">
+                            <input type="hidden" name="lvsProjectId" th:value="${project.lvsProjectId}">
+
+                            <!-- Quantity Selector -->
+                            <div class="mb-6">
+                                <label class="text-gray-400 text-sm mb-2 block">Quantity:</label>
+                                <div class="flex items-center border border-[#333] rounded-lg overflow-hidden">
+                                    <button type="button" onclick="decreaseQuantity()"
+                                        class="px-4 py-3 bg-[#1e1e1e] hover:bg-[#333] text-gray-400 transition">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" name="lvsQuantity" id="quantity" value="1" min="1" max="99"
+                                        class="flex-1 text-center border-none bg-[#1e1e1e] text-white focus:ring-0 py-3 font-bold text-lg">
+                                    <button type="button" onclick="increaseQuantity()"
+                                        class="px-4 py-3 bg-[#1e1e1e] hover:bg-[#333] text-gray-400 transition">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Total Price -->
+                            <div class="bg-[#1e1e1e] border border-[#333] rounded-lg p-4 mb-6">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-400">Total:</span>
+                                    <span class="text-[#fed700] font-bold text-2xl" id="totalPrice"
+                                        th:attr="data-price=${project.lvsPrice}"
+                                        th:text="${#numbers.formatDecimal(project.lvsPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                </div>
+                            </div>
+
+                            <!-- Buy Button -->
+                            <button type="submit"
+                                class="w-full bg-[#fed700] text-black font-bold py-4 rounded-lg hover:bg-white transition shadow-lg mb-3 flex items-center justify-center gap-2">
+                                <i class="fas fa-bolt"></i> Buy Now
+                            </button>
+                        </form>
+
+                        <!-- Login Required -->
+                        <div th:unless="${session.LvsCurrentUser}" class="text-center">
+                            <a th:href="@{/LvsAuth/LvsLogin}"
+                                class="block w-full bg-[#fed700] text-black font-bold py-4 rounded-lg hover:bg-white transition shadow-lg mb-3">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Login to Purchase
+                            </a>
+                        </div>
+
+                        <!-- Add to Cart (if logged in) -->
+                        <form th:if="${session.LvsCurrentUser}" th:action="@{/LvsUser/LvsCart/LvsAddItem}" method="post"
+                            class="mb-3">
+                            <input type="hidden" name="lvsProjectId" th:value="${project.lvsProjectId}">
+                            <input type="hidden" name="lvsQuantity" value="1">
+                            <button type="submit"
+                                class="w-full bg-[#1e1e1e] border border-[#444] text-white font-bold py-3 rounded-lg hover:border-[#fed700] transition flex items-center justify-center gap-2">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </form>
+
+                        <!-- Wishlist -->
                         <button
-                            class="flex-1 bg-[#fed700] text-black font-bold py-4 rounded-lg hover:bg-yellow-400 transition">
-                            <i class="fas fa-shopping-cart mr-2"></i>Thêm vào giỏ
+                            class="w-full bg-transparent border border-[#444] text-gray-400 font-bold py-3 rounded-lg hover:border-[#fed700] hover:text-[#fed700] transition flex items-center justify-center gap-2">
+                            <i class="far fa-heart"></i> Add to Wishlist
                         </button>
-                        <button
-                            class="bg-[#1e1e1e] border border-[#444] text-white px-6 py-4 rounded-lg hover:border-[#fed700] transition">
-                            <i class="fas fa-heart"></i>
-                        </button>
+
+                        <!-- Project Info -->
+                        <div class="border-t border-[#333] mt-6 pt-6 space-y-3 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Project ID:</span>
+                                <span class="text-white font-mono" th:text="'#' + ${project.lvsProjectId}">#001</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Created:</span>
+                                <span class="text-white"
+                                    th:text="${#temporals.format(project.lvsCreatedAt, 'dd/MM/yyyy')}">Date</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Last Updated:</span>
+                                <span class="text-white"
+                                    th:text="${#temporals.format(project.lvsUpdatedAt, 'dd/MM/yyyy')}">Date</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
+
+    <!-- Scripts -->
+    <th:block layout:fragment="scripts">
+        <script>
+            function increaseQuantity() {
+                const input = document.getElementById('quantity');
+                const currentValue = parseInt(input.value) || 1;
+                if (currentValue < 99) {
+                    input.value = currentValue + 1;
+                    updateTotalPrice();
+                }
+            }
+
+            function decreaseQuantity() {
+                const input = document.getElementById('quantity');
+                const currentValue = parseInt(input.value) || 1;
+                if (currentValue > 1) {
+                    input.value = currentValue - 1;
+                    updateTotalPrice();
+                }
+            }
+
+            function updateTotalPrice() {
+                const quantity = parseInt(document.getElementById('quantity').value) || 1;
+                const priceElement = document.getElementById('totalPrice');
+                const basePrice = parseFloat(priceElement.getAttribute('data-price')) || 0;
+                const total = basePrice * quantity;
+
+                // Format number with thousand separators
+                priceElement.textContent = total.toLocaleString('en-US', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                });
+            }
+
+            // Confirm before purchase
+            document.getElementById('buyNowForm')?.addEventListener('submit', function (e) {
+                const quantity = parseInt(document.getElementById('quantity').value) || 1;
+                const totalPrice = parseFloat(document.getElementById('totalPrice').getAttribute('data-price')) * quantity;
+                const userBalance = parseFloat('[[${session.LvsCurrentUser?.lvsCoin ?: 0}]]');
+
+                if (totalPrice > userBalance) {
+                    e.preventDefault();
+                    alert('Insufficient coins! You need ' + totalPrice.toLocaleString() + ' coins but only have ' + userBalance.toLocaleString() + ' coins.');
+                    return false;
+                }
+
+                if (!confirm('Purchase this project for ' + totalPrice.toLocaleString() + ' coins?')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        </script>
+    </th:block>
 </body>
 
 </html>

@@ -399,13 +399,13 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
         lvsUser.setLvsCoin(lvsUser.getLvsCoin() - lvsOrder.getLvsFinalAmount());
         lvsUserRepository.save(lvsUser);
 
-        // Tạo giao dịch thanh toán
+        // Tạo giao dịch PURCHASE cho người mua (số âm = mất tiền)
         LvsTransaction lvsTransaction = new LvsTransaction();
         lvsTransaction.setLvsUser(lvsUser);
         lvsTransaction.setLvsType(LvsTransactionType.PURCHASE);
-        lvsTransaction.setLvsAmount(lvsOrder.getLvsFinalAmount());
+        lvsTransaction.setLvsAmount(-lvsOrder.getLvsFinalAmount()); // Số âm vì người mua mất tiền
         lvsTransaction.setLvsStatus(LvsTransactionStatus.SUCCESS);
-        lvsTransaction.setLvsDescription("Thanh toán đơn hàng " + lvsOrder.getLvsOrderCode());
+        lvsTransaction.setLvsDescription("Mua hàng - Đơn hàng #" + lvsOrder.getLvsOrderCode());
         lvsTransaction.setLvsOrder(lvsOrder);
         lvsTransaction.setLvsCreatedAt(LocalDateTime.now());
 
@@ -441,17 +441,77 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
         lvsSeller.setLvsBalance(lvsSeller.getLvsBalance() + lvsRevenue);
         lvsUserRepository.save(lvsSeller);
 
-        // Tạo giao dịch bán hàng
+        // Tạo giao dịch SALE cho người bán (số dương = nhận tiền)
         LvsTransaction lvsTransaction = new LvsTransaction();
         lvsTransaction.setLvsUser(lvsSeller);
         lvsTransaction.setLvsType(LvsTransactionType.SALE);
-        lvsTransaction.setLvsAmount(lvsRevenue);
+        lvsTransaction.setLvsAmount(lvsRevenue); // Số dương vì người bán nhận tiền
         lvsTransaction.setLvsStatus(LvsTransactionStatus.SUCCESS);
-        lvsTransaction.setLvsDescription("Bán dự án từ đơn hàng " + lvsOrder.getLvsOrderCode());
+        lvsTransaction.setLvsDescription(
+                "Bán hàng - Đơn hàng #" + lvsOrder.getLvsOrderCode() + " (Doanh thu: " + lvsRevenue + " coin)");
         lvsTransaction.setLvsOrder(lvsOrder);
         lvsTransaction.setLvsCreatedAt(LocalDateTime.now());
 
         lvsTransactionRepository.save(lvsTransaction);
+
+        return true;
+    }
+
+    /**
+     * Xử lý hoàn tiền đơn hàng
+     * Tạo 2 giao dịch REFUND: 1 cho người mua (nhận lại tiền), 1 cho người bán (mất
+     * tiền)
+     * 
+     * @param lvsOrderId  ID đơn hàng
+     * @param lvsBuyerId  ID người mua
+     * @param lvsSellerId ID người bán
+     * @param lvsReason   Lý do hoàn tiền
+     * @return true nếu thành công
+     */
+    @Override
+    public boolean lvsProcessRefundTransaction(Long lvsOrderId, Long lvsBuyerId, Long lvsSellerId, String lvsReason) {
+        var lvsOrder = lvsOrderRepository.findById(lvsOrderId).orElse(null);
+        var lvsBuyer = lvsUserRepository.findById(lvsBuyerId).orElse(null);
+        var lvsSeller = lvsUserRepository.findById(lvsSellerId).orElse(null);
+
+        if (lvsOrder == null || lvsBuyer == null || lvsSeller == null)
+            return false;
+
+        // Tính số tiền hoàn lại
+        Double lvsRefundAmount = lvsOrder.getLvsFinalAmount();
+        Double lvsSellerRevenue = lvsRefundAmount * 0.8; // Người bán đã nhận 80%
+
+        // Hoàn tiền cho người mua
+        lvsBuyer.setLvsCoin(lvsBuyer.getLvsCoin() + lvsRefundAmount);
+        lvsUserRepository.save(lvsBuyer);
+
+        // Trừ tiền người bán
+        lvsSeller.setLvsBalance(lvsSeller.getLvsBalance() - lvsSellerRevenue);
+        lvsUserRepository.save(lvsSeller);
+
+        // Tạo giao dịch REFUND cho người mua (số dương = nhận lại tiền)
+        LvsTransaction lvsBuyerRefund = new LvsTransaction();
+        lvsBuyerRefund.setLvsUser(lvsBuyer);
+        lvsBuyerRefund.setLvsType(LvsTransactionType.REFUND);
+        lvsBuyerRefund.setLvsAmount(lvsRefundAmount); // Số dương vì nhận lại tiền
+        lvsBuyerRefund.setLvsStatus(LvsTransactionStatus.SUCCESS);
+        lvsBuyerRefund
+                .setLvsDescription("Hoàn tiền - Đơn hàng #" + lvsOrder.getLvsOrderCode() + " - Lý do: " + lvsReason);
+        lvsBuyerRefund.setLvsOrder(lvsOrder);
+        lvsBuyerRefund.setLvsCreatedAt(LocalDateTime.now());
+        lvsTransactionRepository.save(lvsBuyerRefund);
+
+        // Tạo giao dịch REFUND cho người bán (số âm = mất tiền)
+        LvsTransaction lvsSellerRefund = new LvsTransaction();
+        lvsSellerRefund.setLvsUser(lvsSeller);
+        lvsSellerRefund.setLvsType(LvsTransactionType.REFUND);
+        lvsSellerRefund.setLvsAmount(-lvsSellerRevenue); // Số âm vì mất tiền
+        lvsSellerRefund.setLvsStatus(LvsTransactionStatus.SUCCESS);
+        lvsSellerRefund.setLvsDescription(
+                "Hoàn tiền cho khách - Đơn hàng #" + lvsOrder.getLvsOrderCode() + " - Lý do: " + lvsReason);
+        lvsSellerRefund.setLvsOrder(lvsOrder);
+        lvsSellerRefund.setLvsCreatedAt(LocalDateTime.now());
+        lvsTransactionRepository.save(lvsSellerRefund);
 
         return true;
     }
@@ -578,5 +638,49 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
     public Double lvsGetUserBalance(Long lvsUserId) {
         var lvsUser = lvsUserRepository.findById(lvsUserId).orElse(null);
         return lvsUser != null ? lvsUser.getLvsCoin() : 0.0;
+    }
+
+    /**
+     * Chuyển đổi Balance (doanh thu) sang Coin
+     * 
+     * @param lvsUserId ID người dùng
+     * @param lvsAmount Số tiền cần chuyển đổi
+     * @return Giao dịch đã tạo
+     */
+    @Override
+    public LvsTransaction lvsConvertBalanceToCoin(Long lvsUserId, Double lvsAmount) {
+        var lvsUser = lvsUserRepository.findById(lvsUserId).orElse(null);
+        if (lvsUser == null) {
+            throw new RuntimeException("Người dùng không tồn tại");
+        }
+
+        // Kiểm tra số dư Balance
+        if (lvsUser.getLvsBalance() < lvsAmount) {
+            throw new RuntimeException("Số dư doanh thu không đủ để chuyển đổi");
+        }
+
+        // Kiểm tra số tiền tối thiểu (ví dụ: 1000 coin)
+        if (lvsAmount < 1000.0) {
+            throw new RuntimeException("Số tiền chuyển đổi tối thiểu là 1,000 coin");
+        }
+
+        // Trừ Balance
+        lvsUser.setLvsBalance(lvsUser.getLvsBalance() - lvsAmount);
+
+        // Cộng Coin
+        lvsUser.setLvsCoin(lvsUser.getLvsCoin() + lvsAmount);
+
+        lvsUserRepository.save(lvsUser);
+
+        // Tạo giao dịch BALANCE_TO_COIN
+        LvsTransaction lvsTransaction = new LvsTransaction();
+        lvsTransaction.setLvsUser(lvsUser);
+        lvsTransaction.setLvsType(LvsTransactionType.BALANCE_TO_COIN);
+        lvsTransaction.setLvsAmount(lvsAmount);
+        lvsTransaction.setLvsStatus(LvsTransactionStatus.SUCCESS);
+        lvsTransaction.setLvsDescription("Chuyển đổi doanh thu sang coin: " + lvsAmount + " coin");
+        lvsTransaction.setLvsCreatedAt(LocalDateTime.now());
+
+        return lvsTransactionRepository.save(lvsTransaction);
     }
 }

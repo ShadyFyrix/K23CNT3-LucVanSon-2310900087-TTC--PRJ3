@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Chuyển đổi Balance sang Coin - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-exchange-alt mr-3 text-[#fed700]"></i>Chuyển đổi Doanh thu sang Coin
+            </h1>
+
+            <div class="max-w-2xl mx-auto bg-[#2b2b2b] border border-[#333] rounded-xl p-8">
+                <!-- Current Balances -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <!-- Balance (Doanh thu) -->
+                    <div
+                        class="bg-gradient-to-r from-green-500/20 to-emerald-600/20 border border-green-500/50 rounded-xl p-6">
+                        <p class="text-gray-300 text-sm mb-2">Doanh thu (Balance)</p>
+                        <p class="text-green-400 font-bold text-2xl"
+                            th:text="${#numbers.formatDecimal(LvsUser.lvsBalance, 0, 'COMMA', 0, 'POINT')} + ' coin'">0
+                            coin</p>
+                    </div>
+
+                    <!-- Coin -->
+                    <div
+                        class="bg-gradient-to-r from-[#fed700]/20 to-yellow-600/20 border border-[#fed700]/50 rounded-xl p-6">
+                        <p class="text-gray-300 text-sm mb-2">Coin hiện tại</p>
+                        <p class="text-[#fed700] font-bold text-2xl"
+                            th:text="${#numbers.formatDecimal(LvsUser.lvsCoin, 0, 'COMMA', 0, 'POINT')} + ' coin'">0
+                            coin</p>
+                    </div>
+                </div>
+
+                <!-- Info Alert -->
+                <div class="bg-blue-500/20 border border-blue-500/50 rounded-lg p-4 mb-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-400 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <p class="text-blue-300 font-semibold mb-2">Thông tin chuyển đổi:</p>
+                            <ul class="text-gray-300 text-sm space-y-1">
+                                <li>• Tỷ lệ: 1 Balance = 1 Coin</li>
+                                <li>• Số tiền tối thiểu: <span class="text-[#fed700] font-semibold"
+                                        th:text="${#numbers.formatDecimal(LvsMinAmount, 0, 'COMMA', 0, 'POINT')} + ' coin'">1,000
+                                        coin</span></li>
+                                <li>• Chuyển đổi ngay lập tức, không cần duyệt</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="convertForm" th:action="@{/LvsUser/LvsTransaction/LvsConvert}" method="post">
+                    <!-- Amount -->
+                    <div class="mb-6">
+                        <label class="block text-white font-semibold mb-3">Số tiền muốn chuyển đổi <span
+                                class="text-red-500">*</span></label>
+                        <input type="number" name="lvsAmount" id="lvsAmount" step="1" min="1000" required
+                            th:max="${LvsUser.lvsBalance}"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#fed700]"
+                            placeholder="Nhập số tiền..." oninput="calculateResult()" />
+                        <p class="text-gray-400 text-sm mt-2">
+                            Số tiền tối thiểu: <span class="text-[#fed700]"
+                                th:text="${#numbers.formatDecimal(LvsMinAmount, 0, 'COMMA', 0, 'POINT')} + ' coin'">1,000
+                                coin</span>
+                        </p>
+                    </div>
+
+                    <!-- Preview Result -->
+                    <div id="previewResult" class="hidden mb-6 p-4 bg-[#1e1e1e] border border-[#fed700]/50 rounded-lg">
+                        <p class="text-gray-300 text-sm mb-3">Sau khi chuyển đổi:</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-400 text-xs">Balance còn lại</p>
+                                <p id="newBalance" class="text-green-400 font-bold text-lg">0 coin</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 text-xs">Coin mới</p>
+                                <p id="newCoin" class="text-[#fed700] font-bold text-lg">0 coin</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div th:if="${LvsError}" class="mb-6 p-4 bg-red-500/20 border border-red-500 rounded-lg">
+                        <p class="text-red-400" th:text="${LvsError}">Error message</p>
+                    </div>
+
+                    <!-- Success Message -->
+                    <div th:if="${LvsSuccess}" class="mb-6 p-4 bg-green-500/20 border border-green-500 rounded-lg">
+                        <p class="text-green-400" th:text="${LvsSuccess}">Success message</p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-3">
+                        <button type="button" onclick="showConvertModal()"
+                            class="flex-1 bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-6 py-3 rounded-lg font-semibold transition-colors">
+                            <i class="fas fa-exchange-alt mr-2"></i>Xác nhận chuyển đổi
+                        </button>
+                        <a href="/lvsforum/LvsUser/LvsTransaction/LvsHistory"
+                            class="flex-1 bg-[#333] hover:bg-[#444] text-white px-6 py-3 rounded-lg font-semibold text-center transition-colors">
+                            <i class="fas fa-times mr-2"></i>Hủy
+                        </a>
+                    </div>
+
+                    <!-- Hidden submit button -->
+                    <button type="submit" id="hiddenSubmit" style="display: none;"></button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmModal"
+            class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div
+                class="bg-[#2b2b2b] border border-[#fed700] rounded-xl max-w-md w-full p-6 shadow-2xl transform transition-all">
+                <div class="text-center mb-6">
+                    <div class="mx-auto w-16 h-16 bg-[#fed700]/20 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-exchange-alt text-[#fed700] text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Xác nhận chuyển đổi</h3>
+                    <p class="text-gray-300" id="confirmMessage">Bạn có chắc chắn muốn chuyển đổi?</p>
+                </div>
+
+                <div class="bg-[#1e1e1e] border border-[#444] rounded-lg p-4 mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-400">Số tiền:</span>
+                        <span class="text-[#fed700] font-bold text-lg" id="modalAmount">0 coin</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-400">Balance sau:</span>
+                        <span class="text-green-400 font-semibold" id="modalNewBalance">0 coin</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400">Coin sau:</span>
+                        <span class="text-[#fed700] font-semibold" id="modalNewCoin">0 coin</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button type="button" onclick="cancelConvert()"
+                        class="flex-1 bg-[#333] hover:bg-[#444] text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-times mr-2"></i>Hủy
+                    </button>
+                    <button type="button" onclick="proceedConvert()"
+                        class="flex-1 bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-6 py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-check mr-2"></i>Xác nhận
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="scripts" th:inline="javascript">
+        const currentBalance = /*[[${LvsUser.lvsBalance}]]*/ 0;
+        const currentCoin = /*[[${LvsUser.lvsCoin}]]*/ 0;
+        const minAmount = /*[[${LvsMinAmount}]]*/ 1000;
+
+        function calculateResult() {
+            const amount = parseFloat(document.getElementById('lvsAmount').value) || 0;
+            const preview = document.getElementById('previewResult');
+
+            if (amount >= minAmount && amount <= currentBalance) {
+                preview.classList.remove('hidden');
+                document.getElementById('newBalance').textContent = formatNumber(currentBalance - amount) + ' coin';
+                document.getElementById('newCoin').textContent = formatNumber(currentCoin + amount) + ' coin';
+            } else {
+                preview.classList.add('hidden');
+            }
+        }
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function showConvertModal() {
+            const amount = parseFloat(document.getElementById('lvsAmount').value) || 0;
+
+            if (amount < minAmount) {
+                showAlert('Số tiền tối thiểu là ' + formatNumber(minAmount) + ' coin', 'error');
+                return;
+            }
+
+            if (amount > currentBalance) {
+                showAlert('Số dư doanh thu không đủ!', 'error');
+                return;
+            }
+
+            // Show custom modal
+            document.getElementById('modalAmount').textContent = formatNumber(amount) + ' coin';
+            document.getElementById('modalNewBalance').textContent = formatNumber(currentBalance - amount) + ' coin';
+            document.getElementById('modalNewCoin').textContent = formatNumber(currentCoin + amount) + ' coin';
+            document.getElementById('confirmMessage').textContent =
+                'Bạn có chắc chắn muốn chuyển đổi ' + formatNumber(amount) + ' coin từ doanh thu sang coin?';
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+
+        function cancelConvert() {
+            document.getElementById('confirmModal').classList.add('hidden');
+        }
+
+        function proceedConvert() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            // Click the hidden submit button to properly submit the form
+            document.getElementById('hiddenSubmit').click();
+        }
+
+        function showAlert(message, type) {
+            // Create a toast notification
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all ${type === 'error' ? 'bg-red-500/90 border border-red-600' : 'bg-green-500/90 border border-green-600'
+                }`;
+            toast.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'} text-white text-xl"></i>
+                    <p class="text-white font-semibold">${message}</p>
+                </div>
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('confirmModal')?.addEventListener('click', function (e) {
+            if (e.target === this) {
+                cancelConvert();
+            }
+        });
+    </script>
+</body>
+
+</html>

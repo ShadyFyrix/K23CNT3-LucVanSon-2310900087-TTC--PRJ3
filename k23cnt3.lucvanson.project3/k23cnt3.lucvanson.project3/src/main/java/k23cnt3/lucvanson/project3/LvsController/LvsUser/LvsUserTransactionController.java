@@ -75,10 +75,19 @@ public class LvsUserTransactionController {
             HttpSession session,
             Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
+        if (lvsCurrentUser == null) {
+            return "redirect:/LvsAuth/LvsLogin.html";
+        }
+
         LvsTransaction lvsTransaction = lvsTransactionService.lvsGetTransactionById(id);
 
-        if (lvsCurrentUser == null ||
-                !lvsTransaction.getLvsUser().getLvsUserId().equals(lvsCurrentUser.getLvsUserId())) {
+        // Kiểm tra transaction có tồn tại không
+        if (lvsTransaction == null) {
+            return "redirect:/LvsUser/LvsTransaction/LvsHistory";
+        }
+
+        // Kiểm tra quyền truy cập
+        if (!lvsTransaction.getLvsUser().getLvsUserId().equals(lvsCurrentUser.getLvsUserId())) {
             return "redirect:/LvsUser/LvsTransaction/LvsHistory";
         }
 
@@ -96,6 +105,7 @@ public class LvsUserTransactionController {
         }
 
         model.addAttribute("LvsTransaction", new LvsTransaction());
+        model.addAttribute("LvsCurrentBalance", lvsCurrentUser.getLvsCoin());
 
         return "LvsAreas/LvsUsers/LvsTransactions/LvsTransactionDeposit";
     }
@@ -119,6 +129,12 @@ public class LvsUserTransactionController {
             lvsTransaction.setLvsPaymentInfo(lvsPaymentInfo);
             lvsTransactionService.lvsSaveTransaction(lvsTransaction);
 
+            // If DEMO payment, redirect to mock payment gateway
+            if ("DEMO".equals(lvsPaymentMethod)) {
+                return "redirect:/LvsUser/LvsTransaction/LvsMockPayment/" + lvsTransaction.getLvsTransactionId();
+            }
+
+            // Otherwise, wait for admin approval
             model.addAttribute("LvsSuccess", "Đã tạo yêu cầu nạp tiền! Chờ LvsAdmin duyệt.");
             return "redirect:/LvsUser/LvsTransaction/LvsDetail/" + lvsTransaction.getLvsTransactionId();
         } catch (Exception e) {
@@ -188,5 +204,154 @@ public class LvsUserTransactionController {
         }
 
         return "redirect:/LvsUser/LvsTransaction/LvsHistory";
+    }
+
+    // Hiển thị form chuyển đổi Balance sang Coin
+    @GetMapping("/LvsConvert")
+    public String lvsShowConvertForm(Model model, HttpSession session) {
+        LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
+        if (lvsCurrentUser == null) {
+            return "redirect:/LvsAuth/LvsLogin.html";
+        }
+
+        // Refresh user data
+        lvsCurrentUser = lvsUserService.lvsGetUserById(lvsCurrentUser.getLvsUserId());
+
+        model.addAttribute("LvsUser", lvsCurrentUser);
+        model.addAttribute("LvsMinAmount", 1000.0);
+
+        return "LvsAreas/LvsUsers/LvsTransactions/LvsBalanceToCoins";
+    }
+
+    // Xử lý chuyển đổi Balance sang Coin
+    @PostMapping("/LvsConvert")
+    public String lvsProcessConvert(@RequestParam Double lvsAmount,
+            HttpSession session,
+            Model model) {
+        LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
+        if (lvsCurrentUser == null) {
+            return "redirect:/LvsAuth/LvsLogin.html";
+        }
+
+        try {
+            System.out.println(">>> CONVERSION: Starting conversion for user " + lvsCurrentUser.getLvsUsername()
+                    + ", amount: " + lvsAmount);
+
+            LvsTransaction lvsTransaction = lvsTransactionService.lvsConvertBalanceToCoin(
+                    lvsCurrentUser.getLvsUserId(), lvsAmount);
+
+            System.out.println(">>> CONVERSION: Transaction created with ID: " + lvsTransaction.getLvsTransactionId());
+
+            // Refresh user data in session
+            lvsCurrentUser = lvsUserService.lvsGetUserById(lvsCurrentUser.getLvsUserId());
+            session.setAttribute("LvsCurrentUser", lvsCurrentUser);
+
+            String redirectUrl = "redirect:LvsDetail/" + lvsTransaction.getLvsTransactionId();
+            System.out.println(">>> CONVERSION: Redirecting to: " + redirectUrl);
+
+            return redirectUrl;
+        } catch (Exception e) {
+            System.out.println(">>> CONVERSION ERROR: " + e.getMessage());
+            e.printStackTrace();
+            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            model.addAttribute("LvsUser", lvsCurrentUser);
+            model.addAttribute("LvsMinAmount", 1000.0);
+            return "LvsAreas/LvsUsers/LvsTransactions/LvsBalanceToCoins";
+        }
+    }
+
+    // ===== MOCK PAYMENT GATEWAY ENDPOINTS =====
+
+    // Hiển thị trang mock payment gateway
+    @GetMapping("/LvsMockPayment/{id}")
+    public String lvsShowMockPaymentGateway(@PathVariable Long id, Model model, HttpSession session) {
+        LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
+        if (lvsCurrentUser == null) {
+            return "redirect:/LvsAuth/LvsLogin.html";
+        }
+
+        LvsTransaction lvsTransaction = lvsTransactionService.lvsGetTransactionById(id);
+        if (lvsTransaction == null
+                || !lvsTransaction.getLvsUser().getLvsUserId().equals(lvsCurrentUser.getLvsUserId())) {
+            return "redirect:/LvsUser/LvsTransaction/LvsHistory";
+        }
+
+        model.addAttribute("LvsTransactionId", lvsTransaction.getLvsTransactionId());
+        model.addAttribute("LvsAmount", lvsTransaction.getLvsAmount());
+        model.addAttribute("LvsUser", lvsCurrentUser);
+
+        return "LvsAreas/LvsUsers/LvsTransactions/LvsMockPaymentGateway";
+    }
+
+    // Xử lý thanh toán thành công
+    @PostMapping("/LvsPaymentSuccess")
+    public String lvsProcessPaymentSuccess(@RequestParam Long lvsTransactionId, HttpSession session, Model model) {
+        LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
+        if (lvsCurrentUser == null) {
+            return "redirect:/LvsAuth/LvsLogin.html";
+        }
+
+        try {
+            System.out.println(">>> MOCK PAYMENT: Processing success for transaction " + lvsTransactionId);
+
+            LvsTransaction lvsTransaction = lvsTransactionService.lvsGetTransactionById(lvsTransactionId);
+            if (lvsTransaction == null) {
+                model.addAttribute("LvsError", "Giao dịch không tồn tại!");
+                return "redirect:/LvsUser/LvsTransaction/LvsHistory";
+            }
+
+            // Approve the transaction and add coins
+            lvsTransaction.setLvsStatus(LvsTransaction.LvsTransactionStatus.SUCCESS);
+            lvsTransactionService.lvsSaveTransaction(lvsTransaction);
+
+            // Add coins to user
+            lvsCurrentUser.setLvsCoin(lvsCurrentUser.getLvsCoin() + lvsTransaction.getLvsAmount());
+            lvsUserService.lvsUpdateUser(lvsCurrentUser);
+
+            // Refresh session
+            session.setAttribute("LvsCurrentUser", lvsCurrentUser);
+
+            System.out.println(">>> MOCK PAYMENT: Success! Added " + lvsTransaction.getLvsAmount() + " coins to user");
+
+            model.addAttribute("LvsSuccess",
+                    "Thanh toán thành công! Đã nạp " + lvsTransaction.getLvsAmount() + " coin vào tài khoản.");
+            return "redirect:/LvsUser/LvsTransaction/LvsDetail/" + lvsTransactionId;
+        } catch (Exception e) {
+            System.out.println(">>> MOCK PAYMENT ERROR: " + e.getMessage());
+            e.printStackTrace();
+            model.addAttribute("LvsError", "Lỗi xử lý thanh toán: " + e.getMessage());
+            return "redirect:/LvsUser/LvsTransaction/LvsHistory";
+        }
+    }
+
+    // Xử lý hủy thanh toán
+    @PostMapping("/LvsPaymentCancel")
+    public String lvsProcessPaymentCancel(@RequestParam Long lvsTransactionId, HttpSession session, Model model) {
+        LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
+        if (lvsCurrentUser == null) {
+            return "redirect:/LvsAuth/LvsLogin.html";
+        }
+
+        try {
+            System.out.println(">>> MOCK PAYMENT: Cancelling transaction " + lvsTransactionId);
+
+            LvsTransaction lvsTransaction = lvsTransactionService.lvsGetTransactionById(lvsTransactionId);
+            if (lvsTransaction == null) {
+                return "redirect:/LvsUser/LvsTransaction/LvsHistory";
+            }
+
+            // Cancel the transaction
+            lvsTransaction.setLvsStatus(LvsTransaction.LvsTransactionStatus.FAILED);
+            lvsTransactionService.lvsSaveTransaction(lvsTransaction);
+
+            System.out.println(">>> MOCK PAYMENT: Transaction cancelled");
+
+            model.addAttribute("LvsError", "Đã hủy thanh toán.");
+            return "redirect:/LvsUser/LvsTransaction/LvsHistory";
+        } catch (Exception e) {
+            System.out.println(">>> MOCK PAYMENT ERROR: " + e.getMessage());
+            e.printStackTrace();
+            return "redirect:/LvsUser/LvsTransaction/LvsHistory";
+        }
     }
 }

@@ -32,7 +32,7 @@
 
                 <!-- Search Bar -->
                 <div class="flex-grow max-w-2xl w-full relative">
-                    <form action="/user/san-pham" method="get" class="flex w-full">
+                    <form th:action="@{/LvsUser/LvsProject/LvsList}" method="get" class="flex w-full">
                         <select
                             class="bg-[#2b2b2b] text-white border border-[#333] border-r-0 rounded-l-full px-4 py-3 outline-none focus:border-[#fed700] hidden md:block w-40 text-sm appearance-none cursor-pointer">
                             <option value="">All Categories</option>
@@ -64,10 +64,16 @@
                                 class="absolute -top-2 -right-2 bg-[#fed700] text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
                         </div>
                     </a>
+                    <!-- Admin Panel Button - Only for ADMIN role -->
+                    <a th:if="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsRole.name() == 'ADMIN'}"
+                        th:href="@{/LvsAdmin/LvsDashboard}" class="flex flex-col items-center group"
+                        title="Admin Panel">
+                        <i class="fas fa-shield-alt text-xl text-[#fed700] group-hover:text-[#ffa500] transition"></i>
+                    </a>
                     <a th:href="@{/LvsUser/LvsLogin}" class="flex flex-col items-center group">
                         <i class="far fa-user text-xl group-hover:text-[#fed700] transition"></i>
                     </a>
-                    <a href="/user/cart" class="flex items-center gap-3 group">
+                    <a th:href="@{/LvsUser/LvsCart/LvsView}" class="flex items-center gap-3 group">
                         <div class="relative">
                             <i class="fas fa-shopping-bag text-xl group-hover:text-[#fed700] transition"></i>
                             <span
@@ -95,7 +101,8 @@
                     <!-- Horizontal Menu -->
                     <nav class="hidden lg:flex gap-8 text-sm font-bold uppercase tracking-wide flex-grow pl-8">
                         <a href="/" class="text-[#fed700] border-b-2 border-[#fed700] py-3">Home</a>
-                        <a href="/user/san-pham" class="hover:text-[#fed700] transition py-3">Shop</a>
+                        <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                            class="hover:text-[#fed700] transition py-3">Shop</a>
                         <a href="#" class="hover:text-[#fed700] transition py-3">Blog</a>
                         <a href="#" class="hover:text-[#fed700] transition py-3">Contact Us</a>
                     </nav>

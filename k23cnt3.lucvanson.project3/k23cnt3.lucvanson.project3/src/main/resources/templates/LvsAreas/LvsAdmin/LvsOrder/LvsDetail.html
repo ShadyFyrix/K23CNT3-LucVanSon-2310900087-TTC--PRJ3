@@ -9,102 +9,160 @@
 <body>
     <div layout:fragment="content">
         <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
+            <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">Chi tiết Đơn hàng #<span th:text="${LvsOrder.lvsOrderId}"></span></h1>
-                <a th:href="@{/LvsAdmin/LvsOrder/LvsList}" class="btn btn-outline-secondary"><i
-                        class="fas fa-arrow-left"></i> Quay lại</a>
+                <h1 class="h3 mb-0">Chi tiết Đơn hàng #<span th:text="${lvsOrder.lvsOrderId}"></span></h1>
+                <div>
+                    <a th:href="@{/LvsAdmin/LvsOrder/LvsList}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                    <a th:href="@{/LvsAdmin/LvsOrder/LvsEdit/{id}(id=${lvsOrder.lvsOrderId})}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Chỉnh sửa trạng thái
+                    </a>
+                </div>
             </div>
+
             <div class="row">
+                <!-- Main Content -->
                 <div class="col-lg-8">
+                    <!-- Order Information Card -->
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5>Thông tin đơn hàng</h5>
+                            <h5 class="mb-0">Thông tin đơn hàng</h5>
                         </div>
                         <div class="card-body">
-                            <p><strong>Khách hàng:</strong> <span th:text="${LvsOrder.lvsBuyer?.lvsUsername}"></span>
-                            </p>
-                            <p><strong>Trạng thái:</strong> <span th:text="${LvsOrder.lvsStatus}"></span></p>
-                            <p><strong>Tổng tiền:</strong> <span
-                                    th:text="${#numbers.formatDecimal(LvsOrder.lvsTotalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>
-                            </p>
-                            <p><strong>Ngày đặt:</strong> <span
-                                    th:text="${#temporals.format(LvsOrder.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}"></span>
-                            </p>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Mã đơn hàng:</strong><br>
+                                        <code th:text="${lvsOrder.lvsOrderCode}"></code>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Khách hàng:</strong><br>
+                                        <span th:text="${lvsOrder.lvsBuyer?.lvsUsername}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Trạng thái:</strong><br>
+                                        <span th:if="${lvsOrder.lvsStatus?.name() == 'PENDING'}"
+                                            class="badge bg-warning">Chờ xử lý</span>
+                                        <span th:if="${lvsOrder.lvsStatus?.name() == 'PROCESSING'}"
+                                            class="badge bg-info">Đang xử lý</span>
+                                        <span th:if="${lvsOrder.lvsStatus?.name() == 'COMPLETED'}"
+                                            class="badge bg-success">Hoàn thành</span>
+                                        <span th:if="${lvsOrder.lvsStatus?.name() == 'CANCELLED'}"
+                                            class="badge bg-danger">Đã hủy</span>
+                                        <span th:if="${lvsOrder.lvsStatus?.name() == 'REFUNDED'}"
+                                            class="badge bg-secondary">Hoàn tiền</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Thanh toán:</strong><br>
+                                        <span th:if="${lvsOrder.lvsIsPaid}" class="badge bg-success">Đã thanh
+                                            toán</span>
+                                        <span th:unless="${lvsOrder.lvsIsPaid}" class="badge bg-warning">Chưa thanh
+                                            toán</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Tổng tiền:</strong><br>
+                                        <span class="h5 text-primary"
+                                            th:text="${#numbers.formatDecimal(lvsOrder.lvsTotalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Ngày đặt:</strong><br>
+                                        <span
+                                            th:text="${#temporals.format(lvsOrder.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row" th:if="${lvsOrder.lvsNotes}">
+                                <div class="col-12">
+                                    <p class="mb-0">
+                                        <strong>Ghi chú:</strong><br>
+                                        <span th:text="${lvsOrder.lvsNotes}"></span>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Order Items Card -->
                     <div class="card">
                         <div class="card-header">
-                            <h5>Sản phẩm</h5>
+                            <h5 class="mb-0">Sản phẩm</h5>
                         </div>
                         <div class="card-body">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Sản phẩm</th>
-                                        <th>Số lượng</th>
-                                        <th>Đơn giá</th>
-                                        <th>Thành tiền</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="item : ${LvsOrderItems}">
-                                        <td th:text="${item.lvsProject?.lvsTitle}"></td>
-                                        <td th:text="${item.lvsQuantity}"></td>
-                                        <td
-                                            th:text="${#numbers.formatDecimal(item.lvsPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
-                                        </td>
-                                        <td
-                                            th:text="${#numbers.formatDecimal(item.lvsQuantity * item.lvsPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Thao tác</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-grid gap-2">
-                                <form th:action="@{/LvsAdmin/LvsOrder/LvsUpdateStatus/{id}(id=${LvsOrder.lvsOrderId})}"
-                                    method="post">
-                                    <select class="form-select mb-2" name="lvsStatus">
-                                        <option
-                                            th:each="status : ${T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).values()}"
-                                            th:value="${status}" th:text="${status}"></option>
-                                    </select>
-                                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-sync"></i> Cập
-                                        nhật trạng thái</button>
-                                </form>
-                                <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal"
-                                    data-bs-target="#cancelModal"><i class="fas fa-times"></i> Hủy đơn</button>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Sản phẩm</th>
+                                            <th class="text-center">Số lượng</th>
+                                            <th class="text-end">Đơn giá</th>
+                                            <th class="text-end">Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="item : ${lvsOrder.lvsOrderItems}">
+                                            <td>
+                                                <strong th:text="${item.lvsProject?.lvsProjectName}"></strong>
+                                            </td>
+                                            <td class="text-center" th:text="${item.lvsQuantity}"></td>
+                                            <td class="text-end"
+                                                th:text="${#numbers.formatDecimal(item.lvsUnitPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
+                                            </td>
+                                            <td class="text-end">
+                                                <strong
+                                                    th:text="${#numbers.formatDecimal(item.lvsItemTotal, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
+                                            <td class="text-end">
+                                                <strong class="h5 text-primary"
+                                                    th:text="${#numbers.formatDecimal(lvsOrder.lvsTotalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></strong>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="modal fade" id="cancelModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Hủy đơn hàng</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Quick Actions Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Thao tác nhanh</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a th:href="@{/LvsAdmin/LvsOrder/LvsEdit/{id}(id=${lvsOrder.lvsOrderId})}"
+                                    class="btn btn-primary">
+                                    <i class="fas fa-edit"></i> Chỉnh sửa trạng thái
+                                </a>
+                                <a th:href="@{/LvsAdmin/LvsOrder/LvsList}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-list"></i> Danh sách đơn hàng
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <form th:action="@{/LvsAdmin/LvsOrder/LvsCancel/{id}(id=${LvsOrder.lvsOrderId})}" method="post">
-                        <div class="modal-body">
-                            <p>Bạn có chắc chắn muốn hủy đơn hàng này?</p>
-                            <textarea class="form-control" name="lvsReason" rows="3" placeholder="Lý do hủy"
-                                required></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="submit" class="btn btn-danger">Hủy đơn</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>

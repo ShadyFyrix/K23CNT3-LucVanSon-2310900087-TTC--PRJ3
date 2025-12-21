@@ -17,9 +17,12 @@
                 <!-- Current Balance -->
                 <div
                     class="bg-gradient-to-r from-[#fed700]/20 to-yellow-600/20 border border-[#fed700]/50 rounded-xl p-6 mb-8">
-                    <p class="text-gray-300 text-sm mb-2">Số dư hiện tại</p>
-                    <p class="text-[#fed700] font-bold text-3xl"
-                        th:text="${#numbers.formatCurrency(LvsCurrentBalance)}">$0</p>
+                    <p class="text-gray-300 text-sm mb-2">Số dư coin hiện tại</p>
+                    <p class="text-[#fed700] font-bold text-3xl">
+                        <span
+                            th:text="${#numbers.formatDecimal(session.LvsCurrentUser.lvsCoin, 0, 'COMMA', 0, 'POINT')}">0</span>
+                        coin
+                    </p>
                 </div>
 
                 <form th:action="@{/LvsUser/LvsTransaction/LvsDeposit}" method="post">
@@ -37,7 +40,7 @@
                     <div class="mb-6">
                         <label class="block text-white font-semibold mb-3">Phương thức thanh toán <span
                                 class="text-red-500">*</span></label>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-3 gap-4">
                             <label class="cursor-pointer">
                                 <input type="radio" name="lvsPaymentMethod" value="CARD" class="hidden peer" required />
                                 <div
@@ -56,6 +59,22 @@
                                     <p class="text-white font-semibold">Chuyển khoản</p>
                                 </div>
                             </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="lvsPaymentMethod" value="DEMO" class="hidden peer" />
+                                <div
+                                    class="bg-[#1e1e1e] border-2 border-[#444] peer-checked:border-[#fed700] rounded-lg p-4 text-center transition-all">
+                                    <i class="fas fa-flask text-3xl text-gray-400 peer-checked:text-[#fed700] mb-2"></i>
+                                    <p class="text-white font-semibold">Demo Payment</p>
+                                    <p class="text-xs text-gray-500 mt-1">Không cần ngân hàng</p>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="mt-3 p-3 bg-blue-500/20 border border-blue-500/50 rounded-lg">
+                            <p class="text-blue-300 text-sm">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                <strong>Demo Payment:</strong> Sử dụng cổng thanh toán giả lập, không cần thẻ/ngân hàng
+                                thật. Phù hợp cho testing và demo.
+                            </p>
                         </div>
                     </div>
 

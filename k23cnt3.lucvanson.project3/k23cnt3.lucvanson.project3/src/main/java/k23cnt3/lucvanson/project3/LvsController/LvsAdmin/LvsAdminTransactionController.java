@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -104,54 +105,68 @@ public class LvsAdminTransactionController {
     }
 
     @PostMapping("/LvsApproveDeposit/{id}")
-    public String lvsApproveDeposit(@PathVariable Long id, Model model) {
+    public String lvsApproveDeposit(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         try {
-            // TODO: Fix session parameter - Temporarily commented out
-            // LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
-            lvsTransactionService.lvsApproveDeposit(id, 1L /* Hardcoded admin ID temporarily */);
-            model.addAttribute("LvsSuccess", "Ã„ÂÃƒÂ£ duyÃ¡Â»â€¡t nÃ¡ÂºÂ¡p tiÃ¡Â»Ân!");
+            LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
+            if (lvsAdmin == null) {
+                redirectAttributes.addFlashAttribute("LvsError", "Vui lòng đăng nhập lại!");
+                return "redirect:/lvsforum/LvsLogin";
+            }
+
+            lvsTransactionService.lvsApproveDeposit(id, lvsAdmin.getLvsUserId());
+            redirectAttributes.addFlashAttribute("LvsSuccess", "Đã duyệt nạp tiền!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "LÃ¡Â»â€”i: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("LvsError", "Lỗi: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsTransaction/LvsDetail/" + id;
     }
 
     @PostMapping("/LvsApproveWithdrawal/{id}")
-    public String lvsApproveWithdrawal(@PathVariable Long id, Model model) {
+    public String lvsApproveWithdrawal(@PathVariable Long id, HttpSession session,
+            RedirectAttributes redirectAttributes) {
         try {
-            // TODO: Fix session parameter - Temporarily commented out
-            // LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
-            lvsTransactionService.lvsApproveWithdrawal(id, 1L /* Hardcoded admin ID temporarily */);
-            model.addAttribute("LvsSuccess", "Ã„ÂÃƒÂ£ duyÃ¡Â»â€¡t rÃƒÂºt tiÃ¡Â»Ân!");
+            LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
+            if (lvsAdmin == null) {
+                redirectAttributes.addFlashAttribute("LvsError", "Vui lòng đăng nhập lại!");
+                return "redirect:/lvsforum/LvsLogin";
+            }
+
+            lvsTransactionService.lvsApproveWithdrawal(id, lvsAdmin.getLvsUserId());
+            redirectAttributes.addFlashAttribute("LvsSuccess", "Đã duyệt rút tiền!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "LÃ¡Â»â€”i: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("LvsError", "Lỗi: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsTransaction/LvsDetail/" + id;
     }
 
     @PostMapping("/LvsReject/{id}")
-    public String lvsRejectTransaction(@PathVariable Long id, @RequestParam String lvsReason, Model model) {
+    public String lvsRejectTransaction(@PathVariable Long id, @RequestParam String lvsReason,
+            HttpSession session, RedirectAttributes redirectAttributes) {
         try {
-            // TODO: Fix session parameter - Temporarily commented out
-            // LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
-            lvsTransactionService.lvsRejectTransaction(id, 1L /* Hardcoded admin ID temporarily */, lvsReason);
-            model.addAttribute("LvsSuccess", "Ã„ÂÃƒÂ£ tÃ¡Â»Â« chÃ¡Â»â€˜i giao dÃ¡Â»â€¹ch!");
+            LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
+            if (lvsAdmin == null) {
+                redirectAttributes.addFlashAttribute("LvsError", "Vui lòng đăng nhập lại!");
+                return "redirect:/lvsforum/LvsLogin";
+            }
+
+            lvsTransactionService.lvsRejectTransaction(id, lvsAdmin.getLvsUserId(), lvsReason);
+            redirectAttributes.addFlashAttribute("LvsSuccess", "Đã từ chối giao dịch!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "LÃ¡Â»â€”i: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("LvsError", "Lỗi: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsTransaction/LvsDetail/" + id;
     }
 
     @PostMapping("/LvsCancel/{id}")
-    public String lvsCancelTransaction(@PathVariable Long id, Model model) {
+    public String lvsCancelTransaction(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             lvsTransactionService.lvsCancelTransaction(id);
-            model.addAttribute("LvsSuccess", "Ã„ÂÃƒÂ£ hÃ¡Â»Â§y giao dÃ¡Â»â€¹ch!");
+            redirectAttributes.addFlashAttribute("LvsSuccess", "Đã hủy giao dịch!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "LÃ¡Â»â€”i: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("LvsError", "Lỗi: " + e.getMessage());
         }
 
         return "redirect:/LvsAdmin/LvsTransaction/LvsList";
@@ -170,15 +185,18 @@ public class LvsAdminTransactionController {
 
     @PostMapping("/LvsAdd")
     public String lvsAddTransaction(@ModelAttribute LvsTransaction lvsTransaction,
-            @RequestParam Long lvsUserId, Model model) {
+            @RequestParam Long lvsUserId, HttpSession session, RedirectAttributes redirectAttributes, Model model) {
         try {
             LvsUser lvsUser = lvsUserService.lvsGetUserById(lvsUserId);
-            // TODO: Fix session parameter - Temporarily commented out
-            // LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
+            LvsUser lvsAdmin = (LvsUser) session.getAttribute("LvsCurrentUser");
+
+            if (lvsAdmin == null) {
+                redirectAttributes.addFlashAttribute("LvsError", "Vui lòng đăng nhập lại!");
+                return "redirect:/lvsforum/LvsLogin";
+            }
 
             lvsTransaction.setLvsUser(lvsUser);
-            // lvsTransaction.setLvsAdminApprover(lvsAdmin); // Temporarily commented out
-            lvsTransaction.setLvsAdminApprover(null); // Set to null temporarily
+            lvsTransaction.setLvsAdminApprover(lvsAdmin);
             lvsTransaction.setLvsStatus(LvsTransaction.LvsTransactionStatus.SUCCESS);
             lvsTransaction.setLvsApprovedAt(java.time.LocalDateTime.now());
 
@@ -191,10 +209,10 @@ public class LvsAdminTransactionController {
             }
             lvsUserService.lvsUpdateUser(lvsUser);
 
-            model.addAttribute("LvsSuccess", "ThÃƒÂªm giao dÃ¡Â»â€¹ch thÃƒÂ nh cÃƒÂ´ng!");
+            redirectAttributes.addFlashAttribute("LvsSuccess", "Thêm giao dịch thành công!");
             return "redirect:/LvsAdmin/LvsTransaction/LvsDetail/" + lvsSavedTransaction.getLvsTransactionId();
         } catch (Exception e) {
-            model.addAttribute("LvsError", "LÃ¡Â»â€”i: " + e.getMessage());
+            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
             return "LvsAreas/LvsAdmin/LvsTransaction/LvsCreate";
         }
     }

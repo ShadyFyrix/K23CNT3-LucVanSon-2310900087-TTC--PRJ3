@@ -31,6 +31,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dự án theo ID
+     * 
      * @param lvsProjectId ID dự án
      * @return Dự án tìm thấy
      */
@@ -41,6 +42,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy tất cả dự án với phân trang
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Trang dự án
      */
@@ -50,8 +52,20 @@ public class LvsProjectServiceImpl implements LvsProjectService {
     }
 
     /**
+     * Lấy tất cả dự án với category và user eager loading
+     * 
+     * @param lvsPageable Thông tin phân trang
+     * @return Trang dự án với category và user đã load
+     */
+    @Override
+    public Page<LvsProject> lvsGetAllProjectsWithCategoryAndUser(Pageable lvsPageable) {
+        return lvsProjectRepository.findAllWithCategoryAndUser(lvsPageable);
+    }
+
+    /**
      * Tìm kiếm dự án theo keyword
-     * @param lvsKeyword Từ khóa tìm kiếm
+     * 
+     * @param lvsKeyword  Từ khóa tìm kiếm
      * @param lvsPageable Thông tin phân trang
      * @return Trang dự án tìm thấy
      */
@@ -63,8 +77,9 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dự án theo danh mục
+     * 
      * @param lvsCategoryId ID danh mục
-     * @param lvsPageable Thông tin phân trang
+     * @param lvsPageable   Thông tin phân trang
      * @return Trang dự án
      */
     @Override
@@ -74,7 +89,8 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dự án theo trạng thái
-     * @param lvsStatus Trạng thái cần lọc
+     * 
+     * @param lvsStatus   Trạng thái cần lọc
      * @param lvsPageable Thông tin phân trang
      * @return Trang dự án
      */
@@ -86,7 +102,8 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dự án theo người đăng
-     * @param lvsUserId ID người dùng
+     * 
+     * @param lvsUserId   ID người dùng
      * @param lvsPageable Thông tin phân trang
      * @return Trang dự án
      */
@@ -97,6 +114,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dự án mới nhất
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Danh sách dự án mới nhất
      */
@@ -109,6 +127,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dự án phổ biến nhất
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Danh sách dự án phổ biến
      */
@@ -121,6 +140,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dự án nổi bật
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Danh sách dự án nổi bật
      */
@@ -136,8 +156,9 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dự án đã mua gần đây
+     * 
      * @param lvsUserId ID người dùng
-     * @param lvsLimit Giới hạn số lượng
+     * @param lvsLimit  Giới hạn số lượng
      * @return Danh sách dự án đã mua
      */
     @Override
@@ -155,6 +176,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lưu dự án
+     * 
      * @param lvsProject Thông tin dự án
      * @return Dự án đã lưu
      */
@@ -196,6 +218,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Cập nhật dự án
+     * 
      * @param lvsProject Thông tin dự án cập nhật
      * @return Dự án đã cập nhật
      */
@@ -221,6 +244,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Xóa dự án
+     * 
      * @param lvsProjectId ID dự án
      */
     @Override
@@ -230,8 +254,9 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Xóa dự án với lý do
+     * 
      * @param lvsProjectId ID dự án
-     * @param lvsReason Lý do xóa
+     * @param lvsReason    Lý do xóa
      */
     @Override
     public void lvsDeleteProject(Long lvsProjectId, String lvsReason) {
@@ -246,9 +271,10 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Duyệt dự án
+     * 
      * @param lvsProjectId ID dự án
-     * @param lvsAdminId ID LvsAdmin duyệt
-     * @param lvsNotes Ghi chú duyệt
+     * @param lvsAdminId   ID LvsAdmin duyệt
+     * @param lvsNotes     Ghi chú duyệt
      * @return Dự án đã duyệt
      */
     @Override
@@ -265,9 +291,10 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Từ chối dự án
+     * 
      * @param lvsProjectId ID dự án
-     * @param lvsAdminId ID LvsAdmin từ chối
-     * @param lvsReason Lý do từ chối
+     * @param lvsAdminId   ID LvsAdmin từ chối
+     * @param lvsReason    Lý do từ chối
      * @return Dự án đã từ chối
      */
     @Override
@@ -284,6 +311,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Đánh dấu featured
+     * 
      * @param lvsProjectId ID dự án
      * @return Dự án đã cập nhật
      */
@@ -300,6 +328,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Tăng lượt xem
+     * 
      * @param lvsProjectId ID dự án
      */
     @Override
@@ -310,6 +339,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Tăng lượt mua
+     * 
      * @param lvsProjectId ID dự án
      */
     @Override
@@ -320,6 +350,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Tăng lượt tải
+     * 
      * @param lvsProjectId ID dự án
      */
     @Override
@@ -330,6 +361,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Cập nhật rating trung bình
+     * 
      * @param lvsProjectId ID dự án
      */
     @Override
@@ -342,7 +374,8 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Kiểm tra user đã mua dự án chưa
-     * @param lvsUserId ID người dùng
+     * 
+     * @param lvsUserId    ID người dùng
      * @param lvsProjectId ID dự án
      * @return true nếu đã mua
      */
@@ -355,6 +388,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Đếm tổng số dự án
+     * 
      * @return Tổng số dự án
      */
     @Override
@@ -364,6 +398,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Đếm số dự án theo trạng thái
+     * 
      * @param lvsStatus Trạng thái cần đếm
      * @return Số dự án
      */
@@ -375,8 +410,9 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Đếm số dự án mới trong khoảng thời gian
+     * 
      * @param lvsStartDate Ngày bắt đầu
-     * @param lvsEndDate Ngày kết thúc
+     * @param lvsEndDate   Ngày kết thúc
      * @return Số dự án mới
      */
     @Override
@@ -387,6 +423,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy top dự án bán chạy
+     * 
      * @param lvsLimit Giới hạn số lượng
      * @return Danh sách dự án bán chạy
      */
@@ -400,6 +437,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dự án đang chờ duyệt
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Trang dự án chờ duyệt
      */
@@ -410,6 +448,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dự án đã được duyệt
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Trang dự án đã duyệt
      */
@@ -420,6 +459,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy thống kê dự án
+     * 
      * @return Map thống kê dự án
      */
     @Override
@@ -436,6 +476,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
 
     /**
      * Lấy dữ liệu biểu đồ thống kê dự án
+     * 
      * @return Dữ liệu biểu đồ
      */
     @Override

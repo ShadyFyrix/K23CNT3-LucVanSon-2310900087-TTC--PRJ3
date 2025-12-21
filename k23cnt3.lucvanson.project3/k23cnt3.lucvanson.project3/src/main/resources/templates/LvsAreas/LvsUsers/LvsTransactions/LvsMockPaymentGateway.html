@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Demo Payment Gateway - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div
+            class="min-h-screen bg-gradient-to-br from-[#1a1a1a] to-[#2d2d2d] flex items-center justify-center px-4 py-8">
+            <div class="max-w-md w-full">
+                <!-- Payment Gateway Card -->
+                <div class="bg-[#2b2b2b] border-2 border-[#fed700] rounded-2xl shadow-2xl overflow-hidden">
+                    <!-- Header -->
+                    <div class="bg-gradient-to-r from-[#fed700] to-yellow-600 p-6 text-center">
+                        <div class="w-20 h-20 bg-white rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-flask text-[#fed700] text-4xl"></i>
+                        </div>
+                        <h1 class="text-2xl font-bold text-[#1e1e1e]">Demo Payment Gateway</h1>
+                        <p class="text-[#1e1e1e]/80 text-sm mt-2">Cổng thanh toán giả lập</p>
+                    </div>
+
+                    <!-- Transaction Info -->
+                    <div class="p-6 space-y-4">
+                        <div class="bg-[#1e1e1e] border border-[#444] rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-gray-400 text-sm">Mã giao dịch:</span>
+                                <span class="text-white font-mono text-sm"
+                                    th:text="${LvsTransactionId}">TXN123456</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-gray-400 text-sm">Merchant:</span>
+                                <span class="text-white font-semibold">Electro Store</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-gray-400 text-sm">Khách hàng:</span>
+                                <span class="text-white" th:text="${LvsUser.lvsUsername}">User</span>
+                            </div>
+                            <div class="h-px bg-[#444] my-3"></div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400">Số tiền:</span>
+                                <span class="text-[#fed700] font-bold text-2xl"
+                                    th:text="${#numbers.formatDecimal(LvsAmount, 0, 'COMMA', 0, 'POINT')} + ' coin'">0
+                                    coin</span>
+                            </div>
+                        </div>
+
+                        <!-- Info Alert -->
+                        <div class="bg-blue-500/20 border border-blue-500/50 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <i class="fas fa-info-circle text-blue-400 text-lg mr-3 mt-0.5"></i>
+                                <div>
+                                    <p class="text-blue-300 text-sm font-semibold mb-1">Đây là cổng thanh toán giả lập
+                                    </p>
+                                    <p class="text-blue-300/80 text-xs">
+                                        Không cần nhập thông tin thẻ hoặc tài khoản ngân hàng.
+                                        Chọn "Thanh toán thành công" để hoàn tất giao dịch.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-3 pt-4">
+                            <form th:action="@{/LvsUser/LvsTransaction/LvsPaymentSuccess}" method="post">
+                                <input type="hidden" name="lvsTransactionId" th:value="${LvsTransactionId}" />
+                                <button type="submit"
+                                    class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-4 rounded-lg font-bold text-lg transition-all transform hover:scale-105 shadow-lg">
+                                    <i class="fas fa-check-circle mr-2"></i>Thanh toán thành công
+                                </button>
+                            </form>
+
+                            <form th:action="@{/LvsUser/LvsTransaction/LvsPaymentCancel}" method="post">
+                                <input type="hidden" name="lvsTransactionId" th:value="${LvsTransactionId}" />
+                                <button type="submit"
+                                    class="w-full bg-[#333] hover:bg-[#444] text-white px-6 py-4 rounded-lg font-semibold transition-colors">
+                                    <i class="fas fa-times-circle mr-2"></i>Hủy thanh toán
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Security Info -->
+                        <div class="text-center pt-4 border-t border-[#444]">
+                            <p class="text-gray-500 text-xs">
+                                <i class="fas fa-lock mr-1"></i>
+                                Giao dịch được mã hóa và bảo mật
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back Link -->
+                <div class="text-center mt-6">
+                    <a href="/lvsforum/LvsUser/LvsTransaction/LvsHistory"
+                        class="text-gray-400 hover:text-[#fed700] text-sm transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Quay lại lịch sử giao dịch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

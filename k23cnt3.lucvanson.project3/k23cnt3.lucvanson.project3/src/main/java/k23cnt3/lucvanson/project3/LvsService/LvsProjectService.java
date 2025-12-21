@@ -21,6 +21,9 @@ public interface LvsProjectService {
     // Lấy tất cả dự án
     Page<LvsProject> lvsGetAllProjects(Pageable lvsPageable);
 
+    // Lấy tất cả dự án với category và user eager loading (for forms)
+    Page<LvsProject> lvsGetAllProjectsWithCategoryAndUser(Pageable lvsPageable);
+
     // Tìm kiếm dự án
     Page<LvsProject> lvsSearchProjects(String lvsKeyword, Pageable lvsPageable);
 

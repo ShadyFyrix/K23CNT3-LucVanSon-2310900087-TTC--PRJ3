@@ -44,7 +44,8 @@ public interface LvsTransactionService {
     Page<LvsTransaction> lvsGetTransactionsByTypeAndStatus(String lvsType, String lvsStatus, Pageable lvsPageable);
 
     // Lấy giao dịch theo user, type và status
-    Page<LvsTransaction> lvsGetTransactionsByUserAndTypeAndStatus(Long lvsUserId, String lvsType, String lvsStatus, Pageable lvsPageable);
+    Page<LvsTransaction> lvsGetTransactionsByUserAndTypeAndStatus(Long lvsUserId, String lvsType, String lvsStatus,
+            Pageable lvsPageable);
 
     // Lưu giao dịch
     LvsTransaction lvsSaveTransaction(LvsTransaction lvsTransaction);
@@ -79,6 +80,9 @@ public interface LvsTransactionService {
     // Xử lý bán dự án
     boolean lvsProcessSaleTransaction(Long lvsOrderId, Long lvsSellerId);
 
+    // Xử lý hoàn tiền đơn hàng (tạo 2 giao dịch REFUND)
+    boolean lvsProcessRefundTransaction(Long lvsOrderId, Long lvsBuyerId, Long lvsSellerId, String lvsReason);
+
     // Đếm tổng số giao dịch
     Long lvsCountTotalTransactions();
 
@@ -105,4 +109,7 @@ public interface LvsTransactionService {
 
     // Kiểm tra số dư
     Double lvsGetUserBalance(Long lvsUserId);
+
+    // Chuyển đổi Balance sang Coin
+    LvsTransaction lvsConvertBalanceToCoin(Long lvsUserId, Double lvsAmount);
 }

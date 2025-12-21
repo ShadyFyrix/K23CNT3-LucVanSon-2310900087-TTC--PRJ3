@@ -8,14 +8,148 @@
 
 <body>
     <div layout:fragment="content">
-        <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
-            <h1 class="h3 mb-4">Chỉnh sửa Đơn hàng</h1>
-            <div class="card">
-                <div class="card-body">
-                    <p class="text-muted">Chức năng chỉnh sửa đơn hàng chưa được triển khai. Vui lòng sử dụng chức năng
-                        cập nhật trạng thái.</p>
-                    <a th:href="@{/LvsAdmin/LvsOrder/LvsList}" class="btn btn-secondary">Quay lại danh sách</a>
+        <div class="dashboard-container" style="max-width: 900px; margin: 2rem auto; padding: 1rem;">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Chỉnh sửa Đơn hàng #<span th:text="${lvsOrder.lvsOrderId}"></span></h1>
+                <a th:href="@{/LvsAdmin/LvsOrder/LvsDetail/{id}(id=${lvsOrder.lvsOrderId})}"
+                    class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+
+            <!-- Error/Success Messages -->
+            <div th:if="${LvsError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <strong>Lỗi!</strong> <span th:text="${LvsError}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div th:if="${LvsSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <strong>Thành công!</strong> <span th:text="${LvsSuccess}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- Order Summary Card (Read-only) -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Thông tin đơn hàng</h5>
                 </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted">Mã đơn hàng</small>
+                            <p class="mb-0"><code th:text="${lvsOrder.lvsOrderCode}"></code></p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted">Khách hàng</small>
+                            <p class="mb-0" th:text="${lvsOrder.lvsBuyer?.lvsUsername}"></p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted">Tổng tiền</small>
+                            <p class="mb-0">
+                                <strong class="text-primary"
+                                    th:text="${#numbers.formatDecimal(lvsOrder.lvsTotalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></strong>
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted">Ngày đặt</small>
+                            <p class="mb-0" th:text="${#temporals.format(lvsOrder.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">Thanh toán</small>
+                            <p class="mb-0">
+                                <span th:if="${lvsOrder.lvsIsPaid}" class="badge bg-success">Đã thanh toán</span>
+                                <span th:unless="${lvsOrder.lvsIsPaid}" class="badge bg-warning">Chưa thanh toán</span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">Trạng thái hiện tại</small>
+                            <p class="mb-0">
+                                <span th:if="${lvsOrder.lvsStatus?.name() == 'PENDING'}" class="badge bg-warning">Chờ xử
+                                    lý</span>
+                                <span th:if="${lvsOrder.lvsStatus?.name() == 'PROCESSING'}" class="badge bg-info">Đang
+                                    xử lý</span>
+                                <span th:if="${lvsOrder.lvsStatus?.name() == 'COMPLETED'}" class="badge bg-success">Hoàn
+                                    thành</span>
+                                <span th:if="${lvsOrder.lvsStatus?.name() == 'CANCELLED'}" class="badge bg-danger">Đã
+                                    hủy</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Status Form -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Cập nhật trạng thái</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/LvsAdmin/LvsOrder/LvsEdit/{id}(id=${lvsOrder.lvsOrderId})}" method="post">
+                        <!-- Status Selection -->
+                        <div class="mb-4">
+                            <label for="statusSelect" class="form-label">
+                                <strong>Trạng thái mới</strong>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-select-lg" id="statusSelect" name="lvsStatus" required>
+                                <option value="" disabled selected>-- Chọn trạng thái --</option>
+                                <option value="PENDING" th:selected="${lvsOrder.lvsStatus?.name() == 'PENDING'}">
+                                    Chờ xử lý
+                                </option>
+                                <option value="PROCESSING" th:selected="${lvsOrder.lvsStatus?.name() == 'PROCESSING'}">
+                                    Đang xử lý
+                                </option>
+                                <option value="COMPLETED" th:selected="${lvsOrder.lvsStatus?.name() == 'COMPLETED'}">
+                                    Hoàn thành
+                                </option>
+                                <option value="CANCELLED" th:selected="${lvsOrder.lvsStatus?.name() == 'CANCELLED'}">
+                                    Đã hủy
+                                </option>
+                                <option value="REFUNDED" th:selected="${lvsOrder.lvsStatus?.name() == 'REFUNDED'}">
+                                    Hoàn tiền
+                                </option>
+                            </select>
+                            <div class="form-text">
+                                Chọn trạng thái mới cho đơn hàng này
+                            </div>
+                        </div>
+
+                        <!-- Notes Field -->
+                        <div class="mb-4">
+                            <label for="notesTextarea" class="form-label">
+                                <strong>Ghi chú</strong>
+                                <small class="text-muted">(Tùy chọn)</small>
+                            </label>
+                            <textarea class="form-control" id="notesTextarea" name="lvsNotes" rows="4"
+                                placeholder="Nhập ghi chú về việc thay đổi trạng thái (nếu có)..."></textarea>
+                            <div class="form-text">
+                                Ghi chú sẽ được lưu lại để theo dõi lịch sử thay đổi
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a th:href="@{/LvsAdmin/LvsOrder/LvsDetail/{id}(id=${lvsOrder.lvsOrderId})}"
+                                class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Text -->
+            <div class="alert alert-info mt-4" role="alert">
+                <i class="fas fa-info-circle"></i>
+                <strong>Lưu ý:</strong> Việc thay đổi trạng thái đơn hàng sẽ ảnh hưởng đến quy trình xử lý.
+                Vui lòng kiểm tra kỹ trước khi lưu.
             </div>
         </div>
     </div>

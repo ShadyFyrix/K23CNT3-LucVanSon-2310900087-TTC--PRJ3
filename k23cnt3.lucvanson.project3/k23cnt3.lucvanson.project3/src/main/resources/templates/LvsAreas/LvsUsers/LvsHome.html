@@ -21,7 +21,7 @@
                             <h2 class="text-white text-5xl font-light mb-6">Virtual Reality <br><strong
                                     class="font-bold">Oculus Rift</strong></h2>
                             <p class="text-gray-400 mb-8 text-lg">Experience the world of tomorrow.</p>
-                            <a href="/user/san-pham"
+                            <a th:href="@{/LvsUser/LvsProject/LvsList}"
                                 class="inline-block bg-[#fed700] text-black font-bold px-8 py-3 rounded-full hover:bg-white transition">
                                 Shop Now <i class="fas fa-arrow-right ml-2"></i>
                             </a>
@@ -86,7 +86,7 @@
                             <i class="far fa-heart"></i>
                         </button>
 
-                        <a th:href="@{/user/detail/{id}(id=${p.lvsProjectId})}"
+                        <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${p.lvsProjectId})}"
                             class="block h-48 flex items-center justify-center mb-4">
                             <img th:if="${p.lvsThumbnailUrl}" th:src="@{${p.lvsThumbnailUrl}}"
                                 class="max-h-full max-w-full object-contain transition duration-300 group-hover:scale-105"
@@ -100,17 +100,26 @@
                         </div>
 
                         <h3 class="mb-2 h-10 overflow-hidden">
-                            <a th:href="@{/user/detail/{id}(id=${p.lvsProjectId})}"
+                            <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${p.lvsProjectId})}"
                                 class="text-[#3edbf0] text-sm font-bold leading-tight hover:text-[#fed700] transition line-clamp-2"
                                 th:text="${p.lvsProjectName}">Product Name</a>
                         </h3>
 
                         <div class="flex items-center justify-between mt-auto">
                             <span class="electro-price" th:text="${#numbers.formatCurrency(p.lvsPrice)}">$0.00</span>
-                            <button
+                            <form th:if="${session.LvsCurrentUser}" th:action="@{/LvsUser/LvsCart/LvsAddItem}"
+                                method="post" class="inline">
+                                <input type="hidden" name="lvsProjectId" th:value="${p.lvsProjectId}">
+                                <input type="hidden" name="lvsQuantity" value="1">
+                                <button type="submit"
+                                    class="bg-[#333] hover:bg-[#fed700] hover:text-black text-white w-8 h-8 rounded-full flex items-center justify-center transition">
+                                    <i class="fas fa-shopping-cart text-xs"></i>
+                                </button>
+                            </form>
+                            <a th:unless="${session.LvsCurrentUser}" th:href="@{/LvsAuth/LvsLogin}"
                                 class="bg-[#333] hover:bg-[#fed700] hover:text-black text-white w-8 h-8 rounded-full flex items-center justify-center transition">
                                 <i class="fas fa-shopping-cart text-xs"></i>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>

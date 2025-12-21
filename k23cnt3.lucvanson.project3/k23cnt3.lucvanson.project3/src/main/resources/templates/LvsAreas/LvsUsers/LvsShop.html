@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{areas/user/layout/user-layout}">
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
 
 <head>
-    <title>Shop - Zilly Store</title>
+    <title>Browse Projects - Electro Store</title>
 </head>
 
 <body>
     <div layout:fragment="content">
         <!-- Breadcrumb -->
         <div class="bg-[#1e1e1e] border-b border-[#333]">
-            <div class="container mx-auto px-4 py-4 text-xs">
-                <a href="/" class="text-gray-400 hover:text-[#fed700]">Home</a>
-                <span class="text-gray-600 mx-2">&gt;</span>
-                <span class="text-white font-bold">Shop</span>
+            <div class="container mx-auto px-4 py-4 flex items-center gap-2 text-sm text-gray-400">
+                <a th:href="@{/LvsUser/LvsDashboard}" class="hover:text-[#fed700] transition">
+                    <i class="fas fa-home mr-1"></i>Home
+                </a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-white font-medium">Browse Projects</span>
             </div>
         </div>
 
@@ -21,108 +23,129 @@
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Sidebar -->
                 <aside class="lg:w-1/4">
-                    <div class="bg-[#2b2b2b] rounded-lg border border-[#333] p-6 mb-8">
-                        <h3 class="text-white font-bold text-lg mb-4 border-b border-[#333] pb-2">Categories</h3>
+                    <div class="bg-[#2b2b2b] rounded-xl border border-[#333] p-6 sticky top-4">
+                        <h3 class="text-white font-bold text-lg mb-4 border-b border-[#333] pb-3">
+                            <i class="fas fa-filter mr-2 text-[#fed700]"></i>Categories
+                        </h3>
                         <ul class="space-y-2">
                             <li>
-                                <a th:href="@{/user/san-pham}"
-                                    class="flex justify-between items-center text-gray-400 hover:text-[#fed700] transition">
-                                    <span>All Products</span>
-                                    <span class="bg-[#1e1e1e] text-xs px-2 py-1 rounded-full"
-                                        th:text="${totalProjects ?: 0}">0</span>
+                                <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                                    class="flex justify-between items-center text-gray-400 hover:text-[#fed700] hover:bg-[#1e1e1e] px-3 py-2 rounded transition">
+                                    <span><i class="fas fa-th mr-2"></i>All Projects</span>
+                                    <span class="bg-[#1e1e1e] text-xs px-2 py-1 rounded-full">
+                                        <span th:text="${LvsProjects.totalElements}">0</span>
+                                    </span>
                                 </a>
                             </li>
-                            <li th:each="cat : ${categories}">
-                                <a th:href="@{/user/san-pham(categoryId=${cat.lvsCategoryId})}"
-                                    class="flex justify-between items-center text-gray-400 hover:text-[#fed700] transition">
+                            <li th:each="cat : ${LvsCategories}">
+                                <a th:href="@{/LvsUser/LvsProject/LvsList(lvsCategoryId=${cat.lvsCategoryId})}"
+                                    th:classappend="${LvsSelectedCategoryId == cat.lvsCategoryId ? 'text-[#fed700] bg-[#1e1e1e]' : 'text-gray-400'}"
+                                    class="flex justify-between items-center hover:text-[#fed700] hover:bg-[#1e1e1e] px-3 py-2 rounded transition">
                                     <span th:text="${cat.lvsCategoryName}">Category</span>
                                     <span class="bg-[#1e1e1e] text-xs px-2 py-1 rounded-full"
-                                        th:text="${cat.lvsProjectCount}">...</span>
+                                        th:text="${cat.lvsProjectCount ?: 0}">0</span>
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </aside>
 
-                <!-- Product Grid -->
+                <!-- Main Content -->
                 <main class="lg:w-3/4">
-                    <!-- Controls -->
+                    <!-- Header -->
                     <div
-                        class="bg-[#2b2b2b] p-4 rounded-lg border border-[#333] mb-6 flex justify-between items-center">
-                        <span class="text-gray-400 text-sm">Showing <strong class="text-white"
-                                th:text="${projects.numberOfElements}">0</strong> of <strong class="text-white"
-                                th:text="${projects.totalElements}">0</strong> results</span>
-                        <!-- Sort could go here -->
+                        class="bg-[#2b2b2b] p-4 rounded-xl border border-[#333] mb-6 flex flex-wrap justify-between items-center gap-4">
+                        <span class="text-gray-400 text-sm">
+                            Showing <strong class="text-white" th:text="${LvsProjects.numberOfElements}">0</strong>
+                            of <strong class="text-white" th:text="${LvsProjects.totalElements}">0</strong> projects
+                        </span>
                     </div>
 
-                    <!-- Grid -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    </div>
+                    <!-- Project Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div th:each="p : ${LvsProjects}"
+                            class="bg-[#2b2b2b] rounded-xl border border-[#333] overflow-hidden hover:border-[#fed700] transition group">
+                            <!-- Project Image -->
+                            <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${p.lvsProjectId})}"
+                                class="block h-48 bg-[#1e1e1e] flex items-center justify-center overflow-hidden">
+                                <img th:if="${p.lvsThumbnailUrl}" th:src="@{${p.lvsThumbnailUrl}}"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                                    alt="Project">
+                                <i th:unless="${p.lvsThumbnailUrl}" class="fas fa-gamepad text-6xl text-gray-600"></i>
+                            </a>
 
-                    <!-- Content Area -->
-                    <div class="p-5 flex-grow flex flex-col">
-                        <small class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1 block"
-                            th:text="${p.lvsCategory != null ? p.lvsCategory.lvsCategoryName : 'Uncategorized'}">Category</small>
+                            <!-- Project Info -->
+                            <div class="p-4">
+                                <span th:if="${p.lvsCategory}"
+                                    class="text-[#fed700] text-xs font-bold px-2 py-1 border border-[#fed700] rounded uppercase tracking-wider"
+                                    th:text="${p.lvsCategory.lvsCategoryName}">Category</span>
 
-                        <a th:href="@{/user/detail/{id}(id=${p.lvsProjectId})}" class="mb-2 block">
-                            <h3 class="text-gray-800 font-bold text-lg leading-snug group-hover:text-[color:var(--zilly-green)] transition-colors line-clamp-2"
-                                th:text="${p.lvsProjectName}">Product Name</h3>
-                        </a>
+                                <h3 class="mt-3 mb-2">
+                                    <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${p.lvsProjectId})}"
+                                        class="text-white font-bold text-lg hover:text-[#fed700] transition line-clamp-2"
+                                        th:text="${p.lvsProjectName}">Project Name</a>
+                                </h3>
 
-                        <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
-                            <span class="text-xl font-bold text-[color:var(--zilly-red)]"
-                                th:text="${#numbers.formatCurrency(p.lvsPrice)}">$0.00</span>
-                            <button
-                                class="w-10 h-10 rounded-full bg-green-50 text-[color:var(--zilly-green)] flex items-center justify-center hover:bg-[color:var(--zilly-green)] hover:text-white transition-all shadow-sm">
-                                <i class="fas fa-plus"></i>
-                            </button>
+                                <p class="text-gray-400 text-sm mb-3">
+                                    by <span class="text-[#fed700]"
+                                        th:text="${p.lvsCreator?.lvsUsername ?: 'Unknown'}">Creator</span>
+                                </p>
+
+                                <div class="flex items-center justify-between pt-3 border-t border-[#333]">
+                                    <span class="text-[#fed700] font-bold text-xl">
+                                        <i class="fas fa-coins mr-1"></i>
+                                        <span
+                                            th:text="${#numbers.formatDecimal(p.lvsPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                    </span>
+                                    <form th:if="${session.LvsCurrentUser}" th:action="@{/LvsUser/LvsCart/LvsAddItem}"
+                                        method="post">
+                                        <input type="hidden" name="lvsProjectId" th:value="${p.lvsProjectId}">
+                                        <input type="hidden" name="lvsQuantity" value="1">
+                                        <button type="submit"
+                                            class="w-10 h-10 rounded-full bg-[#1e1e1e] border border-[#444] text-white hover:bg-[#fed700] hover:text-black hover:border-[#fed700] transition flex items-center justify-center">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Empty State -->
+                    <div th:if="${LvsProjects.empty}" class="text-center py-16">
+                        <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-12">
+                            <i class="fas fa-search text-6xl text-gray-600 mb-4"></i>
+                            <h3 class="text-xl font-bold text-white mb-2">No projects found</h3>
+                            <p class="text-gray-400 mb-6">Try adjusting your filters or browse all projects.</p>
+                            <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                                class="inline-block bg-[#fed700] text-black font-bold px-8 py-3 rounded-lg hover:bg-white transition">
+                                <i class="fas fa-th mr-2"></i>View All Projects
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div th:if="${LvsProjects.totalPages > 1}" class="flex justify-center gap-2">
+                        <a th:if="${LvsProjects.hasPrevious()}"
+                            th:href="@{/LvsUser/LvsProject/LvsList(page=${LvsProjects.number - 1}, size=${LvsProjects.size}, lvsCategoryId=${LvsSelectedCategoryId})}"
+                            class="bg-[#2b2b2b] border border-[#333] text-white px-4 py-2 rounded-lg hover:border-[#fed700] transition">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+
+                        <span class="bg-[#fed700] text-black px-4 py-2 rounded-lg font-bold">
+                            Page <span th:text="${LvsProjects.number + 1}">1</span> of <span
+                                th:text="${LvsProjects.totalPages}">1</span>
+                        </span>
+
+                        <a th:if="${LvsProjects.hasNext()}"
+                            th:href="@{/LvsUser/LvsProject/LvsList(page=${LvsProjects.number + 1}, size=${LvsProjects.size}, lvsCategoryId=${LvsSelectedCategoryId})}"
+                            class="bg-[#2b2b2b] border border-[#333] text-white px-4 py-2 rounded-lg hover:border-[#fed700] transition">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+                </main>
             </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="mt-12 flex justify-center" th:if="${projects.totalPages > 1}">
-        <nav aria-label="Page navigation">
-            <ul class="inline-flex items-center -space-x-px">
-                <li>
-                    <a th:href="@{/user/san-pham(page=${projects.number - 1}, size=${projects.size})}"
-                        th:classappend="${projects.first} ? 'pointer-events-none opacity-50' : ''"
-                        class="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
-                        <span class="sr-only">Previous</span>
-                        <i class="fas fa-chevron-left text-xs"></i>
-                    </a>
-                </li>
-                <li th:each="i : ${#numbers.sequence(1, projects.totalPages)}">
-                    <a th:href="@{/user/san-pham(page=${i - 1}, size=${projects.size})}" th:text="${i}"
-                        th:classappend="${currentPage == i} ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-500 border-gray-300 hover:bg-gray-100'"
-                        class="px-3 py-2 leading-tight border transition-colors">1</a>
-                </li>
-                <li>
-                    <a th:href="@{/user/san-pham(page=${projects.number + 1}, size=${projects.size})}"
-                        th:classappend="${projects.last} ? 'pointer-events-none opacity-50' : ''"
-                        class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
-                        <span class="sr-only">Next</span>
-                        <i class="fas fa-chevron-right text-xs"></i>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
-    <div th:if="${#lists.isEmpty(projects)}" class="text-center py-12">
-        <div class="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-            <i class="fas fa-search text-3xl text-gray-400"></i>
-        </div>
-        <h3 class="text-xl font-bold text-gray-800 mb-2">No products found</h3>
-        <p class="text-gray-500 mb-6">Try adjusting your filters or come back later.</p>
-        <a href="/"
-            class="inline-block bg-[color:var(--zilly-green)] text-white font-bold px-6 py-2 rounded-full hover:bg-green-700 transition">Return
-            Home</a>
-    </div>
-    </main>
-    </div>
-    </section>
+        </section>
     </div>
 </body>
 

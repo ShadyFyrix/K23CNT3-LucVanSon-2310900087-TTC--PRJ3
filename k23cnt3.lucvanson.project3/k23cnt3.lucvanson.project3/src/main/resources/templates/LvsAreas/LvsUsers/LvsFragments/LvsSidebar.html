@@ -34,6 +34,15 @@
                 <span class="text-gray-300 group-hover:text-white font-medium">Dashboard</span>
             </a>
 
+            <!-- Admin Panel - Only for ADMIN role -->
+            <a th:if="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsRole.name() == 'ADMIN'}"
+                th:href="@{/LvsAdmin/LvsDashboard}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#fed700]/20 to-transparent border-l-4 border-[#fed700] hover:from-[#fed700]/30 transition-all duration-200 group">
+                <i class="fas fa-shield-alt text-[#fed700] text-lg group-hover:scale-110 transition-transform"></i>
+                <span class="text-[#fed700] group-hover:text-white font-bold">Admin Panel</span>
+                <span class="ml-auto bg-[#fed700] text-black text-[10px] font-bold px-2 py-1 rounded-full">ADMIN</span>
+            </a>
+
             <!-- Account Dropdown -->
             <details class="group/account">
                 <summary
@@ -180,6 +189,10 @@
                         class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
                         <i class="fas fa-plus-square w-4"></i> Deposit
                     </a>
+                    <a th:href="@{/LvsUser/LvsTransaction/LvsConvert}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-exchange-alt w-4"></i> Convert Balance
+                    </a>
                 </div>
             </details>
 
@@ -193,7 +206,7 @@
 
         <!-- Logout Button (Fixed at bottom) -->
         <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#1e1e1e] to-transparent">
-            <a th:href="@{/LvsAuth/LvsLogout}"
+            <a th:href="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsRole.name() == 'ADMIN'} ? @{/LvsAdmin/LvsLogout} : @{/LvsUser/LvsLogout}"
                 class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 transition-all duration-200 group">
                 <i class="fas fa-sign-out-alt text-red-400 group-hover:text-red-300 transition-colors"></i>
                 <span class="text-red-400 group-hover:text-red-300 font-medium">Logout</span>

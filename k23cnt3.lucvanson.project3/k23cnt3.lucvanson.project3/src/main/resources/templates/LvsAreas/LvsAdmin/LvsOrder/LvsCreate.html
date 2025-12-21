@@ -3,20 +3,265 @@
     layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
 
 <head>
-    <title>Tạo Đơn hàng</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Đơn Hàng Mới - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
     <div layout:fragment="content">
         <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
-            <h1 class="h3 mb-4">Tạo Đơn hàng mới</h1>
-            <div class="card">
-                <div class="card-body">
-                    <p class="text-muted">Chức năng tạo đơn hàng thủ công chưa được triển khai.</p>
-                    <a th:href="@{/LvsAdmin/LvsOrder/LvsList}" class="btn btn-secondary">Quay lại danh sách</a>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/LvsAdmin/LvsOrder/LvsList}">Quản lý Đơn hàng</a>
+                            </li>
+                            <li class="breadcrumb-item active">Tạo Đơn hàng mới</li>
+                        </ol>
+                    </nav>
+
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0"><i class="fas fa-shopping-cart"></i> Tạo Đơn Hàng Mới</h4>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${LvsError}" class="alert alert-danger" th:text="${LvsError}"></div>
+                            <div th:if="${LvsSuccess}" class="alert alert-success" th:text="${LvsSuccess}"></div>
+
+                            <form th:action="@{/LvsAdmin/LvsOrder/LvsCreate}" method="post" id="orderForm">
+                                <div class="row">
+                                    <!-- Left Column: Customer & Projects -->
+                                    <div class="col-md-8">
+                                        <!-- Customer Selection -->
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold">Khách hàng <span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-select" name="lvsBuyerId" id="buyerSelect" required
+                                                onchange="showUserBalance()">
+                                                <option value="">-- Chọn khách hàng --</option>
+                                                <option th:each="user : ${lvsUsers.content}"
+                                                    th:value="${user.lvsUserId}" th:data-balance="${user.lvsBalance}"
+                                                    th:text="${user.lvsUsername} + ' - ' + ${user.lvsFullName}">
+                                                </option>
+                                            </select>
+                                            <div id="balanceDisplay" class="mt-2" style="display: none;">
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-coins"></i> Số dư hiện tại: <strong
+                                                        id="currentBalance">0</strong> coins
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Project Selection (Checkboxes) -->
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold">Chọn Dự án <span
+                                                    class="text-danger">*</span></label>
+                                            <div class="border rounded p-3"
+                                                style="max-height: 400px; overflow-y: auto;">
+                                                <div th:if="${lvsProjects.content.isEmpty()}" class="text-muted">
+                                                    Không có dự án nào
+                                                </div>
+                                                <div th:each="project : ${lvsProjects.content}" class="form-check mb-2">
+                                                    <input class="form-check-input project-checkbox" type="checkbox"
+                                                        name="lvsProjectIds"
+                                                        th:id="'project-' + ${project.lvsProjectId}"
+                                                        th:value="${project.lvsProjectId}"
+                                                        th:data-price="${project.lvsPrice}"
+                                                        th:data-name="${project.lvsProjectName}"
+                                                        onchange="updateTotal()">
+                                                    <label class="form-check-label w-100"
+                                                        th:for="'project-' + ${project.lvsProjectId}">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>
+                                                                <strong th:text="${project.lvsProjectName}">Project
+                                                                    Name</strong>
+                                                                <small class="text-muted" th:if="${project.lvsCategory}"
+                                                                    th:text="' (' + ${project.lvsCategory.lvsCategoryName} + ')'"></small>
+                                                            </span>
+                                                            <span class="badge bg-success"
+                                                                th:text="${project.lvsPrice} + ' coins'">100
+                                                                coins</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Order Summary -->
+                                        <div class="card bg-light mb-3">
+                                            <div class="card-body">
+                                                <h6 class="card-title">Tóm tắt đơn hàng</h6>
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Số dự án đã chọn:</span>
+                                                    <strong id="selectedCount">0</strong>
+                                                </div>
+                                                <div class="d-flex justify-content-between mt-2">
+                                                    <span>Tổng tiền:</span>
+                                                    <strong id="totalAmount" class="text-primary">0 coins</strong>
+                                                </div>
+                                                <div id="insufficientFunds" class="alert alert-warning mt-3"
+                                                    style="display: none;">
+                                                    <i class="fas fa-exclamation-triangle"></i> Khách hàng không đủ
+                                                    coin!
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Column: Order Details -->
+                                    <div class="col-md-4">
+                                        <!-- Order Status -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Trạng thái <span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-select" name="lvsStatus" id="statusSelect" required
+                                                onchange="checkBalance()">
+                                                <option value="PENDING">Chờ xử lý</option>
+                                                <option value="PROCESSING">Đang xử lý</option>
+                                                <option value="COMPLETED">Hoàn thành</option>
+                                                <option value="CANCELLED">Đã hủy</option>
+                                            </select>
+                                            <small class="text-muted">
+                                                <i class="fas fa-info-circle"></i> Coin chỉ bị trừ khi trạng thái là
+                                                "Hoàn thành"
+                                            </small>
+                                        </div>
+
+                                        <!-- Notes -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Ghi chú</label>
+                                            <textarea class="form-control" name="lvsNotes" rows="4"
+                                                placeholder="Ghi chú cho đơn hàng..."></textarea>
+                                        </div>
+
+                                        <!-- Selected Projects List -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Dự án đã chọn:</label>
+                                            <div id="selectedProjectsList" class="border rounded p-2"
+                                                style="max-height: 200px; overflow-y: auto; min-height: 50px;">
+                                                <small class="text-muted">Chưa chọn dự án nào</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Buttons -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a th:href="@{/LvsAdmin/LvsOrder/LvsList}" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Quay lại
+                                    </a>
+                                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                                        <i class="fas fa-save"></i> Tạo Đơn Hàng
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            let selectedProjects = [];
+            let userBalance = 0;
+
+            // Show user balance when selecting buyer
+            function showUserBalance() {
+                const buyerSelect = document.getElementById('buyerSelect');
+                const selectedOption = buyerSelect.options[buyerSelect.selectedIndex];
+                const balance = selectedOption.getAttribute('data-balance');
+
+                if (balance !== null && balance !== '') {
+                    userBalance = parseFloat(balance) || 0;
+                    document.getElementById('currentBalance').textContent = userBalance.toFixed(2);
+                    document.getElementById('balanceDisplay').style.display = 'block';
+                    checkBalance();
+                } else {
+                    document.getElementById('balanceDisplay').style.display = 'none';
+                }
+            }
+
+            // Update total when checkboxes change
+            function updateTotal() {
+                const checkboxes = document.querySelectorAll('.project-checkbox:checked');
+                selectedProjects = [];
+                let total = 0;
+
+                checkboxes.forEach(checkbox => {
+                    const price = parseFloat(checkbox.getAttribute('data-price')) || 0;
+                    const name = checkbox.getAttribute('data-name');
+                    selectedProjects.push({ name, price });
+                    total += price;
+                });
+
+                // Update summary
+                document.getElementById('selectedCount').textContent = selectedProjects.length;
+                document.getElementById('totalAmount').textContent = total.toFixed(2) + ' coins';
+
+                // Update selected projects list
+                const listContainer = document.getElementById('selectedProjectsList');
+                if (selectedProjects.length === 0) {
+                    listContainer.innerHTML = '<small class="text-muted">Chưa chọn dự án nào</small>';
+                } else {
+                    listContainer.innerHTML = selectedProjects.map(p =>
+                        `<div class="small mb-1">
+                            <i class="fas fa-check-circle text-success"></i> ${p.name} 
+                            <span class="badge bg-secondary">${p.price} coins</span>
+                        </div>`
+                    ).join('');
+                }
+
+                checkBalance();
+            }
+
+            // Check if user has sufficient balance
+            function checkBalance() {
+                const statusSelect = document.getElementById('statusSelect');
+                const selectedStatus = statusSelect.value;
+                const total = selectedProjects.reduce((sum, p) => sum + p.price, 0);
+                const submitBtn = document.getElementById('submitBtn');
+                const warningDiv = document.getElementById('insufficientFunds');
+
+                if (selectedStatus === 'COMPLETED' && userBalance < total && total > 0) {
+                    warningDiv.style.display = 'block';
+                    warningDiv.innerHTML = `
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Khách hàng không đủ coin! Cần: <strong>${total.toFixed(2)}</strong> coins, 
+                        Có: <strong>${userBalance.toFixed(2)}</strong> coins
+                    `;
+                    submitBtn.disabled = true;
+                } else {
+                    warningDiv.style.display = 'none';
+                    submitBtn.disabled = false;
+                }
+            }
+
+            // Form validation
+            document.getElementById('orderForm').addEventListener('submit', function (e) {
+                const checkboxes = document.querySelectorAll('.project-checkbox:checked');
+                if (checkboxes.length === 0) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn ít nhất một dự án!');
+                    return false;
+                }
+
+                const buyerSelect = document.getElementById('buyerSelect');
+                if (!buyerSelect.value) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn khách hàng!');
+                    return false;
+                }
+            });
+        </script>
+    </div>
+
+    <div layout:fragment="scripts">
+        <!-- Additional scripts if needed -->
     </div>
 </body>
 

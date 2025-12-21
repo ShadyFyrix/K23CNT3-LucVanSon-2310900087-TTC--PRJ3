@@ -62,7 +62,7 @@ public class LvsTransaction {
 
     // Enum
     public enum LvsTransactionType {
-        DEPOSIT, WITHDRAWAL, PURCHASE, SALE, REFUND
+        DEPOSIT, WITHDRAWAL, PURCHASE, SALE, REFUND, BALANCE_TO_COIN
     }
 
     public enum LvsTransactionStatus {
