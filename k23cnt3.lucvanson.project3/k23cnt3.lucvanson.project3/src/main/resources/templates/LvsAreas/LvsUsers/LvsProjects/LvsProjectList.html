@@ -13,17 +13,24 @@
                 án</h1>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div th:each="project : ${LvsProjects}" class="electro-card p-4">
+                <div th:each="project : ${LvsProjects.content}" class="electro-card p-4">
                     <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${project.lvsProjectId})}">
-                        <div class="h-40 bg-[#1e1e1e] rounded-lg mb-3 flex items-center justify-center">
-                            <i class="fas fa-image text-5xl text-gray-600"></i>
+                        <div class="h-40 bg-[#1e1e1e] rounded-lg mb-3 overflow-hidden">
+                            <img th:if="${project.lvsThumbnailUrl}" th:src="@{${project.lvsThumbnailUrl}}"
+                                th:alt="${project.lvsProjectName}"
+                                class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+                            <div th:unless="${project.lvsThumbnailUrl}"
+                                class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-image text-5xl text-gray-600"></i>
+                            </div>
                         </div>
                         <h3 class="text-white font-bold mb-2 line-clamp-2" th:text="${project.lvsProjectName}">Project
                         </h3>
                         <p class="text-[#fed700] font-bold" th:text="${#numbers.formatCurrency(project.lvsPrice)}">$0
                         </p>
                         <p class="text-gray-400 text-sm mt-2">
-                            <i class="fas fa-user mr-1"></i><span th:text="${project.lvsUser.lvsUsername}">User</span>
+                            <i class="fas fa-user mr-1"></i><span
+                                th:text="${project.lvsUser?.lvsUsername ?: 'Unknown'}">User</span>
                         </p>
                     </a>
                 </div>

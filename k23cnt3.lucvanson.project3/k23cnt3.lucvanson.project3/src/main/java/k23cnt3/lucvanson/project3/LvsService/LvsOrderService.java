@@ -54,6 +54,9 @@ public interface LvsOrderService {
     // Thanh toán đơn hàng
     boolean lvsProcessPayment(Long lvsOrderId);
 
+    // Mua project trực tiếp bằng coin
+    LvsOrder lvsPurchaseProject(Long lvsProjectId, Long lvsUserId) throws Exception;
+
     // Hủy đơn hàng
     boolean lvsCancelOrder(Long lvsOrderId, String lvsReason);
 

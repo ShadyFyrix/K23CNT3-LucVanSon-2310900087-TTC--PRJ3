@@ -18,6 +18,9 @@ public interface LvsProjectService {
     // Lấy dự án theo ID
     LvsProject lvsGetProjectById(Long lvsProjectId);
 
+    // Lấy dự án theo ID với eager loading
+    LvsProject lvsGetProjectByIdWithDetails(Long lvsProjectId);
+
     // Lấy tất cả dự án
     Page<LvsProject> lvsGetAllProjects(Pageable lvsPageable);
 

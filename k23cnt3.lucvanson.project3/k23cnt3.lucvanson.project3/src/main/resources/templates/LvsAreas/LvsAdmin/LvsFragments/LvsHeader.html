@@ -93,12 +93,10 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>
-                                    <form th:action="@{/logout}" method="post" class="m-0">
-                                        <button type="submit"
-                                            class="dropdown-item text-danger py-2 hover-lift w-100 text-start">
-                                            <i class="fas fa-sign-out-alt me-3"></i>Đăng xuất
-                                        </button>
-                                    </form>
+                                    <a th:href="@{/LvsAdmin/LvsLogout}"
+                                        class="dropdown-item text-danger py-2 hover-lift w-100 text-start">
+                                        <i class="fas fa-sign-out-alt me-3"></i>Đăng xuất
+                                    </a>
                                 </li>
                             </ul>
                         </li>

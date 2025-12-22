@@ -276,6 +276,116 @@ public class LvsOrderServiceImpl implements LvsOrderService {
     }
 
     /**
+     * Mua project trực tiếp bằng coin
+     * Flow: PENDING → PROCESSING → COMPLETED
+     * 
+     * @param lvsProjectId ID dự án
+     * @param lvsUserId    ID người dùng
+     * @return Đơn hàng đã hoàn thành
+     * @throws Exception Nếu có lỗi trong quá trình mua
+     */
+    @Override
+    public LvsOrder lvsPurchaseProject(Long lvsProjectId, Long lvsUserId) throws Exception {
+        // 1. Kiểm tra user và project tồn tại
+        LvsUser lvsBuyer = lvsUserRepository.findById(lvsUserId)
+                .orElseThrow(() -> new Exception("Không tìm thấy người dùng"));
+        LvsProject lvsProject = lvsProjectRepository.findWithDetailsByLvsProjectId(lvsProjectId)
+                .orElseThrow(() -> new Exception("Không tìm thấy dự án"));
+
+        // 2. Kiểm tra project đã được approved
+        if (lvsProject.getLvsStatus() != LvsProject.LvsProjectStatus.APPROVED) {
+            throw new Exception("Dự án chưa được duyệt");
+        }
+
+        // 3. Kiểm tra user không thể mua project của chính mình
+        if (lvsProject.getLvsUser().getLvsUserId().equals(lvsUserId)) {
+            throw new Exception("Bạn không thể mua dự án của chính mình");
+        }
+
+        // 4. Kiểm tra user đã mua project này chưa
+        List<LvsProject> lvsPurchasedProjects = lvsProjectRepository.findPurchasedProjectsByUser(lvsUserId);
+        boolean lvsAlreadyPurchased = lvsPurchasedProjects.stream()
+                .anyMatch(p -> p.getLvsProjectId().equals(lvsProjectId));
+        if (lvsAlreadyPurchased) {
+            throw new Exception("Bạn đã mua dự án này rồi");
+        }
+
+        // 5. Kiểm tra số dư coin
+        Double lvsProjectPrice = lvsProject.getLvsPrice();
+        if (lvsBuyer.getLvsCoin() < lvsProjectPrice) {
+            throw new Exception("Số dư coin không đủ. Cần: " + lvsProjectPrice + ", Hiện có: " + lvsBuyer.getLvsCoin());
+        }
+
+        // 6. Tạo đơn hàng mới với status PENDING
+        LvsOrder lvsOrder = new LvsOrder();
+        lvsOrder.setLvsBuyer(lvsBuyer);
+        lvsOrder.setLvsOrderCode(lvsGenerateOrderCode());
+        lvsOrder.setLvsStatus(LvsOrderStatus.PENDING);
+        lvsOrder.setLvsPaymentMethod("COIN");
+        lvsOrder.setLvsTotalAmount(lvsProjectPrice);
+        lvsOrder.setLvsDiscountAmount(0.0);
+        lvsOrder.setLvsFinalAmount(lvsProjectPrice);
+        lvsOrder.setLvsCreatedAt(LocalDateTime.now());
+        lvsOrder.setLvsUpdatedAt(LocalDateTime.now());
+
+        // 7. Tạo order item
+        LvsOrderItem lvsOrderItem = new LvsOrderItem();
+        lvsOrderItem.setLvsOrder(lvsOrder);
+        lvsOrderItem.setLvsProject(lvsProject);
+        lvsOrderItem.setLvsSeller(lvsProject.getLvsUser());
+        lvsOrderItem.setLvsQuantity(1);
+        lvsOrderItem.setLvsUnitPrice(lvsProjectPrice);
+        lvsOrderItem.setLvsItemTotal(lvsProjectPrice);
+        lvsOrderItem.setLvsCreatedAt(LocalDateTime.now());
+
+        lvsOrder.getLvsOrderItems().add(lvsOrderItem);
+
+        // 8. Lưu order (status: PENDING)
+        lvsOrder = lvsOrderRepository.save(lvsOrder);
+
+        // 9. Chuyển sang PROCESSING và xử lý thanh toán
+        lvsOrder.setLvsStatus(LvsOrderStatus.PROCESSING);
+        lvsOrder.setLvsUpdatedAt(LocalDateTime.now());
+        lvsOrder = lvsOrderRepository.save(lvsOrder);
+
+        // 10. Trừ coin của người mua
+        lvsBuyer.setLvsCoin(lvsBuyer.getLvsCoin() - lvsProjectPrice);
+        lvsBuyer.setLvsUpdatedAt(LocalDateTime.now());
+        lvsUserRepository.save(lvsBuyer);
+
+        // 11. Cộng doanh thu cho người bán
+        LvsUser lvsSeller = lvsProject.getLvsUser();
+        lvsSeller.setLvsBalance(lvsSeller.getLvsBalance() + lvsProjectPrice);
+        lvsSeller.setLvsUpdatedAt(LocalDateTime.now());
+        lvsUserRepository.save(lvsSeller);
+
+        // 12. Cập nhật trạng thái đơn hàng thành COMPLETED
+        lvsOrder.setLvsStatus(LvsOrderStatus.COMPLETED);
+        lvsOrder.setLvsIsPaid(true);
+        lvsOrder.setLvsPaidAt(LocalDateTime.now());
+        lvsOrder.setLvsUpdatedAt(LocalDateTime.now());
+        lvsOrder = lvsOrderRepository.save(lvsOrder);
+
+        // 13. Tăng số lượt mua cho project
+        lvsProject.setLvsPurchaseCount(lvsProject.getLvsPurchaseCount() + 1);
+        lvsProjectRepository.save(lvsProject);
+
+        // 14. Tạo giao dịch thanh toán
+        LvsTransaction lvsTransaction = new LvsTransaction();
+        lvsTransaction.setLvsUser(lvsBuyer);
+        lvsTransaction.setLvsType(LvsTransaction.LvsTransactionType.PURCHASE);
+        lvsTransaction.setLvsAmount(lvsProjectPrice);
+        lvsTransaction.setLvsStatus(LvsTransaction.LvsTransactionStatus.SUCCESS);
+        lvsTransaction.setLvsDescription(
+                "Mua dự án: " + lvsProject.getLvsProjectName() + " (" + lvsOrder.getLvsOrderCode() + ")");
+        lvsTransaction.setLvsOrder(lvsOrder);
+        lvsTransaction.setLvsCreatedAt(LocalDateTime.now());
+        lvsTransactionRepository.save(lvsTransaction);
+
+        return lvsOrder;
+    }
+
+    /**
      * Hủy đơn hàng
      * 
      * @param lvsOrderId ID đơn hàng
@@ -464,7 +574,11 @@ public class LvsOrderServiceImpl implements LvsOrderService {
      */
     @Override
     public String lvsGenerateOrderCode() {
-        return "ORD-" + System.currentTimeMillis() + "-" + (int) (Math.random() * 1000);
+        // Format: ORD-{last10digits}-{3digits} = max 18 chars (fits in 20 char limit)
+        long timestamp = System.currentTimeMillis();
+        String shortTimestamp = String.valueOf(timestamp).substring(3); // Last 10 digits
+        int random = (int) (Math.random() * 1000);
+        return String.format("ORD-%s-%03d", shortTimestamp, random);
     }
 
     /**

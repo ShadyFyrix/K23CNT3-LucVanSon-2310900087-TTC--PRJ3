@@ -49,164 +49,166 @@ public class LvsAuthController {
     @Autowired
     private LvsUserService lvsUserService;
 
-    // ==================== ADMIN LOGIN ====================
+    // ==================== ADMIN LOGIN (DEPRECATED - Use Unified Login)
+    // ====================
 
-    /**
-     * Hiển thị trang đăng nhập cho ADMIN
+    /*
+     * DEPRECATED: Admin login has been moved to unified login page at
+     * /LvsUser/LvsLogin
+     * All users (ADMIN, MODERATOR, USER) now use the same login page.
+     * After successful login, users are redirected based on their role.
      * 
-     * @param model  Model để truyền dữ liệu sang view
-     * @param error  Tham số lỗi nếu đăng nhập thất bại
-     * @param logout Tham số khi đã đăng xuất
-     * @return Đường dẫn đến template login của admin
+     * This section is commented out to enforce the unified login system.
+     * If you need to access admin dashboard, please use /LvsUser/LvsLogin
      */
-    @GetMapping("/LvsAdmin/LvsLogin")
-    public String lvsShowAdminLoginPage(Model model,
-            @RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "logout", required = false) String logout) {
 
-        if (error != null) {
-            model.addAttribute("lvsError", "Tên đăng nhập hoặc mật khẩu không đúng!");
-        }
-
-        if (logout != null) {
-            model.addAttribute("lvsSuccess", "Đăng xuất thành công!");
-        }
-
-        return "LvsAreas/LvsAdmin/LvsSecurity/LvsLogin";
-    }
-
-    /**
-     * Xử lý đăng nhập cho ADMIN
+    /*
+     * @GetMapping("/LvsAdmin/LvsLogin")
+     * public String lvsShowAdminLoginPage(Model model,
      * 
-     * Flow xử lý:
-     * 1. Nhận username/email và password từ form
-     * 2. Kiểm tra thông tin đăng nhập qua LvsUserService
-     * 3. Kiểm tra role có phải ADMIN không
-     * 4. Nếu đúng: Lưu user vào session và redirect đến admin dashboard
-     * 5. Nếu sai: Hiển thị thông báo lỗi và quay lại trang login
+     * @RequestParam(value = "error", required = false) String error,
      * 
-     * @param lvsUsernameOrEmail Username hoặc email của admin
-     * @param lvsPassword        Mật khẩu của admin
-     * @param session            HttpSession để lưu thông tin user
-     * @param redirectAttributes Để truyền flash message
-     * @return Redirect đến admin dashboard nếu thành công
+     * @RequestParam(value = "logout", required = false) String logout) {
+     * 
+     * if (error != null) {
+     * model.addAttribute("lvsError", "Tên đăng nhập hoặc mật khẩu không đúng!");
+     * }
+     * 
+     * if (logout != null) {
+     * model.addAttribute("lvsSuccess", "Đăng xuất thành công!");
+     * }
+     * 
+     * return "LvsAreas/LvsAdmin/LvsSecurity/LvsLogin";
+     * }
+     * 
+     * @PostMapping("/LvsAdmin/LvsLogin")
+     * public String lvsProcessAdminLogin(
+     * 
+     * @RequestParam String lvsUsernameOrEmail,
+     * 
+     * @RequestParam String lvsPassword,
+     * HttpSession session,
+     * RedirectAttributes redirectAttributes,
+     * HttpServletRequest request) {
+     * 
+     * try {
+     * System.out.println("[ADMIN LOGIN] ========== LOGIN ATTEMPT ==========");
+     * System.out.println("[ADMIN LOGIN] Raw username/email value: [" +
+     * lvsUsernameOrEmail + "]");
+     * System.out.println("[ADMIN LOGIN] Username length: " +
+     * lvsUsernameOrEmail.length());
+     * System.out.println("[ADMIN LOGIN] Password length: " + lvsPassword.length());
+     * 
+     * LvsUser lvsUser = lvsUserService.lvsGetUserByUsername(lvsUsernameOrEmail);
+     * 
+     * if (lvsUser == null) {
+     * System.out.println("[ADMIN LOGIN] Not found by username, trying email...");
+     * lvsUser = lvsUserService.lvsGetUserByEmail(lvsUsernameOrEmail);
+     * }
+     * 
+     * if (lvsUser == null) {
+     * System.out.println("[ADMIN LOGIN] User not found!");
+     * redirectAttributes.addFlashAttribute("lvsError",
+     * "Tên đăng nhập hoặc email không tồn tại!");
+     * return "redirect:/LvsAdmin/LvsLogin";
+     * }
+     * 
+     * System.out.println(
+     * "[ADMIN LOGIN] User found: " + lvsUser.getLvsUsername() + ", Role: " +
+     * lvsUser.getLvsRole());
+     * 
+     * boolean passwordMatch = lvsUserService.lvsCheckPassword(lvsUser,
+     * lvsPassword);
+     * System.out.println("[ADMIN LOGIN] Password match: " + passwordMatch);
+     * 
+     * if (!passwordMatch) {
+     * redirectAttributes.addFlashAttribute("lvsError",
+     * "Mật khẩu không đúng!");
+     * return "redirect:/LvsAdmin/LvsLogin";
+     * }
+     * 
+     * if (lvsUser.getLvsRole() != LvsUser.LvsRole.ADMIN) {
+     * redirectAttributes.addFlashAttribute("lvsError",
+     * "Bạn không có quyền truy cập vào trang quản trị!");
+     * return "redirect:/LvsAdmin/LvsLogin";
+     * }
+     * 
+     * if (lvsUser.getLvsStatus() == LvsUser.LvsUserStatus.BANNED) {
+     * redirectAttributes.addFlashAttribute("lvsError",
+     * "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+     * return "redirect:/LvsAdmin/LvsLogin";
+     * }
+     * 
+     * if (lvsUser.getLvsStatus() == LvsUser.LvsUserStatus.INACTIVE) {
+     * redirectAttributes.addFlashAttribute("lvsError",
+     * "Tài khoản của bạn chưa được kích hoạt.");
+     * return "redirect:/LvsAdmin/LvsLogin";
+     * }
+     * 
+     * session.setAttribute("LvsCurrentUser", lvsUser);
+     * System.out.println("[ADMIN LOGIN] Session created for user: " +
+     * lvsUser.getLvsUsername());
+     * 
+     * UsernamePasswordAuthenticationToken authentication = new
+     * UsernamePasswordAuthenticationToken(
+     * lvsUser.getLvsUsername(),
+     * lvsUser.getLvsPassword(),
+     * Collections.singletonList(new SimpleGrantedAuthority("ROLE_" +
+     * lvsUser.getLvsRole().name())));
+     * 
+     * SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+     * securityContext.setAuthentication(authentication);
+     * SecurityContextHolder.setContext(securityContext);
+     * 
+     * SecurityContextRepository securityContextRepository = new
+     * HttpSessionSecurityContextRepository();
+     * securityContextRepository.saveContext(securityContext, request, null);
+     * 
+     * System.out.
+     * println("[ADMIN LOGIN] Spring Security authentication set and saved to session for: "
+     * + lvsUser.getLvsUsername());
+     * 
+     * redirectAttributes.addFlashAttribute("lvsSuccess",
+     * "Đăng nhập thành công! Chào mừng quản trị viên " + lvsUser.getLvsUsername());
+     * 
+     * System.out.println("[ADMIN LOGIN] Redirecting to /LvsAdmin/LvsDashboard");
+     * return "redirect:/LvsAdmin/LvsDashboard";
+     * 
+     * } catch (Exception e) {
+     * redirectAttributes.addFlashAttribute("lvsError",
+     * "Lỗi đăng nhập: " + e.getMessage());
+     * return "redirect:/LvsAdmin/LvsLogin";
+     * }
+     * }
+     * 
+     * @GetMapping("/LvsAdmin/LvsLogout")
+     * public String lvsAdminLogout(HttpSession session, RedirectAttributes
+     * redirectAttributes) {
+     * session.invalidate();
+     * 
+     * redirectAttributes.addFlashAttribute("lvsSuccess",
+     * "Đăng xuất thành công!");
+     * 
+     * return "redirect:/LvsAdmin/LvsLogin";
+     * }
      */
-    @PostMapping("/LvsAdmin/LvsLogin")
-    public String lvsProcessAdminLogin(
-            @RequestParam String lvsUsernameOrEmail,
-            @RequestParam String lvsPassword,
-            HttpSession session,
-            RedirectAttributes redirectAttributes,
-            HttpServletRequest request) {
-
-        try {
-            System.out.println("[ADMIN LOGIN] ========== LOGIN ATTEMPT ==========");
-            System.out.println("[ADMIN LOGIN] Raw username/email value: [" + lvsUsernameOrEmail + "]");
-            System.out.println("[ADMIN LOGIN] Username length: " + lvsUsernameOrEmail.length());
-            System.out.println("[ADMIN LOGIN] Password length: " + lvsPassword.length());
-
-            // Tìm user theo username hoặc email
-            LvsUser lvsUser = lvsUserService.lvsGetUserByUsername(lvsUsernameOrEmail);
-
-            // Nếu không tìm thấy theo username, thử tìm theo email
-            if (lvsUser == null) {
-                System.out.println("[ADMIN LOGIN] Not found by username, trying email...");
-                lvsUser = lvsUserService.lvsGetUserByEmail(lvsUsernameOrEmail);
-            }
-
-            // Kiểm tra user có tồn tại không
-            if (lvsUser == null) {
-                System.out.println("[ADMIN LOGIN] User not found!");
-                redirectAttributes.addFlashAttribute("lvsError",
-                        "Tên đăng nhập hoặc email không tồn tại!");
-                return "redirect:/LvsAdmin/LvsLogin";
-            }
-
-            System.out.println(
-                    "[ADMIN LOGIN] User found: " + lvsUser.getLvsUsername() + ", Role: " + lvsUser.getLvsRole());
-
-            // Kiểm tra password
-            boolean passwordMatch = lvsUserService.lvsCheckPassword(lvsUser, lvsPassword);
-            System.out.println("[ADMIN LOGIN] Password match: " + passwordMatch);
-
-            if (!passwordMatch) {
-                redirectAttributes.addFlashAttribute("lvsError",
-                        "Mật khẩu không đúng!");
-                return "redirect:/LvsAdmin/LvsLogin";
-            }
-
-            // Kiểm tra role - CHỈ ADMIN mới được đăng nhập từ trang này
-            if (lvsUser.getLvsRole() != LvsUser.LvsRole.ADMIN) {
-                redirectAttributes.addFlashAttribute("lvsError",
-                        "Bạn không có quyền truy cập vào trang quản trị!");
-                return "redirect:/LvsAdmin/LvsLogin";
-            }
-
-            // Kiểm tra trạng thái tài khoản
-            if (lvsUser.getLvsStatus() == LvsUser.LvsUserStatus.BANNED) {
-                redirectAttributes.addFlashAttribute("lvsError",
-                        "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
-                return "redirect:/LvsAdmin/LvsLogin";
-            }
-
-            if (lvsUser.getLvsStatus() == LvsUser.LvsUserStatus.INACTIVE) {
-                redirectAttributes.addFlashAttribute("lvsError",
-                        "Tài khoản của bạn chưa được kích hoạt.");
-                return "redirect:/LvsAdmin/LvsLogin";
-            }
-
-            // Lưu thông tin user vào session
-            session.setAttribute("LvsCurrentUser", lvsUser);
-            System.out.println("[ADMIN LOGIN] Session created for user: " + lvsUser.getLvsUsername());
-
-            // IMPORTANT: Authenticate with Spring Security to avoid 403 Forbidden
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    lvsUser.getLvsUsername(),
-                    lvsUser.getLvsPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + lvsUser.getLvsRole().name())));
-
-            // Set authentication in SecurityContext
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-            securityContext.setAuthentication(authentication);
-            SecurityContextHolder.setContext(securityContext);
-
-            // CRITICAL: Save SecurityContext to session so it persists across redirect
-            SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
-            securityContextRepository.saveContext(securityContext, request, null);
-
-            System.out.println("[ADMIN LOGIN] Spring Security authentication set and saved to session for: "
-                    + lvsUser.getLvsUsername());
-
-            redirectAttributes.addFlashAttribute("lvsSuccess",
-                    "Đăng nhập thành công! Chào mừng quản trị viên " + lvsUser.getLvsUsername());
-
-            System.out.println("[ADMIN LOGIN] Redirecting to /LvsAdmin/LvsDashboard");
-            // Redirect đến Admin Dashboard
-            return "redirect:/LvsAdmin/LvsDashboard";
-
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("lvsError",
-                    "Lỗi đăng nhập: " + e.getMessage());
-            return "redirect:/LvsAdmin/LvsLogin";
-        }
-    }
 
     /**
-     * Xử lý đăng xuất cho ADMIN
+     * Admin Logout - Redirect to User Homepage
      * 
-     * @param session            HttpSession để xóa thông tin user
-     * @param redirectAttributes Để truyền flash message
-     * @return Redirect về trang login admin
+     * When admin logs out, redirect to user homepage (not logged in state)
+     * instead of login page for better UX
      */
     @GetMapping("/LvsAdmin/LvsLogout")
     public String lvsAdminLogout(HttpSession session, RedirectAttributes redirectAttributes) {
-        // Xóa session
+        // Invalidate session
         session.invalidate();
 
         redirectAttributes.addFlashAttribute("lvsSuccess",
-                "Đăng xuất thành công!");
+                "Đăng xuất thành công! Hẹn gặp lại bạn.");
 
-        return "redirect:/LvsAdmin/LvsLogin";
+        // Redirect to user homepage (not logged in)
+        return "redirect:/lvsforum";
     }
 
     // ==================== USER/MODERATOR LOGIN ====================
@@ -315,12 +317,8 @@ public class LvsAuthController {
                 return "redirect:/LvsUser/LvsLogin";
             }
 
-            // Kiểm tra role - ADMIN không được đăng nhập từ trang này
-            if (lvsUser.getLvsRole() == LvsUser.LvsRole.ADMIN) {
-                redirectAttributes.addFlashAttribute("lvsError",
-                        "Vui lòng sử dụng trang đăng nhập dành cho quản trị viên!");
-                return "redirect:/LvsUser/LvsLogin";
-            }
+            // Allow all roles (ADMIN, MODERATOR, USER) to login via unified login page
+            // Redirect will be based on role after successful authentication
 
             // Kiểm tra trạng thái tài khoản
             if (lvsUser.getLvsStatus() == LvsUser.LvsUserStatus.BANNED) {
@@ -360,14 +358,15 @@ public class LvsAuthController {
             redirectAttributes.addFlashAttribute("lvsSuccess",
                     "Đăng nhập thành công! Chào mừng " + lvsUser.getLvsUsername());
 
-            // Redirect theo role
-            if (lvsUser.getLvsRole() == LvsUser.LvsRole.MODERATOR) {
-                System.out.println("[USER LOGIN] Redirecting MODERATOR to /LvsModerator/LvsDashboard");
-                // MODERATOR → Trang phê duyệt (moderator dashboard)
+            // Redirect based on role
+            if (lvsUser.getLvsRole() == LvsUser.LvsRole.ADMIN) {
+                System.out.println("[UNIFIED LOGIN] Redirecting ADMIN to /LvsAdmin/LvsDashboard");
+                return "redirect:/LvsAdmin/LvsDashboard";
+            } else if (lvsUser.getLvsRole() == LvsUser.LvsRole.MODERATOR) {
+                System.out.println("[UNIFIED LOGIN] Redirecting MODERATOR to /LvsModerator/LvsDashboard");
                 return "redirect:/LvsModerator/LvsDashboard";
             } else {
-                System.out.println("[USER LOGIN] Redirecting USER to /lvsforum");
-                // USER → Trang chủ forum
+                System.out.println("[UNIFIED LOGIN] Redirecting USER to /lvsforum");
                 return "redirect:/lvsforum";
             }
 
@@ -393,7 +392,7 @@ public class LvsAuthController {
         redirectAttributes.addFlashAttribute("lvsSuccess",
                 "Đăng xuất thành công! Hẹn gặp lại bạn.");
 
-        return "redirect:/";
+        return "redirect:/LvsUser/LvsLogin";
     }
 
     // ==================== USER REGISTRATION ====================

@@ -2,10 +2,12 @@ package k23cnt3.lucvanson.project3.LvsController.LvsUser;
 
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
+import k23cnt3.lucvanson.project3.LvsRepository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,12 @@ public class LvsUserProjectController {
     @Autowired
     private LvsCategoryService lvsCategoryService;
 
+    @Autowired
+    private LvsOrderService lvsOrderService;
+
+    @Autowired
+    private LvsUserRepository lvsUserRepository;
+
     /**
      * Danh sách projects (Shop page)
      * URL: GET /LvsUser/LvsProject/LvsList
@@ -47,23 +55,24 @@ public class LvsUserProjectController {
         // Lấy danh sách categories
         List<LvsCategory> lvsCategories = lvsCategoryService.lvsGetAllCategories();
 
-        // Tìm kiếm hoặc lọc
+        // Tìm kiếm hoặc lọc - SỬ DỤNG EAGER LOADING
         if (lvsKeyword != null && !lvsKeyword.isEmpty()) {
             lvsProjects = lvsProjectService.lvsSearchProjects(lvsKeyword, lvsPageable);
         } else if (lvsCategoryId != null) {
             lvsProjects = lvsProjectService.lvsGetProjectsByCategory(lvsCategoryId, lvsPageable);
         } else {
-            lvsProjects = lvsProjectService.lvsGetAllProjects(lvsPageable);
+            // Dùng method eager load để tránh LazyInitializationException
+            lvsProjects = lvsProjectService.lvsGetAllProjectsWithCategoryAndUser(lvsPageable);
         }
 
-        // Truyền dữ liệu - dùng tên UPPERCASE như admin
+        // Truyền dữ liệu
         model.addAttribute("LvsProjects", lvsProjects);
         model.addAttribute("LvsCategories", lvsCategories);
         model.addAttribute("LvsKeyword", lvsKeyword);
         model.addAttribute("LvsSelectedCategoryId", lvsCategoryId);
         model.addAttribute("LvsCurrentPage", page);
 
-        return "LvsAreas/LvsUsers/LvsShop";
+        return "LvsAreas/LvsUsers/LvsProjects/LvsProjectList";
     }
 
     /**
@@ -77,8 +86,8 @@ public class LvsUserProjectController {
             Model model,
             HttpSession session) {
 
-        // Lấy project
-        LvsProject lvsProject = lvsProjectService.lvsGetProjectById(id);
+        // Lấy project với eager loading để tránh LazyInitializationException
+        LvsProject lvsProject = lvsProjectService.lvsGetProjectByIdWithDetails(id);
 
         // Nếu không tìm thấy hoặc chưa approved
         if (lvsProject == null || lvsProject.getLvsStatus() != LvsProject.LvsProjectStatus.APPROVED) {
@@ -96,10 +105,48 @@ public class LvsUserProjectController {
                     lvsCurrentUser.getLvsUserId(), id);
         }
 
-        // Truyền dữ liệu - dùng tên UPPERCASE
-        model.addAttribute("LvsProject", lvsProject);
+        // Truyền dữ liệu
+        model.addAttribute("project", lvsProject);
         model.addAttribute("LvsHasPurchased", lvsHasPurchased);
 
-        return "LvsAreas/LvsUsers/LvsProjects/LvsProjectDetail";
+        // TEMPORARY: Use simple template for debugging
+        return "LvsAreas/LvsUsers/LvsProjects/LvsProjectDetailSimple";
+    }
+
+    /**
+     * Mua project
+     * URL: POST /LvsUser/LvsProject/LvsPurchase/{id}
+     */
+    @PostMapping("/LvsPurchase/{id}")
+    public String lvsPurchaseProject(
+            @PathVariable Long id,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        // Lấy user hiện tại
+        LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
+        if (lvsCurrentUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập để mua dự án");
+            return "redirect:/LvsLogin";
+        }
+
+        try {
+            // Gọi service để mua project
+            LvsOrder lvsOrder = lvsOrderService.lvsPurchaseProject(id, lvsCurrentUser.getLvsUserId());
+
+            // Cập nhật lại user trong session (vì coin đã thay đổi)
+            LvsUser lvsUpdatedUser = lvsUserRepository.findById(lvsCurrentUser.getLvsUserId()).orElse(null);
+            if (lvsUpdatedUser != null) {
+                session.setAttribute("LvsCurrentUser", lvsUpdatedUser);
+            }
+
+            redirectAttributes.addFlashAttribute("success",
+                    "Mua dự án thành công! Mã đơn hàng: " + lvsOrder.getLvsOrderCode());
+            return "redirect:/LvsUser/LvsProject/LvsDetail/" + id;
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/LvsUser/LvsProject/LvsDetail/" + id;
+        }
     }
 }

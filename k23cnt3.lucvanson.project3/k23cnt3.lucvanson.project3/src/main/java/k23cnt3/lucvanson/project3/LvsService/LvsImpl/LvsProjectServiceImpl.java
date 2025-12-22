@@ -41,6 +41,17 @@ public class LvsProjectServiceImpl implements LvsProjectService {
     }
 
     /**
+     * Lấy dự án theo ID với eager loading
+     * 
+     * @param lvsProjectId ID dự án
+     * @return Dự án với category và user đã load
+     */
+    @Override
+    public LvsProject lvsGetProjectByIdWithDetails(Long lvsProjectId) {
+        return lvsProjectRepository.findWithDetailsByLvsProjectId(lvsProjectId).orElse(null);
+    }
+
+    /**
      * Lấy tất cả dự án với phân trang
      * 
      * @param lvsPageable Thông tin phân trang

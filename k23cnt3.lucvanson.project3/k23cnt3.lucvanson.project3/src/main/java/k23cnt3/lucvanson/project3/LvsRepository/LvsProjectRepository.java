@@ -4,6 +4,7 @@ import k23cnt3.lucvanson.project3.LvsEntity.LvsProject;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsProject.LvsProjectStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface cho entity LvsProject
@@ -19,6 +21,10 @@ import java.util.List;
  */
 @Repository
 public interface LvsProjectRepository extends JpaRepository<LvsProject, Long> {
+
+        // Tìm dự án theo ID với eager loading
+        @EntityGraph(attributePaths = { "lvsCategory", "lvsUser" })
+        Optional<LvsProject> findWithDetailsByLvsProjectId(Long lvsProjectId);
 
         // Tìm dự án theo status
         List<LvsProject> findByLvsStatus(LvsProjectStatus lvsStatus);
@@ -163,7 +169,8 @@ public interface LvsProjectRepository extends JpaRepository<LvsProject, Long> {
                         "WHERE o.lvsBuyer.lvsUserId = :userId AND o.lvsStatus = 'COMPLETED'")
         List<LvsProject> findPurchasedProjectsByUser(@Param("userId") Long userId);
 
-        // Lấy tất cả dự án với category eager loading (for order creation form)
-        @Query("SELECT DISTINCT p FROM LvsProject p LEFT JOIN FETCH p.lvsCategory LEFT JOIN FETCH p.lvsUser")
+        // Lấy tất cả dự án với category và user eager loading
+        @Query("SELECT p FROM LvsProject p")
+        @EntityGraph(attributePaths = { "lvsCategory", "lvsUser" })
         Page<LvsProject> findAllWithCategoryAndUser(Pageable pageable);
 }
