@@ -29,6 +29,12 @@ public class LvsUserProfileController {
     @Autowired
     private LvsFollowService lvsFollowService;
 
+    @Autowired
+    private LvsProjectService lvsProjectService;
+
+    @Autowired
+    private LvsPostService lvsPostService;
+
     // Xem hồ sơ cá nhân
     @GetMapping("/LvsView")
     public String lvsViewProfile(Model model, HttpSession session) {
@@ -44,14 +50,29 @@ public class LvsUserProfileController {
         // Lấy thống kê
         int lvsFollowersCount = lvsFollowService.lvsGetFollowerCount(lvsCurrentUser.getLvsUserId());
         int lvsFollowingCount = lvsFollowService.lvsGetFollowingCount(lvsCurrentUser.getLvsUserId());
-        int lvsProjectsCount = 0; // lvsCurrentUser.getLvsProjects().size(); // TODO: Fix lazy loading
-        int lvsPostsCount = 0; // lvsCurrentUser.getLvsPosts().size(); // TODO: Fix lazy loading
+
+        // Lấy danh sách posts, followers, following
+        org.springframework.data.domain.Pageable lvsPageable = PageRequest.of(0, 12);
+        org.springframework.data.domain.Page<LvsPost> lvsPosts = lvsPostService.lvsGetPostsByUser(
+                lvsCurrentUser.getLvsUserId(), lvsPageable);
+        org.springframework.data.domain.Page<LvsUser> lvsFollowersPage = lvsFollowService
+                .lvsGetFollowers(lvsCurrentUser.getLvsUserId(), lvsPageable);
+        org.springframework.data.domain.Page<LvsUser> lvsFollowingPage = lvsFollowService
+                .lvsGetFollowing(lvsCurrentUser.getLvsUserId(), lvsPageable);
+        List<LvsUser> lvsFollowers = lvsFollowersPage.getContent();
+        List<LvsUser> lvsFollowing = lvsFollowingPage.getContent();
+
+        int lvsProjectsCount = 0; // TODO: Fix lazy loading
+        int lvsPostsCount = (int) lvsPosts.getTotalElements();
 
         model.addAttribute("LvsUser", lvsCurrentUser);
         model.addAttribute("LvsFollowersCount", lvsFollowersCount);
         model.addAttribute("LvsFollowingCount", lvsFollowingCount);
         model.addAttribute("LvsProjectsCount", lvsProjectsCount);
         model.addAttribute("LvsPostsCount", lvsPostsCount);
+        model.addAttribute("LvsPosts", lvsPosts);
+        model.addAttribute("LvsFollowers", lvsFollowers);
+        model.addAttribute("LvsFollowing", lvsFollowing);
 
         return "LvsAreas/LvsUsers/LvsProfile/LvsProfileView";
     }
@@ -59,6 +80,8 @@ public class LvsUserProfileController {
     // Xem hồ sơ người dùng khác
     @GetMapping("/LvsView/{userId}")
     public String lvsViewOtherProfile(@PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
             Model model,
             HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
@@ -78,8 +101,30 @@ public class LvsUserProfileController {
         // Lấy thống kê
         int lvsFollowersCount = lvsFollowService.lvsGetFollowerCount(userId);
         int lvsFollowingCount = lvsFollowService.lvsGetFollowingCount(userId);
-        int lvsProjectsCount = 0; // lvsUser.getLvsProjects().size(); // TODO: Fix lazy loading
-        int lvsPostsCount = 0; // lvsUser.getLvsPosts().size(); // TODO: Fix lazy loading
+
+        // Load projects and posts
+        org.springframework.data.domain.Pageable lvsPageable = PageRequest.of(page, size);
+        org.springframework.data.domain.Page<LvsProject> lvsProjects = lvsProjectService.lvsGetProjectsByUser(userId,
+                lvsPageable);
+        org.springframework.data.domain.Page<LvsPost> lvsPosts = lvsPostService.lvsGetPostsByUser(userId, lvsPageable);
+
+        // Load followers and following lists
+        org.springframework.data.domain.Page<LvsUser> lvsFollowersPage = lvsFollowService.lvsGetFollowers(userId,
+                lvsPageable);
+        org.springframework.data.domain.Page<LvsUser> lvsFollowingPage = lvsFollowService.lvsGetFollowing(userId,
+                lvsPageable);
+
+        java.util.List<LvsUser> lvsFollowers = lvsFollowersPage.getContent();
+        java.util.List<LvsUser> lvsFollowing = lvsFollowingPage.getContent();
+
+        // DEBUG: Log project count
+        System.out.println("DEBUG: User ID: " + userId);
+        System.out.println("DEBUG: Projects Page - Total Elements: " + lvsProjects.getTotalElements());
+        System.out.println("DEBUG: Projects Page - Content Size: " + lvsProjects.getContent().size());
+        System.out.println("DEBUG: Projects Content: " + lvsProjects.getContent());
+
+        int lvsProjectsCount = (int) lvsProjects.getTotalElements();
+        int lvsPostsCount = (int) lvsPosts.getTotalElements();
 
         model.addAttribute("LvsUser", lvsUser);
         model.addAttribute("LvsIsFollowing", lvsIsFollowing);
@@ -87,6 +132,10 @@ public class LvsUserProfileController {
         model.addAttribute("LvsFollowingCount", lvsFollowingCount);
         model.addAttribute("LvsProjectsCount", lvsProjectsCount);
         model.addAttribute("LvsPostsCount", lvsPostsCount);
+        model.addAttribute("LvsProjects", lvsProjects);
+        model.addAttribute("LvsPosts", lvsPosts);
+        model.addAttribute("LvsFollowers", lvsFollowers);
+        model.addAttribute("LvsFollowing", lvsFollowing);
 
         return "LvsAreas/LvsUsers/LvsProfile/LvsProfileViewOther";
     }

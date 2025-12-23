@@ -35,6 +35,9 @@ public class LvsUserProjectController {
     @Autowired
     private LvsUserRepository lvsUserRepository;
 
+    @Autowired
+    private LvsFollowService lvsFollowService;
+
     /**
      * Danh sách projects (Shop page)
      * URL: GET /LvsUser/LvsProject/LvsList
@@ -103,14 +106,21 @@ public class LvsUserProjectController {
         if (lvsCurrentUser != null) {
             lvsHasPurchased = lvsProjectService.lvsHasUserPurchasedProject(
                     lvsCurrentUser.getLvsUserId(), id);
+
+            // Lấy danh sách followers (nếu user là owner của project)
+            if (lvsProject.getLvsUser().getLvsUserId().equals(lvsCurrentUser.getLvsUserId())) {
+                Page<LvsUser> lvsFollowersPage = lvsFollowService.lvsGetFollowers(
+                        lvsCurrentUser.getLvsUserId(),
+                        PageRequest.of(0, 100));
+                model.addAttribute("LvsFollowers", lvsFollowersPage.getContent());
+            }
         }
 
         // Truyền dữ liệu
         model.addAttribute("project", lvsProject);
         model.addAttribute("LvsHasPurchased", lvsHasPurchased);
 
-        // TEMPORARY: Use simple template for debugging
-        return "LvsAreas/LvsUsers/LvsProjects/LvsProjectDetailSimple";
+        return "LvsAreas/LvsUsers/LvsProjects/LvsProjectDetail";
     }
 
     /**

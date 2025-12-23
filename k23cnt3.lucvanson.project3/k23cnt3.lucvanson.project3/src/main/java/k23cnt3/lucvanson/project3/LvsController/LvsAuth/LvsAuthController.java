@@ -207,8 +207,8 @@ public class LvsAuthController {
         redirectAttributes.addFlashAttribute("lvsSuccess",
                 "Đăng xuất thành công! Hẹn gặp lại bạn.");
 
-        // Redirect to user homepage (not logged in)
-        return "redirect:/lvsforum";
+        // Redirect to login page
+        return "redirect:/LvsUser/LvsLogin";
     }
 
     // ==================== USER/MODERATOR LOGIN ====================
@@ -358,17 +358,11 @@ public class LvsAuthController {
             redirectAttributes.addFlashAttribute("lvsSuccess",
                     "Đăng nhập thành công! Chào mừng " + lvsUser.getLvsUsername());
 
-            // Redirect based on role
-            if (lvsUser.getLvsRole() == LvsUser.LvsRole.ADMIN) {
-                System.out.println("[UNIFIED LOGIN] Redirecting ADMIN to /LvsAdmin/LvsDashboard");
-                return "redirect:/LvsAdmin/LvsDashboard";
-            } else if (lvsUser.getLvsRole() == LvsUser.LvsRole.MODERATOR) {
-                System.out.println("[UNIFIED LOGIN] Redirecting MODERATOR to /LvsModerator/LvsDashboard");
-                return "redirect:/LvsModerator/LvsDashboard";
-            } else {
-                System.out.println("[UNIFIED LOGIN] Redirecting USER to /lvsforum");
-                return "redirect:/lvsforum";
-            }
+            // ALL users redirect to USER area first (not admin/moderator area)
+            // Admin and Moderator can access their areas via special buttons
+            System.out
+                    .println("[UNIFIED LOGIN] Redirecting to /LvsUser/LvsDashboard for role: " + lvsUser.getLvsRole());
+            return "redirect:/LvsUser/LvsDashboard";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("lvsError",

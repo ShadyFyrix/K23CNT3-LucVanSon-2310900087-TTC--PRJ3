@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>My Gifts - Electro Store</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-3xl font-bold text-white">
+                    <i class="fas fa-gift text-purple-500 mr-3"></i>My Gifts
+                </h1>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div th:if="${success}"
+                class="bg-green-500/20 border border-green-500 text-green-400 px-6 py-4 rounded-lg mb-6">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span th:text="${success}">Success</span>
+            </div>
+            <div th:if="${error}" class="bg-red-500/20 border border-red-500 text-red-400 px-6 py-4 rounded-lg mb-6">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span th:text="${error}">Error</span>
+            </div>
+
+            <!-- Tabs -->
+            <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 mb-6">
+                <div class="flex gap-3">
+                    <a th:href="@{/LvsUser/LvsGift/LvsMy(tab='sent')}"
+                        th:classappend="${LvsActiveTab == 'sent' ? 'bg-purple-600 text-white' : 'bg-[#1e1e1e] text-gray-400 hover:text-white'}"
+                        class="px-6 py-3 rounded-lg font-bold transition">
+                        <i class="fas fa-paper-plane mr-2"></i>Sent Gifts
+                    </a>
+                    <a th:href="@{/LvsUser/LvsGift/LvsMy(tab='received')}"
+                        th:classappend="${LvsActiveTab == 'received' ? 'bg-purple-600 text-white' : 'bg-[#1e1e1e] text-gray-400 hover:text-white'}"
+                        class="px-6 py-3 rounded-lg font-bold transition">
+                        <i class="fas fa-inbox mr-2"></i>Received Gifts
+                    </a>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${LvsGifts == null or LvsGifts.isEmpty()}" class="text-center py-16">
+                <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-12">
+                    <i class="fas fa-gift text-6xl text-gray-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">No Gifts Yet</h3>
+                    <p class="text-gray-400 mb-6"
+                        th:text="${LvsActiveTab == 'sent' ? 'You haven\'t sent any gifts' : 'You haven\'t received any gifts'}">
+                        No gifts</p>
+                </div>
+            </div>
+
+            <!-- Gifts List -->
+            <div th:if="${LvsGifts != null and !LvsGifts.isEmpty()}" class="space-y-4">
+                <div th:each="gift : ${LvsGifts}"
+                    class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 hover:border-purple-500 transition">
+
+                    <div class="flex gap-4">
+                        <!-- Project Thumbnail -->
+                        <div
+                            class="w-32 h-32 bg-[#1e1e1e] rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+                            <img th:if="${gift.lvsProject?.lvsThumbnailUrl}"
+                                th:src="@{${gift.lvsProject.lvsThumbnailUrl}}" class="w-full h-full object-cover"
+                                alt="Project">
+                            <i th:unless="${gift.lvsProject?.lvsThumbnailUrl}"
+                                class="fas fa-gamepad text-3xl text-gray-600"></i>
+                        </div>
+
+                        <!-- Gift Info -->
+                        <div class="flex-grow">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h3 class="text-white font-bold text-lg mb-1"
+                                        th:text="${gift.lvsProject?.lvsProjectName}">Project Name</h3>
+
+                                    <!-- Sender/Recipient Info -->
+                                    <p class="text-gray-400 text-sm mb-1" th:if="${LvsActiveTab == 'sent'}">
+                                        <i class="fas fa-arrow-right mr-1"></i>
+                                        To: <span th:text="${gift.lvsRecipient?.lvsUsername}">Recipient</span>
+                                    </p>
+                                    <p class="text-gray-400 text-sm mb-1" th:if="${LvsActiveTab == 'received'}">
+                                        <i class="fas fa-arrow-left mr-1"></i>
+                                        From: <span th:text="${gift.lvsSender?.lvsUsername}">Sender</span>
+                                    </p>
+
+                                    <p class="text-gray-500 text-sm">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        <span
+                                            th:text="${#temporals.format(gift.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                                    </p>
+                                </div>
+
+                                <!-- Status Badge -->
+                                <span th:class="${gift.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsGift.LvsGiftStatus).PENDING ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500' :
+                                                 gift.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsGift.LvsGiftStatus).ACCEPTED ? 'bg-green-500/20 text-green-400 border-green-500' :
+                                                 gift.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsGift.LvsGiftStatus).REJECTED ? 'bg-red-500/20 text-red-400 border-red-500' :
+                                                 'bg-gray-500/20 text-gray-400 border-gray-500'}"
+                                    class="px-4 py-2 rounded-full text-sm font-bold border">
+                                    <i th:class="${gift.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsGift.LvsGiftStatus).PENDING ? 'fas fa-clock' :
+                                                  gift.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsGift.LvsGiftStatus).ACCEPTED ? 'fas fa-check' :
+                                                  gift.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsGift.LvsGiftStatus).REJECTED ? 'fas fa-times' :
+                                                  'fas fa-question'}" class="mr-1"></i>
+                                    <span th:text="${gift.lvsStatus}">Status</span>
+                                </span>
+                            </div>
+
+                            <!-- Gift Message -->
+                            <div th:if="${gift.lvsGiftMessage != null and !gift.lvsGiftMessage.isEmpty()}"
+                                class="bg-[#1e1e1e] border border-[#333] rounded-lg p-3 mb-3">
+                                <p class="text-gray-300 text-sm italic">
+                                    <i class="fas fa-comment mr-2"></i>
+                                    <span th:text="${gift.lvsGiftMessage}">Message</span>
+                                </p>
+                            </div>
+
+                            <!-- Action Buttons (for received pending gifts) -->
+                            <div th:if="${LvsActiveTab == 'received' and gift.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsGift.LvsGiftStatus).PENDING}"
+                                class="flex gap-3 mt-4">
+                                <form th:action="@{/LvsUser/LvsGift/LvsAccept/{id}(id=${gift.lvsGiftId})}" method="post"
+                                    class="inline">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button type="submit"
+                                        class="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded-lg transition">
+                                        <i class="fas fa-check mr-2"></i>Accept
+                                    </button>
+                                </form>
+                                <form th:action="@{/LvsUser/LvsGift/LvsReject/{id}(id=${gift.lvsGiftId})}" method="post"
+                                    class="inline">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button type="submit" onclick="return confirm('Reject this gift?')"
+                                        class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2 rounded-lg transition">
+                                        <i class="fas fa-times mr-2"></i>Reject
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div th:if="${LvsGifts != null and LvsGifts.totalPages > 1}" class="mt-8 flex justify-center gap-2">
+                <a th:if="${LvsGifts.hasPrevious()}"
+                    th:href="@{/LvsUser/LvsGift/LvsMy(tab=${LvsActiveTab}, page=${LvsGifts.number - 1})}"
+                    class="bg-[#2b2b2b] border border-[#333] text-white px-4 py-2 rounded-lg hover:border-purple-500">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+
+                <span class="bg-[#2b2b2b] border border-[#333] text-white px-4 py-2 rounded-lg">
+                    Page <span th:text="${LvsGifts.number + 1}">1</span> of <span
+                        th:text="${LvsGifts.totalPages}">1</span>
+                </span>
+
+                <a th:if="${LvsGifts.hasNext()}"
+                    th:href="@{/LvsUser/LvsGift/LvsMy(tab=${LvsActiveTab}, page=${LvsGifts.number + 1})}"
+                    class="bg-[#2b2b2b] border border-[#333] text-white px-4 py-2 rounded-lg hover:border-purple-500">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

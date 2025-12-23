@@ -14,9 +14,10 @@ public class LvsWebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        // Serve uploaded files (ảnh của posts, comments, avatars, projects)
-        // Pattern /uploads/** sẽ tự động thêm context path /lvsforum
+        // Serve uploaded files from static/uploads
+        // Maps /uploads/** to work in both admin and user contexts
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("classpath:/static/uploads/");
+                .addResourceLocations("classpath:/static/uploads/", "file:src/main/resources/static/uploads/")
+                .setCachePeriod(3600);
     }
 }

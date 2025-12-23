@@ -34,7 +34,9 @@ public interface LvsProjectRepository extends JpaRepository<LvsProject, Long> {
         // Tìm dự án theo user
         List<LvsProject> findByLvsUser_LvsUserId(Long lvsUserId);
 
-        Page<LvsProject> findByLvsUser_LvsUserId(Long lvsUserId, Pageable pageable);
+        @Query("SELECT p FROM LvsProject p WHERE p.lvsUser.lvsUserId = :userId")
+        @EntityGraph(attributePaths = { "lvsCategory", "lvsUser" })
+        Page<LvsProject> findByLvsUser_LvsUserId(@Param("userId") Long lvsUserId, Pageable pageable);
 
         // Tìm dự án theo category
         List<LvsProject> findByLvsCategory_LvsCategoryId(Integer lvsCategoryId);
@@ -99,6 +101,10 @@ public interface LvsProjectRepository extends JpaRepository<LvsProject, Long> {
 
         // Đếm dự án trong khoảng thời gian
         Long countByLvsCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+        // Đếm dự án của user trong khoảng thời gian (for title calculation)
+        Long countByLvsUser_LvsUserIdAndLvsCreatedAtBetween(Long lvsUserId, LocalDateTime startDate,
+                        LocalDateTime endDate);
 
         // Lấy dự án mới nhất
         List<LvsProject> findByLvsStatusOrderByLvsCreatedAtDesc(LvsProjectStatus lvsStatus);

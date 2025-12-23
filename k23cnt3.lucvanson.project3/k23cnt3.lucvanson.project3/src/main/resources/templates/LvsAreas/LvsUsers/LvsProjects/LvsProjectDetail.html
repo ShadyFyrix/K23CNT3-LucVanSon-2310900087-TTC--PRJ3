@@ -162,56 +162,57 @@
                             </p>
                         </div>
 
-                        <!-- Buy Now Form -->
-                        <form th:if="${session.LvsCurrentUser}" th:action="@{/LvsUser/LvsOrder/LvsBuyNow}" method="post"
-                            id="buyNowForm">
-                            <input type="hidden" name="lvsProjectId" th:value="${project.lvsProjectId}">
+                        <!-- Success/Error Messages -->
+                        <div th:if="${success}"
+                            class="bg-green-500/20 border border-green-500 text-green-400 px-4 py-3 rounded-lg mb-4">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span th:text="${success}"></span>
+                        </div>
+                        <div th:if="${error}"
+                            class="bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-4">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <span th:text="${error}"></span>
+                        </div>
 
-                            <!-- Quantity Selector -->
-                            <div class="mb-6">
-                                <label class="text-gray-400 text-sm mb-2 block">Quantity:</label>
-                                <div class="flex items-center border border-[#333] rounded-lg overflow-hidden">
-                                    <button type="button" onclick="decreaseQuantity()"
-                                        class="px-4 py-3 bg-[#1e1e1e] hover:bg-[#333] text-gray-400 transition">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <input type="number" name="lvsQuantity" id="quantity" value="1" min="1" max="99"
-                                        class="flex-1 text-center border-none bg-[#1e1e1e] text-white focus:ring-0 py-3 font-bold text-lg">
-                                    <button type="button" onclick="increaseQuantity()"
-                                        class="px-4 py-3 bg-[#1e1e1e] hover:bg-[#333] text-gray-400 transition">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Total Price -->
-                            <div class="bg-[#1e1e1e] border border-[#333] rounded-lg p-4 mb-6">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-gray-400">Total:</span>
-                                    <span class="text-[#fed700] font-bold text-2xl" id="totalPrice"
-                                        th:attr="data-price=${project.lvsPrice}"
-                                        th:text="${#numbers.formatDecimal(project.lvsPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
-                                </div>
-                            </div>
+                        <!-- Buy Now Form (if not purchased) -->
+                        <form th:if="${session.LvsCurrentUser != null and !LvsHasPurchased}"
+                            th:action="@{/LvsUser/LvsProject/LvsPurchase/{id}(id=${project.lvsProjectId})}"
+                            method="post" onsubmit="return confirm('Bạn có chắc chắn muốn mua dự án này?');">
+                            <!-- CSRF Token -->
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                             <!-- Buy Button -->
-                            <button type="submit"
-                                class="w-full bg-[#fed700] text-black font-bold py-4 rounded-lg hover:bg-white transition shadow-lg mb-3 flex items-center justify-center gap-2">
+                            <button type="submit" th:disabled="${session.LvsCurrentUser.lvsCoin < project.lvsPrice}"
+                                class="w-full bg-[#fed700] text-black font-bold py-4 rounded-lg hover:bg-white transition shadow-lg mb-3 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <i class="fas fa-bolt"></i> Buy Now
                             </button>
+
+                            <!-- Insufficient funds warning -->
+                            <p th:if="${session.LvsCurrentUser.lvsCoin < project.lvsPrice}"
+                                class="text-red-400 text-sm text-center mb-3">
+                                <i class="fas fa-exclamation-triangle"></i> Insufficient coins
+                            </p>
                         </form>
+
+                        <!-- Already Purchased State -->
+                        <div th:if="${session.LvsCurrentUser != null and LvsHasPurchased}"
+                            class="bg-green-500/20 border border-green-500 rounded-lg p-4 mb-3 text-center">
+                            <i class="fas fa-check-circle text-green-400 text-2xl mb-2"></i>
+                            <p class="text-green-400 font-bold">You already own this project</p>
+                        </div>
 
                         <!-- Login Required -->
                         <div th:unless="${session.LvsCurrentUser}" class="text-center">
-                            <a th:href="@{/LvsAuth/LvsLogin}"
+                            <a th:href="@{/LvsLogin}"
                                 class="block w-full bg-[#fed700] text-black font-bold py-4 rounded-lg hover:bg-white transition shadow-lg mb-3">
                                 <i class="fas fa-sign-in-alt mr-2"></i>Login to Purchase
                             </a>
                         </div>
 
-                        <!-- Add to Cart (if logged in) -->
-                        <form th:if="${session.LvsCurrentUser}" th:action="@{/LvsUser/LvsCart/LvsAddItem}" method="post"
-                            class="mb-3">
+                        <!-- Add to Cart (if not purchased) -->
+                        <form th:if="${session.LvsCurrentUser != null and !LvsHasPurchased}"
+                            th:action="@{/LvsUser/LvsCart/LvsAddItem}" method="post" class="mb-3">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                             <input type="hidden" name="lvsProjectId" th:value="${project.lvsProjectId}">
                             <input type="hidden" name="lvsQuantity" value="1">
                             <button type="submit"
@@ -219,6 +220,14 @@
                                 <i class="fas fa-shopping-cart"></i> Add to Cart
                             </button>
                         </form>
+
+                        <!-- Gift Button (only for project owner) -->
+                        <button
+                            th:if="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsUserId == project.lvsUser.lvsUserId and LvsFollowers != null and !LvsFollowers.isEmpty()}"
+                            onclick="showGiftModal()"
+                            class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition flex items-center justify-center gap-2 mb-3">
+                            <i class="fas fa-gift"></i> Gift to Follower
+                        </button>
 
                         <!-- Wishlist -->
                         <button
@@ -247,6 +256,51 @@
                 </div>
             </div>
         </section>
+
+        <!-- Gift Modal -->
+        <div id="giftModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+            <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-8 max-w-md w-full">
+                <h2 class="text-2xl font-bold text-white mb-6">
+                    <i class="fas fa-gift text-purple-500 mr-2"></i>Gift Project
+                </h2>
+
+                <form th:action="@{/LvsUser/LvsGift/LvsSend}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <input type="hidden" name="projectId" th:value="${project.lvsProjectId}">
+
+                    <!-- Select Follower -->
+                    <div class="mb-4">
+                        <label class="block text-gray-400 mb-2">Select Follower</label>
+                        <select name="recipientId" required
+                            class="w-full bg-[#1e1e1e] border border-[#333] text-white px-4 py-3 rounded-lg focus:border-purple-500 focus:outline-none">
+                            <option value="">Choose a follower...</option>
+                            <option th:each="follower : ${LvsFollowers}" th:value="${follower.lvsUserId}"
+                                th:text="${follower.lvsUsername}">Follower</option>
+                        </select>
+                    </div>
+
+                    <!-- Gift Message -->
+                    <div class="mb-6">
+                        <label class="block text-gray-400 mb-2">Message (Optional)</label>
+                        <textarea name="message" rows="3"
+                            class="w-full bg-[#1e1e1e] border border-[#333] text-white px-4 py-3 rounded-lg focus:border-purple-500 focus:outline-none"
+                            placeholder="Add a personal message..."></textarea>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-3">
+                        <button type="submit"
+                            class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition">
+                            <i class="fas fa-gift mr-2"></i>Send Gift
+                        </button>
+                        <button type="button" onclick="hideGiftModal()"
+                            class="flex-1 bg-[#1e1e1e] hover:bg-[#333] text-white font-bold py-3 rounded-lg transition">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->
@@ -427,6 +481,29 @@
                 if (!confirm('Purchase this project for ' + totalPrice.toLocaleString() + ' coins?')) {
                     e.preventDefault();
                     return false;
+                }
+            });
+
+            // Gift Modal Functions
+            function showGiftModal() {
+                document.getElementById('giftModal').classList.remove('hidden');
+            }
+
+            function hideGiftModal() {
+                document.getElementById('giftModal').classList.add('hidden');
+            }
+
+            // Close modal on outside click
+            document.getElementById('giftModal')?.addEventListener('click', function (e) {
+                if (e.target === this) {
+                    hideGiftModal();
+                }
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    hideGiftModal();
                 }
             });
         </script>

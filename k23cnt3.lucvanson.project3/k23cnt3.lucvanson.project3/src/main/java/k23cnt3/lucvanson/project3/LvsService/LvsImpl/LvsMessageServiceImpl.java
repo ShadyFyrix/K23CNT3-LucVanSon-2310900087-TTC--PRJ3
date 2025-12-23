@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+
 public class LvsMessageServiceImpl implements LvsMessageService {
 
     private final LvsMessageRepository lvsMessageRepository;
@@ -128,6 +129,52 @@ public class LvsMessageServiceImpl implements LvsMessageService {
         }
 
         return lvsUserRepository.findAllById(lvsUserIds);
+    }
+
+    /**
+     * Lấy danh sách cuộc trò chuyện với tin nhắn mới nhất
+     * 
+     * @param lvsUserId ID người dùng
+     * @return Danh sách conversation DTO
+     */
+    @Override
+    public List<k23cnt3.lucvanson.project3.LvsDTO.LvsConversationDTO> lvsGetConversationsWithLatestMessage(
+            Long lvsUserId) {
+        List<LvsMessage> lvsMessages = lvsMessageRepository.findDistinctConversationsByUserId(lvsUserId);
+        Map<Long, k23cnt3.lucvanson.project3.LvsDTO.LvsConversationDTO> lvsConversationMap = new HashMap<>();
+
+        for (LvsMessage lvsMessage : lvsMessages) {
+            Long lvsOtherUserId;
+            if (lvsMessage.getLvsSender().getLvsUserId().equals(lvsUserId)) {
+                lvsOtherUserId = lvsMessage.getLvsReceiver().getLvsUserId();
+            } else {
+                lvsOtherUserId = lvsMessage.getLvsSender().getLvsUserId();
+            }
+
+            // If this conversation doesn't exist yet or this message is newer
+            if (!lvsConversationMap.containsKey(lvsOtherUserId) ||
+                    lvsMessage.getLvsCreatedAt().isAfter(
+                            lvsConversationMap.get(lvsOtherUserId).getLvsLatestMessage().getLvsCreatedAt())) {
+
+                LvsUser lvsOtherUser = lvsUserRepository.findById(lvsOtherUserId).orElse(null);
+                if (lvsOtherUser != null) {
+                    // Count unread messages from this user
+                    Integer lvsUnreadCount = lvsMessageRepository
+                            .countByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdAndLvsIsReadFalse(
+                                    lvsOtherUserId, lvsUserId)
+                            .intValue();
+
+                    k23cnt3.lucvanson.project3.LvsDTO.LvsConversationDTO lvsConversation = new k23cnt3.lucvanson.project3.LvsDTO.LvsConversationDTO(
+                            lvsOtherUser, lvsMessage, lvsUnreadCount);
+                    lvsConversationMap.put(lvsOtherUserId, lvsConversation);
+                }
+            }
+        }
+
+        // Sort by latest message time (newest first)
+        return lvsConversationMap.values().stream()
+                .sorted((c1, c2) -> c2.getLvsLatestMessageTime().compareTo(c1.getLvsLatestMessageTime()))
+                .collect(Collectors.toList());
     }
 
     /**

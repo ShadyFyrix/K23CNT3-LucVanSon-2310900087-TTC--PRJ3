@@ -62,6 +62,10 @@ public interface LvsCommentRepository extends JpaRepository<LvsComment, Long> {
     // Đếm reply theo comment
     Long countByLvsParent_LvsCommentId(Long lvsParentId);
 
+    // Đếm comment của user trong khoảng thời gian (for title calculation)
+    Long countByLvsUser_LvsUserIdAndLvsCreatedAtBetween(Long lvsUserId, java.time.LocalDateTime startDate,
+            java.time.LocalDateTime endDate);
+
     // Lấy comment mới nhất
     List<LvsComment> findByOrderByLvsCreatedAtDesc();
 

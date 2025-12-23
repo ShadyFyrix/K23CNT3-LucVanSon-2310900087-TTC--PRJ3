@@ -23,17 +23,27 @@
                 <div class="lg:col-span-1 bg-[#2b2b2b] border border-[#333] rounded-xl p-4">
                     <h2 class="text-lg font-bold text-white mb-4">Cuộc trò chuyện</h2>
                     <div class="space-y-2">
-                        <a th:each="user : ${LvsConversations}"
-                            th:href="@{/LvsUser/LvsMessage/LvsConversation/{id}(id=${user.lvsUserId})}"
+                        <a th:each="conversation : ${LvsConversations}"
+                            th:href="@{/LvsUser/LvsMessage/LvsConversation/{id}(id=${conversation.lvsOtherUser.lvsUserId})}"
                             class="block p-3 rounded-lg hover:bg-[#333] transition-colors">
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="w-12 h-12 rounded-full bg-gradient-to-br from-[#fed700] to-yellow-600 flex items-center justify-center">
+                                    class="w-12 h-12 rounded-full bg-gradient-to-br from-[#fed700] to-yellow-600 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-user text-[#1e1e1e]"></i>
                                 </div>
-                                <div class="flex-1">
-                                    <p class="text-white font-semibold" th:text="${user.lvsUsername}">Username</p>
-                                    <p class="text-gray-400 text-sm truncate">Click để xem tin nhắn</p>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <p class="text-white font-semibold truncate"
+                                            th:text="${conversation.lvsOtherUser.lvsUsername}">Username</p>
+                                        <span th:if="${conversation.lvsUnreadCount > 0}"
+                                            class="bg-[#fed700] text-black text-xs font-bold px-2 py-0.5 rounded-full ml-2 flex-shrink-0"
+                                            th:text="${conversation.lvsUnreadCount}">0</span>
+                                    </div>
+                                    <p class="text-gray-400 text-sm truncate"
+                                        th:text="${conversation.lvsLatestMessagePreview}">Latest message...</p>
+                                    <p class="text-gray-500 text-xs mt-1"
+                                        th:text="${conversation.lvsLatestMessageTime != null ? #temporals.format(conversation.lvsLatestMessageTime, 'HH:mm') : ''}">
+                                        Time</p>
                                 </div>
                             </div>
                         </a>
@@ -46,29 +56,124 @@
                     <div class="space-y-4">
                         <div th:each="message : ${LvsMessages}"
                             class="bg-[#1e1e1e] border border-[#444] rounded-lg p-4">
-                            <div class="flex items-start justify-between mb-2">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                                        <i class="fas fa-user text-white text-sm"></i>
+
+                            <!-- Regular Text Message -->
+                            <div th:if="${message.lvsMessageType == 'TEXT'}">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                            <i class="fas fa-user text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-white font-semibold"
+                                                th:text="${message.lvsSender.lvsUsername}">
+                                                Sender</p>
+                                            <p class="text-gray-400 text-xs"
+                                                th:text="${#temporals.format(message.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">
+                                                Date</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="text-white font-semibold" th:text="${message.lvsSender.lvsUsername}">
-                                            Sender</p>
-                                        <p class="text-gray-400 text-xs"
-                                            th:text="${#temporals.format(message.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">
-                                            Date</p>
+                                    <span th:if="${!message.lvsIsRead}"
+                                        class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Mới</span>
+                                </div>
+                                <p class="text-gray-300 ml-13" th:text="${message.lvsContent}">Message content...</p>
+                                <div class="mt-3 flex gap-2">
+                                    <a th:href="@{/LvsUser/LvsMessage/LvsConversation/{id}(id=${message.lvsSender.lvsUserId})}"
+                                        class="text-sm text-blue-400 hover:text-blue-300">
+                                        <i class="fas fa-reply mr-1"></i>Trả lời
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Gift Notification -->
+                            <div th:if="${message.lvsMessageType == 'GIFT' and message.lvsGift != null}"
+                                class="bg-gradient-to-br from-[#fed700]/10 to-yellow-600/10 border-2 border-[#fed700]/30 rounded-lg p-4">
+                                <div class="flex items-start gap-4">
+                                    <!-- Gift Icon -->
+                                    <div
+                                        class="w-16 h-16 bg-[#fed700]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-gift text-[#fed700] text-2xl"></i>
+                                    </div>
+
+                                    <!-- Gift Details -->
+                                    <div class="flex-1">
+                                        <div class="flex items-start justify-between mb-2">
+                                            <div>
+                                                <h3 class="text-[#fed700] font-bold text-lg mb-1">🎁 Gift Received!</h3>
+                                                <p class="text-white text-sm">
+                                                    From <span class="font-bold"
+                                                        th:text="${message.lvsSender.lvsUsername}">Sender</span>
+                                                </p>
+                                            </div>
+                                            <span th:if="${!message.lvsIsRead}"
+                                                class="bg-[#fed700] text-black px-2 py-1 rounded text-xs font-bold">NEW</span>
+                                        </div>
+
+                                        <!-- Project Info -->
+                                        <div class="bg-[#1e1e1e] border border-[#333] rounded-lg p-3 mb-3">
+                                            <p class="text-white font-bold mb-1"
+                                                th:text="${message.lvsGift.lvsProject.lvsProjectName}">Project Name</p>
+                                            <p class="text-gray-400 text-sm"
+                                                th:if="${message.lvsGift.lvsGiftMessage != null and !#strings.isEmpty(message.lvsGift.lvsGiftMessage)}">
+                                                💌 <span th:text="${message.lvsGift.lvsGiftMessage}">Message</span>
+                                            </p>
+                                        </div>
+
+                                        <!-- Action Buttons for PENDING gifts -->
+                                        <div th:if="${message.lvsGift.lvsStatus.toString() == 'PENDING'}"
+                                            class="flex gap-3">
+                                            <form
+                                                th:action="@{/LvsUser/LvsGift/LvsAccept/{id}(id=${message.lvsGift.lvsGiftId})}"
+                                                method="post" class="flex-1">
+                                                <button type="submit"
+                                                    class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2">
+                                                    <i class="fas fa-check"></i> Accept Gift
+                                                </button>
+                                            </form>
+                                            <form
+                                                th:action="@{/LvsUser/LvsGift/LvsReject/{id}(id=${message.lvsGift.lvsGiftId})}"
+                                                method="post" class="flex-1">
+                                                <button type="submit"
+                                                    class="w-full bg-red-500/20 border border-red-500 hover:bg-red-500/30 text-red-400 font-bold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2">
+                                                    <i class="fas fa-times"></i> Decline
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <!-- Status Badges for responded gifts -->
+                                        <div th:if="${message.lvsGift.lvsStatus.toString() == 'ACCEPTED'}"
+                                            class="bg-green-500/20 border border-green-500 text-green-400 px-4 py-2 rounded-lg text-center font-bold">
+                                            ✅ Gift Accepted
+                                        </div>
+                                        <div th:if="${message.lvsGift.lvsStatus.toString() == 'REJECTED'}"
+                                            class="bg-red-500/20 border border-red-500 text-red-400 px-4 py-2 rounded-lg text-center font-bold">
+                                            ❌ Gift Declined
+                                        </div>
                                     </div>
                                 </div>
-                                <span th:if="${!message.lvsIsRead}"
-                                    class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Mới</span>
                             </div>
-                            <p class="text-gray-300 ml-13" th:text="${message.lvsContent}">Message content...</p>
-                            <div class="mt-3 flex gap-2">
-                                <a th:href="@{/LvsUser/LvsMessage/LvsConversation/{id}(id=${message.lvsSender.lvsUserId})}"
-                                    class="text-sm text-blue-400 hover:text-blue-300">
-                                    <i class="fas fa-reply mr-1"></i>Trả lời
-                                </a>
+
+                            <!-- Gift Response Notification -->
+                            <div th:if="${message.lvsMessageType == 'GIFT_RESPONSE' and message.lvsGift != null}">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-gradient-to-br from-[#fed700] to-yellow-600 flex items-center justify-center">
+                                            <i class="fas fa-gift text-[#1e1e1e] text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-white font-semibold"
+                                                th:text="${message.lvsSender.lvsUsername}">Sender</p>
+                                            <p class="text-gray-400 text-xs"
+                                                th:text="${#temporals.format(message.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">
+                                                Date</p>
+                                        </div>
+                                    </div>
+                                    <span th:if="${!message.lvsIsRead}"
+                                        class="bg-[#fed700] text-black px-2 py-1 rounded text-xs font-bold">NEW</span>
+                                </div>
+                                <p class="text-gray-300 ml-13" th:text="${message.lvsContent}">Gift response...</p>
                             </div>
                         </div>
                     </div>

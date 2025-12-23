@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Edit Post</title>
+    <style>
+        .image-preview-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-preview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content" class="min-h-screen bg-[#18191a] p-4">
+        <div class="max-w-[500px] mx-auto">
+
+            <div class="bg-[#242526] rounded-lg shadow-2xl">
+                <!-- Header -->
+                <div class="p-4 border-b border-[#3a3b3c] flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-white">Edit Post</h2>
+                    <a th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${LvsPost.lvsPostId})}"
+                        class="w-9 h-9 flex items-center justify-center bg-[#3a3b3c] hover:bg-[#4e4f50] rounded-full transition-colors">
+                        <i class="fas fa-times text-gray-400"></i>
+                    </a>
+                </div>
+
+                <!-- Form -->
+                <form th:action="@{/LvsUser/LvsBlog/LvsUpdate/{id}(id=${LvsPost.lvsPostId})}" method="post"
+                    id="editPostForm" class="p-4">
+
+                    <!-- User Info -->
+                    <div class="flex items-center gap-3 mb-4">
+                        <div th:if="${LvsPost.lvsUser.lvsAvatarUrl != null and !LvsPost.lvsUser.lvsAvatarUrl.isEmpty()}"
+                            class="w-10 h-10 rounded-full overflow-hidden">
+                            <img th:src="@{${LvsPost.lvsUser.lvsAvatarUrl}}" alt="Avatar"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div th:unless="${LvsPost.lvsUser.lvsAvatarUrl != null and !LvsPost.lvsUser.lvsAvatarUrl.isEmpty()}"
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center text-black font-bold">
+                            <span
+                                th:text="${#strings.substring(LvsPost.lvsUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                        </div>
+                        <div>
+                            <div class="font-bold text-white" th:text="${LvsPost.lvsUser.lvsUsername}">Username</div>
+                            <select name="lvsType" required
+                                class="text-xs bg-[#3a3b3c] text-gray-300 border-none rounded px-2 py-1 cursor-pointer">
+                                <option value="DISCUSSION" th:selected="${LvsPost.lvsType.name() == 'DISCUSSION'}">💬
+                                    Discussion</option>
+                                <option value="TUTORIAL" th:selected="${LvsPost.lvsType.name() == 'TUTORIAL'}">📚
+                                    Tutorial</option>
+                                <option value="REVIEW" th:selected="${LvsPost.lvsType.name() == 'REVIEW'}">⭐ Review
+                                </option>
+                                <option value="NEWS" th:selected="${LvsPost.lvsType.name() == 'NEWS'}">📰 News</option>
+                                <option value="SHOWCASE" th:selected="${LvsPost.lvsType.name() == 'SHOWCASE'}">🎨
+                                    Showcase</option>
+                                <option value="QUESTION" th:selected="${LvsPost.lvsType.name() == 'QUESTION'}">❓
+                                    Question</option>
+                                <option value="ANNOUNCEMENT" th:selected="${LvsPost.lvsType.name() == 'ANNOUNCEMENT'}">
+                                    📢 Announcement</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Title Input -->
+                    <div class="mb-3">
+                        <input type="text" name="lvsTitle" maxlength="200" th:value="${LvsPost.lvsTitle}"
+                            placeholder="Add a title (optional)"
+                            class="w-full bg-transparent text-white text-xl font-bold placeholder-gray-500 border-none focus:outline-none">
+                    </div>
+
+                    <!-- Content Textarea -->
+                    <div class="mb-3">
+                        <textarea name="lvsContent" required rows="6" id="postContent"
+                            placeholder="What's on your mind?"
+                            class="w-full bg-transparent text-white text-lg placeholder-gray-500 border-none focus:outline-none resize-none"
+                            th:text="${LvsPost.lvsContent}"></textarea>
+                    </div>
+
+                    <!-- Emoji Picker -->
+                    <div class="mb-3">
+                        <button type="button" onclick="insertEmoji()"
+                            class="text-gray-400 hover:text-[#fed700] transition-colors">
+                            <i class="far fa-smile text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Existing Images Display -->
+                    <div th:if="${LvsPost.lvsImages != null and !LvsPost.lvsImages.isEmpty()}" class="mb-4">
+                        <p class="text-gray-400 text-sm mb-2">Current images:</p>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div th:each="image : ${LvsPost.lvsImages}" class="relative">
+                                <img th:src="@{${image.lvsImageUrl}}" alt="Post image"
+                                    class="w-full aspect-square object-cover rounded-lg">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tags Input -->
+                    <div class="mb-4">
+                        <input type="text" name="lvsTags" th:value="${LvsPost.lvsTags}"
+                            placeholder="Add tags (e.g., javascript, tutorial, beginners)"
+                            class="w-full bg-[#3a3b3c] text-white px-4 py-2.5 rounded-lg placeholder-gray-500 border-none focus:outline-none focus:ring-2 focus:ring-[#fed700]">
+                    </div>
+
+                    <!-- Additional Options -->
+                    <div class="bg-[#3a3b3c] rounded-lg p-3 mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-white font-medium">Edit options</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="insertEmoji()"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#4e4f50] rounded-lg transition-colors">
+                                <i class="fas fa-smile text-yellow-500"></i>
+                                <span class="text-gray-300 text-sm">Emoji</span>
+                            </button>
+                            <button type="button" onclick="document.querySelector('input[name=lvsTags]').focus()"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#4e4f50] rounded-lg transition-colors">
+                                <i class="fas fa-tag text-blue-500"></i>
+                                <span class="text-gray-300 text-sm">Tag</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Status Selection -->
+                    <input type="hidden" name="lvsStatus" th:value="${LvsPost.lvsStatus.name()}" id="statusInput">
+
+                    <!-- Submit Buttons -->
+                    <div class="flex gap-2">
+                        <button type="submit"
+                            class="flex-1 bg-[#fed700] hover:bg-[#ffa500] text-black font-bold py-3 rounded-lg transition-colors">
+                            Update Post
+                        </button>
+                        <button type="button" onclick="saveDraft()"
+                            class="px-6 bg-[#3a3b3c] hover:bg-[#4e4f50] text-white font-bold py-3 rounded-lg transition-colors">
+                            Save as Draft
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="scripts">
+        function insertEmoji() {
+            const emojis = ['😀', '😂', '😍', '🥰', '😎', '🤔', '👍', '❤️', '🔥', '✨', '🎉', '💯'];
+            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            const textarea = document.getElementById('postContent');
+            const cursorPos = textarea.selectionStart;
+            const textBefore = textarea.value.substring(0, cursorPos);
+            const textAfter = textarea.value.substring(cursorPos);
+            textarea.value = textBefore + emoji + textAfter;
+            textarea.focus();
+            textarea.selectionStart = textarea.selectionEnd = cursorPos + emoji.length;
+        }
+
+        function saveDraft() {
+            document.getElementById('statusInput').value = 'DRAFT';
+            document.getElementById('editPostForm').submit();
+        }
+    </script>
+</body>
+
+</html>

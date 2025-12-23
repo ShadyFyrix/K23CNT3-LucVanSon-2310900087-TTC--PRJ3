@@ -13,11 +13,11 @@ public class LvsMessage {
 
     // Người gửi và người nhận
     @ManyToOne
-    @JoinColumn(name = "LvsSenderId", referencedColumnName = "LvsUserId", nullable = false)
+    @JoinColumn(name = "LvsSenderId", referencedColumnName = "LvsUserId")
     private LvsUser lvsSender;
 
     @ManyToOne
-    @JoinColumn(name = "LvsReceiverId", referencedColumnName = "LvsUserId", nullable = false)
+    @JoinColumn(name = "LvsReceiverId", referencedColumnName = "LvsUserId")
     private LvsUser lvsReceiver;
 
     // Nội dung
@@ -46,6 +46,11 @@ public class LvsMessage {
 
     @Column(name = "LvsUpdatedAt")
     private LocalDateTime lvsUpdatedAt = LocalDateTime.now();
+
+    // Gift reference (for gift notifications)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "LvsGiftId")
+    private LvsGift lvsGift;
 
     // Getters and Setters
 
@@ -129,4 +134,11 @@ public class LvsMessage {
         this.lvsUpdatedAt = lvsUpdatedAt;
     }
 
+    public LvsGift getLvsGift() {
+        return lvsGift;
+    }
+
+    public void setLvsGift(LvsGift lvsGift) {
+        this.lvsGift = lvsGift;
+    }
 }

@@ -43,8 +43,8 @@ public class LvsUserMessageController {
 
         List<LvsMessage> lvsMessages = lvsMessageService.lvsGetInboxMessages(
                 lvsCurrentUser.getLvsUserId());
-        List<LvsUser> lvsConversations = lvsMessageService.lvsGetConversations(
-                lvsCurrentUser.getLvsUserId());
+        List<k23cnt3.lucvanson.project3.LvsDTO.LvsConversationDTO> lvsConversations = lvsMessageService
+                .lvsGetConversationsWithLatestMessage(lvsCurrentUser.getLvsUserId());
 
         model.addAttribute("LvsMessages", lvsMessages);
         model.addAttribute("LvsConversations", lvsConversations);
@@ -93,6 +93,7 @@ public class LvsUserMessageController {
         // Đánh dấu đã đọc
         lvsMessageService.lvsMarkAsRead(lvsCurrentUser.getLvsUserId(), userId);
 
+        model.addAttribute("LvsCurrentUser", lvsCurrentUser);
         model.addAttribute("LvsOtherUser", lvsOtherUser);
         model.addAttribute("LvsMessages", lvsMessages);
         model.addAttribute("LvsNewMessage", new LvsMessage());

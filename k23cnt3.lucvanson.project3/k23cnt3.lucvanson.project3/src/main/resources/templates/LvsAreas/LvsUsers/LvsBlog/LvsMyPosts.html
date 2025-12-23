@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>My Posts</title>
+</head>
+
+<body>
+    <div layout:fragment="content" class="min-h-screen bg-[#18191a] p-4">
+        <div class="max-w-[680px] mx-auto">
+
+            <!-- Page Header -->
+            <div class="bg-[#242526] rounded-lg p-4 mb-4 shadow-lg">
+                <h1 class="text-2xl font-bold text-white mb-2">My Posts</h1>
+                <p class="text-gray-400">Manage your blog posts and drafts</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="bg-[#242526] rounded-lg p-2 mb-4 shadow-lg">
+                <div class="flex gap-2">
+                    <a th:href="@{/LvsUser/LvsBlog/LvsMyPosts}"
+                        th:classappend="${param.status == null or param.status[0] == 'all'} ? 'bg-[#fed700] text-black' : 'text-gray-400 hover:bg-[#3a3b3c]'"
+                        class="flex-1 text-center px-4 py-2.5 rounded-lg font-bold transition-colors">
+                        <i class="fas fa-globe mr-2"></i>All Posts
+                    </a>
+                    <a th:href="@{/LvsUser/LvsBlog/LvsMyPosts(status='published')}"
+                        th:classappend="${param.status != null and param.status[0] == 'published'} ? 'bg-[#fed700] text-black' : 'text-gray-400 hover:bg-[#3a3b3c]'"
+                        class="flex-1 text-center px-4 py-2.5 rounded-lg font-bold transition-colors">
+                        <i class="fas fa-check-circle mr-2"></i>Published
+                    </a>
+                    <a th:href="@{/LvsUser/LvsBlog/LvsMyPosts(status='draft')}"
+                        th:classappend="${param.status != null and param.status[0] == 'draft'} ? 'bg-[#fed700] text-black' : 'text-gray-400 hover:bg-[#3a3b3c]'"
+                        class="flex-1 text-center px-4 py-2.5 rounded-lg font-bold transition-colors">
+                        <i class="fas fa-file-alt mr-2"></i>Drafts
+                    </a>
+                </div>
+            </div>
+
+            <!-- Create New Post Button -->
+            <div class="mb-4">
+                <a th:href="@{/LvsUser/LvsBlog/LvsCreate}"
+                    class="block bg-[#242526] hover:bg-[#3a3b3c] rounded-lg p-4 text-center transition-colors shadow-lg">
+                    <i class="fas fa-plus-circle text-[#fed700] text-2xl mb-2"></i>
+                    <p class="text-white font-bold">Create New Post</p>
+                </a>
+            </div>
+
+            <!-- Posts List -->
+            <div th:if="${LvsPosts != null and !LvsPosts.content.isEmpty()}" class="space-y-4">
+                <article th:each="post : ${LvsPosts.content}" class="bg-[#242526] rounded-lg shadow-lg overflow-hidden">
+
+                    <!-- Post Header -->
+                    <div class="p-4">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <!-- Status Badge -->
+                                <span th:if="${post.lvsStatus.name() == 'DRAFT'}"
+                                    class="inline-block px-3 py-1 bg-yellow-500/20 text-yellow-500 text-xs font-bold rounded-full mb-2">
+                                    <i class="fas fa-file-alt mr-1"></i>DRAFT
+                                </span>
+                                <span th:if="${post.lvsStatus.name() == 'PUBLISHED'}"
+                                    class="inline-block px-3 py-1 bg-green-500/20 text-green-500 text-xs font-bold rounded-full mb-2">
+                                    <i class="fas fa-check-circle mr-1"></i>PUBLISHED
+                                </span>
+
+                                <!-- Type Badge -->
+                                <span th:text="${post.lvsType.name()}"
+                                    class="inline-block px-3 py-1 bg-[#fed700]/20 text-[#fed700] text-xs font-bold rounded-full mb-2 ml-2">
+                                </span>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex gap-2">
+                                <a th:href="@{/LvsUser/LvsBlog/LvsEdit/{id}(id=${post.lvsPostId})}"
+                                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+                                    <i class="fas fa-edit mr-1"></i>Edit
+                                </a>
+                                <form th:action="@{/LvsUser/LvsBlog/LvsDelete/{id}(id=${post.lvsPostId})}" method="post"
+                                    onsubmit="return confirm('Delete this post?');" class="inline">
+                                    <button type="submit"
+                                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+                                        <i class="fas fa-trash mr-1"></i>Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <div th:if="${post.lvsTitle != null and !post.lvsTitle.isEmpty()}" class="mb-2">
+                            <h2 class="text-xl font-bold text-white">
+                                <a th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})}"
+                                    class="hover:underline" th:text="${post.lvsTitle}">Post Title</a>
+                            </h2>
+                        </div>
+
+                        <!-- Content Preview -->
+                        <p class="text-gray-300 whitespace-pre-wrap line-clamp-3 mb-3" th:text="${post.lvsContent}">Post
+                            content...</p>
+
+                        <!-- Created Date -->
+                        <div class="text-sm text-gray-400">
+                            <i class="far fa-clock mr-1"></i>
+                            <span th:text="${#temporals.format(post.lvsCreatedAt, 'dd MMM yyyy HH:mm')}">Date</span>
+                        </div>
+                    </div>
+
+                    <!-- Post Images (if exists) -->
+                    <div th:if="${post.lvsImages != null and !post.lvsImages.isEmpty()}" class="relative">
+                        <div th:if="${#lists.size(post.lvsImages) == 1}">
+                            <img th:src="@{${post.lvsImages[0].lvsImageUrl}}" alt="Post image"
+                                class="w-full max-h-[300px] object-cover">
+                        </div>
+                        <div th:if="${#lists.size(post.lvsImages) > 1}" class="grid grid-cols-2 gap-1">
+                            <img th:each="image, iterStat : ${post.lvsImages}" th:if="${iterStat.index < 4}"
+                                th:src="@{${image.lvsImageUrl}}" alt="Post image"
+                                class="w-full aspect-square object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Post Stats -->
+                    <div class="px-4 py-3 flex items-center gap-6 text-sm text-gray-400 border-t border-[#3a3b3c]">
+                        <span><i class="fas fa-eye mr-1"></i><span th:text="${post.lvsViewCount}">0</span> views</span>
+                        <span><i class="fas fa-heart mr-1"></i><span th:text="${post.lvsLikeCount}">0</span>
+                            likes</span>
+                        <span><i class="fas fa-comment mr-1"></i><span th:text="${post.lvsCommentCount}">0</span>
+                            comments</span>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${LvsPosts == null or LvsPosts.content.isEmpty()}"
+                class="bg-[#242526] rounded-lg p-12 text-center shadow-lg">
+                <i class="fas fa-inbox text-6xl text-gray-600 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">No posts yet</h3>
+                <p class="text-gray-400 mb-6">Start creating your first post!</p>
+                <a th:href="@{/LvsUser/LvsBlog/LvsCreate}"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-[#fed700] text-black font-bold rounded-lg hover:bg-[#ffa500] transition-colors">
+                    <i class="fas fa-plus-circle"></i>
+                    Create Post
+                </a>
+            </div>
+
+            <!-- Pagination -->
+            <div th:if="${LvsPosts != null and LvsPosts.totalPages > 1}" class="mt-4 text-center">
+                <a th:if="${LvsPosts.number < LvsPosts.totalPages - 1}"
+                    th:href="@{/LvsUser/LvsBlog/LvsMyPosts(page=${LvsPosts.number + 1}, status=${param.status})}"
+                    class="inline-block px-8 py-3 bg-[#242526] text-white font-bold rounded-lg hover:bg-[#3a3b3c] transition-colors">
+                    Load More
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

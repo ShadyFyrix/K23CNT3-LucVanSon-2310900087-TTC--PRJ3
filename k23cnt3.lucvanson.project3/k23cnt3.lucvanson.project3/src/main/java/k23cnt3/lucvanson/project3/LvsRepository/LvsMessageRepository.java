@@ -77,6 +77,9 @@ public interface LvsMessageRepository extends JpaRepository<LvsMessage, Long> {
         List<LvsMessage> findByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdAndLvsIsReadFalse(Long senderId,
                         Long receiverId);
 
+        // Đếm tin nhắn chưa đọc từ sender đến receiver
+        Long countByLvsSender_LvsUserIdAndLvsReceiver_LvsUserIdAndLvsIsReadFalse(Long senderId, Long receiverId);
+
         // Tìm kiếm tin nhắn của user theo nội dung
         @Query("SELECT m FROM LvsMessage m WHERE " +
                         "(m.lvsSender.lvsUserId = :userId OR m.lvsReceiver.lvsUserId = :userId) AND " +

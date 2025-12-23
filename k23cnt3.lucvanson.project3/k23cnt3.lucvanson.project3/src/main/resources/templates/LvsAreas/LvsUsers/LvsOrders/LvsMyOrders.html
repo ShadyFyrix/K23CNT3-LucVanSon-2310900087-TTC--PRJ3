@@ -33,11 +33,10 @@
                         class="px-6 py-2 rounded-lg font-bold transition border border-[#333]">
                         <i th:class="${status == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).PENDING ? 'fas fa-clock' : 
                                       status == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).PROCESSING ? 'fas fa-spinner' :
-                                      status == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).SHIPPED ? 'fas fa-shipping-fast' :
-                                      status == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).DELIVERED ? 'fas fa-box-open' :
                                       status == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).COMPLETED ? 'fas fa-check-circle' :
                                       status == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).CANCELLED ? 'fas fa-times-circle' :
-                                      'fas fa-undo'}" class="mr-2"></i>
+                                      status == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).REFUNDED ? 'fas fa-undo' :
+                                      'fas fa-question'}" class="mr-2"></i>
                         <span th:text="${status}">Status</span>
                     </a>
                 </div>
@@ -76,19 +75,17 @@
                                 <!-- Status Badge -->
                                 <span th:class="${order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).PENDING ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500' :
                                                  order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).PROCESSING ? 'bg-blue-500/20 text-blue-400 border-blue-500' :
-                                                 order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).SHIPPED ? 'bg-purple-500/20 text-purple-400 border-purple-500' :
-                                                 order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).DELIVERED ? 'bg-green-500/20 text-green-400 border-green-500' :
                                                  order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).COMPLETED ? 'bg-green-500/20 text-green-400 border-green-500' :
                                                  order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).CANCELLED ? 'bg-red-500/20 text-red-400 border-red-500' :
+                                                 order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).REFUNDED ? 'bg-orange-500/20 text-orange-400 border-orange-500' :
                                                  'bg-gray-500/20 text-gray-400 border-gray-500'}"
                                     class="px-4 py-2 rounded-full text-sm font-bold border">
                                     <i th:class="${order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).PENDING ? 'fas fa-clock' :
                                                   order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).PROCESSING ? 'fas fa-spinner fa-spin' :
-                                                  order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).SHIPPED ? 'fas fa-shipping-fast' :
-                                                  order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).DELIVERED ? 'fas fa-box-open' :
                                                   order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).COMPLETED ? 'fas fa-check-circle' :
                                                   order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).CANCELLED ? 'fas fa-times-circle' :
-                                                  'fas fa-undo'}" class="mr-1"></i>
+                                                  order.lvsStatus == T(k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus).REFUNDED ? 'fas fa-undo' :
+                                                  'fas fa-question'}" class="mr-1"></i>
                                     <span th:text="${order.lvsStatus}">Status</span>
                                 </span>
                             </div>
@@ -132,7 +129,7 @@
                                 <p class="text-[#fed700] font-bold text-2xl">
                                     <i class="fas fa-coins mr-1"></i>
                                     <span
-                                        th:text="${#numbers.formatDecimal(order.lvsTotalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                        th:text="${#numbers.formatDecimal(order.lvsFinalAmount, 0, 'COMMA', 0, 'POINT')}">0</span>
                                 </p>
                             </div>
                             <div class="flex gap-3">

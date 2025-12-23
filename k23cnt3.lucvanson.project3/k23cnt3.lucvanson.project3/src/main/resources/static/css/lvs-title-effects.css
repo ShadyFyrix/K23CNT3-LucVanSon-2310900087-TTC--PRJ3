@@ -1,0 +1,350 @@
+/* ============================================
+   LVS TITLE & BADGE EFFECTS - GOD DAMN VERSION
+   ============================================ */
+
+/* Rainbow Animation Keyframes - DIAGONAL */
+@keyframes rainbow {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 200% 200%;
+    }
+}
+
+@keyframes rainbow-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 30px rgba(255, 0, 255, 1),
+            0 0 60px rgba(255, 0, 255, 1),
+            0 0 90px rgba(255, 0, 255, 0.9),
+            0 0 120px rgba(255, 0, 255, 0.7),
+            0 0 150px rgba(255, 0, 255, 0.5);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 40px rgba(255, 0, 255, 1),
+            0 0 80px rgba(255, 0, 255, 1),
+            0 0 120px rgba(255, 0, 255, 1),
+            0 0 160px rgba(255, 0, 255, 0.8),
+            0 0 200px rgba(255, 0, 255, 0.6);
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shine {
+    0% {
+        background-position: -200% -200%;
+    }
+
+    100% {
+        background-position: 200% 200%;
+    }
+}
+
+/* Tier-Specific Animations */
+@keyframes wave {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes sparkle {
+
+    0%,
+    100% {
+        filter: brightness(1);
+    }
+
+    50% {
+        filter: brightness(1.2);
+    }
+}
+
+@keyframes fire-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.8),
+            0 0 30px rgba(239, 68, 68, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(239, 68, 68, 1),
+            0 0 40px rgba(239, 68, 68, 0.7);
+    }
+}
+
+@keyframes pink-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(236, 72, 153, 0.7);
+    }
+
+    50% {
+        box-shadow: 0 0 15px rgba(236, 72, 153, 0.9);
+    }
+}
+
+/* Legend Badge Rotation - Rotate entire badge in all directions */
+@keyframes legend-rotate {
+    0% {
+        transform: rotate(0deg) translateY(0);
+    }
+
+    25% {
+        transform: rotate(2deg) translateY(-2px);
+    }
+
+    50% {
+        transform: rotate(0deg) translateY(0);
+    }
+
+    75% {
+        transform: rotate(-2deg) translateY(-2px);
+    }
+
+    100% {
+        transform: rotate(0deg) translateY(0);
+    }
+}
+
+/* Base Title Badge */
+.title-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: inline-block;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: white;
+    position: relative;
+    overflow: visible;
+    /* Changed to visible to show Legend star */
+}
+
+/* Universal Diagonal Shine for ALL badges */
+.title-badge::before,
+.rainbow-badge::before,
+.rainbow-text::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg,
+            transparent 0%,
+            transparent 46%,
+            rgba(255, 255, 255, 0.2) 48%,
+            rgba(255, 255, 255, 0.6) 50%,
+            rgba(255, 255, 255, 0.2) 52%,
+            transparent 54%,
+            transparent 100%);
+    background-size: 200% 200%;
+    background-repeat: no-repeat;
+    animation: shine 3s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: inherit;
+    /* Clip shine within badge boundaries */
+}
+
+/* TIER 10 - ADMIN (GOD DAMN RAINBOW) */
+.rainbow-badge,
+.rainbow-text {
+    position: relative;
+    background: linear-gradient(135deg,
+            #ff0000 0%, #ff7f00 14%, #ffff00 28%,
+            #00ff00 42%, #0000ff 57%, #4b0082 71%,
+            #9400d3 85%, #ff0000 100%);
+    background-size: 400% 400%;
+    color: white !important;
+    animation: rainbow 3s linear infinite,
+        rainbow-pulse 2s ease-in-out infinite;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.8),
+        0 0 15px rgba(255, 255, 255, 0.6);
+    font-weight: 900;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.rainbow-badge:hover,
+.rainbow-text:hover {
+    transform: scale(1.25) rotate(3deg);
+    box-shadow: 0 0 40px rgba(255, 0, 255, 0.9),
+        0 0 80px rgba(255, 0, 255, 0.7),
+        0 0 120px rgba(255, 0, 255, 0.5);
+    animation: rainbow 1.5s linear infinite,
+        rainbow-pulse 1s ease-in-out infinite;
+}
+
+/* TIER 9 - MODERATOR (WAVE EFFECT) */
+.title-tier-9 {
+    background-color: #06B6D4;
+    color: #001a1f;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.6),
+        0 0 30px rgba(6, 182, 212, 0.4);
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+    animation: wave 2s ease-in-out infinite;
+    font-weight: 800;
+}
+
+.title-tier-9:hover {
+    transform: scale(1.15) translateY(-5px);
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.8),
+        0 0 50px rgba(6, 182, 212, 0.6);
+    animation: wave 1s ease-in-out infinite;
+}
+
+/* Tier 8 - Legend (Gold with glow + rotating badge) */
+.title-tier-8 {
+    background-color: #FBBF24;
+    color: #1a1300;
+    border-color: #FBBF24;
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.6),
+        0 0 20px rgba(251, 191, 36, 0.3);
+    animation: legend-rotate 3s ease-in-out infinite;
+    font-weight: 800;
+}
+
+.title-tier-8:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 25px rgba(251, 191, 36, 0.8),
+        0 0 50px rgba(251, 191, 36, 0.6);
+    animation: sparkle 0.8s ease-in-out infinite;
+}
+
+/* Legend Star Sparkle - Scale (to/nho) + fade, no rotation */
+@keyframes star-sparkle {
+
+    0%,
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.title-tier-8::after {
+    content: '✨';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 12px;
+    animation: star-sparkle 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* TIER 7 - MASTER CREATOR (FIRE PULSE) */
+.title-tier-7 {
+    background-color: #EF4444;
+    color: white;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    animation: fire-pulse 1.8s ease-in-out infinite;
+    font-weight: 800;
+}
+
+.title-tier-7:hover {
+    transform: scale(1.12);
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.8),
+        0 0 50px rgba(239, 68, 68, 0.6);
+    animation: fire-pulse 1s ease-in-out infinite;
+}
+
+/* TIER 6 - INFLUENCER (PINK PULSE) */
+.title-tier-6 {
+    background-color: #EC4899;
+    color: white;
+    animation: pink-pulse 2s ease-in-out infinite;
+    font-weight: 800;
+}
+
+.title-tier-6:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.8),
+        0 0 60px rgba(236, 72, 153, 1);
+}
+
+/* TIER 5 - TOP SELLER (ORANGE GLOW) */
+.title-tier-5 {
+    background-color: #F59E0B;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+}
+
+.title-tier-5:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 1);
+    filter: brightness(1.15);
+}
+
+/* TIER 4 - CREATOR (PURPLE GLOW) */
+.title-tier-4 {
+    background-color: #8B5CF6;
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.8);
+}
+
+.title-tier-4:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 1);
+    filter: brightness(1.15);
+}
+
+/* TIER 3 - CONTRIBUTOR (BLUE) */
+.title-tier-3 {
+    background-color: #3B82F6;
+}
+
+.title-tier-3:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.7);
+    filter: brightness(1.1);
+}
+
+/* TIER 2 - ACTIVE MEMBER (GREEN) */
+.title-tier-2 {
+    background-color: #10B981;
+}
+
+.title-tier-2:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.7);
+    filter: brightness(1.1);
+}
+
+/* TIER 1 - NEWBIE (GRAY - MUTED) */
+.title-tier-1 {
+    background-color: #9CA3AF;
+    opacity: 0.7;
+}
+
+.title-tier-1:hover {
+    transform: scale(1.05);
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(156, 163, 175, 0.5);
+}
+
+/* Profile Page - Larger Badges */
+.title-badge-large {
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+}

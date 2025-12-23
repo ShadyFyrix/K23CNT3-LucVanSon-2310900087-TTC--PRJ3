@@ -27,8 +27,8 @@ public class LvsComment {
     private String lvsContent;
 
     // Bình luận cha (nếu là reply)
-    @ManyToOne
-    @JoinColumn(name = "LvsParentId", referencedColumnName = "LvsCommentId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lvsParentCommentId", referencedColumnName = "LvsCommentId")
     private LvsComment lvsParent;
 
     // Thống kê

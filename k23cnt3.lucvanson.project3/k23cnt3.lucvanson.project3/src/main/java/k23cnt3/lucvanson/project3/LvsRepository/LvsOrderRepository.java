@@ -136,4 +136,15 @@ public interface LvsOrderRepository extends JpaRepository<LvsOrder, Long> {
         // Tìm kiếm theo order code hoặc buyer username
         Page<LvsOrder> findByLvsOrderCodeContainingOrLvsBuyer_LvsUsernameContaining(String orderCode, String username,
                         Pageable pageable);
+
+        // Check if user owns a project (via completed order)
+        @Query("SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END FROM LvsOrder o " +
+                        "JOIN o.lvsOrderItems oi " +
+                        "WHERE o.lvsBuyer.lvsUserId = :userId " +
+                        "AND oi.lvsProject.lvsProjectId = :projectId " +
+                        "AND o.lvsStatus = :status")
+        boolean existsByLvsUserLvsUserIdAndLvsOrderItemsLvsProjectLvsProjectIdAndLvsStatus(
+                        @Param("userId") Long userId,
+                        @Param("projectId") Long projectId,
+                        @Param("status") LvsOrderStatus status);
 }

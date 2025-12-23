@@ -3,104 +3,190 @@
     layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
 
 <head>
-    <title>Giỏ hàng - Electro Store</title>
+    <title>My Cart - Electro Store</title>
 </head>
 
 <body>
     <div layout:fragment="content">
-        <!-- 
-            LvsCartView.html - Trang giỏ hàng
-            Hiển thị: Danh sách sản phẩm, tổng tiền, khuyến mãi, nút thanh toán
-            Biến: ${LvsCart}, ${LvsCartItems}
-        -->
         <div class="container mx-auto px-4 py-8">
-            <h1 class="text-3xl font-bold text-white mb-8">
-                <i class="fas fa-shopping-cart mr-3 text-[#fed700]"></i>Giỏ hàng của bạn
-            </h1>
-
-            <div th:if="${LvsCartItems == null or LvsCartItems.isEmpty()}" class="text-center py-16">
-                <i class="fas fa-shopping-cart text-6xl text-gray-600 mb-4"></i>
-                <p class="text-gray-400 text-xl mb-4">Giỏ hàng trống</p>
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-3xl font-bold text-white">
+                    <i class="fas fa-shopping-cart mr-3 text-[#fed700]"></i>My Cart
+                </h1>
                 <a th:href="@{/LvsUser/LvsProject/LvsList}"
-                    class="inline-block bg-[#fed700] text-black font-bold px-6 py-3 rounded-lg hover:bg-yellow-400 transition">
-                    Tiếp tục mua sắm
+                    class="bg-[#1e1e1e] border border-[#444] text-white font-bold px-6 py-3 rounded-lg hover:border-[#fed700] transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
                 </a>
             </div>
 
+            <!-- Success/Error Messages -->
+            <div th:if="${success}"
+                class="bg-green-500/20 border border-green-500 text-green-400 px-6 py-4 rounded-lg mb-6">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span th:text="${success}">Success</span>
+            </div>
+            <div th:if="${error}" class="bg-red-500/20 border border-red-500 text-red-400 px-6 py-4 rounded-lg mb-6">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span th:text="${error}">Error</span>
+            </div>
+
+            <!-- Empty Cart State -->
+            <div th:if="${LvsCartItems == null or LvsCartItems.isEmpty()}" class="text-center py-16">
+                <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-12">
+                    <i class="fas fa-shopping-cart text-6xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400 text-xl mb-6">Your cart is empty</p>
+                    <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                        class="inline-block bg-[#fed700] text-black font-bold px-8 py-3 rounded-lg hover:bg-white transition">
+                        <i class="fas fa-gamepad mr-2"></i>Browse Projects
+                    </a>
+                </div>
+            </div>
+
+            <!-- Cart Content -->
             <div th:if="${LvsCartItems != null and !LvsCartItems.isEmpty()}"
                 class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Cart Items -->
-                <div class="lg:col-span-2">
-                    <div class="bg-[#2b2b2b] border border-[#333] rounded-xl overflow-hidden">
-                        <div th:each="item : ${LvsCartItems}"
-                            class="border-b border-[#333] last:border-0 p-6 flex gap-4">
+                <div class="lg:col-span-2 space-y-4">
+                    <div th:each="item : ${LvsCartItems}"
+                        class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 hover:border-[#fed700] transition">
+                        <div class="flex gap-4">
+                            <!-- Project Thumbnail -->
                             <div
-                                class="w-24 h-24 bg-[#1e1e1e] rounded-lg flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-image text-3xl text-gray-600"></i>
+                                class="w-24 h-24 bg-[#1e1e1e] rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                <img th:if="${item.lvsProject?.lvsThumbnailUrl}"
+                                    th:src="@{${item.lvsProject.lvsThumbnailUrl}}" class="w-full h-full object-cover"
+                                    alt="Project">
+                                <i th:unless="${item.lvsProject?.lvsThumbnailUrl}"
+                                    class="fas fa-gamepad text-3xl text-gray-600"></i>
                             </div>
+
+                            <!-- Project Info -->
                             <div class="flex-grow">
-                                <h3 class="text-white font-bold mb-2" th:text="${item.lvsProject.lvsProjectName}">
-                                    Product</h3>
-                                <p class="text-[#fed700] font-bold mb-3"
-                                    th:text="${#numbers.formatCurrency(item.lvsPrice)}">$0</p>
-                                <div class="flex items-center gap-4">
-                                    <div class="flex items-center gap-2">
-                                        <button
-                                            class="w-8 h-8 bg-[#1e1e1e] border border-[#444] rounded hover:border-[#fed700] transition">
-                                            <i class="fas fa-minus text-xs"></i>
-                                        </button>
-                                        <span class="text-white font-bold w-12 text-center"
-                                            th:text="${item.lvsQuantity}">1</span>
-                                        <button
-                                            class="w-8 h-8 bg-[#1e1e1e] border border-[#444] rounded hover:border-[#fed700] transition">
-                                            <i class="fas fa-plus text-xs"></i>
-                                        </button>
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <h3 class="text-white font-bold text-lg mb-1"
+                                            th:text="${item.lvsProject?.lvsProjectName}">Project Name</h3>
+                                        <p class="text-gray-400 text-sm">
+                                            by <span class="text-[#fed700]"
+                                                th:text="${item.lvsProject?.lvsUser?.lvsUsername}">Creator</span>
+                                        </p>
                                     </div>
+                                    <!-- Remove Button -->
                                     <form th:action="@{/LvsUser/LvsCart/LvsRemoveItem}" method="post" class="inline">
+                                        <input type="hidden" th:name="${_csrf.parameterName}"
+                                            th:value="${_csrf.token}" />
                                         <input type="hidden" name="lvsCartItemId" th:value="${item.lvsCartItemId}">
-                                        <button type="submit" class="text-red-400 hover:text-red-300 transition">
-                                            <i class="fas fa-trash mr-1"></i>Xóa
+                                        <button type="submit" class="text-red-400 hover:text-red-300 transition"
+                                            onclick="return confirm('Remove this item from cart?')">
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="flex items-center justify-between mt-4">
+                                    <!-- One-time purchase badge -->
+                                    <div class="bg-[#1e1e1e] border border-[#444] rounded-lg px-3 py-1">
+                                        <span class="text-gray-400 text-sm">
+                                            <i class="fas fa-check-circle text-green-400 mr-1"></i>
+                                            One-time purchase
+                                        </span>
+                                    </div>
+
+                                    <!-- Item Price -->
+                                    <div class="text-right">
+                                        <p class="text-[#fed700] font-bold text-xl">
+                                            <i class="fas fa-coins mr-1"></i>
+                                            <span
+                                                th:text="${#numbers.formatDecimal(item.lvsUnitPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Clear Cart Button -->
+                    <form th:action="@{/LvsUser/LvsCart/LvsClear}" method="post" class="mt-4">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="text-red-400 hover:text-red-300 transition text-sm"
+                            onclick="return confirm('Clear all items from cart?')">
+                            <i class="fas fa-trash mr-1"></i>Clear Cart
+                        </button>
+                    </form>
                 </div>
 
-                <!-- Order Summary -->
+                <!-- Order Summary Sidebar -->
                 <div class="lg:col-span-1">
                     <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 sticky top-4">
-                        <h2 class="text-xl font-bold text-white mb-6">Tổng đơn hàng</h2>
+                        <h2 class="text-xl font-bold text-white mb-6">Order Summary</h2>
 
-                        <div class="space-y-3 mb-6">
+                        <!-- User Balance -->
+                        <div class="bg-[#1e1e1e] border border-[#333] rounded-lg p-4 mb-6">
+                            <p class="text-gray-400 text-sm mb-1">Your Balance:</p>
+                            <p class="text-white font-bold text-xl">
+                                <i class="fas fa-wallet text-[#fed700] mr-2"></i>
+                                <span
+                                    th:text="${#numbers.formatDecimal(session.LvsCurrentUser?.lvsCoin ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                <span class="text-sm text-gray-400">coins</span>
+                            </p>
+                        </div>
+
+                        <!-- Price Breakdown -->
+                        <div class="space-y-3 mb-6 pb-6 border-b border-[#333]">
                             <div class="flex justify-between text-gray-400">
-                                <span>Tạm tính:</span>
-                                <span th:text="${#numbers.formatCurrency(LvsCart.lvsTotalPrice)}">$0</span>
+                                <span>Subtotal (<span th:text="${LvsCart.lvsTotalItems}">0</span> items):</span>
+                                <span>
+                                    <i class="fas fa-coins text-[#fed700] mr-1"></i>
+                                    <span
+                                        th:text="${#numbers.formatDecimal(LvsCart.lvsTotalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                </span>
                             </div>
-                            <div class="flex justify-between text-gray-400"
-                                th:if="${LvsCart.lvsDiscount != null and LvsCart.lvsDiscount > 0}">
-                                <span>Giảm giá:</span>
-                                <span class="text-green-400">-<span
-                                        th:text="${#numbers.formatCurrency(LvsCart.lvsDiscount)}">$0</span></span>
+                            <div th:if="${LvsCart.lvsDiscountAmount != null and LvsCart.lvsDiscountAmount > 0}"
+                                class="flex justify-between text-gray-400">
+                                <span>Discount:</span>
+                                <span class="text-green-400">
+                                    -<span
+                                        th:text="${#numbers.formatDecimal(LvsCart.lvsDiscountAmount, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                </span>
                             </div>
                             <div class="border-t border-[#444] pt-3 flex justify-between text-white font-bold text-lg">
-                                <span>Tổng cộng:</span>
-                                <span class="text-[#fed700]"
-                                    th:text="${#numbers.formatCurrency(LvsCart.lvsFinalPrice)}">$0</span>
+                                <span>Total:</span>
+                                <span class="text-[#fed700] text-2xl">
+                                    <i class="fas fa-coins mr-1"></i>
+                                    <span
+                                        th:text="${#numbers.formatDecimal(LvsCart.lvsFinalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                </span>
                             </div>
                         </div>
 
+                        <!-- Insufficient Funds Warning -->
+                        <div th:if="${session.LvsCurrentUser?.lvsCoin < LvsCart.lvsFinalPrice}"
+                            class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-4">
+                            <p class="text-red-400 text-sm">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                Insufficient coins! You need
+                                <span
+                                    th:text="${#numbers.formatDecimal(LvsCart.lvsFinalPrice - session.LvsCurrentUser?.lvsCoin, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                more coins.
+                            </p>
+                        </div>
+
+                        <!-- Checkout Button -->
                         <form th:action="@{/LvsUser/LvsCart/LvsCheckout}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                             <button type="submit"
-                                class="w-full bg-[#fed700] text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition mb-3">
-                                <i class="fas fa-credit-card mr-2"></i>Thanh toán
+                                th:disabled="${session.LvsCurrentUser?.lvsCoin < LvsCart.lvsFinalPrice}"
+                                class="w-full bg-[#fed700] text-black font-bold py-4 rounded-lg hover:bg-white transition mb-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                                onclick="return confirm('Proceed with checkout?')">
+                                <i class="fas fa-credit-card mr-2"></i>Checkout Now
                             </button>
                         </form>
 
-                        <a th:href="@{/user/san-pham}"
+                        <a th:href="@{/LvsUser/LvsProject/LvsList}"
                             class="block text-center text-gray-400 hover:text-white transition">
-                            <i class="fas fa-arrow-left mr-2"></i>Tiếp tục mua sắm
+                            <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
                         </a>
                     </div>
                 </div>

@@ -3,54 +3,338 @@
     layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
 
 <head>
-    <title>Hồ sơ người dùng - Electro Store</title>
+    <title th:text="${LvsUser.lvsUsername} + ' - Profile'">User Profile</title>
+    <!-- Title Effects CSS -->
+    <link rel="stylesheet" th:href="@{/css/lvs-title-effects.css}">
 </head>
 
 <body>
     <div layout:fragment="content">
-        <div class="container mx-auto px-4 py-8">
-            <div class="bg-[#2b2b2b] border border-[#333] rounded-xl overflow-hidden">
-                <div class="h-32 bg-gradient-to-r from-purple-500/20 to-pink-500/20"></div>
-                <div class="px-8 pb-8">
-                    <div class="flex items-end gap-6 -mt-16 mb-6">
+        <div class="container mx-auto px-4 py-8 max-w-6xl">
+            <!-- Success/Error Messages -->
+            <div th:if="${success}"
+                class="bg-green-500/20 border border-green-500 text-green-400 px-6 py-4 rounded-lg mb-6">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span th:text="${success}">Success</span>
+            </div>
+            <div th:if="${error}" class="bg-red-500/20 border border-red-500 text-red-400 px-6 py-4 rounded-lg mb-6">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span th:text="${error}">Error</span>
+            </div>
+
+            <!-- Profile Header -->
+            <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-8 mb-6">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0">
                         <div
-                            class="w-32 h-32 bg-[#1e1e1e] border-4 border-[#2b2b2b] rounded-full flex items-center justify-center">
-                            <i class="fas fa-user text-5xl text-gray-600"></i>
-                        </div>
-                        <div class="flex-grow pb-4">
-                            <h1 class="text-3xl font-bold text-white mb-2" th:text="${LvsUser.lvsUsername}">Username
-                            </h1>
-                            <p class="text-gray-400" th:text="${LvsUser.lvsEmail}">email@example.com</p>
-                        </div>
-                        <button
-                            class="bg-[#fed700] text-black font-bold px-6 py-2 rounded-lg hover:bg-yellow-400 transition mb-4">
-                            <i class="fas fa-user-plus mr-2"></i>Theo dõi
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div class="text-center p-4 bg-[#1e1e1e] rounded-lg">
-                            <p class="text-3xl font-bold text-[#fed700]" th:text="${LvsUser.lvsProjects.size()}">0</p>
-                            <p class="text-gray-400">Dự án</p>
-                        </div>
-                        <div class="text-center p-4 bg-[#1e1e1e] rounded-lg">
-                            <p class="text-3xl font-bold text-[#fed700]" th:text="${LvsFollowersCount}">0</p>
-                            <p class="text-gray-400">Followers</p>
-                        </div>
-                        <div class="text-center p-4 bg-[#1e1e1e] rounded-lg">
-                            <p class="text-3xl font-bold text-[#fed700]" th:text="${LvsFollowingCount}">0</p>
-                            <p class="text-gray-400">Following</p>
+                            class="w-32 h-32 rounded-full bg-[#1e1e1e] border-4 border-[#fed700] flex items-center justify-center overflow-hidden">
+                            <img th:if="${LvsUser.lvsAvatarUrl}" th:src="@{${LvsUser.lvsAvatarUrl}}"
+                                class="w-full h-full object-cover" alt="Avatar">
+                            <i th:unless="${LvsUser.lvsAvatarUrl}" class="fas fa-user text-5xl text-gray-600"></i>
                         </div>
                     </div>
 
-                    <div th:if="${LvsUser.lvsBio}" class="mb-6">
-                        <h2 class="text-xl font-bold text-white mb-3">Giới thiệu</h2>
-                        <p class="text-gray-300" th:text="${LvsUser.lvsBio}">Bio</p>
+                    <!-- User Info -->
+                    <div class="flex-grow text-center md:text-left">
+                        <div class="flex flex-col md:flex-row items-center md:items-start gap-3 mb-2">
+                            <h1 class="text-3xl font-bold text-white" th:text="${LvsUser.lvsUsername}">Username</h1>
+                            <!-- User Title Badge -->
+                            <span th:if="${LvsUser.lvsTitle != null}" th:class="${'text-xs font-bold px-2 py-0.5 rounded ' + 
+                                           (LvsUser.lvsTitle.name() == 'ADMIN' ? 'rainbow-text title-badge' : 
+                                            LvsUser.lvsTitle.name() == 'MODERATOR' ? 'title-badge title-tier-9' :
+                                            LvsUser.lvsTitle.name() == 'LEGEND' ? 'title-badge title-tier-8' :
+                                            LvsUser.lvsTitle.name() == 'MASTER_CREATOR' ? 'title-badge title-tier-7' :
+                                            LvsUser.lvsTitle.name() == 'INFLUENCER' ? 'title-badge title-tier-6' :
+                                            LvsUser.lvsTitle.name() == 'TOP_SELLER' ? 'title-badge title-tier-5' :
+                                            LvsUser.lvsTitle.name() == 'CREATOR' ? 'title-badge title-tier-4' :
+                                            LvsUser.lvsTitle.name() == 'CONTRIBUTOR' ? 'title-badge title-tier-3' :
+                                            LvsUser.lvsTitle.name() == 'ACTIVE_MEMBER' ? 'title-badge title-tier-2' :
+                                            'title-badge title-tier-1')}"
+                                th:style="${LvsUser.lvsTitle.name() != 'ADMIN'} ? 'background-color: ' + ${LvsUser.lvsTitle.color} + '; border-color: ' + ${LvsUser.lvsTitle.color} : ''"
+                                th:text="${LvsUser.lvsTitle.displayName}">
+                            </span>
+                        </div>
+                        <p class="text-gray-400 mb-4" th:text="${LvsUser.lvsFullName}">Full Name</p>
+                        <p th:if="${LvsUser.lvsBio}" class="text-gray-300 mb-4 max-w-2xl" th:text="${LvsUser.lvsBio}">
+                            Bio text here...</p>
+                        <p class="text-gray-500 text-sm">
+                            <i class="fas fa-calendar mr-1"></i>
+                            Joined <span th:text="${#temporals.format(LvsUser.lvsCreatedAt, 'MMMM yyyy')}">January
+                                2024</span>
+                        </p>
+                    </div>
+
+                    <!-- Action Buttons --  >
+                    <div class="flex-shrink-0">
+                        <!-- If viewing own profile -->
+                    <a th:if="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsUserId == LvsUser.lvsUserId}"
+                        th:href="@{/LvsUser/LvsProfile/LvsEdit}"
+                        class="bg-[#1e1e1e] border border-[#444] text-white font-bold px-6 py-3 rounded-lg hover:border-[#fed700] transition">
+                        <i class="fas fa-edit mr-2"></i>Edit Profile
+                    </a>
+
+                    <!-- If not logged in -->
+                    <a th:if="${session.LvsCurrentUser == null}" th:href="@{/LvsLogin}"
+                        class="bg-[#fed700] text-black font-bold px-6 py-3 rounded-lg hover:bg-white transition">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login to Follow
+                    </a>
+
+                    <!-- If logged in and viewing other's profile -->
+                    <div th:if="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsUserId != LvsUser.lvsUserId}"
+                        class="flex gap-3">
+                        <!-- Message Button -->
+                        <a th:href="@{/LvsUser/LvsMessage/LvsConversation/{id}(id=${LvsUser.lvsUserId})}"
+                            class="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-lg transition flex items-center gap-2">
+                            <i class="fas fa-comment"></i>
+                            <span>Message</span>
+                        </a>
+
+                        <!-- If already following -->
+                        <form th:if="${LvsIsFollowing}" th:action="@{/LvsUser/LvsFollow/LvsUnfollowUser}" method="post"
+                            class="inline">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <input type="hidden" name="lvsUserId" th:value="${LvsUser.lvsUserId}" />
+                            <button type="submit"
+                                class="bg-green-500/20 border border-green-500 text-green-400 font-bold px-6 py-3 rounded-lg hover:bg-green-500/30 transition">
+                                <i class="fas fa-check mr-2"></i>Following
+                            </button>
+                        </form>
+
+                        <!-- If not following -->
+                        <form th:unless="${LvsIsFollowing}" th:action="@{/LvsUser/LvsFollow/LvsFollowUser}"
+                            method="post" class="inline">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <input type="hidden" name="lvsUserId" th:value="${LvsUser.lvsUserId}" />
+                            <button type="submit"
+                                class="bg-[#fed700] text-black font-bold px-6 py-3 rounded-lg hover:bg-white transition">
+                                <i class="fas fa-user-plus mr-2"></i>Follow
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-[#333]">
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-[#fed700]" th:text="${LvsFollowersCount}">0</p>
+                    <p class="text-gray-400 text-sm">Followers</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-[#fed700]" th:text="${LvsFollowingCount}">0</p>
+                    <p class="text-gray-400 text-sm">Following</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-[#fed700]" th:text="${LvsProjectsCount}">0</p>
+                    <p class="text-gray-400 text-sm">Projects</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-[#fed700]" th:text="${LvsPostsCount}">0</p>
+                    <p class="text-gray-400 text-sm">Posts</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-6">
+            <div class="flex gap-2 border-b border-[#333] overflow-x-auto">
+                <a href="#" onclick="showTab('projects'); return false;"
+                    class="tab-link px-6 py-3 font-bold transition border-b-2 border-[#fed700] text-[#fed700]">
+                    <i class="fas fa-gamepad mr-2"></i>Projects
+                </a>
+                <a href="#" onclick="showTab('posts'); return false;"
+                    class="tab-link px-6 py-3 font-bold text-gray-400 hover:text-white transition border-b-2 border-transparent">
+                    <i class="fas fa-blog mr-2"></i>Posts
+                </a>
+                <a href="#" onclick="showTab('followers'); return false;"
+                    class="tab-link px-6 py-3 font-bold text-gray-400 hover:text-white transition border-b-2 border-transparent">
+                    <i class="fas fa-users mr-2"></i>Followers
+                </a>
+                <a href="#" onclick="showTab('following'); return false;"
+                    class="tab-link px-6 py-3 font-bold text-gray-400 hover:text-white transition border-b-2 border-transparent">
+                    <i class="fas fa-user-friends mr-2"></i>Following
+                </a>
+            </div>
+        </div>
+
+        <!-- Tab Content: Projects (Default) -->
+        <div id="projects-content" class="tab-content">
+            <div th:if="${LvsProjects != null and !LvsProjects.content.isEmpty()}"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Project Card -->
+                <div th:each="project : ${LvsProjects.content}"
+                    class="bg-[#2b2b2b] border border-[#333] rounded-xl overflow-hidden hover:border-[#fed700] transition group">
+                    <!-- Project Thumbnail -->
+                    <div class="relative h-48 bg-[#1e1e1e] overflow-hidden">
+                        <img th:if="${project.lvsThumbnailUrl}" th:src="@{${project.lvsThumbnailUrl}}"
+                            class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                            alt="Project thumbnail">
+                        <div th:unless="${project.lvsThumbnailUrl}"
+                            class="w-full h-full flex items-center justify-center">
+                            <i class="fas fa-gamepad text-6xl text-gray-600"></i>
+                        </div>
+                        <!-- Price Badge -->
+                        <div class="absolute top-3 right-3 bg-[#fed700] text-black font-bold px-3 py-1 rounded-lg">
+                            <i class="fas fa-coins mr-1"></i>
+                            <span th:text="${project.lvsPrice}">100</span>
+                        </div>
+                    </div>
+
+                    <!-- Project Info -->
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold text-white mb-2 line-clamp-1" th:text="${project.lvsProjectName}">
+                            Project Name</h3>
+                        <p class="text-gray-400 text-sm mb-3 line-clamp-2" th:text="${project.lvsDescription}">
+                            Project description...</p>
+
+                        <!-- Category -->
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-[#1e1e1e] text-[#fed700] text-xs px-2 py-1 rounded"
+                                th:text="${project.lvsCategory?.lvsCategoryName}">Category</span>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="flex items-center justify-between text-sm text-gray-400 mb-3">
+                            <span>
+                                <i class="fas fa-download mr-1"></i>
+                                <span th:text="${project.lvsDownloadCount ?: 0}">0</span>
+                            </span>
+                            <span>
+                                <i class="fas fa-star mr-1 text-[#fed700]"></i>
+                                <span th:text="${project.lvsRating ?: 0}">0</span>
+                            </span>
+                        </div>
+
+                        <!-- View Button -->
+                        <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${project.lvsProjectId})}"
+                            class="block w-full bg-[#fed700] text-black text-center font-bold py-2 rounded-lg hover:bg-white transition">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${LvsProjects == null or LvsProjects.content.isEmpty()}"
+                class="bg-[#2b2b2b] border border-[#333] rounded-xl p-12 text-center">
+                <i class="fas fa-gamepad text-6xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400 text-lg">No projects yet</p>
+            </div>
+        </div>
+
+        <!-- Tab Content: Posts -->
+        <div id="posts-content" class="tab-content hidden">
+            <div th:if="${LvsPosts != null and !LvsPosts.content.isEmpty()}" class="grid grid-cols-1 gap-4">
+                <a th:each="post : ${LvsPosts.content}"
+                    th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})}"
+                    class="bg-[#2b2b2b] border border-[#333] rounded-xl overflow-hidden hover:border-[#fed700] transition block">
+                    <!-- Post Image -->
+                    <div th:if="${post.lvsThumbnailUrl != null}"
+                        class="h-64 bg-[#1e1e1e] flex items-center justify-center">
+                        <img th:src="@{${post.lvsThumbnailUrl}}" class="max-w-full max-h-full object-contain"
+                            alt="Post image">
+                    </div>
+                    <!-- Post Content -->
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2" th:text="${post.lvsTitle}">Post Title</h3>
+                        <p class="text-gray-400 mb-4" th:text="${#strings.abbreviate(post.lvsContent, 200)}">
+                            Content...</p>
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span><i class="fas fa-calendar mr-1"></i><span
+                                    th:text="${#temporals.format(post.lvsCreatedAt, 'dd/MM/yyyy')}">Date</span></span>
+                            <span><i class="fas fa-eye mr-1"></i><span th:text="${post.lvsViewCount}">0</span>
+                                views</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div th:if="${LvsPosts == null or LvsPosts.content.isEmpty()}"
+                class="bg-[#2b2b2b] border border-[#333] rounded-xl p-12 text-center">
+                <i class="fas fa-blog text-6xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400 text-lg">No posts yet</p>
+            </div>
+        </div>
+
+        <!-- Tab Content: Followers -->
+        <div id="followers-content" class="tab-content hidden">
+            <!-- Followers List -->
+            <div th:if="${LvsFollowers != null and !LvsFollowers.isEmpty()}"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <a th:each="follower : ${LvsFollowers}"
+                    th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${follower.lvsUserId})}"
+                    class="bg-[#2b2b2b] border border-[#333] rounded-xl p-4 hover:border-[#fed700] transition flex items-center gap-3">
+                    <div
+                        class="w-16 h-16 bg-[#1e1e1e] rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <img th:if="${follower.lvsAvatarUrl}" th:src="@{${follower.lvsAvatarUrl}}"
+                            class="w-full h-full object-cover" alt="Avatar">
+                        <i th:unless="${follower.lvsAvatarUrl}" class="fas fa-user text-gray-600 text-2xl"></i>
+                    </div>
+                    <div class="flex-grow min-w-0">
+                        <p class="text-white font-bold truncate" th:text="${follower.lvsUsername}">Username</p>
+                        <p class="text-gray-400 text-sm truncate" th:text="${follower.lvsEmail}">Email</p>
+                    </div>
+                </a>
+            </div>
+            <!-- Empty state -->
+            <div th:if="${LvsFollowers == null or LvsFollowers.isEmpty()}"
+                class="bg-[#2b2b2b] border border-[#333] rounded-xl p-12 text-center">
+                <i class="fas fa-users text-6xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400 text-lg">No followers yet</p>
+            </div>
+        </div>
+
+        <!-- Tab Content: Following -->
+        <div id="following-content" class="tab-content hidden">
+            <!-- Following List -->
+            <div th:if="${LvsFollowing != null and !LvsFollowing.isEmpty()}"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <a th:each="following : ${LvsFollowing}"
+                    th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${following.lvsUserId})}"
+                    class="bg-[#2b2b2b] border border-[#333] rounded-xl p-4 hover:border-[#fed700] transition flex items-center gap-3">
+                    <div
+                        class="w-16 h-16 bg-[#1e1e1e] rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <img th:if="${following.lvsAvatarUrl}" th:src="@{${following.lvsAvatarUrl}}"
+                            class="w-full h-full object-cover" alt="Avatar">
+                        <i th:unless="${following.lvsAvatarUrl}" class="fas fa-user text-gray-600 text-2xl"></i>
+                    </div>
+                    <div class="flex-grow min-w-0">
+                        <p class="text-white font-bold truncate" th:text="${following.lvsUsername}">Username</p>
+                        <p class="text-gray-400 text-sm truncate" th:text="${following.lvsEmail}">Email</p>
+                    </div>
+                </a>
+            </div>
+            <!-- Empty state -->
+            <div th:if="${LvsFollowing == null or LvsFollowing.isEmpty()}"
+                class="bg-[#2b2b2b] border border-[#333] rounded-xl p-12 text-center">
+                <i class="fas fa-user-friends text-6xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400 text-lg">Not following anyone yet</p>
+            </div>
         </div>
     </div>
+    </div>
+
+    <script layout:fragment="scripts">
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Remove active state from all tabs
+            document.querySelectorAll('.tab-link').forEach(link => {
+                link.classList.remove('border-[#fed700]', 'text-[#fed700]');
+                link.classList.add('border-transparent', 'text-gray-400');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabName + '-content').classList.remove('hidden');
+
+            // Activate clicked tab
+            event.target.closest('.tab-link').classList.remove('border-transparent', 'text-gray-400');
+            event.target.closest('.tab-link').classList.add('border-[#fed700]', 'text-[#fed700]');
+        }
+    </script>
 </body>
 
 </html>

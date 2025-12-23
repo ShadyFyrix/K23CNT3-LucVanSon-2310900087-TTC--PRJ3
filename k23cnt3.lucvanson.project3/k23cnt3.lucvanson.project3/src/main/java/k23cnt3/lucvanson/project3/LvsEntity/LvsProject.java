@@ -53,6 +53,10 @@ public class LvsProject {
     @Column(name = "LvsSourceCodeUrl", length = 500)
     private String lvsSourceCodeUrl;
 
+    @Column(name = "LvsFiles", columnDefinition = "TEXT")
+    private String lvsFiles; // JSON array:
+                             // [{"name":"file.zip","url":"/uploads/...","size":1024,"type":"application/zip"}]
+
     // Thống kê
     @Column(name = "LvsViewCount")
     private Integer lvsViewCount = 0;
@@ -197,6 +201,14 @@ public class LvsProject {
 
     public void setLvsSourceCodeUrl(String lvsSourceCodeUrl) {
         this.lvsSourceCodeUrl = lvsSourceCodeUrl;
+    }
+
+    public String getLvsFiles() {
+        return lvsFiles;
+    }
+
+    public void setLvsFiles(String lvsFiles) {
+        this.lvsFiles = lvsFiles;
     }
 
     public Integer getLvsViewCount() {

@@ -55,7 +55,8 @@
                         class="fas fa-chevron-down text-gray-500 group-open/account:rotate-180 transition-transform duration-200"></i>
                 </summary>
                 <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
-                    <a th:href="@{/LvsUser/LvsProfile/LvsView}"
+                    <a th:if="${session.LvsCurrentUser != null}"
+                        th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${session.LvsCurrentUser.lvsUserId})}"
                         class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
                         <i class="fas fa-id-card w-4"></i> View Profile
                     </a>
@@ -132,6 +133,20 @@
                         th:text="${session.LvsUnreadCount}">0</span>
                 </div>
                 <span class="text-gray-300 group-hover:text-white font-medium">Messages</span>
+            </a>
+
+            <!-- Blog -->
+            <a th:href="@{/LvsUser/LvsBlog/LvsList}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
+                <i class="fas fa-blog text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
+                <span class="text-gray-300 group-hover:text-white font-medium">Blog</span>
+            </a>
+
+            <!-- My Posts -->
+            <a th:href="@{/LvsUser/LvsBlog/LvsMyPosts}"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
+                <i class="fas fa-file-alt text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
+                <span class="text-gray-300 group-hover:text-white font-medium">My Posts</span>
             </a>
 
             <!-- Social Dropdown -->

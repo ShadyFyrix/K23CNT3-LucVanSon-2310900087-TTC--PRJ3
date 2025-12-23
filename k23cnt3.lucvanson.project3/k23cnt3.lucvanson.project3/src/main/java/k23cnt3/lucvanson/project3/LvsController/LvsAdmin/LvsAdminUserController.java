@@ -488,6 +488,7 @@ public class LvsAdminUserController {
             lvsExistingUser.setLvsBio(lvsUser.getLvsBio());
             lvsExistingUser.setLvsRole(lvsUser.getLvsRole());
             lvsExistingUser.setLvsStatus(lvsUser.getLvsStatus());
+            lvsExistingUser.setLvsTitle(lvsUser.getLvsTitle()); // ← CẬP NHẬT TITLE
             lvsExistingUser.setLvsCoin(lvsUser.getLvsCoin());
             lvsExistingUser.setLvsBalance(lvsUser.getLvsBalance());
 

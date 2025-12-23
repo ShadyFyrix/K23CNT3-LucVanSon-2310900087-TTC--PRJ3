@@ -63,7 +63,7 @@ public class LvsUserCommentController {
             model.addAttribute("LvsError", "Lỗi khi thêm bình luận: " + e.getMessage());
         }
 
-        return "redirect:/LvsUser/LvsPost/LvsDetail/" + lvsPostId;
+        return "redirect:/LvsUser/LvsBlog/LvsDetail/" + lvsPostId;
     }
 
     // Chỉnh sửa bình luận
@@ -82,7 +82,7 @@ public class LvsUserCommentController {
             lvsCommentService.lvsSaveComment(lvsComment);
         }
 
-        return "redirect:/LvsUser/LvsPost/LvsDetail/" + lvsComment.getLvsPost().getLvsPostId();
+        return "redirect:/LvsUser/LvsBlog/LvsDetail/" + lvsComment.getLvsPost().getLvsPostId();
     }
 
     // Xóa bình luận
@@ -98,7 +98,7 @@ public class LvsUserCommentController {
             Long lvsPostId = lvsComment.getLvsPost().getLvsPostId();
             lvsCommentService.lvsDeleteComment(id);
 
-            return "redirect:/LvsUser/LvsPost/LvsDetail/" + lvsPostId;
+            return "redirect:/LvsUser/LvsBlog/LvsDetail/" + lvsPostId;
         }
 
         return "redirect:/LvsUser/LvsDashboard";

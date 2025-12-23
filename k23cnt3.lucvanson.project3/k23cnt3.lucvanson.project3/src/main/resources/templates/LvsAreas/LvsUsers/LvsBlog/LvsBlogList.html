@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Blog - Community</title>
+    <meta th:name="_csrf" th:content="${_csrf.token}" />
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+    <!-- Title Effects CSS -->
+    <link rel="stylesheet" th:href="@{/css/lvs-title-effects.css}">
+</head>
+
+<body>
+    <div layout:fragment="content" class="min-h-screen bg-[#18191a] p-4">
+        <div class="max-w-[680px] mx-auto">
+
+            <!-- Create Post Card (Facebook Style) -->
+            <div class="bg-[#242526] rounded-lg p-4 mb-4 shadow-lg">
+                <div class="flex items-center gap-3 mb-3">
+                    <!-- Avatar with link to profile -->
+                    <a th:if="${session.LvsCurrentUser != null}"
+                        th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${session.LvsCurrentUser.lvsUserId})}"
+                        class="flex-shrink-0">
+                        <div th:if="${session.LvsCurrentUser.lvsAvatarUrl != null and !session.LvsCurrentUser.lvsAvatarUrl.isEmpty()}"
+                            class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-[#fed700]">
+                            <img th:src="@{${session.LvsCurrentUser.lvsAvatarUrl}}" alt="Avatar"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div th:unless="${session.LvsCurrentUser.lvsAvatarUrl != null and !session.LvsCurrentUser.lvsAvatarUrl.isEmpty()}"
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center text-black font-bold">
+                            <span
+                                th:text="${#strings.substring(session.LvsCurrentUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                        </div>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsBlog/LvsCreate}"
+                        class="flex-1 bg-[#3a3b3c] hover:bg-[#4e4f50] rounded-full px-4 py-2.5 text-gray-400 cursor-pointer transition-colors">
+                        What's on your mind?
+                    </a>
+                </div>
+                <div class="border-t border-[#3a3b3c] pt-3 flex gap-2">
+                    <a th:href="@{/LvsUser/LvsBlog/LvsCreate}"
+                        class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#3a3b3c] rounded-lg transition-colors">
+                        <i class="fas fa-image text-green-500 text-xl"></i>
+                        <span class="text-gray-300 font-medium">Photo</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsBlog/LvsCreate}"
+                        class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#3a3b3c] rounded-lg transition-colors">
+                        <i class="fas fa-smile text-yellow-500 text-xl"></i>
+                        <span class="text-gray-300 font-medium">Feeling</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filter Tabs (Facebook Style) -->
+            <div class="bg-[#242526] rounded-lg p-2 mb-4 shadow-lg">
+                <div class="flex flex-wrap gap-1">
+                    <a th:href="@{/LvsUser/LvsBlog/LvsList(sort=${LvsCurrentSort})}"
+                        th:classappend="${LvsCurrentType == null} ? 'bg-[#3a3b3c] text-[#fed700]' : 'text-gray-400 hover:bg-[#3a3b3c]'"
+                        class="px-3 py-2 rounded-lg font-medium transition-colors text-sm whitespace-nowrap">
+                        <i class="fas fa-globe mr-1"></i>All
+                    </a>
+                    <a th:each="type : ${LvsPostTypes}"
+                        th:href="@{/LvsUser/LvsBlog/LvsList(type=${type.name()}, sort=${LvsCurrentSort})}"
+                        th:classappend="${LvsCurrentType == type.name()} ? 'bg-[#3a3b3c] text-[#fed700]' : 'text-gray-400 hover:bg-[#3a3b3c]'"
+                        th:text="${type.name()}"
+                        class="px-3 py-2 rounded-lg font-medium transition-colors text-sm whitespace-nowrap">
+                    </a>
+                </div>
+            </div>
+
+            <!-- Posts Feed -->
+            <div th:if="${LvsPosts != null and !LvsPosts.content.isEmpty()}" class="space-y-4">
+                <article th:each="post : ${LvsPosts.content}" class="bg-[#242526] rounded-lg shadow-lg overflow-hidden">
+
+                    <!-- Post Header -->
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <!-- Avatar with profile link -->
+                            <a th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${post.lvsUser.lvsUserId})}"
+                                class="flex-shrink-0">
+                                <div th:if="${post.lvsUser.lvsAvatarUrl != null and !post.lvsUser.lvsAvatarUrl.isEmpty()}"
+                                    class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-[#3a3b3c]">
+                                    <img th:src="@{${post.lvsUser.lvsAvatarUrl}}" alt="Avatar"
+                                        class="w-full h-full object-cover">
+                                </div>
+                                <div th:unless="${post.lvsUser.lvsAvatarUrl != null and !post.lvsUser.lvsAvatarUrl.isEmpty()}"
+                                    class="w-10 h-10 rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center text-black font-bold">
+                                    <span
+                                        th:text="${#strings.substring(post.lvsUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                                </div>
+                            </a>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <a th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${post.lvsUser.lvsUserId})}"
+                                        class="font-bold text-white hover:underline"
+                                        th:text="${post.lvsUser.lvsUsername}">Username</a>
+                                    <!-- User Title Badge -->
+                                    <span th:if="${post.lvsUser.lvsTitle != null}" th:class="${'text-xs font-bold px-2 py-0.5 rounded ' + 
+                                                   (post.lvsUser.lvsTitle.name() == 'ADMIN' ? 'rainbow-text title-badge' : 
+                                                    post.lvsUser.lvsTitle.name() == 'MODERATOR' ? 'title-badge title-tier-9' :
+                                                    post.lvsUser.lvsTitle.name() == 'LEGEND' ? 'title-badge title-tier-8' :
+                                                    post.lvsUser.lvsTitle.name() == 'MASTER_CREATOR' ? 'title-badge title-tier-7' :
+                                                    post.lvsUser.lvsTitle.name() == 'INFLUENCER' ? 'title-badge title-tier-6' :
+                                                    post.lvsUser.lvsTitle.name() == 'TOP_SELLER' ? 'title-badge title-tier-5' :
+                                                    post.lvsUser.lvsTitle.name() == 'CREATOR' ? 'title-badge title-tier-4' :
+                                                    post.lvsUser.lvsTitle.name() == 'CONTRIBUTOR' ? 'title-badge title-tier-3' :
+                                                    post.lvsUser.lvsTitle.name() == 'ACTIVE_MEMBER' ? 'title-badge title-tier-2' :
+                                                    'title-badge title-tier-1')}"
+                                        th:style="${post.lvsUser.lvsTitle.name() != 'ADMIN'} ? 'background-color: ' + ${post.lvsUser.lvsTitle.color} + '; border-color: ' + ${post.lvsUser.lvsTitle.color} : ''"
+                                        th:text="${post.lvsUser.lvsTitle.displayName}">
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-gray-400">
+                                    <span th:text="${#temporals.format(post.lvsCreatedAt, 'dd MMM yyyy')}">Date</span>
+                                    <span>·</span>
+                                    <span th:text="${post.lvsType.name()}" class="text-[#fed700]">Type</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post Title (if exists) -->
+                    <div th:if="${post.lvsTitle != null and !post.lvsTitle.isEmpty()}" class="px-4 pb-2">
+                        <h2 class="text-xl font-bold text-white">
+                            <a th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})}"
+                                class="hover:underline" th:text="${post.lvsTitle}">Post Title</a>
+                        </h2>
+                    </div>
+
+                    <!-- Post Content -->
+                    <div class="px-4 pb-3">
+                        <p class="text-gray-300 whitespace-pre-wrap line-clamp-3" th:text="${post.lvsContent}">Post
+                            content...</p>
+                        <a th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})}"
+                            class="text-[#fed700] hover:underline text-sm font-medium">
+                            Read more
+                        </a>
+                    </div>
+
+                    <!-- Post Images (if exists) -->
+                    <div th:if="${post.lvsImages != null and !post.lvsImages.isEmpty()}" class="relative">
+                        <!-- Single Image -->
+                        <div th:if="${#lists.size(post.lvsImages) == 1}">
+                            <img th:src="@{${post.lvsImages[0].lvsImageUrl}}" alt="Post image"
+                                class="w-full max-h-[500px] object-cover cursor-pointer"
+                                th:onclick="'window.location.href=\'' + @{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})} + '\''">
+                        </div>
+                        <!-- Multiple Images Grid -->
+                        <div th:if="${#lists.size(post.lvsImages) > 1}" class="grid gap-0.5"
+                            th:classappend="${#lists.size(post.lvsImages) == 2} ? 'grid-cols-2' : 'grid-cols-2'">
+                            <div th:each="image, iterStat : ${post.lvsImages}" th:if="${iterStat.index < 4}"
+                                class="relative aspect-square overflow-hidden">
+                                <img th:src="@{${image.lvsImageUrl}}" alt="Post image"
+                                    class="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                                    th:onclick="'window.location.href=\'' + @{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})} + '\''">
+                                <!-- More images overlay -->
+                                <div th:if="${iterStat.index == 3 and #lists.size(post.lvsImages) > 4}"
+                                    class="absolute inset-0 bg-black/70 flex items-center justify-center cursor-pointer"
+                                    th:onclick="'window.location.href=\'' + @{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})} + '\''">
+                                    <span class="text-white text-3xl font-bold">
+                                        +<span th:text="${#lists.size(post.lvsImages) - 4}">0</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post Stats -->
+                    <div
+                        class="px-4 py-2 flex items-center justify-between text-sm text-gray-400 border-t border-[#3a3b3c]">
+                        <div class="flex gap-4">
+                            <span><i class="fas fa-eye mr-1"></i><span th:text="${post.lvsViewCount}">0</span></span>
+                            <span><i class="fas fa-heart mr-1"></i><span th:text="${post.lvsLikeCount}">0</span></span>
+                        </div>
+                        <span><span th:text="${post.lvsCommentCount}">0</span> comments</span>
+                    </div>
+
+                    <!-- Post Actions -->
+                    <div class="border-t border-[#3a3b3c] px-2 py-1 flex gap-1">
+                        <button th:onclick="'likePostInList(' + ${post.lvsPostId} + ', this)'"
+                            th:id="'likeBtn_' + ${post.lvsPostId}"
+                            class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#3a3b3c] rounded-lg transition-colors">
+                            <i class="far fa-heart text-gray-400"></i>
+                            <span class="text-gray-300 font-medium">Like (<span class="like-count"
+                                    th:text="${post.lvsLikeCount}">0</span>)</span>
+                        </button>
+                        <a th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})}"
+                            class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#3a3b3c] rounded-lg transition-colors">
+                            <i class="far fa-comment text-gray-400"></i>
+                            <span class="text-gray-300 font-medium">Comment</span>
+                        </a>
+                        <button th:onclick="'sharePostInList(' + ${post.lvsPostId} + ')'"
+                            class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#3a3b3c] rounded-lg transition-colors">
+                            <i class="far fa-share-square text-gray-400"></i>
+                            <span class="text-gray-300 font-medium">Share</span>
+                        </button>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${LvsPosts == null or LvsPosts.content.isEmpty()}"
+                class="bg-[#242526] rounded-lg p-12 text-center shadow-lg">
+                <i class="fas fa-newspaper text-6xl text-gray-600 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">No posts yet</h3>
+                <p class="text-gray-400 mb-6">Be the first to share something!</p>
+                <a th:href="@{/LvsUser/LvsBlog/LvsCreate}"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-[#fed700] text-black font-bold rounded-lg hover:bg-[#ffa500] transition-colors">
+                    <i class="fas fa-plus-circle"></i>
+                    Create First Post
+                </a>
+            </div>
+
+            <!-- Load More -->
+            <div th:if="${LvsPosts != null and LvsPosts.totalPages > 1}" class="mt-4 text-center">
+                <a th:if="${LvsPosts.number < LvsPosts.totalPages - 1}"
+                    th:href="@{/LvsUser/LvsBlog/LvsList(page=${LvsPosts.number + 1}, type=${LvsCurrentType}, sort=${LvsCurrentSort})}"
+                    class="inline-block px-8 py-3 bg-[#242526] text-white font-bold rounded-lg hover:bg-[#3a3b3c] transition-colors">
+                    Load More Posts
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Like post in list view
+        function likePostInList(postId) {
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+            fetch(`/lvsforum/LvsUser/LvsBlog/LvsLike/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const likeIcon = document.querySelector(`#like-icon-${postId}`);
+                        const likeCount = document.querySelector(`#like-count-${postId}`);
+
+                        if (likeIcon && likeCount) {
+                            if (data.liked) {
+                                likeIcon.classList.remove('far');
+                                likeIcon.classList.add('fas', 'text-red-500');
+                            } else {
+                                likeIcon.classList.remove('fas', 'text-red-500');
+                                likeIcon.classList.add('far');
+                            }
+                            likeCount.textContent = data.likeCount;
+                        }
+                    } else {
+                        alert(data.message || 'Please login to like posts');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error liking post');
+                });
+        }
+
+        // Share post in list view
+        function sharePostInList(postId) {
+            const url = window.location.origin + '/lvsforum/LvsUser/LvsBlog/LvsDetail/' + postId;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Link copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy link');
+            });
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-[#fed700] text-black px-6 py-3 rounded-lg shadow-lg z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

@@ -41,6 +41,9 @@ public interface LvsPostService {
     // Lấy bài viết theo người đăng
     Page<LvsPost> lvsGetPostsByUser(Long lvsUserId, Pageable lvsPageable);
 
+    // Lấy bài viết theo người đăng và trạng thái
+    Page<LvsPost> lvsGetPostsByUserAndStatus(Long lvsUserId, LvsPostStatus lvsStatus, Pageable lvsPageable);
+
     // Lấy bài viết mới nhất
     List<LvsPost> lvsGetNewestPosts(Pageable lvsPageable);
 

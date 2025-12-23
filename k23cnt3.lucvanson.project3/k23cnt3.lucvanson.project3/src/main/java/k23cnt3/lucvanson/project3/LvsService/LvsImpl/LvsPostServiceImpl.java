@@ -133,6 +133,19 @@ public class LvsPostServiceImpl implements LvsPostService {
     }
 
     /**
+     * Lấy bài viết theo người đăng và trạng thái
+     * 
+     * @param lvsUserId   ID người dùng
+     * @param lvsStatus   Trạng thái bài viết
+     * @param lvsPageable Thông tin phân trang
+     * @return Trang bài viết
+     */
+    @Override
+    public Page<LvsPost> lvsGetPostsByUserAndStatus(Long lvsUserId, LvsPostStatus lvsStatus, Pageable lvsPageable) {
+        return lvsPostRepository.findByLvsUser_LvsUserIdAndLvsStatus(lvsUserId, lvsStatus, lvsPageable);
+    }
+
+    /**
      * Lấy bài viết mới nhất
      * 
      * @param lvsPageable Thông tin phân trang

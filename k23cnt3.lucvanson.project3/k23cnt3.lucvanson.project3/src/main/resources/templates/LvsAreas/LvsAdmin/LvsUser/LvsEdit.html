@@ -78,7 +78,7 @@
                                 </div>
 
                                 <div class="row mb-3">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="lvsRole" class="form-label">Vai trò</label>
                                         <select class="form-select" id="lvsRole" name="lvsRole">
                                             <option th:each="role : ${lvsRoles}" th:value="${role}" th:text="${role}"
@@ -86,13 +86,25 @@
                                             </option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="lvsStatus" class="form-label">Trạng thái</label>
                                         <select class="form-select" id="lvsStatus" name="lvsStatus">
                                             <option th:each="status : ${lvsStatuses}" th:value="${status}"
                                                 th:text="${status}" th:selected="${status == lvsUser.lvsStatus}">
                                             </option>
                                         </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="lvsTitle" class="form-label">Title/Badge 🏆</label>
+                                        <select class="form-select" id="lvsTitle" name="lvsTitle">
+                                            <option
+                                                th:each="title : ${T(k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsUserTitle).values()}"
+                                                th:value="${title}"
+                                                th:text="${title.displayName} + ' (' + ${title.name()} + ')'"
+                                                th:selected="${title == lvsUser.lvsTitle}">
+                                            </option>
+                                        </select>
+                                        <div class="form-text">Chọn title/badge hiển thị cho user</div>
                                     </div>
                                 </div>
                             </div>
@@ -309,18 +321,18 @@
 
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
             <script>
-                                // Avatar preview
+                // Avatar preview
                 function previewAvatar(event) {
                     const file = event.target.files[0];
                     if (file) {
                         const reader = new FileReader();
-                        reader.onload = function(e) {
+                        reader.onload = function (e) {
                             document.getElementById('avatarPreview').src = e.target.result;
                         }
                         reader.readAsDataURL(file);
                     }
                 }
-// Quick balance update
+                // Quick balance update
                 function updateBalance(type, amount) {
                     var inputId = type === 'coin' ? 'lvsCoin' : 'lvsBalance';
                     var input = document.getElementById(inputId);

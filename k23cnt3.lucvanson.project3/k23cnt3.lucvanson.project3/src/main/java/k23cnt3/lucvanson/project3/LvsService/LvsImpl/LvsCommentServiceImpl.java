@@ -59,7 +59,8 @@ public class LvsCommentServiceImpl implements LvsCommentService {
      */
     @Override
     public Page<LvsComment> lvsGetCommentsByPost(Long lvsPostId, Pageable lvsPageable) {
-        return lvsCommentRepository.findByLvsPost_LvsPostId(lvsPostId, lvsPageable);
+        // Get only top-level comments (replies will be loaded via entity relationship)
+        return lvsCommentRepository.findByLvsPost_LvsPostIdAndLvsParentIsNull(lvsPostId, lvsPageable);
     }
 
     /**

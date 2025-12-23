@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Create Post</title>
+    <style>
+        /* Image preview styles */
+        .image-preview-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-preview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-center;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content" class="min-h-screen bg-[#18191a] p-4">
+        <div class="max-w-[500px] mx-auto">
+
+            <!-- Create Post Modal Style -->
+            <div class="bg-[#242526] rounded-lg shadow-2xl">
+                <!-- Header -->
+                <div class="p-4 border-b border-[#3a3b3c] flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-white">Create Post</h2>
+                    <a th:href="@{/LvsUser/LvsBlog/LvsList}"
+                        class="w-9 h-9 flex items-center justify-center bg-[#3a3b3c] hover:bg-[#4e4f50] rounded-full transition-colors">
+                        <i class="fas fa-times text-gray-400"></i>
+                    </a>
+                </div>
+
+                <!-- Form -->
+                <form th:action="@{/LvsUser/LvsBlog/LvsCreate}" method="post" enctype="multipart/form-data"
+                    id="createPostForm" class="p-4">
+
+                    <!-- User Info -->
+                    <div class="flex items-center gap-3 mb-4">
+                        <div th:if="${session.LvsCurrentUser.lvsAvatarUrl != null and !session.LvsCurrentUser.lvsAvatarUrl.isEmpty()}"
+                            class="w-10 h-10 rounded-full overflow-hidden">
+                            <img th:src="@{${session.LvsCurrentUser.lvsAvatarUrl}}" alt="Avatar"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div th:unless="${session.LvsCurrentUser.lvsAvatarUrl != null and !session.LvsCurrentUser.lvsAvatarUrl.isEmpty()}"
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center text-black font-bold">
+                            <span
+                                th:text="${#strings.substring(session.LvsCurrentUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                        </div>
+                        <div>
+                            <div class="font-bold text-white" th:text="${session.LvsCurrentUser.lvsUsername}">Username
+                            </div>
+                            <select name="lvsType" required
+                                class="text-xs bg-[#3a3b3c] text-gray-300 border-none rounded px-2 py-1 cursor-pointer">
+                                <option value="DISCUSSION">💬 Discussion</option>
+                                <option value="TUTORIAL">📚 Tutorial</option>
+                                <option value="REVIEW">⭐ Review</option>
+                                <option value="NEWS">📰 News</option>
+                                <option value="SHOWCASE">🎨 Showcase</option>
+                                <option value="QUESTION">❓ Question</option>
+                                <option value="ANNOUNCEMENT">📢 Announcement</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Title Input (Optional) -->
+                    <div class="mb-3">
+                        <input type="text" name="lvsTitle" maxlength="200" placeholder="Add a title (optional)"
+                            class="w-full bg-transparent text-white text-xl font-bold placeholder-gray-500 border-none focus:outline-none">
+                    </div>
+
+                    <!-- Content Textarea -->
+                    <div class="mb-3">
+                        <textarea name="lvsContent" required rows="6" id="postContent"
+                            placeholder="What's on your mind?"
+                            class="w-full bg-transparent text-white text-lg placeholder-gray-500 border-none focus:outline-none resize-none"></textarea>
+                    </div>
+
+                    <!-- Emoji Picker Trigger -->
+                    <div class="mb-3">
+                        <button type="button" onclick="insertEmoji()"
+                            class="text-gray-400 hover:text-[#fed700] transition-colors">
+                            <i class="far fa-smile text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Image Upload Section -->
+                    <div class="mb-4">
+                        <div id="imagePreviewContainer" class="grid grid-cols-3 gap-2 mb-3 hidden"></div>
+
+                        <label for="imageInput"
+                            class="block border-2 border-dashed border-[#3a3b3c] hover:border-[#fed700] rounded-lg p-6 cursor-pointer transition-colors">
+                            <div class="text-center">
+                                <i class="fas fa-images text-4xl text-gray-500 mb-2"></i>
+                                <p class="text-gray-400 font-medium">Add Photos/Videos</p>
+                                <p class="text-gray-500 text-sm">or drag and drop</p>
+                            </div>
+                            <input type="file" name="images" multiple accept="image/*,video/*,.gif" id="imageInput"
+                                class="hidden" onchange="previewImages(event)">
+                        </label>
+                    </div>
+
+                    <!-- Tags Input -->
+                    <div class="mb-4">
+                        <input type="text" name="lvsTags" placeholder="Add tags (e.g., javascript, tutorial, beginners)"
+                            class="w-full bg-[#3a3b3c] text-white px-4 py-2.5 rounded-lg placeholder-gray-500 border-none focus:outline-none focus:ring-2 focus:ring-[#fed700]">
+                    </div>
+
+                    <!-- Additional Options -->
+                    <div class="bg-[#3a3b3c] rounded-lg p-3 mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-white font-medium">Add to your post</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="document.getElementById('imageInput').click()"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#4e4f50] rounded-lg transition-colors">
+                                <i class="fas fa-image text-green-500"></i>
+                                <span class="text-gray-300 text-sm">Photo</span>
+                            </button>
+                            <button type="button" onclick="insertEmoji()"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#4e4f50] rounded-lg transition-colors">
+                                <i class="fas fa-smile text-yellow-500"></i>
+                                <span class="text-gray-300 text-sm">Emoji</span>
+                            </button>
+                            <button type="button" onclick="toggleTags()"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#4e4f50] rounded-lg transition-colors">
+                                <i class="fas fa-tag text-blue-500"></i>
+                                <span class="text-gray-300 text-sm">Tag</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Status Selection -->
+                    <input type="hidden" name="lvsStatus" value="PUBLISHED" id="statusInput">
+
+                    <!-- Submit Buttons -->
+                    <div class="flex gap-2">
+                        <button type="submit"
+                            class="flex-1 bg-[#fed700] hover:bg-[#ffa500] text-black font-bold py-3 rounded-lg transition-colors">
+                            Post
+                        </button>
+                        <button type="button" onclick="saveDraft()"
+                            class="px-6 bg-[#3a3b3c] hover:bg-[#4e4f50] text-white font-bold py-3 rounded-lg transition-colors">
+                            Save Draft
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="scripts">
+        // Image Preview Function
+        function previewImages(event) {
+            const container = document.getElementById('imagePreviewContainer');
+            const files = event.target.files;
+
+            if (files.length > 0) {
+                container.classList.remove('hidden');
+                container.innerHTML = '';
+
+                Array.from(files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const div = document.createElement('div');
+                        div.className = 'image-preview-container';
+                        div.innerHTML = `
+                            <img src="${e.target.result}" class="image-preview" alt="Preview ${index + 1}">
+                            <button type="button" class="remove-image" onclick="removeImage(${index})">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        `;
+                        container.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        // Remove Image
+        function removeImage(index) {
+            const input = document.getElementById('imageInput');
+            const dt = new DataTransfer();
+            const files = input.files;
+
+            for (let i = 0; i < files.length; i++) {
+                if (i !== index) {
+                    dt.items.add(files[i]);
+                }
+            }
+
+            input.files = dt.files;
+            previewImages({ target: input });
+        }
+
+        // Insert Emoji (Simple version - you can add emoji picker library)
+        function insertEmoji() {
+            const emojis = ['😀', '😂', '😍', '🥰', '😎', '🤔', '👍', '❤️', '🔥', '✨', '🎉', '💯'];
+            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            const textarea = document.getElementById('postContent');
+            const cursorPos = textarea.selectionStart;
+            const textBefore = textarea.value.substring(0, cursorPos);
+            const textAfter = textarea.value.substring(cursorPos);
+            textarea.value = textBefore + emoji + textAfter;
+            textarea.focus();
+            textarea.selectionStart = textarea.selectionEnd = cursorPos + emoji.length;
+        }
+
+        // Save as Draft
+        function saveDraft() {
+            document.getElementById('statusInput').value = 'DRAFT';
+            document.getElementById('createPostForm').submit();
+        }
+
+        // Toggle Tags Input
+        function toggleTags() {
+            const tagsInput = document.querySelector('input[name="lvsTags"]');
+            tagsInput.focus();
+        }
+
+        // Pre-fill content from URL parameter (for Share to Blog)
+        window.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedContent = urlParams.get('content');
+
+            if (sharedContent) {
+                const textarea = document.getElementById('postContent');
+                textarea.value = decodeURIComponent(sharedContent);
+            }
+        });
+    </script>
+</body>
+
+</html>

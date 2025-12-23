@@ -51,14 +51,18 @@ public class LvsSecurityConfig {
                                                 .requestMatchers("/LvsAdmin/LvsLogout", "/LvsUser/LvsLogout",
                                                                 "/LvsLogout")
                                                 .permitAll()
+                                                // Public user pages - can view without login
+                                                .requestMatchers("/lvsforum", "/LvsUser/LvsDashboard", "/LvsUser/",
+                                                                "/LvsUser")
+                                                .permitAll()
                                                 // Admin pages - yêu cầu ROLE_ADMIN
                                                 .requestMatchers("/LvsAdmin/**").hasAuthority("ROLE_ADMIN")
                                                 // Moderator pages - yêu cầu ROLE_MODERATOR
                                                 .requestMatchers("/LvsModerator/**").hasAuthority("ROLE_MODERATOR")
-                                                // User pages - yêu cầu authenticated (any logged in user)
+                                                // Other User pages - yêu cầu authenticated (any logged in user)
                                                 .requestMatchers("/LvsUser/**").authenticated()
-                                                // Tất cả các request khác cần xác thực
-                                                .anyRequest().authenticated())
+                                                // Tất cả các request khác có thể truy cập
+                                                .anyRequest().permitAll())
                                 // DISABLE Spring Security form login - use custom controller instead
                                 // .formLogin(form -> form
                                 // .loginPage("/LvsLogin")
@@ -70,21 +74,32 @@ public class LvsSecurityConfig {
                                 // .permitAll())
                                 .logout(logout -> logout
                                                 .logoutUrl("/LvsLogout") // URL để logout
-                                                .logoutSuccessUrl("/LvsLogin?logout=true") // Sau logout thành công
+                                                .logoutSuccessHandler((request, response, authentication) -> {
+                                                        // Check where logout came from
+                                                        String referer = request.getHeader("Referer");
+                                                        if (referer != null && (referer.contains("/LvsAdmin")
+                                                                        || referer.contains("/LvsModerator"))) {
+                                                                // Logout from admin/moderator → go to login
+                                                                response.sendRedirect(request.getContextPath()
+                                                                                + "/LvsUser/LvsLogin");
+                                                        } else {
+                                                                // Logout from user area → go to login
+                                                                response.sendRedirect(request.getContextPath()
+                                                                                + "/LvsUser/LvsLogin");
+                                                        }
+                                                })
                                                 .invalidateHttpSession(true)
                                                 .deleteCookies("JSESSIONID")
                                                 .permitAll())
                                 .exceptionHandling(ex -> ex
                                                 .accessDeniedPage("/403") // Trang 403
                                                 .authenticationEntryPoint((request, response, authException) -> {
-                                                        // Redirect to admin login if accessing admin pages
-                                                        String requestURI = request.getRequestURI();
-                                                        if (requestURI.contains("/LvsAdmin")) {
+                                                        // ALL logins go to user login page
+                                                        // Check if session expired
+                                                        if (request.getRequestedSessionId() != null
+                                                                        && !request.isRequestedSessionIdValid()) {
                                                                 response.sendRedirect(request.getContextPath()
-                                                                                + "/LvsAdmin/LvsLogin");
-                                                        } else if (requestURI.contains("/LvsModerator")) {
-                                                                response.sendRedirect(request.getContextPath()
-                                                                                + "/LvsModerator/LvsLogin");
+                                                                                + "/LvsUser/LvsLogin?session=expired");
                                                         } else {
                                                                 response.sendRedirect(request.getContextPath()
                                                                                 + "/LvsUser/LvsLogin");

@@ -83,6 +83,10 @@ public interface LvsPostRepository extends JpaRepository<LvsPost, Long> {
         // Đếm bài viết trong khoảng thời gian
         Long countByLvsCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 
+        // Đếm bài viết của user trong khoảng thời gian (for title calculation)
+        Long countByLvsUser_LvsUserIdAndLvsCreatedAtBetween(Long lvsUserId, LocalDateTime startDate,
+                        LocalDateTime endDate);
+
         // Lấy bài viết mới nhất
         List<LvsPost> findByLvsStatusOrderByLvsCreatedAtDesc(LvsPostStatus lvsStatus);
 

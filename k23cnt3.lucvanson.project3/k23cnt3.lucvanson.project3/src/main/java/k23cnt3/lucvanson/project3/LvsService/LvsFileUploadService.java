@@ -55,8 +55,9 @@ public class LvsFileUploadService {
         Path filePath = uploadPath.resolve(newFilename);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // Trả về URL tương đối với context path
-        return "/lvsforum/uploads/" + folder + "/" + newFilename;
+        // Trả về URL tương đối (không có context path)
+        // Thymeleaf sẽ tự động thêm context path khi render
+        return "/uploads/" + folder + "/" + newFilename;
     }
 
     /**

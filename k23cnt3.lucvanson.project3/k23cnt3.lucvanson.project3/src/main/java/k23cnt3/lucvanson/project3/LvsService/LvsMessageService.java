@@ -38,6 +38,9 @@ public interface LvsMessageService {
     // Lấy danh sách cuộc trò chuyện
     List<LvsUser> lvsGetConversations(Long lvsUserId);
 
+    // Lấy danh sách cuộc trò chuyện với tin nhắn mới nhất
+    List<k23cnt3.lucvanson.project3.LvsDTO.LvsConversationDTO> lvsGetConversationsWithLatestMessage(Long lvsUserId);
+
     // Gửi tin nhắn
     LvsMessage lvsSendMessage(LvsMessage lvsMessage);
 

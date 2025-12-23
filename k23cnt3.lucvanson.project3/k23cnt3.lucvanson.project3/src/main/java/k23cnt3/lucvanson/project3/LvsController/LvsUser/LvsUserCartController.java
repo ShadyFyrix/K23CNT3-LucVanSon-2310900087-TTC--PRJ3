@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository;
 
 import java.util.List;
 
@@ -26,6 +28,9 @@ public class LvsUserCartController {
 
     @Autowired
     private LvsUserService lvsUserService;
+
+    @Autowired
+    private LvsUserRepository lvsUserRepository;
 
     /**
      * Xem giỏ hàng của user hiện tại
@@ -63,17 +68,17 @@ public class LvsUserCartController {
     public String lvsAddToCart(@RequestParam Long lvsProjectId,
             @RequestParam(defaultValue = "1") Integer lvsQuantity,
             HttpSession session,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
-            return "redirect:/LvsAuth/LvsLogin.html";
+            return "redirect:/LvsLogin";
         }
 
         try {
             lvsCartService.lvsAddToCart(lvsCurrentUser.getLvsUserId(), lvsProjectId, lvsQuantity);
-            model.addAttribute("LvsSuccess", "Đã thêm vào giỏ hàng!");
+            redirectAttributes.addFlashAttribute("success", "Added to cart successfully!");
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error: " + e.getMessage());
         }
 
         return "redirect:/LvsUser/LvsCart/LvsView";
@@ -164,17 +169,18 @@ public class LvsUserCartController {
 
     // Thanh toán giỏ hàng
     @PostMapping("/LvsCheckout")
-    public String lvsCheckout(HttpSession session, Model model) {
+    public String lvsCheckout(HttpSession session,
+            RedirectAttributes redirectAttributes) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
-            return "redirect:/LvsAuth/LvsLogin.html";
+            return "redirect:/LvsLogin";
         }
 
         try {
             // Kiểm tra số dư coin
             LvsCart lvsCart = lvsCartService.lvsGetCartByUserId(lvsCurrentUser.getLvsUserId());
             if (lvsCart.getLvsFinalPrice() > lvsCurrentUser.getLvsCoin()) {
-                model.addAttribute("LvsError", "Số coin không đủ để thanh toán!");
+                redirectAttributes.addFlashAttribute("error", "Insufficient coins!");
                 return "redirect:/LvsUser/LvsCart/LvsView";
             }
 
@@ -182,14 +188,21 @@ public class LvsUserCartController {
             LvsOrder lvsOrder = lvsCartService.lvsCheckout(lvsCurrentUser.getLvsUserId());
 
             if (lvsOrder != null) {
-                model.addAttribute("LvsSuccess", "Thanh toán thành công!");
+                // Update session with new coin balance
+                LvsUser lvsUpdatedUser = lvsUserRepository.findById(lvsCurrentUser.getLvsUserId()).orElse(null);
+                if (lvsUpdatedUser != null) {
+                    session.setAttribute("LvsCurrentUser", lvsUpdatedUser);
+                }
+
+                redirectAttributes.addFlashAttribute("success",
+                        "Checkout successful! Order #" + lvsOrder.getLvsOrderCode());
                 return "redirect:/LvsUser/LvsOrder/LvsDetail/" + lvsOrder.getLvsOrderId();
             } else {
-                model.addAttribute("LvsError", "Thanh toán thất bại!");
+                redirectAttributes.addFlashAttribute("error", "Checkout failed!");
                 return "redirect:/LvsUser/LvsCart/LvsView";
             }
         } catch (Exception e) {
-            model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error: " + e.getMessage());
             return "redirect:/LvsUser/LvsCart/LvsView";
         }
     }
