@@ -58,7 +58,7 @@ public interface LvsMessageRepository extends JpaRepository<LvsMessage, Long> {
         @Query("SELECT m FROM LvsMessage m WHERE " +
                         "(m.lvsSender.lvsUserId = :userId1 AND m.lvsReceiver.lvsUserId = :userId2) OR " +
                         "(m.lvsSender.lvsUserId = :userId2 AND m.lvsReceiver.lvsUserId = :userId1) " +
-                        "ORDER BY m.lvsCreatedAt DESC")
+                        "ORDER BY m.lvsCreatedAt ASC")
         Page<LvsMessage> findConversationBetweenUsers(@Param("userId1") Long userId1,
                         @Param("userId2") Long userId2,
                         Pageable pageable);

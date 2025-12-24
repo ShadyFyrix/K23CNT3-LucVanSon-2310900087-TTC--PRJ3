@@ -9,28 +9,41 @@
 <body>
     <div layout:fragment="content">
         <div class="container mx-auto px-4 py-8 max-w-3xl">
-            <h1 class="text-3xl font-bold text-white mb-8"><i class="fas fa-edit mr-3 text-[#fed700]"></i>Chỉnh sửa dự
-                án</h1>
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-edit mr-3 text-[#fed700]"></i>Sửa dự án
+            </h1>
+
+            <!-- Error/Success Messages -->
+            <div th:if="${error}" class="bg-red-500/20 border border-red-500 text-red-400 px-6 py-4 rounded-lg mb-6">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span th:text="${error}"></span>
+            </div>
 
             <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-8">
-                <form th:action="@{/LvsUser/LvsProject/LvsUpdate}" method="post" th:object="${LvsProject}">
-                    <input type="hidden" th:field="*{lvsProjectId}">
+                <form th:action="@{/LvsUser/LvsProject/LvsUpdate/{id}(id=${LvsProject.lvsProjectId})}" method="post"
+                    th:object="${LvsProject}" enctype="multipart/form-data">
 
+                    <!-- CSRF Token -->
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                    <!-- Project Name -->
                     <div class="mb-6">
                         <label class="block text-sm font-bold text-gray-300 mb-2">Tên dự án *</label>
                         <input type="text" th:field="*{lvsProjectName}" required
                             class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
                     </div>
 
+                    <!-- Description -->
                     <div class="mb-6">
                         <label class="block text-sm font-bold text-gray-300 mb-2">Mô tả *</label>
                         <textarea th:field="*{lvsDescription}" rows="6" required
                             class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none"></textarea>
                     </div>
 
+                    <!-- Price and Category -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="block text-sm font-bold text-gray-300 mb-2">Giá *</label>
+                            <label class="block text-sm font-bold text-gray-300 mb-2">Giá (Coins) *</label>
                             <input type="number" th:field="*{lvsPrice}" step="0.01" min="0" required
                                 class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
                         </div>
@@ -45,10 +58,108 @@
                         </div>
                     </div>
 
+                    <!-- Current Project File -->
+                    <div class="mb-6" th:if="${LvsProject.lvsFileUrl}">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-file-archive text-[#fed700] mr-2"></i>File hiện tại
+                        </label>
+                        <div class="flex gap-2">
+                            <input type="text" th:value="${LvsProject.lvsFileUrl}" readonly
+                                class="flex-1 bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-gray-400">
+                            <a th:href="${LvsProject.lvsFileUrl}" download
+                                class="bg-[#fed700] text-black font-bold px-6 py-3 rounded-lg hover:bg-yellow-400 transition">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- New Project File Upload -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-file-archive text-[#fed700] mr-2"></i>Thay đổi file dự án (ZIP/RAR)
+                        </label>
+                        <input type="file" name="projectFile" accept=".zip,.rar,.7z"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#fed700] file:text-black file:font-bold hover:file:bg-yellow-400">
+                        <p class="text-sm text-gray-400 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>Chỉ upload nếu muốn thay đổi file hiện tại
+                        </p>
+                    </div>
+
+                    <!-- Current Thumbnail -->
+                    <div class="mb-6" th:if="${LvsProject.lvsThumbnailUrl}">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">Ảnh thumbnail hiện tại</label>
+                        <img th:src="@{${LvsProject.lvsThumbnailUrl}}" alt="Current Thumbnail"
+                            class="w-48 h-48 object-cover rounded-lg border border-[#444]">
+                    </div>
+
+                    <!-- New Thumbnail Upload -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-image text-[#fed700] mr-2"></i>Thay đổi ảnh thumbnail
+                        </label>
+                        <input type="file" name="thumbnail" accept="image/*" id="thumbnailInput"
+                            onchange="previewThumbnail(event)"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#fed700] file:text-black file:font-bold hover:file:bg-yellow-400">
+                        <div id="thumbnailPreview" class="mt-4 hidden">
+                            <img id="thumbnailImg" src="" alt="Preview"
+                                class="w-48 h-48 object-cover rounded-lg border border-[#444]">
+                        </div>
+                    </div>
+
+                    <!-- Existing Additional Images -->
+                    <div class="mb-6" th:if="${LvsProject.lvsImages}">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-images text-[#fed700] mr-2"></i>Ảnh bổ sung hiện tại
+                        </label>
+                        <div id="existingAdditionalImages" class="grid grid-cols-3 gap-4"></div>
+                    </div>
+
+                    <!-- Additional Images Upload -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-images text-[#fed700] mr-2"></i>Thêm ảnh bổ sung
+                        </label>
+                        <input type="file" name="additionalImages" accept="image/*" multiple id="imagesInput"
+                            onchange="previewImages(event)"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#fed700] file:text-black file:font-bold hover:file:bg-yellow-400">
+                        <div id="imagesPreview" class="mt-4 grid grid-cols-3 gap-4"></div>
+                    </div>
+
+                    <!-- Demo URL -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-external-link-alt text-[#fed700] mr-2"></i>Demo URL
+                        </label>
+                        <input type="url" name="demoUrl" th:value="${LvsProject.lvsDemoUrl}"
+                            placeholder="https://demo.example.com"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
+                    </div>
+
+                    <!-- Source Code URL -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fab fa-github text-[#fed700] mr-2"></i>Source Code URL
+                        </label>
+                        <input type="url" name="sourceCodeUrl" th:value="${LvsProject.lvsSourceCodeUrl}"
+                            placeholder="https://github.com/username/repo"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-tags text-[#fed700] mr-2"></i>Tags
+                        </label>
+                        <input type="text" name="tags" th:value="${LvsProject.lvsTags}"
+                            placeholder="java, spring boot, web app"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
+                    </div>
+
+                    <!-- Buttons -->
                     <div class="flex gap-4">
                         <button type="submit"
                             class="flex-1 bg-[#fed700] text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition">
-                            <i class="fas fa-save mr-2"></i>Lưu thay đổi
+                            <i class="fas fa-save mr-2"></i>Cập nhật dự án
                         </button>
                         <a th:href="@{/LvsUser/LvsProject/LvsMyProjects}"
                             class="flex-1 bg-[#1e1e1e] border border-[#444] text-white font-bold py-3 rounded-lg hover:border-[#fed700] transition text-center">
@@ -59,6 +170,112 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript for Image Preview -->
+    <script layout:fragment="scripts" th:inline="javascript">
+        // Load existing additional images on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            /*<![CDATA[*/
+            const existingImagesJson = /*[[${LvsProject.lvsImages}]]*/ '';
+            console.log('Existing images JSON:', existingImagesJson);
+            console.log('Type:', typeof existingImagesJson);
+            console.log('Length:', existingImagesJson ? existingImagesJson.length : 0);
+
+            if (existingImagesJson && existingImagesJson.trim() !== '' && existingImagesJson !== 'null') {
+                try {
+                    const images = JSON.parse(existingImagesJson);
+                    console.log('Parsed images:', images);
+                    console.log('Is array:', Array.isArray(images));
+
+                    const container = document.getElementById('existingAdditionalImages');
+                    console.log('Container found:', container);
+
+                    const contextPath = '/lvsforum'; // Hardcoded context path
+
+                    if (container && Array.isArray(images) && images.length > 0) {
+                        console.log('Loading', images.length, 'images');
+                        images.forEach((imageUrl, index) => {
+                            // Add context path if not present
+                            const fullUrl = imageUrl.startsWith('/lvsforum') ? imageUrl : contextPath + imageUrl;
+                            console.log('Image', index, 'URL:', fullUrl);
+
+                            const div = document.createElement('div');
+                            div.className = 'relative';
+                            div.innerHTML = `
+                                <img src="${fullUrl}" alt="Image ${index + 1}" 
+                                     class="w-full h-32 object-cover rounded-lg border border-[#444]">
+                                <button type="button" 
+                                        onclick="deleteExistingImage('${imageUrl}', this)"
+                                        class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+                            container.appendChild(div);
+                        });
+                        console.log('Images loaded successfully');
+                    } else {
+                        console.log('Container or images missing:', {
+                            hasContainer: !!container,
+                            isArray: Array.isArray(images),
+                            imagesLength: images ? images.length : 0
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error loading existing images:', e);
+                    console.error('JSON that failed:', existingImagesJson);
+                }
+            } else {
+                console.log('No existing images JSON found or empty/null');
+            }
+            /*]]>*/
+        });
+
+        function previewThumbnail(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('thumbnailImg').src = e.target.result;
+                    document.getElementById('thumbnailPreview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewImages(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('imagesPreview');
+            preview.innerHTML = '';
+
+            Array.from(files).forEach((file, index) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const div = document.createElement('div');
+                        div.className = 'relative';
+                        div.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview ${index + 1}" 
+                                 class="w-full h-32 object-cover rounded-lg border border-[#444]">
+                        `;
+                        preview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Delete existing image function
+        function deleteExistingImage(imageUrl, button) {
+            if (confirm('Bạn có chắc muốn xóa ảnh này?')) {
+                // Remove from DOM
+                button.closest('.relative').remove();
+
+                // Note: Actual deletion from server would require form submission
+                // For now, just hide it from view
+                console.log('Marked for deletion:', imageUrl);
+            }
+        }
+    </script>
 </body>
 
 </html>

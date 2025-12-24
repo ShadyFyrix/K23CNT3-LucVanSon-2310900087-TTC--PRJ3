@@ -12,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import jakarta.annotation.PostConstruct;
 
 /**
  * Service xử lý upload file ảnh
@@ -25,6 +26,17 @@ public class LvsFileUploadService {
 
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif", "webp");
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+    @PostConstruct
+    public void init() {
+        System.out.println("=".repeat(80));
+        System.out.println("📁 UPLOAD DIRECTORY CONFIGURATION");
+        System.out.println("=".repeat(80));
+        System.out.println("Upload Dir: " + uploadDir);
+        System.out.println("Working Dir: " + System.getProperty("user.dir"));
+        System.out.println("Absolute Path: " + new java.io.File(uploadDir).getAbsolutePath());
+        System.out.println("=".repeat(80));
+    }
 
     /**
      * Lưu file ảnh vào thư mục uploads
@@ -55,8 +67,8 @@ public class LvsFileUploadService {
         Path filePath = uploadPath.resolve(newFilename);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // Trả về URL tương đối (không có context path)
-        // Thymeleaf sẽ tự động thêm context path khi render
+        // Trả về URL tương đối (Thymeleaf @{} sẽ tự động thêm context path)
+        // Format: /uploads/{folder}/{filename}
         return "/uploads/" + folder + "/" + newFilename;
     }
 
@@ -148,6 +160,40 @@ public class LvsFileUploadService {
             return "";
         }
         return filename.substring(filename.lastIndexOf(".") + 1);
+    }
+
+    /**
+     * Lưu file dự án (ZIP/RAR) vào thư mục uploads
+     * Không validate như image file
+     * 
+     * @param file   File cần upload
+     * @param folder Thư mục con (projects)
+     * @return URL tương đối của file đã lưu
+     * @throws IOException Nếu có lỗi khi lưu file
+     */
+    public String lvsSaveProjectFile(MultipartFile file, String folder) throws IOException {
+        // Validate file không null và không empty
+        if (file == null || file.isEmpty()) {
+            throw new IOException("File không hợp lệ");
+        }
+
+        // Tạo thư mục nếu chưa tồn tại
+        Path uploadPath = Paths.get(uploadDir + folder);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // Tạo tên file unique
+        String originalFilename = file.getOriginalFilename();
+        String extension = lvsGetFileExtension(originalFilename);
+        String newFilename = UUID.randomUUID().toString() + "." + extension;
+
+        // Lưu file
+        Path filePath = uploadPath.resolve(newFilename);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // Trả về URL tương đối (Thymeleaf @{} sẽ tự động thêm context path)
+        return "/uploads/" + folder + "/" + newFilename;
     }
 
     /**

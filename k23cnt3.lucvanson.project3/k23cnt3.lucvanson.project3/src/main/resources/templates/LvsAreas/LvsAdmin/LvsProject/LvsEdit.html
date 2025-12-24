@@ -119,9 +119,33 @@
                                             <input type="url" class="form-control" th:field="*{lvsSourceCodeUrl}">
                                         </div>
 
+                                        <!-- Current File URL -->
+                                        <div class="mb-3" th:if="${lvsProject.lvsFileUrl}">
+                                            <label class="form-label">File hiện tại</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control"
+                                                    th:value="${lvsProject.lvsFileUrl}" readonly>
+                                                <a th:href="${lvsProject.lvsFileUrl}" class="btn btn-outline-primary"
+                                                    target="_blank">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <!-- New Project File Upload -->
                                         <div class="mb-3">
-                                            <label class="form-label">URL File</label>
-                                            <input type="url" class="form-control" th:field="*{lvsFileUrl}">
+                                            <label class="form-label">Thay đổi file dự án (ZIP/RAR)</label>
+                                            <input type="file" class="form-control" name="lvsProjectFile"
+                                                id="lvsProjectFile" accept=".zip,.rar,.7z">
+                                            <small class="text-muted">Chỉ upload nếu muốn thay đổi file hiện tại</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">URL File (hoặc upload file ở trên)</label>
+                                            <input type="text" class="form-control" th:value="${lvsProject.lvsFileUrl}"
+                                                readonly>
+                                            <small class="text-muted">Nếu upload file mới, field này sẽ tự động cập
+                                                nhật</small>
                                         </div>
 
                                         <div class="mb-3">
@@ -163,12 +187,17 @@
                     try {
                         const images = JSON.parse(existingImagesJson);
                         const container = document.getElementById('existingImages');
+                        const contextPath = '/lvsforum'; // Hardcoded context path
+
                         images.forEach((imageUrl, index) => {
+                            // Add context path if not present
+                            const fullUrl = imageUrl.startsWith('/lvsforum') ? imageUrl : contextPath + imageUrl;
+
                             const col = document.createElement('div');
                             col.className = 'col-6';
                             col.innerHTML = `
                             <div class="position-relative">
-                                <img src="${imageUrl}" class="img-thumbnail" 
+                                <img src="${fullUrl}" class="img-thumbnail" 
                                      style="width: 100%; height: 150px; object-fit: cover;">
                                 <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
                                         onclick="deleteExistingImage('${imageUrl}', this)">

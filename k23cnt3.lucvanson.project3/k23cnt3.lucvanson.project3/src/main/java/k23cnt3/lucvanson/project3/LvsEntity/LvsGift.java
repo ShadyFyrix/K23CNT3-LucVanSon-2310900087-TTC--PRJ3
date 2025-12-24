@@ -36,6 +36,11 @@ public class LvsGift {
     @Column(name = "LvsRespondedAt")
     private LocalDateTime lvsRespondedAt;
 
+    // Track sender's order for refund/cancellation
+    @ManyToOne
+    @JoinColumn(name = "LvsOrderId")
+    private LvsOrder lvsOrder;
+
     public enum LvsGiftStatus {
         PENDING, ACCEPTED, REJECTED, CANCELLED
     }
@@ -108,5 +113,13 @@ public class LvsGift {
 
     public void setLvsRespondedAt(LocalDateTime lvsRespondedAt) {
         this.lvsRespondedAt = lvsRespondedAt;
+    }
+
+    public LvsOrder getLvsOrder() {
+        return lvsOrder;
+    }
+
+    public void setLvsOrder(LvsOrder lvsOrder) {
+        this.lvsOrder = lvsOrder;
     }
 }

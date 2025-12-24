@@ -9,26 +9,35 @@
 <body>
     <div layout:fragment="content">
         <div class="container mx-auto px-4 py-8 max-w-3xl">
-            <h1 class="text-3xl font-bold text-white mb-8"><i class="fas fa-plus-circle mr-3 text-[#fed700]"></i>Thêm dự
-                án mới</h1>
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-plus-circle mr-3 text-[#fed700]"></i>Thêm dự án mới
+            </h1>
 
             <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-8">
-                <form th:action="@{/LvsUser/LvsProject/LvsCreate}" method="post" th:object="${LvsProject}">
+                <form th:action="@{/LvsUser/LvsProject/LvsCreate}" method="post" th:object="${LvsProject}"
+                    enctype="multipart/form-data">
+
+                    <!-- CSRF Token -->
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                    <!-- Project Name -->
                     <div class="mb-6">
                         <label class="block text-sm font-bold text-gray-300 mb-2">Tên dự án *</label>
                         <input type="text" th:field="*{lvsProjectName}" required
                             class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
                     </div>
 
+                    <!-- Description -->
                     <div class="mb-6">
                         <label class="block text-sm font-bold text-gray-300 mb-2">Mô tả *</label>
                         <textarea th:field="*{lvsDescription}" rows="6" required
                             class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none"></textarea>
                     </div>
 
+                    <!-- Price and Category -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="block text-sm font-bold text-gray-300 mb-2">Giá *</label>
+                            <label class="block text-sm font-bold text-gray-300 mb-2">Giá (Coins) *</label>
                             <input type="number" th:field="*{lvsPrice}" step="0.01" min="0" required
                                 class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
                         </div>
@@ -43,6 +52,86 @@
                         </div>
                     </div>
 
+                    <!-- Project File Upload (REQUIRED) -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-file-archive text-[#fed700] mr-2"></i>File dự án (ZIP/RAR) *
+                        </label>
+                        <input type="file" name="projectFile" accept=".zip,.rar,.7z" required
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#fed700] file:text-black file:font-bold hover:file:bg-yellow-400">
+                        <p class="text-sm text-gray-400 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>Upload file dự án của bạn (ZIP, RAR, 7Z). Max 100MB
+                        </p>
+                    </div>
+
+                    <!-- Thumbnail Image Upload -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-image text-[#fed700] mr-2"></i>Ảnh thumbnail
+                        </label>
+                        <input type="file" name="thumbnail" accept="image/*" id="thumbnailInput"
+                            onchange="previewThumbnail(event)"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#fed700] file:text-black file:font-bold hover:file:bg-yellow-400">
+                        <p class="text-sm text-gray-400 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>Ảnh đại diện cho dự án (JPG, PNG, GIF)
+                        </p>
+                        <div id="thumbnailPreview" class="mt-4 hidden">
+                            <img id="thumbnailImg" src="" alt="Preview"
+                                class="w-48 h-48 object-cover rounded-lg border border-[#444]">
+                        </div>
+                    </div>
+
+                    <!-- Additional Images -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-images text-[#fed700] mr-2"></i>Ảnh bổ sung
+                        </label>
+                        <input type="file" name="additionalImages" accept="image/*" multiple id="imagesInput"
+                            onchange="previewImages(event)"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#fed700] file:text-black file:font-bold hover:file:bg-yellow-400">
+                        <p class="text-sm text-gray-400 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>Upload nhiều ảnh để showcase dự án
+                        </p>
+                        <div id="imagesPreview" class="mt-4 grid grid-cols-3 gap-4"></div>
+                    </div>
+
+                    <!-- Demo URL -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-external-link-alt text-[#fed700] mr-2"></i>Demo URL
+                        </label>
+                        <input type="url" name="demoUrl" placeholder="https://demo.example.com"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
+                        <p class="text-sm text-gray-400 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>Link demo trực tuyến (nếu có)
+                        </p>
+                    </div>
+
+                    <!-- Source Code URL -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fab fa-github text-[#fed700] mr-2"></i>Source Code URL
+                        </label>
+                        <input type="url" name="sourceCodeUrl" placeholder="https://github.com/username/repo"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
+                        <p class="text-sm text-gray-400 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>Link GitHub hoặc repository (nếu có)
+                        </p>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">
+                            <i class="fas fa-tags text-[#fed700] mr-2"></i>Tags
+                        </label>
+                        <input type="text" name="tags" placeholder="java, spring boot, web app"
+                            class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
+                        <p class="text-sm text-gray-400 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>Các từ khóa, cách nhau bởi dấu phẩy
+                        </p>
+                    </div>
+
+                    <!-- Buttons -->
                     <div class="flex gap-4">
                         <button type="submit"
                             class="flex-1 bg-[#fed700] text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition">
@@ -57,6 +146,46 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript for Image Preview -->
+    <script layout:fragment="scripts">
+        // Thumbnail preview function
+        function previewThumbnail(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('thumbnailImg').src = e.target.result;
+                    document.getElementById('thumbnailPreview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Additional images preview function
+        function previewImages(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('imagesPreview');
+            preview.innerHTML = '';
+
+            Array.from(files).forEach((file, index) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const div = document.createElement('div');
+                        div.className = 'relative';
+                        div.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview ${index + 1}" 
+                                 class="w-full h-32 object-cover rounded-lg border border-[#444]">
+                            <div class="text-xs text-gray-400 mt-1 text-center">${file.name.substring(0, 15)}...</div>
+                        `;
+                        preview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

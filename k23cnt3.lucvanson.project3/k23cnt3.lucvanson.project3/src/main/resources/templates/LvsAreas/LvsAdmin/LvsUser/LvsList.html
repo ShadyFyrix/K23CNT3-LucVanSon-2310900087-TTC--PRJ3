@@ -289,7 +289,7 @@
                                     <td th:text="${user.lvsUserId}">1</td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img th:src="@{${user.lvsAvatarUrl != null and user.lvsAvatarUrl != ''} ? ${user.lvsAvatarUrl} : 'https://via.placeholder.com/40'}"
+                                            <img th:src="${user.lvsAvatarUrl != null and user.lvsAvatarUrl != ''} ? @{${user.lvsAvatarUrl}} : 'https://via.placeholder.com/40'"
                                                 class="user-avatar me-2 rounded-circle" width="40" height="40"
                                                 alt="Avatar">
                                             <div>

@@ -145,7 +145,7 @@
                                     </div>
                                     <div class="mt-2">
                                         <img id="avatarPreview"
-                                            th:src="${lvsUser.lvsAvatarUrl != null and lvsUser.lvsAvatarUrl != ''} ? ${lvsUser.lvsAvatarUrl} : 'https://via.placeholder.com/150'"
+                                            th:src="${lvsUser.lvsAvatarUrl != null and lvsUser.lvsAvatarUrl != ''} ? @{${lvsUser.lvsAvatarUrl}} : 'https://via.placeholder.com/150'"
                                             alt="Avatar Preview"
                                             style="max-width: 150px; max-height: 150px; border-radius: 8px; border: 2px solid #dee2e6;">
                                     </div>

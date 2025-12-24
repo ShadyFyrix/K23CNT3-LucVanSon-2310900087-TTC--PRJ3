@@ -15,8 +15,10 @@
                 </a>
                 <div class="flex items-center gap-3">
                     <div
-                        class="w-12 h-12 rounded-full bg-gradient-to-br from-[#fed700] to-yellow-600 flex items-center justify-center">
-                        <i class="fas fa-user text-[#1e1e1e]"></i>
+                        class="w-12 h-12 rounded-full bg-gradient-to-br from-[#fed700] to-yellow-600 flex items-center justify-center overflow-hidden">
+                        <img th:if="${LvsOtherUser.lvsAvatarUrl != null}" th:src="@{${LvsOtherUser.lvsAvatarUrl}}"
+                            class="w-full h-full object-cover" alt="Avatar">
+                        <i th:unless="${LvsOtherUser.lvsAvatarUrl != null}" class="fas fa-user text-[#1e1e1e]"></i>
                     </div>
                     <div>
                         <h1 class="text-2xl font-bold text-white" th:text="${LvsOtherUser.lvsUsername}">Username</h1>
@@ -29,117 +31,176 @@
             <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 mb-6 h-[500px] overflow-y-auto"
                 id="messagesContainer">
                 <div class="space-y-4">
+                    <!-- Use th:with to create intermediate boolean variable for safe null checking -->
                     <div th:each="message : ${LvsMessages}"
-                        th:classappend="${(LvsCurrentUser != null) ? ((message.lvsSender != null) ? (message.lvsSender.lvsUserId == LvsCurrentUser.lvsUserId ? 'flex justify-end' : 'flex justify-start items-start gap-2') : 'flex justify-start items-start gap-2') : 'flex justify-start items-start gap-2'}"
-                        class="flex">
+                        th:with="isSentByMe=${message.lvsSender != null ? (session.LvsCurrentUser != null ? message.lvsSender.lvsUserId.equals(session.LvsCurrentUser.lvsUserId) : false) : false}">
 
-                        <!-- Avatar for received messages (left side) -->
-                        <div th:if="${(LvsCurrentUser != null) ? ((message.lvsSender != null) ? (message.lvsSender.lvsUserId != LvsCurrentUser.lvsUserId) : false) : false}"
-                            class="w-10 h-10 rounded-full bg-gradient-to-br from-[#fed700] to-yellow-600 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-user text-[#1e1e1e]"></i>
+
+                        <!-- Sent message (right aligned, blue, no avatar) -->
+                        <div th:if="${isSentByMe}" class="flex justify-end">
+                            <div class="flex flex-col items-end max-w-[70%]">
+                                <!-- TEXT Message -->
+                                <div th:if="${message.lvsMessageType == 'TEXT' or message.lvsMessageType == null}"
+                                    class="bg-blue-500 rounded-2xl px-4 py-2 shadow-lg">
+                                    <p class="text-white text-sm" th:text="${message.lvsContent}">Message</p>
+                                </div>
+
+                                <!-- GIFT Message (Sent) -->
+                                <div th:if="${message.lvsMessageType == 'GIFT' and message.lvsGift != null}"
+                                    class="bg-gradient-to-br from-[#fed700]/20 to-yellow-600/20 border-2 border-[#fed700]/50 rounded-xl p-4 shadow-lg">
+                                    <div class="flex items-start gap-3 mb-2">
+                                        <div
+                                            class="w-10 h-10 bg-[#fed700]/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-gift text-[#fed700] text-lg"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="text-[#fed700] font-bold text-xs mb-1">🎁 Gift Sent</h4>
+                                            <p class="text-white text-sm font-bold"
+                                                th:text="${message.lvsGift.lvsProject.lvsProjectName}">Project Name</p>
+                                            <p class="text-gray-300 text-xs mt-1"
+                                                th:if="${message.lvsGift.lvsGiftMessage != null and !#strings.isEmpty(message.lvsGift.lvsGiftMessage)}">
+                                                💌 <span th:text="${message.lvsGift.lvsGiftMessage}">Message</span>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Status Badge for Sent Gifts -->
+                                    <div th:if="${message.lvsGift.lvsStatus.toString() == 'ACCEPTED'}"
+                                        class="mt-2 bg-green-500/20 border border-green-500 text-green-400 px-2 py-1 rounded text-center text-xs font-bold">
+                                        ✅ Accepted
+                                    </div>
+                                    <div th:if="${message.lvsGift.lvsStatus.toString() == 'REJECTED'}"
+                                        class="mt-2 bg-red-500/20 border border-red-500 text-red-400 px-2 py-1 rounded text-center text-xs font-bold">
+                                        ❌ Declined
+                                    </div>
+                                    <div th:if="${message.lvsGift.lvsStatus.toString() == 'PENDING'}"
+                                        class="mt-2 bg-yellow-500/20 border border-yellow-500 text-yellow-400 px-2 py-1 rounded text-center text-xs font-bold">
+                                        ⏳ Pending
+                                    </div>
+                                </div>
+
+                                <!-- Timestamp -->
+                                <p class="text-xs text-gray-500 mt-1 mr-1"
+                                    th:text="${#temporals.format(message.lvsCreatedAt, 'HH:mm')}">Time</p>
+                            </div>
                         </div>
 
-                        <!-- Message content wrapper -->
-                        <div class="flex flex-col"
-                            th:classappend="${(LvsCurrentUser != null) ? ((message.lvsSender != null) ? (message.lvsSender.lvsUserId == LvsCurrentUser.lvsUserId ? 'items-end' : 'items-start') : 'items-start') : 'items-start'}">
-
-                            <!-- Sender name for received messages -->
-                            <p th:if="${(LvsCurrentUser != null) ? ((message.lvsSender != null) ? (message.lvsSender.lvsUserId != LvsCurrentUser.lvsUserId) : false) : false}"
-                                class="text-xs text-gray-400 mb-1 ml-1" th:text="${message.lvsSender.lvsUsername}">
-                                Sender Name</p>
-
-                            <!-- Regular Text Message -->
-                            <div th:if="${message.lvsMessageType == 'TEXT' or message.lvsMessageType == null}"
-                                th:classappend="${(LvsCurrentUser != null) ? ((message.lvsSender != null) ? (message.lvsSender.lvsUserId == LvsCurrentUser.lvsUserId ? 'bg-blue-500' : 'bg-[#3a3a3a]') : 'bg-[#3a3a3a]') : 'bg-[#3a3a3a]'}"
-                                class="rounded-2xl px-4 py-2 shadow-lg">
-                                <p class="text-white text-sm" th:text="${message.lvsContent}">Message</p>
+                        <!-- Received message (left aligned, dark, with avatar) -->
+                        <div th:unless="${isSentByMe}" class="flex justify-start items-start gap-2">
+                            <!-- Avatar -->
+                            <div
+                                class="w-10 h-10 rounded-full bg-gradient-to-br from-[#fed700] to-yellow-600 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                <img th:if="${message.lvsSender != null and message.lvsSender.lvsAvatarUrl != null}"
+                                    th:src="@{${message.lvsSender.lvsAvatarUrl}}" class="w-full h-full object-cover"
+                                    alt="Avatar">
+                                <i th:unless="${message.lvsSender != null and message.lvsSender.lvsAvatarUrl != null}"
+                                    class="fas fa-user text-[#1e1e1e]"></i>
                             </div>
 
-                            <!-- Gift Message Card -->
-                            <div th:if="${message.lvsMessageType == 'GIFT' ? (message.lvsGift != null) : false}"
-                                class="max-w-[350px] bg-gradient-to-br from-[#fed700]/20 to-yellow-600/20 border-2 border-[#fed700]/50 rounded-xl p-4 shadow-lg">
-                                <div class="flex items-start gap-3 mb-3">
-                                    <div
-                                        class="w-12 h-12 bg-[#fed700]/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <i class="fas fa-gift text-[#fed700] text-xl"></i>
+                            <!-- Message content wrapper -->
+                            <div class="flex flex-col items-start max-w-[70%]">
+                                <!-- Sender name -->
+                                <p th:if="${message.lvsSender != null}" class="text-xs text-gray-400 mb-1 ml-1"
+                                    th:text="${message.lvsSender.lvsUsername}">Sender Name</p>
+
+                                <!-- TEXT Message -->
+                                <div th:if="${message.lvsMessageType == 'TEXT' or message.lvsMessageType == null}"
+                                    class="bg-[#3a3a3a] rounded-2xl px-4 py-2 shadow-lg">
+                                    <p class="text-white text-sm" th:text="${message.lvsContent}">Message</p>
+                                </div>
+
+                                <!-- GIFT Message (Received) -->
+                                <div th:if="${message.lvsMessageType == 'GIFT' and message.lvsGift != null}"
+                                    class="bg-gradient-to-br from-[#fed700]/20 to-yellow-600/20 border-2 border-[#fed700]/50 rounded-xl p-4 shadow-lg max-w-[300px]">
+                                    <div class="flex items-start gap-3 mb-2">
+                                        <div
+                                            class="w-10 h-10 bg-[#fed700]/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-gift text-[#fed700] text-lg"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="text-[#fed700] font-bold text-xs mb-1">🎁 Gift Received</h4>
+                                            <p class="text-white text-sm font-bold"
+                                                th:text="${message.lvsGift.lvsProject.lvsProjectName}">Project Name</p>
+                                            <p class="text-gray-300 text-xs mt-1"
+                                                th:if="${message.lvsGift.lvsGiftMessage != null and !#strings.isEmpty(message.lvsGift.lvsGiftMessage)}">
+                                                💌 <span th:text="${message.lvsGift.lvsGiftMessage}">Message</span>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="flex-1">
-                                        <h4 class="text-[#fed700] font-bold mb-1">🎁 Gift Sent!</h4>
-                                        <p class="text-white text-sm font-bold"
-                                            th:text="${message.lvsGift.lvsProject.lvsProjectName}">
-                                            Project Name</p>
-                                        <p class="text-gray-300 text-xs mt-1"
-                                            th:if="${(message.lvsGift.lvsGiftMessage != null) ? (!#strings.isEmpty(message.lvsGift.lvsGiftMessage)) : false}">
-                                            💌 <span th:text="${message.lvsGift.lvsGiftMessage}">Message</span>
-                                        </p>
+
+                                    <!-- Action Buttons (only for PENDING gifts) -->
+                                    <div th:if="${message.lvsGift.lvsStatus.toString() == 'PENDING'}"
+                                        class="flex gap-2 mt-3">
+                                        <form
+                                            th:action="@{/LvsUser/LvsGift/LvsAccept/{id}(id=${message.lvsGift.lvsGiftId})}"
+                                            method="post" class="flex-1">
+                                            <button type="submit"
+                                                class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-3 rounded-lg transition text-xs flex items-center justify-center gap-1">
+                                                <i class="fas fa-check"></i> Accept
+                                            </button>
+                                        </form>
+                                        <form
+                                            th:action="@{/LvsUser/LvsGift/LvsReject/{id}(id=${message.lvsGift.lvsGiftId})}"
+                                            method="post" class="flex-1">
+                                            <button type="submit"
+                                                class="w-full bg-red-500/20 border border-red-500 hover:bg-red-500/30 text-red-400 font-bold py-2 px-3 rounded-lg transition text-xs flex items-center justify-center gap-1">
+                                                <i class="fas fa-times"></i> Decline
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Status Badges -->
+                                    <div th:if="${message.lvsGift.lvsStatus.toString() == 'ACCEPTED'}"
+                                        class="mt-2 bg-green-500/20 border border-green-500 text-green-400 px-2 py-1 rounded text-center text-xs font-bold">
+                                        ✅ Accepted
+                                    </div>
+                                    <div th:if="${message.lvsGift.lvsStatus.toString() == 'REJECTED'}"
+                                        class="mt-2 bg-red-500/20 border border-red-500 text-red-400 px-2 py-1 rounded text-center text-xs font-bold">
+                                        ❌ Declined
                                     </div>
                                 </div>
 
-                                <!-- Action Buttons (only for recipient and PENDING status) -->
-                                <div th:if="${(LvsCurrentUser != null) ? ((message.lvsReceiver != null) ? (message.lvsReceiver.lvsUserId == LvsCurrentUser.lvsUserId ? ((message.lvsGift != null) ? (message.lvsGift.lvsStatus.toString() == 'PENDING') : false) : false) : false) : false}"
-                                    class="flex gap-2 mt-3">
-                                    <form
-                                        th:action="@{/LvsUser/LvsGift/LvsAccept/{id}(id=${message.lvsGift.lvsGiftId})}"
-                                        method="post" class="flex-1">
-                                        <button type="submit"
-                                            class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-3 rounded-lg transition text-sm flex items-center justify-center gap-1">
-                                            <i class="fas fa-check"></i> Accept
-                                        </button>
-                                    </form>
-                                    <form
-                                        th:action="@{/LvsUser/LvsGift/LvsReject/{id}(id=${message.lvsGift.lvsGiftId})}"
-                                        method="post" class="flex-1">
-                                        <button type="submit"
-                                            class="w-full bg-red-500/20 border border-red-500 hover:bg-red-500/30 text-red-400 font-bold py-2 px-3 rounded-lg transition text-sm flex items-center justify-center gap-1">
-                                            <i class="fas fa-times"></i> Decline
-                                        </button>
-                                    </form>
-                                </div>
-
-                                <!-- Status Badges -->
-                                <div th:if="${(message.lvsGift != null) ? (message.lvsGift.lvsStatus.toString() == 'ACCEPTED') : false}"
-                                    class="mt-3 bg-green-500/20 border border-green-500 text-green-400 px-3 py-2 rounded-lg text-center text-sm font-bold">
-                                    ✅ Accepted
-                                </div>
-                                <div th:if="${(message.lvsGift != null) ? (message.lvsGift.lvsStatus.toString() == 'REJECTED') : false}"
-                                    class="mt-3 bg-red-500/20 border border-red-500 text-red-400 px-3 py-2 rounded-lg text-center text-sm font-bold">
-                                    ❌ Declined
-                                </div>
+                                <!-- Timestamp -->
+                                <p class="text-xs text-gray-500 mt-1 ml-1"
+                                    th:text="${#temporals.format(message.lvsCreatedAt, 'HH:mm')}">Time</p>
                             </div>
+                        </div>
 
-                            <!-- Gift Response Message -->
-                            <div th:if="${message.lvsMessageType == 'GIFT_RESPONSE'}"
-                                th:classappend="${(LvsCurrentUser != null) ? ((message.lvsSender != null) ? (message.lvsSender.lvsUserId == LvsCurrentUser.lvsUserId ? 'bg-blue-500' : 'bg-[#3a3a3a]') : 'bg-[#3a3a3a]') : 'bg-[#3a3a3a]'}"
-                                class="rounded-2xl px-4 py-2 shadow-lg">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <i class="fas fa-gift text-[#fed700] text-sm"></i>
-                                    <p class="text-white font-bold text-xs">Gift Response</p>
-                                </div>
-                                <p class="text-white text-sm" th:text="${message.lvsContent}">Response</p>
+
+                        <!-- Gift Response Message -->
+                        <div th:if="${message.lvsMessageType == 'GIFT_RESPONSE'}"
+                            th:classappend="${(LvsCurrentUser != null) ? ((message.lvsSender != null) ? (message.lvsSender.lvsUserId == LvsCurrentUser.lvsUserId ? 'bg-blue-500' : 'bg-[#3a3a3a]') : 'bg-[#3a3a3a]') : 'bg-[#3a3a3a]'}"
+                            class="rounded-2xl px-4 py-2 shadow-lg">
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="fas fa-gift text-[#fed700] text-sm"></i>
+                                <p class="text-white font-bold text-xs">Gift Response</p>
                             </div>
+                            <p class="text-white text-sm" th:text="${message.lvsContent}">Response</p>
 
-                            <!-- Timestamp -->
-                            <p class="text-xs text-gray-500 mt-1 ml-1"
+                            <!-- Timestamp for GIFT_RESPONSE messages -->
+                            <p class="text-xs text-gray-500 mt-2"
                                 th:text="${#temporals.format(message.lvsCreatedAt, 'HH:mm')}">Time</p>
                         </div>
+
                     </div>
                 </div>
             </div>
-
-            <!-- Send Message Form -->
-            <form th:action="@{/LvsUser/LvsMessage/LvsSend}" method="post"
-                class="bg-[#2b2b2b] border border-[#333] rounded-xl p-4">
-                <input type="hidden" name="lvsReceiverId" th:value="${LvsOtherUser.lvsUserId}" />
-                <div class="flex gap-3">
-                    <input type="text" name="lvsContent" placeholder="Nhập tin nhắn..." required
-                        class="flex-1 bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#fed700]" />
-                    <button type="submit"
-                        class="bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-6 py-3 rounded-lg font-semibold transition-colors">
-                        <i class="fas fa-paper-plane mr-2"></i>Gửi
-                    </button>
-                </div>
-            </form>
         </div>
+
+        <!-- Send Message Form -->
+        <form th:action="@{/LvsUser/LvsMessage/LvsSend}" method="post"
+            class="bg-[#2b2b2b] border border-[#333] rounded-xl p-4">
+            <input type="hidden" name="lvsReceiverId" th:value="${LvsOtherUser.lvsUserId}" />
+            <div class="flex gap-3">
+                <input type="text" name="lvsContent" placeholder="Nhập tin nhắn..." required
+                    class="flex-1 bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#fed700]" />
+                <button type="submit"
+                    class="bg-[#fed700] hover:bg-yellow-600 text-[#1e1e1e] px-6 py-3 rounded-lg font-semibold transition-colors">
+                    <i class="fas fa-paper-plane mr-2"></i>Gửi
+                </button>
+            </div>
+        </form>
+    </div>
     </div>
 </body>
 

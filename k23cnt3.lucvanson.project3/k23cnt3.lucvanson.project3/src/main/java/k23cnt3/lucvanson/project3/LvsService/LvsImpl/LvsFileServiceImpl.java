@@ -146,12 +146,18 @@ public class LvsFileServiceImpl implements LvsFileService {
     public String lvsUploadProjectFile(MultipartFile lvsFile, Long lvsProjectId) throws IOException {
         // Kiểm tra loại file
         List<String> lvsAllowedTypes = Arrays.asList(
-                "application/zip", "application/x-rar-compressed", "application/x-7z-compressed",
-                "application/pdf", "text/plain", "application/msword",
+                "application/zip",
+                "application/x-zip-compressed",
+                "application/x-rar-compressed",
+                "application/x-7z-compressed",
+                "application/octet-stream", // Generic binary - for ZIP files
+                "application/pdf",
+                "text/plain",
+                "application/msword",
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 
         if (!lvsIsValidFileType(lvsFile, lvsAllowedTypes)) {
-            throw new IOException("Loại file không được hỗ trợ cho dự án");
+            throw new IOException("Loại file không được hỗ trợ cho dự án. Content-Type: " + lvsFile.getContentType());
         }
 
         String lvsFolder = "projects/" + lvsProjectId + "/files";

@@ -39,6 +39,9 @@ public interface LvsProjectService {
     // Lấy dự án theo người đăng
     Page<LvsProject> lvsGetProjectsByUser(Long lvsUserId, Pageable lvsPageable);
 
+    // Lấy dự án user đã mua (from completed orders)
+    Page<LvsProject> lvsGetUserPurchasedProjects(Long lvsUserId, Pageable lvsPageable);
+
     // Lấy dự án mới nhất
     List<LvsProject> lvsGetNewestProjects(Pageable lvsPageable);
 

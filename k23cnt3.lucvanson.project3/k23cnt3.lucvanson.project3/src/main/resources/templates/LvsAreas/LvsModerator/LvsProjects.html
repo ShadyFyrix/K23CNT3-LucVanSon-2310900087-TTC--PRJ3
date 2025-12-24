@@ -108,8 +108,8 @@
                 class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-xl transition">
                 <!-- Project Image -->
                 <div class="relative h-48 bg-gradient-to-br from-purple-500 to-blue-600">
-                    <img th:if="${project.lvsThumbnailUrl}" th:src="${project.lvsThumbnailUrl}" alt="Project thumbnail"
-                        class="w-full h-full object-cover">
+                    <img th:if="${project.lvsThumbnailUrl}" th:src="@{${project.lvsThumbnailUrl}}"
+                        alt="Project thumbnail" class="w-full h-full object-cover">
                     <div th:unless="${project.lvsThumbnailUrl}" class="w-full h-full flex items-center justify-center">
                         <i class="fas fa-project-diagram text-6xl text-white opacity-50"></i>
                     </div>

@@ -112,9 +112,21 @@
                                             <input type="url" class="form-control" th:field="*{lvsSourceCodeUrl}">
                                         </div>
 
+                                        <!-- Project File Upload (REQUIRED) -->
                                         <div class="mb-3">
-                                            <label class="form-label">URL File</label>
+                                            <label class="form-label">File dự án (ZIP/RAR) <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="file" class="form-control" name="lvsProjectFile"
+                                                id="lvsProjectFile" accept=".zip,.rar,.7z" required>
+                                            <small class="text-muted">Upload file dự án (ZIP, RAR, 7Z). Max
+                                                100MB</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">URL File (hoặc upload file ở trên)</label>
                                             <input type="url" class="form-control" th:field="*{lvsFileUrl}">
+                                            <small class="text-muted">Nếu đã upload file, field này sẽ tự động
+                                                điền</small>
                                         </div>
                                     </div>
                                 </div>

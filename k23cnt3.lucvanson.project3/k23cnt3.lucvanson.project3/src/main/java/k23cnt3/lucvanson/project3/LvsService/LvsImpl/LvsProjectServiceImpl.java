@@ -124,6 +124,30 @@ public class LvsProjectServiceImpl implements LvsProjectService {
     }
 
     /**
+     * Lấy dự án user đã mua (from completed orders)
+     * 
+     * @param lvsUserId   ID người dùng
+     * @param lvsPageable Thông tin phân trang
+     * @return Trang dự án đã mua
+     */
+    @Override
+    public Page<LvsProject> lvsGetUserPurchasedProjects(Long lvsUserId, Pageable lvsPageable) {
+        // Get all purchased projects (no pagination from repository)
+        List<LvsProject> purchasedProjects = lvsProjectRepository.findPurchasedProjectsByUser(lvsUserId);
+
+        // Manual pagination
+        int start = (int) lvsPageable.getOffset();
+        int end = Math.min((start + lvsPageable.getPageSize()), purchasedProjects.size());
+
+        List<LvsProject> pageContent = purchasedProjects.subList(start, end);
+
+        return new org.springframework.data.domain.PageImpl<>(
+                pageContent,
+                lvsPageable,
+                purchasedProjects.size());
+    }
+
+    /**
      * Lấy dự án mới nhất
      * 
      * @param lvsPageable Thông tin phân trang
@@ -247,6 +271,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
             lvsExistingProject.setLvsFileUrl(lvsProject.getLvsFileUrl());
             lvsExistingProject.setLvsDemoUrl(lvsProject.getLvsDemoUrl());
             lvsExistingProject.setLvsSourceCodeUrl(lvsProject.getLvsSourceCodeUrl());
+            lvsExistingProject.setLvsStatus(lvsProject.getLvsStatus()); // FIX: Update status
             lvsExistingProject.setLvsUpdatedAt(LocalDateTime.now());
             return lvsProjectRepository.save(lvsExistingProject);
         }

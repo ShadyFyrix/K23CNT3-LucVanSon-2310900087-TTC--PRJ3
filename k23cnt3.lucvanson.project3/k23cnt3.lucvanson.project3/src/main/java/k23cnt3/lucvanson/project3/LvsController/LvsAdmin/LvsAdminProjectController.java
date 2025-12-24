@@ -464,6 +464,7 @@ public class LvsAdminProjectController {
             @PathVariable Long id,
             @ModelAttribute LvsProject lvsProject,
             @RequestParam(required = false) MultipartFile lvsThumbnailFile,
+            @RequestParam(required = false) MultipartFile lvsProjectFile, // FIX: Add project file parameter
             @RequestParam(required = false) MultipartFile[] lvsImageFiles,
             @RequestParam(required = false) String lvsDeletedImages,
             RedirectAttributes redirectAttributes) {
@@ -487,6 +488,20 @@ public class LvsAdminProjectController {
             } else {
                 // Giữ nguyên thumbnail cũ
                 lvsProject.setLvsThumbnailUrl(lvsExistingProject.getLvsThumbnailUrl());
+            }
+
+            // ===== XỬ LÝ PROJECT FILE =====
+            if (lvsProjectFile != null && !lvsProjectFile.isEmpty()) {
+                // Xóa file cũ nếu tồn tại
+                if (lvsExistingProject.getLvsFileUrl() != null) {
+                    lvsFileUploadService.lvsDeleteFile(lvsExistingProject.getLvsFileUrl());
+                }
+                // Upload file mới (ZIP/RAR)
+                String lvsFileUrl = lvsFileUploadService.lvsSaveProjectFile(lvsProjectFile, "projects");
+                lvsProject.setLvsFileUrl(lvsFileUrl);
+            } else {
+                // Giữ nguyên file cũ
+                lvsProject.setLvsFileUrl(lvsExistingProject.getLvsFileUrl());
             }
 
             // ===== XỬ LÝ DANH SÁCH ẢNH DỰ ÁN =====

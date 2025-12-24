@@ -107,7 +107,7 @@
                     <div class="card info-card">
                         <div class="card-body text-center">
                             <img th:if="${lvsUser.lvsAvatarUrl != null and lvsUser.lvsAvatarUrl != ''}"
-                                th:src="${lvsUser.lvsAvatarUrl}" class="profile-avatar mb-3" alt="Avatar">
+                                th:src="@{${lvsUser.lvsAvatarUrl}}" class="profile-avatar mb-3" alt="Avatar">
                             <img th:unless="${lvsUser.lvsAvatarUrl != null and lvsUser.lvsAvatarUrl != ''}"
                                 src="https://via.placeholder.com/150" class="profile-avatar mb-3" alt="Avatar">
 

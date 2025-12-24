@@ -226,14 +226,20 @@
                         const gallery = document.getElementById('projectImagesGallery');
 
                         if (gallery && images.length > 0) {
+                            // Hardcoded context path for Thymeleaf 3.1 compatibility
+                            const contextPath = '/lvsforum';
+
                             images.forEach((imageUrl, index) => {
+                                // Prepend context path if not already present
+                                const fullUrl = imageUrl.startsWith('/lvsforum') ? imageUrl : contextPath + imageUrl;
+
                                 const col = document.createElement('div');
                                 col.className = 'col-md-4 col-sm-6';
                                 col.innerHTML = `
                                 <div class="card h-100">
-                                    <img src="${imageUrl}" class="card-img-top" 
+                                    <img src="${fullUrl}" class="card-img-top" 
                                          style="height: 200px; object-fit: cover; cursor: pointer;" 
-                                         onclick="showLightbox('${imageUrl}')"
+                                         onclick="showLightbox('${fullUrl}')"
                                          alt="Project Image ${index + 1}">
                                     <div class="card-body p-2 text-center">
                                         <small class="text-muted">Ảnh ${index + 1}</small>
