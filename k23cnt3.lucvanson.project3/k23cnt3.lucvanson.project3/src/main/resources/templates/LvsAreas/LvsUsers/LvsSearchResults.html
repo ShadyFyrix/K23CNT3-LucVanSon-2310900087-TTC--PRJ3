@@ -55,8 +55,32 @@
                             </div>
                             <h3 class="text-white font-bold text-sm mb-2 line-clamp-2"
                                 th:text="${project.lvsProjectName}">Project</h3>
-                            <p class="text-[#fed700] font-bold" th:text="${#numbers.formatCurrency(project.lvsPrice)}">
-                                $0</p>
+
+                            <!-- Price with Discount -->
+                            <div th:if="${project.lvsHasActiveDiscount}">
+                                <!-- Sale Badge -->
+                                <span
+                                    class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold mb-1 inline-block">
+                                    <i class="fas fa-fire mr-1"></i>SALE!
+                                </span>
+
+                                <!-- Prices -->
+                                <div class="mt-1">
+                                    <div class="text-gray-400 line-through text-xs">
+                                        <span th:text="${#numbers.formatCurrency(project.lvsPrice)}">$0</span>
+                                    </div>
+                                    <div class="text-[#fed700] font-bold text-sm">
+                                        <span th:text="${#numbers.formatCurrency(project.lvsFinalPrice)}">$0</span>
+                                    </div>
+                                    <div class="text-orange-400 text-xs">
+                                        <span th:text="${project.lvsDiscountPercent}">0</span>% OFF
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- No discount -->
+                            <p th:unless="${project.lvsHasActiveDiscount}" class="text-[#fed700] font-bold"
+                                th:text="${#numbers.formatCurrency(project.lvsPrice)}">$0</p>
                         </a>
                     </div>
                 </div>

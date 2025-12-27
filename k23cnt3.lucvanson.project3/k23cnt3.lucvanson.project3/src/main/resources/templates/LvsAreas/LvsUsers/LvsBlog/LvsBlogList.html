@@ -116,6 +116,13 @@
                                     <span th:text="${post.lvsType.name()}" class="text-[#fed700]">Type</span>
                                 </div>
                             </div>
+
+                            <!-- Report Button -->
+                            <a th:href="@{/LvsUser/LvsReport/LvsCreate(lvsReportType='POST', lvsTargetId=${post.lvsPostId})}"
+                                class="w-9 h-9 flex items-center justify-center hover:bg-red-600/20 rounded-full transition-colors flex-shrink-0"
+                                title="Report this post">
+                                <i class="fas fa-flag text-red-400"></i>
+                            </a>
                         </div>
                     </div>
 

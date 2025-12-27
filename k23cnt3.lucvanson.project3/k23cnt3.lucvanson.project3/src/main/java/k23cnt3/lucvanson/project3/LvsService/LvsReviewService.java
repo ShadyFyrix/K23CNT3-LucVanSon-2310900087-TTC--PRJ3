@@ -22,6 +22,9 @@ public interface LvsReviewService {
     // Lấy đánh giá theo dự án
     Page<LvsReview> lvsGetReviewsByProject(Long lvsProjectId, Pageable lvsPageable);
 
+    // Lấy đánh giá đã duyệt theo dự án (cho user)
+    Page<LvsReview> lvsGetApprovedReviewsByProject(Long lvsProjectId, Pageable lvsPageable);
+
     // Lấy đánh giá theo user
     Page<LvsReview> lvsGetReviewsByUser(Long lvsUserId, Pageable lvsPageable);
 

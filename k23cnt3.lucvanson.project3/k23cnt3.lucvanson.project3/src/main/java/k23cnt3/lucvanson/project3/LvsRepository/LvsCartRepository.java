@@ -60,4 +60,12 @@ public interface LvsCartRepository extends JpaRepository<LvsCart, Long> {
 
     // Tìm giỏ hàng có tổng tiền lớn hơn
     List<LvsCart> findByLvsTotalPriceGreaterThan(Double minPrice);
+
+    // Tìm giỏ hàng theo user với eager loading items AND gift recipients
+    @Query("SELECT c FROM LvsCart c LEFT JOIN FETCH c.lvsCartItems ci LEFT JOIN FETCH ci.lvsGiftRecipient WHERE c.lvsUser.lvsUserId = :userId")
+    Optional<LvsCart> findByUserIdWithItems(@Param("userId") Long userId);
+
+    // Tìm giỏ hàng theo ID với eager loading items
+    @Query("SELECT c FROM LvsCart c LEFT JOIN FETCH c.lvsCartItems WHERE c.lvsCartId = :cartId")
+    Optional<LvsCart> findByIdWithItems(@Param("cartId") Long cartId);
 }

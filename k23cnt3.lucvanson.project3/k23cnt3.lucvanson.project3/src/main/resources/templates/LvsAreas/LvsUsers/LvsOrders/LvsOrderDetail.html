@@ -74,7 +74,7 @@
                                         Project Name</h3>
                                     <p class="text-gray-400 text-sm mb-2">
                                         by <span class="text-[#fed700]"
-                                            th:text="${item.lvsProject?.lvsCreator?.lvsUsername ?: 'Unknown'}">Creator</span>
+                                            th:text="${item.lvsProject?.lvsUser?.lvsUsername ?: 'Unknown'}">Creator</span>
                                     </p>
                                     <div class="flex items-center gap-4 text-sm">
                                         <span class="text-gray-400">
@@ -85,7 +85,7 @@
                                         <span class="text-[#fed700] font-bold">
                                             <i class="fas fa-coins mr-1"></i>
                                             <span
-                                                th:text="${#numbers.formatDecimal(item.lvsPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                                th:text="${#numbers.formatDecimal(item.lvsUnitPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
                                         </span>
                                     </div>
                                 </div>
@@ -96,7 +96,7 @@
                                     <p class="text-white font-bold text-lg">
                                         <i class="fas fa-coins text-[#fed700] mr-1"></i>
                                         <span
-                                            th:text="${#numbers.formatDecimal(item.lvsPrice * item.lvsQuantity, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                            th:text="${#numbers.formatDecimal(item.lvsUnitPrice * item.lvsQuantity, 0, 'COMMA', 0, 'POINT')}">0</span>
                                     </p>
                                 </div>
                             </div>

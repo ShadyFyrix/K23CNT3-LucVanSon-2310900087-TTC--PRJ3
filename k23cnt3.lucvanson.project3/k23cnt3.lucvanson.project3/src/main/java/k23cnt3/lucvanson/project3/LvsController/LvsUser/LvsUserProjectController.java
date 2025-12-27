@@ -15,8 +15,10 @@ import org.springframework.data.domain.Pageable;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * Controller quản lý Projects cho User
@@ -43,6 +45,15 @@ public class LvsUserProjectController {
 
     @Autowired
     private LvsFileUploadService lvsFileUploadService;
+
+    @Autowired
+    private LvsProjectRepository lvsProjectRepository;
+
+    @Autowired
+    private LvsReviewService lvsReviewService;
+
+    @Autowired
+    private LvsOrderRepository lvsOrderRepository;
 
     /**
      * Show Add Project Form
@@ -123,6 +134,9 @@ public class LvsUserProjectController {
             lvsProject.setLvsSourceCodeUrl(sourceCodeUrl);
             lvsProject.setLvsTags(tags);
 
+            // Set status to PENDING (waiting for approval)
+            lvsProject.setLvsStatus(LvsProject.LvsProjectStatus.PENDING);
+
             // Save project
             LvsProject savedProject = lvsProjectService.lvsSaveProject(lvsProject);
 
@@ -180,6 +194,7 @@ public class LvsUserProjectController {
             @RequestParam(required = false) MultipartFile projectFile,
             @RequestParam(required = false) MultipartFile thumbnail,
             @RequestParam(required = false) List<MultipartFile> additionalImages,
+            @RequestParam(required = false) String deletedImages,
             @RequestParam(required = false) String demoUrl,
             @RequestParam(required = false) String sourceCodeUrl,
             @RequestParam(required = false) String tags,
@@ -211,6 +226,12 @@ public class LvsUserProjectController {
             existingProject.setLvsPrice(lvsProject.getLvsPrice());
             existingProject.setLvsCategory(lvsProject.getLvsCategory());
 
+            // ✨ UPDATE DISCOUNT FIELDS
+            existingProject.setLvsDiscountPercent(lvsProject.getLvsDiscountPercent());
+            existingProject.setLvsIsOnSale(lvsProject.getLvsIsOnSale());
+            existingProject.setLvsDiscountStartDate(lvsProject.getLvsDiscountStartDate());
+            existingProject.setLvsDiscountEndDate(lvsProject.getLvsDiscountEndDate());
+
             // Upload new project file if provided
             if (projectFile != null && !projectFile.isEmpty()) {
                 String fileUrl = lvsFileUploadService.lvsSaveProjectFile(projectFile, "projects");
@@ -223,6 +244,35 @@ public class LvsUserProjectController {
                 existingProject.setLvsThumbnailUrl(thumbUrl);
             }
 
+            // Handle additional images
+            ObjectMapper mapper = new ObjectMapper();
+            List<String> finalImageUrls = new ArrayList<>();
+
+            // Get existing images
+            if (existingProject.getLvsImages() != null && !existingProject.getLvsImages().isEmpty()) {
+                try {
+                    List<String> existingImages = mapper.readValue(existingProject.getLvsImages(),
+                            new TypeReference<List<String>>() {
+                            });
+                    finalImageUrls.addAll(existingImages);
+                } catch (Exception e) {
+                    System.out.println("Error parsing existing images: " + e.getMessage());
+                }
+            }
+
+            // Remove deleted images
+            if (deletedImages != null && !deletedImages.isEmpty()) {
+                try {
+                    List<String> toDelete = mapper.readValue(deletedImages,
+                            new TypeReference<List<String>>() {
+                            });
+                    finalImageUrls.removeAll(toDelete);
+                    System.out.println("Removed " + toDelete.size() + " images");
+                } catch (Exception e) {
+                    System.out.println("Error parsing deleted images: " + e.getMessage());
+                }
+            }
+
             // Upload new additional images if provided
             if (additionalImages != null && !additionalImages.isEmpty()) {
                 List<MultipartFile> validFiles = additionalImages.stream()
@@ -230,12 +280,17 @@ public class LvsUserProjectController {
                         .collect(Collectors.toList());
 
                 if (!validFiles.isEmpty()) {
-                    List<String> imageUrls = lvsFileUploadService.lvsSaveFiles(validFiles, "projects");
-                    // Serialize to JSON
-                    ObjectMapper mapper = new ObjectMapper();
-                    String imagesJson = mapper.writeValueAsString(imageUrls);
-                    existingProject.setLvsImages(imagesJson);
+                    List<String> newImageUrls = lvsFileUploadService.lvsSaveFiles(validFiles, "projects");
+                    finalImageUrls.addAll(newImageUrls);
                 }
+            }
+
+            // Save final images list
+            if (!finalImageUrls.isEmpty()) {
+                String imagesJson = mapper.writeValueAsString(finalImageUrls);
+                existingProject.setLvsImages(imagesJson);
+            } else {
+                existingProject.setLvsImages(null);
             }
 
             // Update URLs
@@ -257,9 +312,9 @@ public class LvsUserProjectController {
     }
 
     /**
-     * Danh sách projects (Shop page)
+     * Danh sách dự án (public)
      * URL: GET /LvsUser/LvsProject/LvsList
-     * View: LvsAreas/LvsUsers/LvsShop
+     * View: LvsAreas/LvsUsers/LvsProjects/LvsProjectList
      */
     @GetMapping("/LvsList")
     public String lvsListProjects(
@@ -276,14 +331,24 @@ public class LvsUserProjectController {
         // Lấy danh sách categories
         List<LvsCategory> lvsCategories = lvsCategoryService.lvsGetAllCategories();
 
-        // Tìm kiếm hoặc lọc - SỬ DỤNG EAGER LOADING
+        // FILTER APPROVED PROJECTS ONLY
         if (lvsKeyword != null && !lvsKeyword.isEmpty()) {
-            lvsProjects = lvsProjectService.lvsSearchProjects(lvsKeyword, lvsPageable);
+            // Search in APPROVED projects only
+            lvsProjects = lvsProjectRepository.searchProjectsByStatus(
+                    lvsKeyword,
+                    LvsProject.LvsProjectStatus.APPROVED,
+                    lvsPageable);
         } else if (lvsCategoryId != null) {
-            lvsProjects = lvsProjectService.lvsGetProjectsByCategory(lvsCategoryId, lvsPageable);
+            // Filter by category AND APPROVED status
+            lvsProjects = lvsProjectRepository.findByCategoryAndStatusWithDetails(
+                    lvsCategoryId,
+                    LvsProject.LvsProjectStatus.APPROVED,
+                    lvsPageable);
         } else {
-            // Dùng method eager load để tránh LazyInitializationException
-            lvsProjects = lvsProjectService.lvsGetAllProjectsWithCategoryAndUser(lvsPageable);
+            // Show all APPROVED projects with eager loading
+            lvsProjects = lvsProjectRepository.findByStatusWithCategoryAndUser(
+                    LvsProject.LvsProjectStatus.APPROVED,
+                    lvsPageable);
         }
 
         // Truyền dữ liệu
@@ -333,18 +398,41 @@ public class LvsUserProjectController {
             lvsHasPurchased = lvsProjectService.lvsHasUserPurchasedProject(
                     lvsCurrentUser.getLvsUserId(), id);
 
-            // Lấy danh sách followers (nếu user là owner của project)
-            if (lvsProject.getLvsUser().getLvsUserId().equals(lvsCurrentUser.getLvsUserId())) {
-                Page<LvsUser> lvsFollowersPage = lvsFollowService.lvsGetFollowers(
-                        lvsCurrentUser.getLvsUserId(),
-                        PageRequest.of(0, 100));
-                model.addAttribute("LvsFollowers", lvsFollowersPage.getContent());
-            }
+            // Lấy danh sách followers của current user (for gift feature)
+            Page<LvsUser> lvsFollowersPage = lvsFollowService.lvsGetFollowers(
+                    lvsCurrentUser.getLvsUserId(),
+                    PageRequest.of(0, 100));
+            model.addAttribute("LvsFollowers", lvsFollowersPage.getContent());
         }
+
+        // Fetch reviews for this project
+        Pageable reviewPageable = PageRequest.of(0, 10); // First 10 reviews
+        Page<LvsReview> lvsReviews = lvsReviewService.lvsGetApprovedReviewsByProject(id, reviewPageable); // Only
+                                                                                                          // approved
+
+        // Get average rating
+        Double lvsAverageRating = lvsReviewService.lvsGetAverageRating(id);
+
+        // Get rating distribution (1-5 stars)
+        java.util.Map<Integer, Long> lvsRatingDistribution = lvsReviewService.lvsGetRatingDistribution(id);
+
+        // Check if current user has reviewed
+        boolean lvsHasReviewed = false;
+        if (lvsCurrentUser != null) {
+            lvsHasReviewed = lvsReviewService.lvsHasUserReviewed(lvsCurrentUser.getLvsUserId(), id);
+        }
+
+        // Get download count (number of orders for this project)
+        long lvsDownloadCount = lvsOrderRepository.countByLvsProject_LvsProjectId(id);
 
         // Truyền dữ liệu
         model.addAttribute("project", lvsProject);
         model.addAttribute("LvsHasPurchased", lvsHasPurchased);
+        model.addAttribute("LvsReviews", lvsReviews);
+        model.addAttribute("LvsAverageRating", lvsAverageRating != null ? lvsAverageRating : 0.0);
+        model.addAttribute("LvsRatingDistribution", lvsRatingDistribution);
+        model.addAttribute("LvsHasReviewed", lvsHasReviewed);
+        model.addAttribute("lvsDownloadCount", lvsDownloadCount);
 
         return "LvsAreas/LvsUsers/LvsProjects/LvsProjectDetail";
     }

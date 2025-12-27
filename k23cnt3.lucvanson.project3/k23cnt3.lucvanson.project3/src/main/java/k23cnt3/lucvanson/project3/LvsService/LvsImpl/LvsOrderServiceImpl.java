@@ -32,6 +32,7 @@ public class LvsOrderServiceImpl implements LvsOrderService {
     private final LvsOrderItemRepository lvsOrderItemRepository;
     private final LvsTransactionRepository lvsTransactionRepository;
     private final LvsCartService lvsCartService;
+    private final k23cnt3.lucvanson.project3.LvsService.LvsPromotionService lvsPromotionService;
 
     /**
      * Lấy đơn hàng theo ID
@@ -150,7 +151,8 @@ public class LvsOrderServiceImpl implements LvsOrderService {
         lvsOrderItem.setLvsProject(lvsProject);
         lvsOrderItem.setLvsSeller(lvsProject.getLvsUser());
         lvsOrderItem.setLvsQuantity(lvsQuantity);
-        lvsOrderItem.setLvsUnitPrice(lvsProject.getLvsPrice());
+        // ✅ USE FINAL PRICE (includes discount)
+        lvsOrderItem.setLvsUnitPrice(lvsProject.getLvsFinalPrice());
         lvsOrderItem.setLvsCreatedAt(LocalDateTime.now());
 
         lvsOrder.getLvsOrderItems().add(lvsOrderItem);
@@ -297,10 +299,8 @@ public class LvsOrderServiceImpl implements LvsOrderService {
             throw new Exception("Dự án chưa được duyệt");
         }
 
-        // 3. Kiểm tra user không thể mua project của chính mình
-        if (lvsProject.getLvsUser().getLvsUserId().equals(lvsUserId)) {
-            throw new Exception("Bạn không thể mua dự án của chính mình");
-        }
+        // 3. REMOVED: Allow buying own project for gifting purposes
+        // Gift system handles the logic of sending to followers via chat
 
         // 4. Kiểm tra user đã mua project này chưa
         List<LvsProject> lvsPurchasedProjects = lvsProjectRepository.findPurchasedProjectsByUser(lvsUserId);
@@ -311,7 +311,8 @@ public class LvsOrderServiceImpl implements LvsOrderService {
         }
 
         // 5. Kiểm tra số dư coin
-        Double lvsProjectPrice = lvsProject.getLvsPrice();
+        // ✅ USE FINAL PRICE (includes discount)
+        Double lvsProjectPrice = lvsProject.getLvsFinalPrice();
         if (lvsBuyer.getLvsCoin() < lvsProjectPrice) {
             throw new Exception("Số dư coin không đủ. Cần: " + lvsProjectPrice + ", Hiện có: " + lvsBuyer.getLvsCoin());
         }
@@ -562,7 +563,8 @@ public class LvsOrderServiceImpl implements LvsOrderService {
     public Double lvsCalculateOrderTotal(Long lvsUserId, Long lvsProjectId, Integer lvsQuantity) {
         LvsProject lvsProject = lvsProjectRepository.findById(lvsProjectId).orElse(null);
         if (lvsProject != null) {
-            return lvsProject.getLvsPrice() * lvsQuantity;
+            // ✅ USE FINAL PRICE (includes discount)
+            return lvsProject.getLvsFinalPrice() * lvsQuantity;
         }
         return 0.0;
     }
@@ -682,4 +684,85 @@ public class LvsOrderServiceImpl implements LvsOrderService {
         // Sử dụng thư viện như iText hoặc Apache PDFBox
         return new byte[0];
     }
+
+    /**
+     * Validate và apply promotion code cho order
+     * 
+     * @param lvsOrder         Order cần apply promotion
+     * @param lvsPromotionCode Mã khuyến mãi
+     * @throws Exception Nếu promotion không hợp lệ
+     */
+    private void lvsApplyPromotionToOrder(LvsOrder lvsOrder, String lvsPromotionCode) throws Exception {
+        if (lvsPromotionCode == null || lvsPromotionCode.trim().isEmpty()) {
+            return; // No promotion code provided
+        }
+
+        // 1. Tìm promotion theo code
+        LvsPromotion lvsPromotion = lvsPromotionService.lvsGetPromotionByCode(lvsPromotionCode);
+        if (lvsPromotion == null) {
+            throw new Exception("Mã khuyến mãi không tồn tại");
+        }
+
+        // 2. Kiểm tra promotion có active không
+        if (!lvsPromotion.getLvsIsActive()) {
+            throw new Exception("Mã khuyến mãi đã bị vô hiệu hóa");
+        }
+
+        // 3. Kiểm tra thời gian hiệu lực
+        LocalDate lvsNow = LocalDate.now();
+        if (lvsNow.isBefore(lvsPromotion.getLvsStartDate())) {
+            throw new Exception("Mã khuyến mãi chưa có hiệu lực");
+        }
+        if (lvsNow.isAfter(lvsPromotion.getLvsEndDate())) {
+            throw new Exception("Mã khuyến mãi đã hết hạn");
+        }
+
+        // 4. Kiểm tra usage limit
+        if (lvsPromotion.getLvsUsageLimit() != null &&
+                lvsPromotion.getLvsUsedCount() >= lvsPromotion.getLvsUsageLimit()) {
+            throw new Exception("Mã khuyến mãi đã hết lượt sử dụng");
+        }
+
+        // 5. Kiểm tra đơn hàng tối thiểu
+        Double lvsOrderTotal = lvsOrder.getLvsTotalAmount();
+        if (lvsPromotion.getLvsMinOrderValue() != null &&
+                lvsOrderTotal < lvsPromotion.getLvsMinOrderValue()) {
+            throw new Exception("Đơn hàng chưa đạt giá trị tối thiểu " +
+                    lvsPromotion.getLvsMinOrderValue() + " coins");
+        }
+
+        // 6. Tính discount amount
+        Double lvsDiscountAmount = 0.0;
+        if (lvsPromotion.getLvsDiscountType() == LvsPromotion.LvsDiscountType.PERCENT) {
+            // Percentage discount
+            lvsDiscountAmount = lvsOrderTotal * lvsPromotion.getLvsDiscountValue() / 100.0;
+        } else {
+            // Fixed amount discount
+            lvsDiscountAmount = lvsPromotion.getLvsDiscountValue();
+            // Không cho discount vượt quá tổng tiền
+            if (lvsDiscountAmount > lvsOrderTotal) {
+                lvsDiscountAmount = lvsOrderTotal;
+            }
+        }
+
+        // 7. Apply promotion to order
+        lvsOrder.setLvsPromotion(lvsPromotion);
+        lvsOrder.setLvsPromotionCode(lvsPromotionCode);
+        lvsOrder.setLvsPromotionDiscount(lvsDiscountAmount);
+
+        // Final amount will be recalculated by @PreUpdate
+        // lvsFinalAmount = lvsTotalAmount - lvsDiscountAmount - lvsPromotionDiscount
+    }
+
+    /**
+     * Increment promotion usage count after successful order
+     * 
+     * @param lvsPromotionId ID của promotion
+     */
+    private void lvsIncrementPromotionUsage(Integer lvsPromotionId) {
+        if (lvsPromotionId != null) {
+            lvsPromotionService.lvsIncrementUsageCount(lvsPromotionId);
+        }
+    }
+
 }

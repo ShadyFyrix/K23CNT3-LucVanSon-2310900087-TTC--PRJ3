@@ -168,19 +168,27 @@ public class LvsGiftServiceImpl implements LvsGiftService {
         try {
             LvsOrder recipientOrder = new LvsOrder();
             recipientOrder.setLvsBuyer(gift.getLvsRecipient());
+            recipientOrder.setLvsOrderCode("GIFT-" + System.currentTimeMillis());
             recipientOrder.setLvsStatus(LvsOrder.LvsOrderStatus.COMPLETED);
             recipientOrder.setLvsTotalAmount(0.0); // FREE - it's a gift!
+            recipientOrder.setLvsFinalAmount(0.0);
+            recipientOrder.setLvsPaymentMethod("GIFT");
             recipientOrder.setLvsCreatedAt(LocalDateTime.now());
             recipientOrder.setLvsUpdatedAt(LocalDateTime.now());
+
+            // Save order first to get ID
+            recipientOrder = lvsOrderRepository.save(recipientOrder);
 
             // Create order item
             LvsOrderItem item = new LvsOrderItem();
             item.setLvsOrder(recipientOrder);
             item.setLvsProject(gift.getLvsProject());
-            item.setLvsUnitPrice(0.0); // FREE
+            item.setLvsSeller(gift.getLvsProject().getLvsUser()); // ✅ Add seller!
+            item.setLvsUnitPrice(0.0); // FREE for recipient
             item.setLvsQuantity(1);
+            item.setLvsCreatedAt(LocalDateTime.now());
 
-            recipientOrder.setLvsOrderItems(java.util.List.of(item));
+            recipientOrder.getLvsOrderItems().add(item);
             lvsOrderRepository.save(recipientOrder);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to add project to your library: " + e.getMessage());

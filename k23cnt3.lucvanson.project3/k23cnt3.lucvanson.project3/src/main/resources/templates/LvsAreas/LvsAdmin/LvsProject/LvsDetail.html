@@ -70,7 +70,32 @@
                                         </tr>
                                         <tr>
                                             <th>Gia</th>
-                                            <td th:text="${lvsProject.lvsPrice} + ' VND'">0 VND</td>
+                                            <td>
+                                                <!-- If discount active -->
+                                                <div th:if="${lvsProject.lvsHasActiveDiscount}">
+                                                    <span class="badge bg-danger mb-1">
+                                                        <i class="fas fa-fire"></i> SALE!
+                                                    </span>
+                                                    <div>
+                                                        <span class="text-muted text-decoration-line-through">
+                                                            <span th:text="${lvsProject.lvsPrice}">0</span> VND
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-bold text-success">
+                                                            <span th:text="${lvsProject.lvsFinalPrice}">0</span> VND
+                                                        </span>
+                                                        <span class="badge bg-warning text-dark ms-1">
+                                                            -<span th:text="${lvsProject.lvsDiscountPercent}">0</span>%
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- No discount -->
+                                                <span th:unless="${lvsProject.lvsHasActiveDiscount}">
+                                                    <span th:text="${lvsProject.lvsPrice}">0</span> VND
+                                                </span>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Ngay tao</th>
@@ -191,6 +216,203 @@
                                         </a>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Management Section -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-info text-white">
+                            <h4 class="mb-0">
+                                <i class="fas fa-star"></i> Quản lý Đánh giá
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Review Statistics -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="card text-center bg-light">
+                                        <div class="card-body">
+                                            <h3 class="text-warning" th:text="${LvsAverageRating}">0.0</h3>
+                                            <p class="mb-0">Average Rating</p>
+                                            <div class="text-warning">
+                                                <i th:each="i : ${#numbers.sequence(1, 5)}"
+                                                    th:class="${i <= LvsAverageRating ? 'fas fa-star' : 'far fa-star'}"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center bg-light">
+                                        <div class="card-body">
+                                            <h3 th:text="${LvsReviews.totalElements}">0</h3>
+                                            <p class="mb-0">Total Reviews</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center bg-success text-white">
+                                        <div class="card-body">
+                                            <h3 th:text="${LvsApprovedCount}">0</h3>
+                                            <p class="mb-0">Approved</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center bg-warning text-white">
+                                        <div class="card-body">
+                                            <h3 th:text="${LvsPendingCount}">0</h3>
+                                            <p class="mb-0">Pending</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Review List -->
+                            <div th:if="${LvsReviews.empty}" class="alert alert-info text-center">
+                                <i class="fas fa-info-circle"></i> Chưa có đánh giá nào
+                            </div>
+
+                            <div th:unless="${LvsReviews.empty}">
+                                <div th:each="review : ${LvsReviews.content}" class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <!-- Review Header -->
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <div class="me-3">
+                                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                            style="width: 40px; height: 40px;">
+                                                            <span
+                                                                th:text="${review.lvsUser.lvsUsername.substring(0,1).toUpperCase()}">U</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0" th:text="${review.lvsUser.lvsUsername}">
+                                                            Username</h6>
+                                                        <div class="text-warning">
+                                                            <i th:each="i : ${#numbers.sequence(1, review.lvsRating)}"
+                                                                class="fas fa-star"></i>
+                                                            <i th:each="i : ${#numbers.sequence(review.lvsRating + 1, 5)}"
+                                                                class="far fa-star"></i>
+                                                        </div>
+                                                        <small class="text-muted"
+                                                            th:text="${#temporals.format(review.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date</small>
+                                                    </div>
+                                                    <div>
+                                                        <!-- Status Badge -->
+                                                        <span th:if="${review.lvsIsApproved}" class="badge bg-success">
+                                                            <i class="fas fa-check"></i> Approved
+                                                        </span>
+                                                        <span th:unless="${review.lvsIsApproved}"
+                                                            class="badge bg-warning">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Review Title -->
+                                                <h6 th:if="${review.lvsTitle}" th:text="${review.lvsTitle}">Review Title
+                                                </h6>
+
+                                                <!-- Review Content -->
+                                                <p class="mb-2" th:text="${review.lvsContent}">Review content</p>
+
+                                                <!-- Review Images -->
+                                                <div th:if="${review.lvsImages}" class="mb-2">
+                                                    <div th:with="images=${T(com.fasterxml.jackson.databind.ObjectMapper).new().readValue(review.lvsImages, T(java.util.List))}"
+                                                        class="d-flex gap-2">
+                                                        <img th:each="img : ${images}" th:src="@{${img}}"
+                                                            class="rounded"
+                                                            style="width: 80px; height: 80px; object-fit: cover;"
+                                                            alt="Review image">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Review Stats -->
+                                                <small class="text-muted">
+                                                    <i class="fas fa-thumbs-up"></i> <span
+                                                        th:text="${review.lvsLikeCount}">0</span> likes
+                                                </small>
+                                            </div>
+
+                                            <!-- Admin Actions -->
+                                            <div class="col-md-4">
+                                                <div class="d-grid gap-2">
+                                                    <!-- Approve Button (if pending) -->
+                                                    <form th:if="${!review.lvsIsApproved}"
+                                                        th:action="@{/LvsAdmin/LvsReview/LvsApprove/{id}(id=${review.lvsReviewId})}"
+                                                        method="post">
+                                                        <button type="submit" class="btn btn-success w-100">
+                                                            <i class="fas fa-check"></i> Approve
+                                                        </button>
+                                                    </form>
+
+                                                    <!-- Hide Button (if approved) -->
+                                                    <button th:if="${review.lvsIsApproved}" type="button"
+                                                        class="btn btn-warning w-100" data-bs-toggle="modal"
+                                                        th:data-bs-target="'#hideModal' + ${review.lvsReviewId}">
+                                                        <i class="fas fa-eye-slash"></i> Hide
+                                                    </button>
+
+                                                    <!-- Delete Button -->
+                                                    <form
+                                                        th:action="@{/LvsAdmin/LvsReview/LvsDelete/{id}(id=${review.lvsReviewId})}"
+                                                        method="post"
+                                                        onsubmit="return confirm('Bạn có chắc muốn xóa đánh giá này?');">
+                                                        <button type="submit" class="btn btn-danger w-100">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hide Review Modal -->
+                                <div th:each="review : ${LvsReviews.content}"
+                                    th:id="'hideModal' + ${review.lvsReviewId}" class="modal fade" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Hide Review</h5>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form
+                                                th:action="@{/LvsAdmin/LvsReview/LvsHide/{id}(id=${review.lvsReviewId})}"
+                                                method="post">
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Reason for hiding:</label>
+                                                        <textarea name="reason" class="form-control" rows="3"
+                                                            placeholder="Enter reason..." required></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-warning">Hide Review</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pagination -->
+                            <div th:if="${LvsReviews.totalPages > 1}" class="d-flex justify-content-center mt-3">
+                                <nav>
+                                    <ul class="pagination">
+                                        <li th:each="i : ${#numbers.sequence(0, LvsReviews.totalPages - 1)}"
+                                            th:class="${i == LvsReviews.number ? 'page-item active' : 'page-item'}">
+                                            <a class="page-link"
+                                                th:href="@{/LvsAdmin/LvsProject/LvsDetail/{id}(id=${lvsProject.lvsProjectId}, page=${i})}"
+                                                th:text="${i + 1}">1</a>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Event History - WeJect</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-history text-[#fed700] mr-3"></i>Event History
+            </h1>
+
+            <!-- History List -->
+            <div class="bg-[#2b2b2b] rounded-xl p-6">
+                <div class="space-y-3">
+                    <div th:each="event : ${lvsHistory}"
+                        class="flex justify-between items-center bg-[#1e1e1e] border border-[#333] p-4 rounded-lg">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span th:if="${event.lvsEvent.lvsType.name() == 'DAILY_LOGIN'}"
+                                    class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">
+                                    <i class="fas fa-calendar-check mr-1"></i>Daily Login
+                                </span>
+                                <span th:if="${event.lvsEvent.lvsType.name() == 'DAILY_TASK'}"
+                                    class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">
+                                    <i class="fas fa-tasks mr-1"></i>Daily Task
+                                </span>
+                                <span th:if="${event.lvsEvent.lvsType.name() == 'SPECIAL'}"
+                                    class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">
+                                    <i class="fas fa-star mr-1"></i>Special Event
+                                </span>
+                            </div>
+                            <h3 class="text-white font-bold" th:text="${event.lvsEvent.lvsEventName}">Event Name</h3>
+                            <p class="text-gray-400 text-sm mt-1">
+                                <i class="fas fa-clock mr-1"></i>
+                                <span
+                                    th:text="${#temporals.format(event.lvsCompletedAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[#fed700] font-bold text-2xl">
+                                +<span th:text="${event.lvsCoinsEarned}">0</span>
+                                <i class="fas fa-coins text-lg"></i>
+                            </div>
+                            <div th:if="${event.lvsClaimed}" class="text-green-400 text-sm mt-1">
+                                <i class="fas fa-check-circle mr-1"></i>Claimed
+                            </div>
+                            <div th:unless="${event.lvsClaimed}" class="text-gray-500 text-sm mt-1">
+                                <i class="fas fa-clock mr-1"></i>Pending
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${lvsHistory == null or lvsHistory.isEmpty()}" class="text-center py-12">
+                    <i class="fas fa-inbox text-gray-600 text-6xl mb-4"></i>
+                    <p class="text-gray-400 text-lg">No event history yet</p>
+                    <p class="text-gray-500 text-sm mt-2">Complete events to see your history here!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

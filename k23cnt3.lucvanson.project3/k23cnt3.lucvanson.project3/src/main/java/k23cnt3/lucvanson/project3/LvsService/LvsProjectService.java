@@ -36,6 +36,10 @@ public interface LvsProjectService {
     // Lấy dự án theo trạng thái
     Page<LvsProject> lvsGetProjectsByStatus(String lvsStatus, Pageable lvsPageable);
 
+    // Lấy dự án theo danh mục và trạng thái
+    Page<LvsProject> lvsGetProjectsByCategoryAndStatus(Integer lvsCategoryId, LvsProjectStatus lvsStatus,
+            Pageable lvsPageable);
+
     // Lấy dự án theo người đăng
     Page<LvsProject> lvsGetProjectsByUser(Long lvsUserId, Pageable lvsPageable);
 

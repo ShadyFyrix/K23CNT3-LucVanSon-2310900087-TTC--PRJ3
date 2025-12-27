@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import jakarta.servlet.http.HttpSession;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Controller quản lý đánh giá cho người dùng
@@ -29,6 +33,9 @@ public class LvsUserReviewController {
 
     @Autowired
     private LvsUserService lvsUserService;
+
+    @Autowired
+    private LvsFileUploadService lvsFileUploadService;
 
     // Xem đánh giá của dự án
     @GetMapping("/LvsProject/{projectId}")
@@ -98,7 +105,7 @@ public class LvsUserReviewController {
     @PostMapping("/LvsWrite/{projectId}")
     public String lvsWriteReview(@PathVariable Long projectId,
             @ModelAttribute LvsReview lvsReview,
-            @RequestParam(required = false) String lvsImages,
+            @RequestParam(required = false) MultipartFile[] lvsImageFiles,
             HttpSession session,
             Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
@@ -115,9 +122,23 @@ public class LvsUserReviewController {
 
             LvsProject lvsProject = lvsProjectService.lvsGetProjectById(projectId);
 
+            // Upload images if provided
+            if (lvsImageFiles != null && lvsImageFiles.length > 0) {
+                List<MultipartFile> validFiles = Arrays.stream(lvsImageFiles)
+                        .filter(file -> file != null && !file.isEmpty())
+                        .collect(Collectors.toList());
+
+                if (!validFiles.isEmpty()) {
+                    List<String> imageUrls = lvsFileUploadService.lvsSaveFiles(validFiles, "reviews");
+                    ObjectMapper mapper = new ObjectMapper();
+                    String imagesJson = mapper.writeValueAsString(imageUrls);
+                    lvsReview.setLvsImages(imagesJson);
+                }
+            }
+
             lvsReview.setLvsUser(lvsCurrentUser);
             lvsReview.setLvsProject(lvsProject);
-            lvsReview.setLvsImages(lvsImages);
+            lvsReview.setLvsIsApproved(true); // Auto-approve user reviews
 
             LvsReview lvsSavedReview = lvsReviewService.lvsSaveReview(lvsReview);
 
@@ -208,17 +229,30 @@ public class LvsUserReviewController {
     // Thích đánh giá
     @PostMapping("/LvsLike/{id}")
     @ResponseBody
-    public String lvsLikeReview(@PathVariable Long id, HttpSession session) {
+    public java.util.Map<String, Object> lvsLikeReview(@PathVariable Long id, HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
-            return "{\"success\": false, \"message\": \"Vui lòng đăng nhập\"}";
+            return java.util.Map.of(
+                    "success", false,
+                    "message", "Vui lòng đăng nhập để thích đánh giá");
         }
 
-        boolean lvsLiked = lvsReviewService.lvsLikeReview(id, lvsCurrentUser.getLvsUserId());
-        if (lvsLiked) {
-            return "{\"success\": true, \"message\": \"Đã thích đánh giá\"}";
-        } else {
-            return "{\"success\": false, \"message\": \"Đã có lỗi xảy ra\"}";
+        try {
+            LvsReview review = lvsReviewService.lvsGetReviewById(id);
+            if (review == null) {
+                return java.util.Map.of("success", false, "message", "Không tìm thấy đánh giá");
+            }
+
+            // Simple increment - no tracking per user (as requested by user)
+            review.setLvsLikeCount(review.getLvsLikeCount() + 1);
+            lvsReviewService.lvsSaveReview(review);
+
+            return java.util.Map.of(
+                    "success", true,
+                    "liked", true,
+                    "likeCount", review.getLvsLikeCount());
+        } catch (Exception e) {
+            return java.util.Map.of("success", false, "message", "Đã có lỗi xảy ra");
         }
     }
 

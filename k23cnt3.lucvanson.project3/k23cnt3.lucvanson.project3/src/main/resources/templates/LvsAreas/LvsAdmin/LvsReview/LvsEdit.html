@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
 
@@ -13,27 +13,201 @@
             <div class="card">
                 <div class="card-body">
                     <form th:action="@{/LvsAdmin/LvsReview/LvsEdit/{id}(id=${LvsReview.lvsReviewId})}"
-                        th:object="${LvsReview}" method="post">
+                        th:object="${LvsReview}" method="post" enctype="multipart/form-data">
+
+                        <!-- Rating with Interactive Stars -->
                         <div class="mb-3">
-                            <label class="form-label">Rating</label>
-                            <select class="form-select" th:field="*{lvsRating}">
-                                <option th:each="i : ${#numbers.sequence(1, 5)}" th:value="${i}" th:text="${i} + ' ⭐'">
-                                </option>
-                            </select>
+                            <label class="form-label">Đánh giá <span class="text-danger">*</span></label>
+                            <div class="d-flex gap-2">
+                                <input type="radio" name="lvsRating" th:value="1"
+                                    th:checked="${LvsReview.lvsRating == 1}" id="editStar1" class="d-none" required>
+                                <label for="editStar1" class="btn btn-outline-warning" style="cursor: pointer;">
+                                    <i th:class="${LvsReview.lvsRating >= 1 ? 'fas fa-star' : 'far fa-star'}"></i>
+                                </label>
+                                <input type="radio" name="lvsRating" th:value="2"
+                                    th:checked="${LvsReview.lvsRating == 2}" id="editStar2" class="d-none">
+                                <label for="editStar2" class="btn btn-outline-warning" style="cursor: pointer;">
+                                    <i th:class="${LvsReview.lvsRating >= 2 ? 'fas fa-star' : 'far fa-star'}"></i>
+                                </label>
+                                <input type="radio" name="lvsRating" th:value="3"
+                                    th:checked="${LvsReview.lvsRating == 3}" id="editStar3" class="d-none">
+                                <label for="editStar3" class="btn btn-outline-warning" style="cursor: pointer;">
+                                    <i th:class="${LvsReview.lvsRating >= 3 ? 'fas fa-star' : 'far fa-star'}"></i>
+                                </label>
+                                <input type="radio" name="lvsRating" th:value="4"
+                                    th:checked="${LvsReview.lvsRating == 4}" id="editStar4" class="d-none">
+                                <label for="editStar4" class="btn btn-outline-warning" style="cursor: pointer;">
+                                    <i th:class="${LvsReview.lvsRating >= 4 ? 'fas fa-star' : 'far fa-star'}"></i>
+                                </label>
+                                <input type="radio" name="lvsRating" th:value="5"
+                                    th:checked="${LvsReview.lvsRating == 5}" id="editStar5" class="d-none">
+                                <label for="editStar5" class="btn btn-outline-warning" style="cursor: pointer;">
+                                    <i th:class="${LvsReview.lvsRating >= 5 ? 'fas fa-star' : 'far fa-star'}"></i>
+                                </label>
+                            </div>
                         </div>
+
+                        <!-- Title -->
                         <div class="mb-3">
-                            <label class="form-label">Nội dung</label>
-                            <textarea class="form-control" th:field="*{lvsComment}" rows="5"></textarea>
+                            <label class="form-label">Tiêu đề</label>
+                            <input type="text" class="form-control" th:field="*{lvsTitle}"
+                                placeholder="Nhập tiêu đề đánh giá" maxlength="200">
                         </div>
+
+                        <!-- Content -->
+                        <div class="mb-3">
+                            <label class="form-label">Nội dung <span class="text-danger">*</span></label>
+                            <textarea class="form-control" th:field="*{lvsContent}" rows="5"
+                                placeholder="Nhập nội dung đánh giá" required></textarea>
+                        </div>
+
+                        <!-- Images -->
+                        <div class="mb-3">
+                            <!-- Existing Images -->
+                            <div class="mb-2">
+                                <label class="form-label">Ảnh hiện tại:</label>
+                                <div class="edit-existing-images d-flex gap-2 flex-wrap"
+                                    th:attr="data-images=${LvsReview.lvsImages}"></div>
+                            </div>
+
+                            <!-- Upload New Images -->
+                            <label for="editImageFiles" class="form-label">Thêm ảnh mới (Tùy chọn)</label>
+                            <input type="file" class="form-control" id="editImageFiles" name="lvsImageFiles" multiple
+                                accept="image/*">
+                            <small class="text-muted">Upload ảnh mới sẽ thay thế ảnh cũ</small>
+                            <div id="editImagePreview" class="d-flex gap-2 mt-2 flex-wrap"></div>
+                        </div>
+
+                        <!-- Buttons -->
                         <div class="d-flex justify-content-end gap-2">
                             <a th:href="@{/LvsAdmin/LvsReview/LvsDetail/{id}(id=${LvsReview.lvsReviewId})}"
                                 class="btn btn-secondary">Hủy</a>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Cập nhật</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Cập nhật
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+
+        <!-- JavaScript for Star Selection and Image Preview -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Star Rating Selection
+                const starInputs = document.querySelectorAll('input[name="lvsRating"]');
+                const starLabels = document.querySelectorAll('label[for^="editStar"]');
+
+                starInputs.forEach((input, index) => {
+                    input.addEventListener('change', function () {
+                        starLabels.forEach((label, i) => {
+                            const icon = label.querySelector('i');
+                            if (i <= index) {
+                                icon.className = 'fas fa-star';
+                                label.classList.add('active');
+                            } else {
+                                icon.className = 'far fa-star';
+                                label.classList.remove('active');
+                            }
+                        });
+                    });
+                });
+
+                // Hover effect
+                starLabels.forEach((label, index) => {
+                    label.addEventListener('mouseenter', function () {
+                        starLabels.forEach((l, i) => {
+                            const icon = l.querySelector('i');
+                            if (i <= index) {
+                                icon.className = 'fas fa-star';
+                            }
+                        });
+                    });
+
+                    label.addEventListener('mouseleave', function () {
+                        const selectedInput = document.querySelector('input[name="lvsRating"]:checked');
+                        if (selectedInput) {
+                            const selectedIndex = Array.from(starInputs).indexOf(selectedInput);
+                            starLabels.forEach((l, i) => {
+                                const icon = l.querySelector('i');
+                                if (i <= selectedIndex) {
+                                    icon.className = 'fas fa-star';
+                                } else {
+                                    icon.className = 'far fa-star';
+                                }
+                            });
+                        } else {
+                            starLabels.forEach((l) => {
+                                l.querySelector('i').className = 'far fa-star';
+                            });
+                        }
+                    });
+                });
+
+                // Image Preview
+                const imageInput = document.getElementById('editImageFiles');
+                // Render existing images
+                const existingImagesContainer = document.querySelector('.edit-existing-images');
+                if (existingImagesContainer) {
+                    const imagesJson = existingImagesContainer.getAttribute('data-images');
+                    if (imagesJson && imagesJson !== '[]' && imagesJson !== 'null') {
+                        try {
+                            const images = JSON.parse(imagesJson);
+                            if (Array.isArray(images) && images.length > 0) {
+                                images.forEach((imageUrl, index) => {
+                                    const img = document.createElement('img');
+                                    img.src = '/lvsforum' + imageUrl;
+                                    img.className = 'rounded border';
+                                    img.style.width = '80px';
+                                    img.style.height = '80px';
+                                    img.style.objectFit = 'cover';
+                                    img.alt = 'Existing image ' + (index + 1);
+                                    existingImagesContainer.appendChild(img);
+                                });
+                            } else {
+                                existingImagesContainer.innerHTML = '<span class="text-muted">Chưa có ảnh</span>';
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse existing images:', e);
+                            existingImagesContainer.innerHTML = '<span class="text-muted">Lỗi load ảnh</span>';
+                        }
+                    } else {
+                        existingImagesContainer.innerHTML = '<span class="text-muted">Chưa có ảnh</span>';
+                    }
+                }
+
+                // Preview new images
+                if (imageInput) {
+                    imageInput.addEventListener('change', function (e) {
+                        const files = e.target.files;
+                        const previewContainer = document.getElementById('editImagePreview');
+
+                        if (!previewContainer) return;
+
+                        previewContainer.innerHTML = '';
+
+                        if (files.length > 0) {
+                            Array.from(files).forEach((file, index) => {
+                                if (file.type.startsWith('image/')) {
+                                    const reader = new FileReader();
+                                    reader.onload = function (e) {
+                                        const img = document.createElement('img');
+                                        img.src = e.target.result;
+                                        img.className = 'rounded border border-warning';
+                                        img.style.width = '80px';
+                                        img.style.height = '80px';
+                                        img.style.objectFit = 'cover';
+                                        img.alt = 'Preview ' + (index + 1);
+                                        previewContainer.appendChild(img);
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        </script>
     </div>
 </body>
 

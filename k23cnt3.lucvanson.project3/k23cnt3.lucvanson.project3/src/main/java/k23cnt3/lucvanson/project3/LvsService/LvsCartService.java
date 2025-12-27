@@ -65,4 +65,7 @@ public interface LvsCartService {
 
     // Sao chép giỏ hàng từ user này sang user khác
     void lvsCopyCart(Long lvsFromUserId, Long lvsToUserId);
+
+    // Bỏ chọn tất cả sản phẩm trong giỏ hàng
+    void lvsUnselectAllItems(Long lvsUserId);
 }

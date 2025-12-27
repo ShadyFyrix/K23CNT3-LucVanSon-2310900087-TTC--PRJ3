@@ -35,6 +35,14 @@ public class LvsCartItem {
     @Column(name = "LvsIsSelected")
     private Boolean lvsIsSelected = true;
 
+    // Gift fields
+    @Column(name = "lvsIsGift")
+    private Boolean lvsIsGift = false;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lvsGiftRecipientId")
+    private LvsUser lvsGiftRecipient;
+
     // Thời gian thêm vào giỏ
     @Column(name = "LvsAddedAt")
     private LocalDateTime lvsAddedAt = LocalDateTime.now();
@@ -115,6 +123,22 @@ public class LvsCartItem {
 
     public void setLvsAddedAt(LocalDateTime lvsAddedAt) {
         this.lvsAddedAt = lvsAddedAt;
+    }
+
+    public Boolean getLvsIsGift() {
+        return lvsIsGift;
+    }
+
+    public void setLvsIsGift(Boolean lvsIsGift) {
+        this.lvsIsGift = lvsIsGift;
+    }
+
+    public LvsUser getLvsGiftRecipient() {
+        return lvsGiftRecipient;
+    }
+
+    public void setLvsGiftRecipient(LvsUser lvsGiftRecipient) {
+        this.lvsGiftRecipient = lvsGiftRecipient;
     }
 
 }

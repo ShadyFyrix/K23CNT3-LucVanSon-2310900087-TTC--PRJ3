@@ -311,11 +311,12 @@ public class LvsAdminOrderController {
                 lvsOrderItem.setLvsOrder(lvsOrder);
                 lvsOrderItem.setLvsProject(lvsProject);
                 lvsOrderItem.setLvsQuantity(1); // Always 1 for project ownership
-                lvsOrderItem.setLvsUnitPrice(lvsProject.getLvsPrice());
-                lvsOrderItem.setLvsItemTotal(lvsProject.getLvsPrice());
+                // ✅ USE FINAL PRICE (with discount if active)
+                lvsOrderItem.setLvsUnitPrice(lvsProject.getLvsFinalPrice());
+                lvsOrderItem.setLvsItemTotal(lvsProject.getLvsFinalPrice());
 
                 lvsOrderItems.add(lvsOrderItem);
-                lvsTotal += lvsProject.getLvsPrice();
+                lvsTotal += lvsProject.getLvsFinalPrice();
             }
 
             lvsOrder.setLvsOrderItems(lvsOrderItems);

@@ -61,6 +61,13 @@
                                         th:text="${project.lvsUser?.lvsUsername ?: 'Unknown'}">Creator</a>
                                 </p>
                             </div>
+                            <!-- Report Button -->
+                            <a th:href="@{/LvsUser/LvsReport/LvsCreate(lvsReportType='PROJECT', lvsTargetId=${project.lvsProjectId})}"
+                                class="px-4 py-2 bg-red-600/20 border border-red-600 text-red-400 rounded-lg hover:bg-red-600/30 transition flex items-center gap-2"
+                                title="Report this project">
+                                <i class="fas fa-flag"></i>
+                                <span>Report</span>
+                            </a>
                         </div>
 
                         <!-- Project Image Gallery -->
@@ -116,11 +123,13 @@
                             </div>
                             <div class="bg-[#1e1e1e] border border-[#333] rounded-lg p-4 text-center">
                                 <i class="fas fa-download text-[#fed700] text-2xl mb-2"></i>
-                                <p class="text-gray-400 text-xs">1.2K Downloads</p>
+                                <p class="text-gray-400 text-xs" th:text="${lvsDownloadCount} + ' Downloads'">0
+                                    Downloads</p>
                             </div>
                             <div class="bg-[#1e1e1e] border border-[#333] rounded-lg p-4 text-center">
-                                <i class="fas fa-heart text-[#fed700] text-2xl mb-2"></i>
-                                <p class="text-gray-400 text-xs">234 Favorites</p>
+                                <i class="fas fa-eye text-[#fed700] text-2xl mb-2"></i>
+                                <p class="text-gray-400 text-xs" th:text="${project?.lvsViewCount ?: 0} + ' Views'">0
+                                    Views</p>
                             </div>
                         </div>
 
@@ -134,20 +143,249 @@
                                 Project description goes here.
                             </p>
                         </div>
+
+                        <!-- Reviews & Ratings Section -->
+                        <div class="border-t border-[#333] pt-6 mt-6">
+                            <h2 class="text-2xl font-bold text-white mb-6">
+                                <i class="fas fa-star text-[#fed700] mr-2"></i>Reviews & Ratings
+                            </h2>
+
+                            <!-- Rating Summary -->
+                            <div class="bg-[#1e1e1e] border border-[#333] rounded-lg p-6 mb-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Average Rating -->
+                                    <div class="text-center">
+                                        <div class="text-6xl font-bold text-[#fed700] mb-2"
+                                            th:text="${#numbers.formatDecimal(LvsAverageRating, 1, 1)}">0.0</div>
+                                        <div class="flex justify-center text-[#fed700] text-2xl mb-2">
+                                            <i th:each="i : ${#numbers.sequence(1, 5)}"
+                                                th:class="${i <= LvsAverageRating ? 'fas fa-star' : (i - 0.5 <= LvsAverageRating ? 'fas fa-star-half-alt' : 'far fa-star')}"></i>
+                                        </div>
+                                        <p class="text-gray-400" th:text="${LvsReviews.totalElements} + ' reviews'">0
+                                            reviews</p>
+                                    </div>
+
+                                    <!-- Rating Distribution -->
+                                    <div class="space-y-2">
+                                        <div th:each="star : ${#numbers.sequence(5, 1, -1)}"
+                                            class="flex items-center gap-3">
+                                            <span class="text-gray-400 text-sm w-8" th:text="${star} + '★'">5★</span>
+                                            <div class="flex-1 bg-[#2b2b2b] rounded-full h-2 overflow-hidden">
+                                                <div class="bg-[#fed700] h-full transition-all"
+                                                    th:style="'width: ' + ${LvsRatingDistribution.containsKey(star) ? (LvsRatingDistribution.get(star) * 100.0 / (LvsReviews.totalElements > 0 ? LvsReviews.totalElements : 1)) : 0} + '%'">
+                                                </div>
+                                            </div>
+                                            <span class="text-gray-400 text-sm w-12 text-right"
+                                                th:text="${LvsRatingDistribution.containsKey(star) ? LvsRatingDistribution.get(star) : 0}">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Write Review Form (if purchased and not reviewed) -->
+                            <div th:if="${LvsHasPurchased and !LvsHasReviewed}"
+                                class="bg-[#1e1e1e] border border-[#333] rounded-lg p-6 mb-6">
+                                <h3 class="text-xl font-bold text-white mb-4">
+                                    <i class="fas fa-edit text-[#fed700] mr-2"></i>Write a Review
+                                </h3>
+                                <form th:action="@{/LvsUser/LvsReview/LvsWrite/{id}(id=${project.lvsProjectId})}"
+                                    method="post" enctype="multipart/form-data">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                                    <!-- Rating -->
+                                    <div class="mb-4">
+                                        <label class="block text-gray-400 mb-2">Rating *</label>
+                                        <div class="flex gap-2">
+                                            <input type="radio" name="lvsRating" value="1" id="star1" class="hidden"
+                                                required>
+                                            <label for="star1"
+                                                class="cursor-pointer text-3xl text-gray-600 hover:text-[#fed700] transition">
+                                                <i class="far fa-star"></i>
+                                            </label>
+                                            <input type="radio" name="lvsRating" value="2" id="star2" class="hidden">
+                                            <label for="star2"
+                                                class="cursor-pointer text-3xl text-gray-600 hover:text-[#fed700] transition">
+                                                <i class="far fa-star"></i>
+                                            </label>
+                                            <input type="radio" name="lvsRating" value="3" id="star3" class="hidden">
+                                            <label for="star3"
+                                                class="cursor-pointer text-3xl text-gray-600 hover:text-[#fed700] transition">
+                                                <i class="far fa-star"></i>
+                                            </label>
+                                            <input type="radio" name="lvsRating" value="4" id="star4" class="hidden">
+                                            <label for="star4"
+                                                class="cursor-pointer text-3xl text-gray-600 hover:text-[#fed700] transition">
+                                                <i class="far fa-star"></i>
+                                            </label>
+                                            <input type="radio" name="lvsRating" value="5" id="star5" class="hidden">
+                                            <label for="star5"
+                                                class="cursor-pointer text-3xl text-gray-600 hover:text-[#fed700] transition">
+                                                <i class="far fa-star"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Title -->
+                                    <div class="mb-4">
+                                        <label class="block text-gray-400 mb-2">Title</label>
+                                        <input type="text" name="lvsTitle"
+                                            class="w-full bg-[#2b2b2b] border border-[#333] text-white px-4 py-3 rounded-lg focus:border-[#fed700] focus:outline-none"
+                                            placeholder="Summarize your experience">
+                                    </div>
+
+                                    <!-- Content -->
+                                    <div class="mb-4">
+                                        <label class="block text-gray-400 mb-2">Review *</label>
+                                        <textarea name="lvsContent" rows="4" required
+                                            class="w-full bg-[#2b2b2b] border border-[#333] text-white px-4 py-3 rounded-lg focus:border-[#fed700] focus:outline-none"
+                                            placeholder="Share your thoughts about this project..."></textarea>
+                                    </div>
+
+                                    <!-- Images -->
+                                    <div class="mb-4">
+                                        <label class="block text-gray-400 mb-2">Images (Optional)</label>
+                                        <input type="file" name="lvsImageFiles" id="reviewImageInput" multiple
+                                            accept="image/*"
+                                            class="w-full bg-[#2b2b2b] border border-[#333] text-white px-4 py-3 rounded-lg focus:border-[#fed700] focus:outline-none">
+                                        <p class="text-gray-500 text-xs mt-1">You can upload multiple images</p>
+                                        <div id="imagePreviewContainer" class="flex gap-2 mt-2 overflow-x-auto"></div>
+                                    </div>
+
+                                    <!-- Submit -->
+                                    <button type="submit"
+                                        class="w-full bg-[#fed700] text-black font-bold py-3 rounded-lg hover:bg-white transition">
+                                        <i class="fas fa-paper-plane mr-2"></i>Submit Review
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Review List -->
+                            <div class="space-y-4">
+                                <div th:if="${LvsReviews.empty}" class="text-center py-12 text-gray-400">
+                                    <i class="fas fa-comments text-6xl mb-4 opacity-50"></i>
+                                    <p>No reviews yet. Be the first to review!</p>
+                                </div>
+
+                                <div th:each="review : ${LvsReviews.content}"
+                                    class="bg-[#1e1e1e] border border-[#333] rounded-lg p-6">
+                                    <!-- Review Header -->
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-12 h-12 rounded-full bg-[#fed700] flex items-center justify-center text-black font-bold text-xl">
+                                                <span
+                                                    th:text="${review.lvsUser.lvsUsername.substring(0,1).toUpperCase()}">U</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-white font-bold" th:text="${review.lvsUser.lvsUsername}">
+                                                    Username</p>
+                                                <div class="flex items-center gap-2">
+                                                    <div class="flex text-[#fed700] text-sm">
+                                                        <i th:each="i : ${#numbers.sequence(1, 5)}"
+                                                            th:class="${i <= review.lvsRating ? 'fas fa-star' : 'far fa-star'}"></i>
+                                                    </div>
+                                                    <span class="text-gray-500 text-xs"
+                                                        th:text="${#temporals.format(review.lvsCreatedAt, 'dd/MM/yyyy')}">Date</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="like-btn text-gray-400 hover:text-[#fed700] transition"
+                                            th:attr="data-review-id=${review.lvsReviewId}" onclick="likeReview(this)">
+                                            <i class="fas fa-thumbs-up mr-1"></i>
+                                            <span class="like-count" th:text="${review.lvsLikeCount}">0</span>
+                                        </button>
+                                        <a th:href="@{/LvsUser/LvsReport/LvsCreate(lvsReportType='REVIEW', lvsTargetId=${review.lvsReviewId})}"
+                                            class="text-red-400 hover:text-red-300 text-xs ml-3" title="Report review">
+                                            <i class="fas fa-flag"></i> Report
+                                        </a>
+                                    </div>
+
+                                    <!-- Review Title -->
+                                    <h4 th:if="${review.lvsTitle}" class="text-white font-bold mb-2"
+                                        th:text="${review.lvsTitle}">Review Title</h4>
+
+                                    <!-- Review Content -->
+                                    <p class="text-gray-400 mb-4 whitespace-pre-line" th:text="${review.lvsContent}">
+                                        Review content</p>
+
+                                    <!-- Review Images -->
+                                    <div th:if="${review.lvsImages != null and !review.lvsImages.isEmpty()}"
+                                        class="review-images flex gap-2 overflow-x-auto mt-4"
+                                        th:attr="data-images=${review.lvsImages}">
+                                        <!-- Images will be rendered by JavaScript -->
+                                    </div>
+                                </div>
+
+                                <!-- Pagination -->
+                                <div th:if="${LvsReviews.totalPages > 1}" class="flex justify-center gap-2 mt-6">
+                                    <a th:each="i : ${#numbers.sequence(0, LvsReviews.totalPages - 1)}"
+                                        th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${project.lvsProjectId}, page=${i})}"
+                                        th:class="${i == LvsReviews.number ? 'bg-[#fed700] text-black' : 'bg-[#1e1e1e] text-white hover:bg-[#333]'}"
+                                        class="px-4 py-2 rounded-lg font-bold transition" th:text="${i + 1}">1</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Sidebar - Purchase Section -->
                 <div class="lg:col-span-1">
                     <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 sticky top-4">
-                        <!-- Price -->
-                        <div class="text-center mb-6 pb-6 border-b border-[#333]">
-                            <div class="text-5xl font-bold text-[#fed700] mb-2"
-                                th:text="${project?.lvsPrice != null ? #numbers.formatDecimal(project.lvsPrice, 0, 'COMMA', 0, 'POINT') : '0'}">
-                                0</div>
-                            <p class="text-gray-400 text-sm">
-                                <i class="fas fa-coins text-[#fed700]"></i> Coins
-                            </p>
+                        <!-- Price Display -->
+                        <div class="bg-[#2b2b2b] border-2 border-[#444] rounded-xl p-6 mb-6">
+                            <!-- If discount active -->
+                            <div th:if="${project.lvsHasActiveDiscount}">
+                                <!-- Sale Banner -->
+                                <div
+                                    class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-lg text-center mb-4 animate-pulse">
+                                    <i class="fas fa-fire mr-2"></i>
+                                    <span class="text-2xl font-bold">
+                                        <span th:text="${project.lvsDiscountPercent}">5</span>% OFF!
+                                    </span>
+                                    <span class="ml-2">Limited Time Offer</span>
+                                </div>
+
+                                <!-- Original Price (crossed out) -->
+                                <div class="text-gray-400 text-lg line-through mb-2">
+                                    Original: <span
+                                        th:text="${#numbers.formatDecimal(project.lvsPrice, 0, 'COMMA', 0, 'POINT')}">10,000</span>
+                                    Coins
+                                </div>
+
+                                <!-- Sale Price (highlighted) -->
+                                <p class="text-5xl font-bold text-[#fed700] mb-4">
+                                    <span
+                                        th:text="${#numbers.formatDecimal(project.lvsFinalPrice, 0, 'COMMA', 0, 'POINT')}">9,500</span>
+                                    <span class="text-2xl">Coins</span>
+                                </p>
+
+                                <!-- Savings -->
+                                <div
+                                    class="inline-block bg-green-500 text-white px-6 py-3 rounded-full font-bold text-lg">
+                                    💰 You Save:
+                                    <span
+                                        th:text="${#numbers.formatDecimal(project.lvsPrice - project.lvsFinalPrice, 0, 'COMMA', 0, 'POINT')}">500</span>
+                                    Coins!
+                                </div>
+
+                                <!-- Sale Timer (if end date exists) -->
+                                <div th:if="${project.lvsDiscountEndDate != null}"
+                                    class="mt-4 text-orange-400 font-semibold text-center">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    Sale ends: <span
+                                        th:text="${#temporals.format(project.lvsDiscountEndDate, 'dd/MM/yyyy HH:mm')}">03/01/2026
+                                        15:04</span>
+                                </div>
+                            </div>
+
+                            <!-- No discount -->
+                            <div th:unless="${project.lvsHasActiveDiscount}">
+                                <p class="text-5xl font-bold text-[#fed700] mb-2">
+                                    <span
+                                        th:text="${#numbers.formatDecimal(project.lvsPrice ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                    <span class="text-2xl">Coins</span>
+                                </p>
+                            </div>
                         </div>
 
                         <!-- Your Balance -->
@@ -176,19 +414,22 @@
 
                         <!-- Buy Now Form (if not purchased) -->
                         <form th:if="${session.LvsCurrentUser != null and !LvsHasPurchased}"
-                            th:action="@{/LvsUser/LvsProject/LvsPurchase/{id}(id=${project.lvsProjectId})}"
-                            method="post" onsubmit="return confirm('Bạn có chắc chắn muốn mua dự án này?');">
+                            th:action="@{/LvsUser/LvsCart/LvsAddItem}" method="post">
                             <!-- CSRF Token -->
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <input type="hidden" name="lvsProjectId" th:value="${project.lvsProjectId}" />
+                            <input type="hidden" name="lvsQuantity" value="1" />
+                            <input type="hidden" name="lvsAutoSelect" value="true" />
 
                             <!-- Buy Button -->
-                            <button type="submit" th:disabled="${session.LvsCurrentUser.lvsCoin < project.lvsPrice}"
+                            <button type="submit"
+                                th:disabled="${session.LvsCurrentUser.lvsCoin < project.lvsFinalPrice}"
                                 class="w-full bg-[#fed700] text-black font-bold py-4 rounded-lg hover:bg-white transition shadow-lg mb-3 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <i class="fas fa-bolt"></i> Buy Now
                             </button>
 
                             <!-- Insufficient funds warning -->
-                            <p th:if="${session.LvsCurrentUser.lvsCoin < project.lvsPrice}"
+                            <p th:if="${session.LvsCurrentUser.lvsCoin < project.lvsFinalPrice}"
                                 class="text-red-400 text-sm text-center mb-3">
                                 <i class="fas fa-exclamation-triangle"></i> Insufficient coins
                             </p>
@@ -264,13 +505,17 @@
                             </button>
                         </form>
 
-                        <!-- Gift Button (only for project owner) -->
-                        <button
-                            th:if="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsUserId == project.lvsUser.lvsUserId and LvsFollowers != null and !LvsFollowers.isEmpty()}"
-                            onclick="showGiftModal()"
-                            class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition flex items-center justify-center gap-2 mb-3">
-                            <i class="fas fa-gift"></i> Gift to Follower
-                        </button>
+                        <!-- Gift to Follower Form -->
+                        <form th:if="${session.LvsCurrentUser != null}" th:action="@{/LvsUser/LvsCart/LvsAddGiftItem}"
+                            method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <input type="hidden" name="lvsProjectId" th:value="${project.lvsProjectId}" />
+
+                            <button type="submit"
+                                class="w-full bg-purple-600 text-white font-bold py-3 rounded-lg hover:bg-purple-700 transition flex items-center justify-center gap-2 mb-3">
+                                <i class="fas fa-gift"></i> Gift to Follower
+                            </button>
+                        </form>
 
                         <!-- Wishlist -->
                         <button
@@ -561,6 +806,207 @@
                     hideGiftModal();
                 }
             });
+
+            // Star Rating Selection
+            const starInputs = document.querySelectorAll('input[name="lvsRating"]');
+            const starLabels = document.querySelectorAll('label[for^="star"]');
+
+            starInputs.forEach((input, index) => {
+                input.addEventListener('change', function () {
+                    // Update all stars up to selected
+                    starLabels.forEach((label, i) => {
+                        const icon = label.querySelector('i');
+                        if (i <= index) {
+                            icon.className = 'fas fa-star text-[#fed700]';
+                        } else {
+                            icon.className = 'far fa-star text-gray-600';
+                        }
+                    });
+                });
+            });
+
+            // Hover effect for stars
+            starLabels.forEach((label, index) => {
+                label.addEventListener('mouseenter', function () {
+                    starLabels.forEach((l, i) => {
+                        const icon = l.querySelector('i');
+                        if (i <= index) {
+                            icon.classList.add('text-[#fed700]');
+                            icon.classList.remove('text-gray-600');
+                        }
+                    });
+                });
+
+                label.addEventListener('mouseleave', function () {
+                    // Reset to selected state
+                    const selectedInput = document.querySelector('input[name="lvsRating"]:checked');
+                    if (selectedInput) {
+                        const selectedIndex = Array.from(starInputs).indexOf(selectedInput);
+                        starLabels.forEach((l, i) => {
+                            const icon = l.querySelector('i');
+                            if (i <= selectedIndex) {
+                                icon.classList.add('text-[#fed700]');
+                                icon.classList.remove('text-gray-600');
+                            } else {
+                                icon.classList.add('text-gray-600');
+                                icon.classList.remove('text-[#fed700]');
+                            }
+                        });
+                    } else {
+                        // No selection, reset all
+                        starLabels.forEach((l) => {
+                            const icon = l.querySelector('i');
+                            icon.classList.add('text-gray-600');
+                            icon.classList.remove('text-[#fed700]');
+                        });
+                    }
+                });
+            });
+
+            // Image Preview
+            const reviewImageInput = document.getElementById('reviewImageInput');
+            if (reviewImageInput) {
+                reviewImageInput.addEventListener('change', function (e) {
+                    const files = e.target.files;
+                    const previewContainer = document.getElementById('imagePreviewContainer');
+
+                    if (!previewContainer) return;
+
+                    previewContainer.innerHTML = '';
+
+                    if (files.length > 0) {
+                        Array.from(files).forEach((file, index) => {
+                            if (file.type.startsWith('image/')) {
+                                const reader = new FileReader();
+                                reader.onload = function (e) {
+                                    const img = document.createElement('img');
+                                    img.src = e.target.result;
+                                    img.className = 'w-20 h-20 object-cover rounded border-2 border-[#fed700]';
+                                    img.alt = 'Preview ' + (index + 1);
+                                    previewContainer.appendChild(img);
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Render Review Images from JSON
+            document.addEventListener('DOMContentLoaded', function () {
+                console.log('Rendering review images...');
+                document.querySelectorAll('.review-images').forEach(container => {
+                    const imagesJson = container.getAttribute('data-images');
+                    console.log('Images JSON:', imagesJson);
+                    if (imagesJson && imagesJson !== '[]' && imagesJson !== 'null') {
+                        try {
+                            const images = JSON.parse(imagesJson);
+                            console.log('Parsed images:', images);
+                            if (Array.isArray(images) && images.length > 0) {
+                                container.innerHTML = '';
+                                images.forEach(imageUrl => {
+                                    const img = document.createElement('img');
+
+                                    // Add context path like Thymeleaf @{} does
+                                    // Context path is /lvsforum
+                                    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+                                        img.src = imageUrl;
+                                    } else {
+                                        // Add context path + imageUrl
+                                        img.src = '/lvsforum' + imageUrl;
+                                    }
+
+                                    img.className = 'w-32 h-32 object-cover rounded-lg border border-[#333] cursor-pointer hover:border-[#fed700] transition';
+                                    img.alt = 'Review image';
+                                    img.onerror = function () {
+                                        console.error('Failed to load image:', this.src);
+                                    };
+                                    container.appendChild(img);
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse review images:', e, imagesJson);
+                        }
+                    }
+                });
+            });
+        </script>
+
+
+        <!-- Like Review Functionality -->
+        <script th:inline="javascript">
+            // 24-hour cooldown using localStorage
+            function canLikeReview(reviewId) {
+                const key = 'like_' + reviewId;
+                const lastLike = localStorage.getItem(key);
+
+                if (!lastLike) return true;
+
+                const now = new Date().getTime();
+                const lastLikeTime = parseInt(lastLike);
+                const hoursPassed = (now - lastLikeTime) / (1000 * 60 * 60);
+
+                return hoursPassed >= 24;
+            }
+
+            function setLikeCooldown(reviewId) {
+                const key = 'like_' + reviewId;
+                localStorage.setItem(key, new Date().getTime().toString());
+            }
+
+            function likeReview(button) {
+                const reviewId = button.getAttribute('data-review-id');
+
+                // Check 24-hour cooldown
+                if (!canLikeReview(reviewId)) {
+                    alert('Bạn chỉ có thể like 1 lần trong 24 giờ!');
+                    return;
+                }
+
+                button.disabled = true;
+                const likeCountSpan = button.querySelector('.like-count');
+
+                // Get CSRF token
+                const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+
+                // Add CSRF token if available
+                if (csrfToken && csrfHeader) {
+                    headers[csrfHeader] = csrfToken;
+                }
+
+                fetch('/lvsforum/LvsUser/LvsReview/LvsLike/' + reviewId, {
+                    method: 'POST',
+                    headers: headers
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            likeCountSpan.textContent = data.likeCount;
+
+                            // Set 24-hour cooldown
+                            setLikeCooldown(reviewId);
+
+                            // Toggle button style
+                            button.classList.add('text-[#fed700]');
+                            button.classList.remove('text-gray-400');
+
+                            alert('Đã like! Bạn có thể like lại sau 24 giờ.');
+                        } else {
+                            alert(data.message || 'Vui lòng đăng nhập để like');
+                            button.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Lỗi khi like review');
+                        button.disabled = false;
+                    });
+            }
         </script>
     </th:block>
 </body>

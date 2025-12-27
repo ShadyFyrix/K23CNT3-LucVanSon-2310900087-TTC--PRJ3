@@ -3,6 +3,7 @@ package k23cnt3.lucvanson.project3.LvsService.LvsImpl;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionStatus;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction.LvsTransactionType;
+import k23cnt3.lucvanson.project3.LvsEntity.LvsOrderItem;
 import k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository;
 import k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository;
 import k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository;
@@ -434,8 +435,19 @@ public class LvsTransactionServiceImpl implements LvsTransactionService {
         if (lvsOrder == null || lvsSeller == null)
             return false;
 
-        // Tính doanh thu cho người bán
-        double lvsRevenue = lvsOrder.getLvsFinalAmount() * 0.8; // Giả sử platform giữ 20%
+        // ✅ CRITICAL FIX: Calculate revenue ONLY for items belonging to this seller
+        double lvsRevenue = 0.0;
+        for (LvsOrderItem item : lvsOrder.getLvsOrderItems()) {
+            // Check if this item belongs to the seller
+            if (item.getLvsProject() != null &&
+                    item.getLvsProject().getLvsUser() != null &&
+                    item.getLvsProject().getLvsUser().getLvsUserId().equals(lvsSellerId)) {
+                lvsRevenue += item.getLvsItemTotal(); // Use item total (already discounted)
+            }
+        }
+
+        // Apply platform fee (20%)
+        lvsRevenue = lvsRevenue * 0.8;
 
         // Cộng doanh thu cho người bán
         lvsSeller.setLvsBalance(lvsSeller.getLvsBalance() + lvsRevenue);

@@ -1,75 +1,92 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}" lang="vi">
 
 <head>
-    <title>Chi tiết báo cáo - Electro Store</title>
+    <title>Chi tiet Bao cao</title>
 </head>
 
 <body>
     <div layout:fragment="content">
-        <div class="container mx-auto px-4 py-8">
-            <div class="flex items-center gap-4 mb-8">
-                <a href="/lvsforum/LvsUser/LvsReport/LvsMy" class="text-gray-400 hover:text-white">
-                    <i class="fas fa-arrow-left text-xl"></i>
+        <div class="container" style="max-width: 900px; margin: 2rem auto; padding: 1rem;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Chi tiet Bao cao</h1>
+                <a th:href="@{/LvsUser/LvsReport/LvsMyReports}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lai
                 </a>
-                <h1 class="text-3xl font-bold text-white">
-                    <i class="fas fa-flag mr-3 text-[#fed700]"></i>Chi tiết báo cáo
-                </h1>
             </div>
 
-            <div class="max-w-3xl mx-auto bg-[#2b2b2b] border border-[#333] rounded-xl p-8">
-                <!-- Status Badge -->
-                <div class="flex items-center justify-between mb-6">
-                    <span
-                        th:classappend="${LvsReport.lvsStatus == 'PENDING'} ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500' : (${LvsReport.lvsStatus == 'RESOLVED'} ? 'bg-green-500/20 text-green-400 border-green-500' : 'bg-red-500/20 text-red-400 border-red-500')"
-                        class="px-4 py-2 rounded-lg text-sm font-semibold border"
-                        th:text="${LvsReport.lvsStatus}">Status</span>
-                    <span class="text-gray-400 text-sm"
-                        th:text="${#temporals.format(LvsReport.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Thong tin Bao cao</h5>
                 </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tr>
+                            <th style="width: 200px;">Ma bao cao:</th>
+                            <td th:text="${LvsReport.lvsReportId}"></td>
+                        </tr>
+                        <tr>
+                            <th>Loai bao cao:</th>
+                            <td>
+                                <span class="badge bg-primary" th:text="${LvsReport.lvsReportType}"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Trang thai:</th>
+                            <td>
+                                <span class="badge"
+                                    th:classappend="${LvsReport.lvsStatus.toString() == 'PENDING' ? 'bg-warning' :
+                                                      LvsReport.lvsStatus.toString() == 'UNDER_REVIEW' ? 'bg-info' :
+                                                      LvsReport.lvsStatus.toString() == 'RESOLVED' ? 'bg-success' : 'bg-danger'}"
+                                    th:text="${LvsReport.lvsStatus}"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Ly do:</th>
+                            <td th:text="${LvsReport.lvsReason}"></td>
+                        </tr>
+                        <tr>
+                            <th>Chi tiet:</th>
+                            <td th:text="${LvsReport.lvsDetails}"></td>
+                        </tr>
+                        <tr>
+                            <th>Ngay gui:</th>
+                            <td th:text="${#temporals.format(LvsReport.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}"></td>
+                        </tr>
+                        <tr th:if="${LvsReport.lvsResolvedAt != null}">
+                            <th>Ngay xu ly:</th>
+                            <td th:text="${#temporals.format(LvsReport.lvsResolvedAt, 'dd/MM/yyyy HH:mm')}"></td>
+                        </tr>
+                        <tr th:if="${LvsReport.lvsActionTaken != null}">
+                            <th>Hanh dong da thuc hien:</th>
+                            <td>
+                                <div class="alert alert-info mb-0">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span th:text="${LvsReport.lvsActionTaken}"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${LvsReport.lvsAdminNote != null}">
+                            <th>Phan hoi tu admin:</th>
+                            <td>
+                                <div class="alert alert-success mb-0">
+                                    <i class="fas fa-comment"></i>
+                                    <span th:text="${LvsReport.lvsAdminNote}"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
 
-                <!-- Report Info -->
-                <div class="space-y-6">
-                    <div>
-                        <p class="text-gray-400 text-sm mb-1">Loại báo cáo</p>
-                        <p class="text-white font-semibold text-lg" th:text="${LvsReport.lvsReportType}">Type</p>
+                    <div class="mt-3" th:if="${LvsReport.lvsStatus.toString() == 'PENDING'}">
+                        <form th:action="@{/LvsUser/LvsReport/LvsCancel/{id}(id=${LvsReport.lvsReportId})}"
+                            method="post">
+                            <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Ban co chac muon huy bao cao nay?')">
+                                <i class="fas fa-times"></i> Huy bao cao
+                            </button>
+                        </form>
                     </div>
-
-                    <div>
-                        <p class="text-gray-400 text-sm mb-1">Lý do</p>
-                        <p class="text-white font-semibold text-lg" th:text="${LvsReport.lvsReason}">Reason</p>
-                    </div>
-
-                    <div>
-                        <p class="text-gray-400 text-sm mb-1">Mô tả</p>
-                        <p class="text-white" th:text="${LvsReport.lvsDescription}">Description...</p>
-                    </div>
-
-                    <div th:if="${LvsReport.lvsTargetProject}">
-                        <p class="text-gray-400 text-sm mb-1">Dự án liên quan</p>
-                        <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${LvsReport.lvsTargetProject.lvsProjectId})}"
-                            class="text-blue-400 hover:text-blue-300 font-semibold"
-                            th:text="${LvsReport.lvsTargetProject.lvsProjectName}">Project</a>
-                    </div>
-
-                    <div th:if="${LvsReport.lvsAdminResponse}">
-                        <p class="text-gray-400 text-sm mb-1">Phản hồi từ quản trị viên</p>
-                        <div class="bg-[#1e1e1e] border border-[#444] rounded-lg p-4">
-                            <p class="text-white" th:text="${LvsReport.lvsAdminResponse}">Admin response...</p>
-                            <p class="text-gray-400 text-xs mt-2" th:if="${LvsReport.lvsResolvedAt}"
-                                th:text="'Phản hồi lúc: ' + ${#temporals.format(LvsReport.lvsResolvedAt, 'dd/MM/yyyy HH:mm')}">
-                                Response date</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Back Button -->
-                <div class="mt-8">
-                    <a href="/lvsforum/LvsUser/LvsReport/LvsMy"
-                        class="bg-[#333] hover:bg-[#444] text-white px-6 py-3 rounded-lg font-semibold inline-block transition-colors">
-                        <i class="fas fa-arrow-left mr-2"></i>Quay lại
-                    </a>
                 </div>
             </div>
         </div>

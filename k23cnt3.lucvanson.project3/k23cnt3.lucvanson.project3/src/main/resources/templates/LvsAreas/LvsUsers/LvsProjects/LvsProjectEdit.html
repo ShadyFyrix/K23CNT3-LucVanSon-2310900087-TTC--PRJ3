@@ -26,6 +26,9 @@
                     <!-- CSRF Token -->
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
+                    <!-- Hidden field for deleted images -->
+                    <input type="hidden" id="deletedImagesInput" name="deletedImages" value="">
+
                     <!-- Project Name -->
                     <div class="mb-6">
                         <label class="block text-sm font-bold text-gray-300 mb-2">Tên dự án *</label>
@@ -155,6 +158,93 @@
                             class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#fed700] focus:outline-none">
                     </div>
 
+                    <!-- ✨ DISCOUNT SETTINGS -->
+                    <div
+                        class="mb-6 bg-gradient-to-r from-orange-500/10 to-red-500/10 border-2 border-orange-500/50 rounded-xl p-6">
+                        <h3 class="text-xl font-bold text-white mb-4">
+                            <i class="fas fa-tag text-orange-400 mr-2"></i>Discount Settings (Sale)
+                        </h3>
+
+                        <!-- Enable Discount -->
+                        <div class="mb-4">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" th:field="*{lvsIsOnSale}" id="lvsIsOnSale"
+                                    class="w-5 h-5 text-orange-500 bg-[#1e1e1e] border-[#444] rounded focus:ring-orange-500">
+                                <span class="ml-3 text-white font-semibold">
+                                    <i class="fas fa-fire text-orange-400 mr-2"></i>Enable Discount (Put on Sale)
+                                </span>
+                            </label>
+                            <p class="text-sm text-gray-400 mt-2 ml-8">Check this to activate discount for your project
+                            </p>
+                        </div>
+
+                        <div id="discountFields" class="space-y-4">
+                            <!-- Discount Percentage -->
+                            <div>
+                                <label class="block text-sm font-bold text-gray-300 mb-2">
+                                    Discount Percentage
+                                </label>
+                                <div class="flex items-center gap-4">
+                                    <input type="number" th:field="*{lvsDiscountPercent}" min="0" max="100"
+                                        placeholder="30"
+                                        class="flex-1 bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-orange-500 focus:outline-none">
+                                    <span class="text-2xl font-bold text-orange-400">%</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-1">Enter 0-100 (e.g., 30 for 30% OFF)</p>
+                            </div>
+
+                            <!-- Date Range -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-300 mb-2">
+                                        <i class="fas fa-calendar-alt text-green-400 mr-2"></i>Start Date/Time
+                                    </label>
+                                    <input type="datetime-local" th:field="*{lvsDiscountStartDate}"
+                                        class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-green-500 focus:outline-none">
+                                    <p class="text-xs text-gray-500 mt-1">Leave empty to start now</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-300 mb-2">
+                                        <i class="fas fa-calendar-times text-red-400 mr-2"></i>End Date/Time
+                                    </label>
+                                    <input type="datetime-local" th:field="*{lvsDiscountEndDate}"
+                                        class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-red-500 focus:outline-none">
+                                    <p class="text-xs text-gray-500 mt-1">Leave empty for no expiration</p>
+                                </div>
+                            </div>
+
+                            <!-- Preview -->
+                            <div class="bg-[#1e1e1e] border border-orange-500/30 rounded-lg p-4">
+                                <h4 class="font-bold text-orange-400 mb-2">
+                                    <i class="fas fa-eye mr-2"></i>Preview
+                                </h4>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Original Price:</span>
+                                        <span class="text-white font-bold">
+                                            <span class="preview-original-price"
+                                                th:text="${LvsProject.lvsPrice}">1000</span> coins
+                                        </span>
+                                    </div>
+                                    <div class="preview-discount-row flex justify-between text-orange-400"
+                                        style="display:none;">
+                                        <span>Discount (<span class="preview-discount-percent">0</span>%):</span>
+                                        <span class="font-bold">
+                                            -<span class="preview-discount-amount">0</span> coins
+                                        </span>
+                                    </div>
+                                    <div class="flex justify-between border-t border-[#444] pt-2 mt-2">
+                                        <span class="text-white font-bold">Final Price:</span>
+                                        <span class="text-[#fed700] font-bold text-lg">
+                                            <span class="preview-final-price"
+                                                th:text="${LvsProject.lvsFinalPrice}">1000</span> coins
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Buttons -->
                     <div class="flex gap-4">
                         <button type="submit"
@@ -173,6 +263,9 @@
 
     <!-- JavaScript for Image Preview -->
     <script layout:fragment="scripts" th:inline="javascript">
+        // Track deleted images
+        const deletedImages = [];
+
         // Load existing additional images on page load
         document.addEventListener('DOMContentLoaded', function () {
             /*<![CDATA[*/
@@ -230,6 +323,13 @@
             /*]]>*/
         });
 
+        // Update hidden input before form submit
+        document.querySelector('form').addEventListener('submit', function (e) {
+            // Populate hidden input with deleted images JSON
+            document.getElementById('deletedImagesInput').value = JSON.stringify(deletedImages);
+            console.log('Submitting with deleted images:', deletedImages);
+        });
+
         function previewThumbnail(event) {
             const file = event.target.files[0];
             if (file) {
@@ -267,14 +367,64 @@
         // Delete existing image function
         function deleteExistingImage(imageUrl, button) {
             if (confirm('Bạn có chắc muốn xóa ảnh này?')) {
+                // Add to deleted list
+                deletedImages.push(imageUrl);
+                console.log('Marked for deletion:', imageUrl);
+                console.log('Total deleted:', deletedImages.length);
+
                 // Remove from DOM
                 button.closest('.relative').remove();
 
-                // Note: Actual deletion from server would require form submission
-                // For now, just hide it from view
-                console.log('Marked for deletion:', imageUrl);
+                // Note: Actual deletion will happen on form submit
+                // You need to send deletedImages array to server
+                alert('Ảnh sẽ bị xóa khi bạn lưu form!');
             }
         }
+
+        // ✨ REAL-TIME DISCOUNT PREVIEW
+        document.addEventListener('DOMContentLoaded', function () {
+            const priceInput = document.querySelector('[name="lvsPrice"]');
+            const discountInput = document.querySelector('[name="lvsDiscountPercent"]');
+            const isOnSaleCheckbox = document.querySelector('#lvsIsOnSale');
+
+            function updatePreview() {
+                const price = parseFloat(priceInput.value) || 0;
+                const discount = parseInt(discountInput.value) || 0;
+                const isOnSale = isOnSaleCheckbox.checked;
+
+                const discountAmount = isOnSale ? (price * discount / 100) : 0;
+                const finalPrice = price - discountAmount;
+
+                // Update preview display
+                const originalPriceEl = document.querySelector('.preview-original-price');
+                const discountAmountEl = document.querySelector('.preview-discount-amount');
+                const discountPercentEl = document.querySelector('.preview-discount-percent');
+                const finalPriceEl = document.querySelector('.preview-final-price');
+                const discountRow = document.querySelector('.preview-discount-row');
+
+                if (originalPriceEl) originalPriceEl.textContent = price.toFixed(1);
+                if (discountAmountEl) discountAmountEl.textContent = discountAmount.toFixed(1);
+                if (discountPercentEl) discountPercentEl.textContent = discount;
+                if (finalPriceEl) finalPriceEl.textContent = finalPrice.toFixed(1);
+
+                // Show/hide discount row
+                if (discountRow) {
+                    if (isOnSale && discount > 0) {
+                        discountRow.style.display = 'flex';
+                    } else {
+                        discountRow.style.display = 'none';
+                    }
+                }
+            }
+
+            // Add event listeners
+            if (priceInput) priceInput.addEventListener('input', updatePreview);
+            if (discountInput) discountInput.addEventListener('input', updatePreview);
+            if (isOnSaleCheckbox) isOnSaleCheckbox.addEventListener('change', updatePreview);
+
+            // Initial update
+            updatePreview();
+        });
     </script>
 </body>
 

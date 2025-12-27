@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
 
@@ -35,6 +35,7 @@
                                 <th>User</th>
                                 <th>Rating</th>
                                 <th>Nội dung</th>
+                                <th>Ảnh</th>
                                 <th>Trạng thái</th>
                                 <th>Ngày</th>
                                 <th>Thao tác</th>
@@ -43,10 +44,17 @@
                         <tbody>
                             <tr th:each="review : ${LvsReviews.content}">
                                 <td th:text="${review.lvsReviewId}"></td>
-                                <td th:text="${review.lvsProject?.lvsTitle}"></td>
+                                <td th:text="${review.lvsProject?.lvsProjectName}"></td>
                                 <td th:text="${review.lvsUser?.lvsUsername}"></td>
-                                <td><span th:text="${review.lvsRating}"></span> ⭐</td>
-                                <td th:text="${#strings.abbreviate(review.lvsComment, 50)}"></td>
+                                <td>
+                                    <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                        th:text="${i <= review.lvsRating ? '⭐' : '☆'}"
+                                        th:class="${i <= review.lvsRating ? '' : 'text-muted'}"></span>
+                                </td>
+                                <td th:text="${#strings.abbreviate(review.lvsContent, 50)}"></td>
+                                <td>
+                                    <div class="review-list-images" th:attr="data-images=${review.lvsImages}"></div>
+                                </td>
                                 <td>
                                     <span th:if="${review.lvsIsApproved}" class="badge bg-success">Đã duyệt</span>
                                     <span th:unless="${review.lvsIsApproved}" class="badge bg-warning">Chờ duyệt</span>
@@ -81,11 +89,46 @@
                 </div>
                 <div>
                     <a th:href="@{/LvsAdmin/LvsReview/LvsCreate}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> T?o d�nh gi� m?i
+                        <i class="fas fa-plus"></i> Tạo đánh giá mới
                     </a>
                 </div>
             </div>
         </div>
+
+        <!-- JavaScript for Review List Images -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.review-list-images').forEach(container => {
+                    const imagesJson = container.getAttribute('data-images');
+                    if (imagesJson && imagesJson !== '[]' && imagesJson !== 'null') {
+                        try {
+                            const images = JSON.parse(imagesJson);
+                            if (Array.isArray(images) && images.length > 0) {
+                                // Show only first image as thumbnail
+                                const img = document.createElement('img');
+                                img.src = '/lvsforum' + images[0];
+                                img.className = 'rounded';
+                                img.style.width = '50px';
+                                img.style.height = '50px';
+                                img.style.objectFit = 'cover';
+                                img.alt = 'Review thumbnail';
+                                container.appendChild(img);
+
+                                // Show count if multiple images
+                                if (images.length > 1) {
+                                    const badge = document.createElement('span');
+                                    badge.className = 'badge bg-primary ms-1';
+                                    badge.textContent = '+' + (images.length - 1);
+                                    container.appendChild(badge);
+                                }
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse images:', e);
+                        }
+                    }
+                });
+            });
+        </script>
     </div>
 </body>
 

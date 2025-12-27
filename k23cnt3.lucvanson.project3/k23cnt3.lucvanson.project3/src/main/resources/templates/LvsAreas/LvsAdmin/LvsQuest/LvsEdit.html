@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}">
+
+<head>
+    <title>Edit Quest - WeJect Admin</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="max-w-2xl mx-auto p-6">
+            <h1 class="text-2xl font-bold text-white mb-6">Edit Quest</h1>
+
+            <form th:action="@{/LvsAdmin/LvsQuest/LvsEdit/{id}(id=${lvsQuest.lvsQuestId})}" th:object="${lvsQuest}"
+                method="post" class="bg-white rounded-lg p-6 space-y-4">
+
+                <div>
+                    <label class="block font-semibold mb-2">Quest Name *</label>
+                    <input type="text" th:field="*{lvsQuestName}" required class="w-full px-4 py-2 border rounded">
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-2">Description</label>
+                    <textarea th:field="*{lvsQuestDesc}" rows="3" class="w-full px-4 py-2 border rounded"></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-2">Quest Type *</label>
+                    <select th:field="*{lvsQuestType}" required class="w-full px-4 py-2 border rounded">
+                        <option value="">Select Type</option>
+                        <option th:each="type : ${lvsQuestTypes}" th:value="${type}" th:text="${type}"></option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-2">Target Count *</label>
+                    <input type="number" th:field="*{lvsTargetCount}" required min="1"
+                        class="w-full px-4 py-2 border rounded">
+                    <p class="text-sm text-gray-500 mt-1">
+                        ⚠️ Changing this may affect users' current progress
+                    </p>
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-2">Reward Coins *</label>
+                    <input type="number" th:field="*{lvsRewardCoins}" required min="0"
+                        class="w-full px-4 py-2 border rounded">
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" th:field="*{lvsIsActive}" class="mr-2">
+                    <label>Active</label>
+                </div>
+
+                <!-- Warning -->
+                <div class="bg-yellow-50 border border-yellow-200 rounded p-4 mt-4">
+                    <h4 class="font-bold text-yellow-900 mb-2">⚠️ Important:</h4>
+                    <ul class="text-sm text-yellow-800 space-y-1">
+                        <li>• Changing quest type or target may affect user progress</li>
+                        <li>• Deactivating a quest will hide it from users</li>
+                        <li>• Users who already completed this quest keep their rewards</li>
+                    </ul>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="submit"
+                        class="bg-[#fed700] hover:bg-yellow-600 text-black px-6 py-3 rounded font-semibold">
+                        <i class="fas fa-save mr-2"></i>Update Quest
+                    </button>
+                    <a th:href="@{/LvsAdmin/LvsQuest/LvsList}"
+                        class="bg-gray-300 hover:bg-gray-400 text-black px-6 py-3 rounded font-semibold inline-block">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}">
+
+<head>
+    <title>Event Management - WeJect Admin</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">Event Management</h1>
+                    <p class="text-gray-600 mt-1">Manage daily check-ins and milestone rewards</p>
+                </div>
+                <a th:href="@{/LvsAdmin/LvsEvent/LvsCreate}"
+                    class="bg-[#fed700] hover:bg-yellow-600 text-black px-6 py-3 rounded-lg font-semibold shadow-lg">
+                    <i class="fas fa-plus mr-2"></i>Create Event
+                </a>
+            </div>
+
+            <!-- Events Table -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Event Name</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Reward</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Milestone</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="event : ${lvsEvents}" class="border-t hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div class="font-semibold text-gray-800" th:text="${event.lvsEventName}">Event Name
+                                </div>
+                                <div class="text-sm text-gray-500" th:text="${event.lvsDescription}">Description</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold"
+                                    th:text="${event.lvsType}">DAILY_LOGIN</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="font-bold text-[#fed700]">
+                                    <span th:text="${event.lvsRewardCoins}">10</span> coins
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span th:if="${event.lvsMilestone != null}"
+                                    class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-semibold">
+                                    Day <span th:text="${event.lvsMilestone}">7</span>:
+                                    +<span th:text="${event.lvsMilestoneCoins}">50</span> coins
+                                </span>
+                                <span th:unless="${event.lvsMilestone != null}" class="text-gray-400 text-sm">-</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span th:if="${event.lvsIsActive}"
+                                    class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
+                                    Active
+                                </span>
+                                <span th:unless="${event.lvsIsActive}"
+                                    class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold">
+                                    Inactive
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex gap-2">
+                                    <a th:href="@{/LvsAdmin/LvsEvent/LvsEdit/{id}(id=${event.lvsEventId})}"
+                                        class="text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a th:href="@{/LvsAdmin/LvsEvent/LvsDelete/{id}(id=${event.lvsEventId})}"
+                                        onclick="return confirm('Delete this event?')"
+                                        class="text-red-600 hover:text-red-800 font-semibold text-sm">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Empty State -->
+                <div th:if="${lvsEvents == null or lvsEvents.isEmpty()}" class="text-center py-16">
+                    <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">No Events Yet</h3>
+                    <p class="text-gray-600 mb-6">Create your first event to get started!</p>
+                    <a th:href="@{/LvsAdmin/LvsEvent/LvsCreate}"
+                        class="inline-block bg-[#fed700] hover:bg-yellow-600 text-black px-6 py-3 rounded-lg font-semibold">
+                        <i class="fas fa-plus mr-2"></i>Create First Event
+                    </a>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="mt-8 bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg">
+                <h4 class="font-bold text-blue-900 mb-2">💡 What are Events?</h4>
+                <ul class="text-sm text-blue-800 space-y-1">
+                    <li><strong>Daily Login:</strong> Users earn coins by checking in daily. Streak bonus increases each
+                        day.</li>
+                    <li><strong>Milestones:</strong> Special bonuses at specific streak days (7, 14, 30, 60, 100 days).
+                    </li>
+                    <li><strong>Example:</strong> Day 7 check-in = 10 (base) + 7 (streak) + 50 (milestone) = 67 coins!
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

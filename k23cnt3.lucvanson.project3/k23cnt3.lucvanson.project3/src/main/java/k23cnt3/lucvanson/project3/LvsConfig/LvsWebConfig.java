@@ -20,11 +20,15 @@ public class LvsWebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
         // Serve uploaded files from uploads directory
         // Uses dynamic path from application.properties for portability
+
+        // Ensure uploadDir ends with /
+        String normalizedUploadDir = uploadDir.endsWith("/") ? uploadDir : uploadDir + "/";
+
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations(
                         "classpath:/static/uploads/", // For files in JAR
-                        "file:" + uploadDir // For external uploads
+                        "file:" + normalizedUploadDir // For external uploads (development)
                 )
-                .setCachePeriod(3600);
+                .setCachePeriod(0); // Disable cache for development
     }
 }

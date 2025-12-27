@@ -76,6 +76,14 @@
                                 </form>
                             </div>
                         </div>
+
+                        <!-- Report Button (for non-authors) -->
+                        <a th:unless="${LvsIsAuthor}"
+                            th:href="@{/LvsUser/LvsReport/LvsCreate(lvsReportType='POST', lvsTargetId=${LvsPost.lvsPostId})}"
+                            class="w-9 h-9 flex items-center justify-center hover:bg-red-600/20 rounded-full transition-colors"
+                            title="Report this post">
+                            <i class="fas fa-flag text-red-400"></i>
+                        </a>
                     </div>
 
                     <!-- Post Title -->
@@ -252,6 +260,10 @@
                                 <button
                                     th:attr="onclick=|replyToComment('${comment.lvsUser.lvsUsername}', ${comment.lvsCommentId})|"
                                     class="hover:underline">Reply</button>
+                                <a th:href="@{/LvsUser/LvsReport/LvsCreate(lvsReportType='COMMENT', lvsTargetId=${comment.lvsCommentId})}"
+                                    class="text-red-400 hover:text-red-300 text-xs ml-3" title="Report comment">
+                                    <i class="fas fa-flag"></i> Report
+                                </a>
 
                                 <!-- Delete button (only for own comments) -->
                                 <form
@@ -328,6 +340,11 @@
                                                         th:text="${reply.lvsLikeCount}">0</span>)
                                                 </span>
                                             </button>
+                                            <a th:href="@{/LvsUser/LvsReport/LvsCreate(lvsReportType='COMMENT', lvsTargetId=${reply.lvsCommentId})}"
+                                                class="text-red-400 hover:text-red-300 text-xs ml-3"
+                                                title="Report reply">
+                                                <i class="fas fa-flag"></i> Report
+                                            </a>
 
                                             <!-- Delete button for own replies -->
                                             <form

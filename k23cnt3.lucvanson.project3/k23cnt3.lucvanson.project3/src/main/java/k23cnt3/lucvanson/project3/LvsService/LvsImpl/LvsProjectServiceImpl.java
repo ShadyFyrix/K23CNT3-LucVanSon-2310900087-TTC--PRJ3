@@ -112,6 +112,20 @@ public class LvsProjectServiceImpl implements LvsProjectService {
     }
 
     /**
+     * Lấy dự án theo danh mục và trạng thái
+     * 
+     * @param lvsCategoryId ID danh mục
+     * @param lvsStatus     Trạng thái dự án
+     * @param lvsPageable   Thông tin phân trang
+     * @return Trang dự án
+     */
+    @Override
+    public Page<LvsProject> lvsGetProjectsByCategoryAndStatus(Integer lvsCategoryId, LvsProjectStatus lvsStatus,
+            Pageable lvsPageable) {
+        return lvsProjectRepository.findByLvsCategory_LvsCategoryIdAndLvsStatus(lvsCategoryId, lvsStatus, lvsPageable);
+    }
+
+    /**
      * Lấy dự án theo người đăng
      * 
      * @param lvsUserId   ID người dùng

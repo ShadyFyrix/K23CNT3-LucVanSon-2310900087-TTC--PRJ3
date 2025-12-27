@@ -53,9 +53,19 @@
             <nav class="p-4 space-y-1">
                 <!-- Dashboard -->
                 <a th:href="@{/LvsUser/LvsDashboard}" onclick="toggleMobileMenu()"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 active:bg-[#fed700]/20 transition-all duration-200 group">
                     <i class="fas fa-home text-[#fed700] text-lg"></i>
                     <span class="text-white font-medium">Dashboard</span>
+                </a>
+
+                <!-- Admin Panel - Only for ADMIN role -->
+                <a th:if="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsRole.name() == 'ADMIN'}"
+                    th:href="@{/LvsAdmin/LvsDashboard}" onclick="toggleMobileMenu()"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#fed700]/20 to-transparent border-l-4 border-[#fed700] active:from-[#fed700]/30 transition-all duration-200 group">
+                    <i class="fas fa-shield-alt text-[#fed700] text-lg"></i>
+                    <span class="text-[#fed700] font-bold">Admin Panel</span>
+                    <span
+                        class="ml-auto bg-[#fed700] text-black text-[10px] font-bold px-2 py-1 rounded-full">ADMIN</span>
                 </a>
 
                 <!-- Account -->
@@ -166,7 +176,7 @@
                 <!-- Support -->
                 <div class="pt-2 pb-20">
                     <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-2">Support</p>
-                    <a th:href="@{/LvsUser/LvsReport/LvsMy}" onclick="toggleMobileMenu()"
+                    <a th:href="@{/LvsUser/LvsReport/LvsMyReports}" onclick="toggleMobileMenu()"
                         class="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200">
                         <i class="fas fa-flag text-gray-400"></i>
                         <span class="text-gray-300 text-sm">My Reports</span>
@@ -194,12 +204,14 @@
             if (menu.classList.contains('hidden')) {
                 // Show menu
                 menu.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent body scroll
                 setTimeout(() => {
                     content.classList.remove('-translate-x-full');
                 }, 10);
             } else {
                 // Hide menu
                 content.classList.add('-translate-x-full');
+                document.body.style.overflow = ''; // Restore body scroll
                 setTimeout(() => {
                     menu.classList.add('hidden');
                 }, 300);
@@ -222,6 +234,27 @@
                 }
             }
         });
+
+        // Swipe gesture support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const mobileMenuContent = document.getElementById('mobile-menu-content');
+
+        mobileMenuContent?.addEventListener('touchstart', function (e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        mobileMenuContent?.addEventListener('touchend', function (e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            // Swipe left to close (at least 50px)
+            if (touchStartX - touchEndX > 50) {
+                toggleMobileMenu();
+            }
+        }
     </script>
 </body>
 

@@ -7,17 +7,18 @@
         <div class="bg-[#151515] text-[#b7b7b7] text-xs py-2">
             <div class="container mx-auto px-4 flex justify-between items-center">
                 <div class="hidden md:block">
-                    Welcome to Worldwide Electronics Store
+                    Welcome to WeJect - Your Project Marketplace
                 </div>
                 <div class="flex gap-6">
-                    <a href="#" class="hover:text-yellow-400 flex items-center gap-1"><i
-                            class="fas fa-map-marker-alt"></i> Store Locator</a>
-                    <a href="#" class="hover:text-yellow-400 flex items-center gap-1"><i class="fas fa-truck"></i> Track
-                        Your Order</a>
-                    <a href="#" class="hover:text-yellow-400 flex items-center gap-1"><i
+                    <a th:href="@{/LvsUser/LvsOrders/LvsMyOrders}"
+                        class="hover:text-yellow-400 flex items-center gap-1"><i class="fas fa-truck"></i> My Orders</a>
+                    <a th:href="@{/LvsUser/LvsProject/LvsList}" class="hover:text-yellow-400 flex items-center gap-1"><i
                             class="fas fa-shopping-bag"></i> Shop</a>
-                    <a href="#" class="hover:text-yellow-400 flex items-center gap-1"><i class="fas fa-user"></i> My
-                        Account</a>
+                    <a th:if="${session.LvsCurrentUser != null}" th:href="@{/LvsUser/LvsProfile/LvsView}"
+                        class="hover:text-yellow-400 flex items-center gap-1"><i class="fas fa-user"></i> My Account</a>
+                    <a th:unless="${session.LvsCurrentUser != null}" th:href="@{/LvsAuth/LvsLogin}"
+                        class="hover:text-yellow-400 flex items-center gap-1"><i class="fas fa-sign-in-alt"></i>
+                        Login</a>
                 </div>
             </div>
         </div>
@@ -26,8 +27,8 @@
         <div class="container mx-auto px-4 py-8">
             <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
                 <!-- Logo -->
-                <a href="/" class="text-white text-4xl font-bold tracking-tighter flex-shrink-0">
-                    electro<span class="text-[#fed700]">.</span>
+                <a th:href="@{/LvsUser/LvsDashboard}" class="text-2xl font-bold">
+                    WeJect<span class="text-[#fed700]"></span>
                 </a>
 
                 <!-- Search Bar -->
@@ -70,7 +71,12 @@
                         title="Admin Panel">
                         <i class="fas fa-shield-alt text-xl text-[#fed700] group-hover:text-[#ffa500] transition"></i>
                     </a>
-                    <a th:href="@{/LvsUser/LvsLogin}" class="flex flex-col items-center group">
+                    <a th:if="${session.LvsCurrentUser != null}" th:href="@{/LvsUser/LvsProfile/LvsView}"
+                        class="flex flex-col items-center group" title="My Profile">
+                        <i class="far fa-user text-xl group-hover:text-[#fed700] transition"></i>
+                    </a>
+                    <a th:unless="${session.LvsCurrentUser != null}" th:href="@{/LvsAuth/LvsLogin}"
+                        class="flex flex-col items-center group" title="Login">
                         <i class="far fa-user text-xl group-hover:text-[#fed700] transition"></i>
                     </a>
                     <a th:href="@{/LvsUser/LvsCart/LvsView}" class="flex items-center gap-3 group">
@@ -100,11 +106,12 @@
 
                     <!-- Horizontal Menu -->
                     <nav class="hidden lg:flex gap-8 text-sm font-bold uppercase tracking-wide flex-grow pl-8">
-                        <a href="/" class="text-[#fed700] border-b-2 border-[#fed700] py-3">Home</a>
+                        <a th:href="@{/LvsUser/LvsDashboard}"
+                            class="text-[#fed700] border-b-2 border-[#fed700] py-3">Home</a>
                         <a th:href="@{/LvsUser/LvsProject/LvsList}"
                             class="hover:text-[#fed700] transition py-3">Shop</a>
-                        <a href="#" class="hover:text-[#fed700] transition py-3">Blog</a>
-                        <a href="#" class="hover:text-[#fed700] transition py-3">Contact Us</a>
+                        <a th:href="@{/LvsUser/LvsBlog/LvsList}" class="hover:text-[#fed700] transition py-3">Blog</a>
+                        <a href="#" class="hover:text-[#fed700] transition py-3">Contact</a>
                     </nav>
 
                     <div class="block lg:hidden py-3">

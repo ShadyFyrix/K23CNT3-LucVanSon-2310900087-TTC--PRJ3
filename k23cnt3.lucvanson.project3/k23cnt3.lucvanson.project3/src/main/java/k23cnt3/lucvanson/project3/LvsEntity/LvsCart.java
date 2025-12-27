@@ -31,9 +31,18 @@ public class LvsCart {
     @Column(name = "LvsFinalPrice")
     private Double lvsFinalPrice = 0.0;
 
-    // Mã khuyến mãi
+    // Khuyến mãi áp dụng
+    @ManyToOne
+    @JoinColumn(name = "LvsPromotionId")
+    private LvsPromotion lvsPromotion;
+
+    // Mã khuyến mãi (lưu lại để tham khảo)
     @Column(name = "LvsPromotionCode", length = 20)
     private String lvsPromotionCode;
+
+    // Giảm giá từ promotion
+    @Column(name = "LvsPromotionDiscount")
+    private Double lvsPromotionDiscount = 0.0;
 
     // Thời gian
     @Column(name = "LvsCreatedAt")
@@ -48,18 +57,24 @@ public class LvsCart {
 
     // Tính toán lại tổng tiền khi có thay đổi
     @PrePersist
-    @PreUpdate
+    // @PreUpdate - REMOVED: Causes issues with lazy-loaded items
     private void calculateTotals() {
         if (lvsCartItems != null) {
+            // Count only selected items
             lvsTotalItems = lvsCartItems.stream()
+                    .filter(item -> item.getLvsIsSelected() != null && item.getLvsIsSelected())
                     .mapToInt(LvsCartItem::getLvsQuantity)
                     .sum();
 
+            // Sum only selected items
             lvsTotalPrice = lvsCartItems.stream()
+                    .filter(item -> item.getLvsIsSelected() != null && item.getLvsIsSelected())
                     .mapToDouble(item -> item.getLvsItemTotal() != null ? item.getLvsItemTotal() : 0.0)
                     .sum();
 
-            lvsFinalPrice = lvsTotalPrice - lvsDiscountAmount;
+            // Final price = Total - Project Discounts - Promotion Discount
+            lvsFinalPrice = lvsTotalPrice - lvsDiscountAmount
+                    - (lvsPromotionDiscount != null ? lvsPromotionDiscount : 0.0);
         }
     }
 
@@ -143,6 +158,22 @@ public class LvsCart {
 
     public void setLvsCartItems(List<LvsCartItem> lvsCartItems) {
         this.lvsCartItems = lvsCartItems;
+    }
+
+    public LvsPromotion getLvsPromotion() {
+        return lvsPromotion;
+    }
+
+    public void setLvsPromotion(LvsPromotion lvsPromotion) {
+        this.lvsPromotion = lvsPromotion;
+    }
+
+    public Double getLvsPromotionDiscount() {
+        return lvsPromotionDiscount;
+    }
+
+    public void setLvsPromotionDiscount(Double lvsPromotionDiscount) {
+        this.lvsPromotionDiscount = lvsPromotionDiscount;
     }
 
 }

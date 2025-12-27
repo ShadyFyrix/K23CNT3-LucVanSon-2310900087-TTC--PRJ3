@@ -238,7 +238,7 @@
     }
 
     50% {
-        transform: scale(1);
+        transform: scale(1.7);
         opacity: 1;
     }
 }

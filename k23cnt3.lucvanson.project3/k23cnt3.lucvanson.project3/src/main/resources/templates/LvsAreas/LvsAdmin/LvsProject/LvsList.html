@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}" lang="vi">
 
@@ -301,6 +301,61 @@
 
 <body>
     <div layout:fragment="content">
+        <!-- Filter & Search Section -->
+        <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-6">
+            <form method="get" th:action="@{/LvsAdmin/LvsProject/LvsList}" class="flex flex-wrap gap-4 items-end">
+
+                <!-- Search Box -->
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-search mr-1"></i> Tìm kiếm
+                    </label>
+                    <input type="text" name="lvsKeyword" th:value="${lvsKeyword}" placeholder="Tên dự án..."
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <!-- Category Filter -->
+                <div class="w-48">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-folder mr-1"></i> Danh mục
+                    </label>
+                    <select name="lvsCategoryId"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                        <option value="">Tất cả</option>
+                        <option th:each="cat : ${lvsCategories}" th:value="${cat.lvsCategoryId}"
+                            th:text="${cat.lvsCategoryName}" th:selected="${lvsCategoryId == cat.lvsCategoryId}">
+                            Category</option>
+                    </select>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="w-48">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-filter mr-1"></i> Trạng thái
+                    </label>
+                    <select name="lvsStatus"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                        <option value="">Tất cả</option>
+                        <option value="PENDING" th:selected="${lvsSelectedStatus == 'PENDING'}">PENDING</option>
+                        <option value="APPROVED" th:selected="${lvsSelectedStatus == 'APPROVED'}">APPROVED</option>
+                        <option value="REJECTED" th:selected="${lvsSelectedStatus == 'REJECTED'}">REJECTED</option>
+                        <option value="DRAFT" th:selected="${lvsSelectedStatus == 'DRAFT'}">DRAFT</option>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-2">
+                    <button type="submit"
+                        class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-search mr-2"></i>Tìm
+                    </button>
+                    <a th:href="@{/LvsAdmin/LvsProject/LvsList}"
+                        class="bg-gray-200 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-300 transition inline-block">
+                        <i class="fas fa-redo mr-2"></i>Reset
+                    </a>
+                </div>
+            </form>
+        </div>
         <div class="dashboard-container">
             <!-- Page Header -->
             <div class="page-header">
@@ -433,8 +488,30 @@
                                     <span th:unless="${project.lvsCategory}" class="text-muted">N/A</span>
                                 </td>
                                 <td>
-                                    <span class="fw-bold text-primary" th:text="${project.lvsPrice} + ' VND'">0
-                                        VND</span>
+                                    <!-- If discount active -->
+                                    <div th:if="${project.lvsHasActiveDiscount}">
+                                        <span class="badge bg-danger mb-1">
+                                            <i class="fas fa-fire"></i> SALE!
+                                        </span>
+                                        <div>
+                                            <span class="text-muted text-decoration-line-through small">
+                                                <span th:text="${project.lvsPrice}">0</span> VND
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span class="fw-bold text-success">
+                                                <span th:text="${project.lvsFinalPrice}">0</span> VND
+                                            </span>
+                                            <span class="badge bg-warning text-dark ms-1">
+                                                -<span th:text="${project.lvsDiscountPercent}">0</span>%
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- No discount -->
+                                    <span th:unless="${project.lvsHasActiveDiscount}" class="fw-bold text-primary">
+                                        <span th:text="${project.lvsPrice}">0</span> VND
+                                    </span>
                                 </td>
                                 <td>
                                     <span th:switch="${project.lvsStatus.name()}" class="status-badge">
@@ -535,12 +612,12 @@
                             </ul>
                         </nav>
                     </div>
-                <div>
-                    <a th:href="@{/LvsAdmin/LvsProject/LvsCreate}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> T?o d? �n m?i
-                    </a>
+                    <div>
+                        <a th:href="@{/LvsAdmin/LvsProject/LvsCreate}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> T?o d? �n m?i
+                        </a>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>

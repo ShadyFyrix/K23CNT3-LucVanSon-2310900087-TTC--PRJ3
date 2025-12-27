@@ -103,6 +103,22 @@
                         <span>Quản lý Khuyến mãi</span>
                     </a>
                 </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsEvent/LvsList}"
+                        th:classappend="${activePage == 'events'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-gift me-4" style="width: 20px;"></i>
+                        <span>Quản lý Sự kiện</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-link text-white d-flex align-items-center py-3 px-4 rounded-3 hover-lift"
+                        th:href="@{/LvsAdmin/LvsQuest/LvsList}"
+                        th:classappend="${activePage == 'quests'} ? 'active gradient-primary' : ''">
+                        <i class="fas fa-tasks me-4" style="width: 20px;"></i>
+                        <span>Quản lý Quest</span>
+                    </a>
+                </li>
             </ul>
         </div>
 

@@ -71,8 +71,36 @@
                         <h3 class="text-white font-bold text-lg mb-2 line-clamp-2" th:text="${project.lvsProjectName}">
                             Project</h3>
 
-                        <p class="text-[#fed700] font-bold text-xl mb-2"
-                            th:text="${#numbers.formatCurrency(project.lvsPrice)}">$0</p>
+                        <!-- Sale Status Badge -->
+                        <div class="mb-2">
+                            <span th:if="${project.lvsHasActiveDiscount}"
+                                class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                <i class="fas fa-fire mr-1"></i>SALE ACTIVE
+                            </span>
+                            <span th:if="${project.lvsIsOnSale and !project.lvsHasActiveDiscount}"
+                                class="bg-gray-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                <i class="fas fa-clock mr-1"></i>SALE SCHEDULED
+                            </span>
+                        </div>
+
+                        <!-- Price with Discount -->
+                        <div class="mb-2">
+                            <div th:if="${project.lvsHasActiveDiscount}">
+                                <div class="text-gray-400 line-through text-sm">
+                                    <span th:text="${#numbers.formatCurrency(project.lvsPrice)}">$0</span>
+                                </div>
+                                <div class="text-[#fed700] font-bold text-xl">
+                                    <span th:text="${#numbers.formatCurrency(project.lvsFinalPrice)}">$0</span>
+                                </div>
+                                <div class="text-orange-400 text-xs font-semibold">
+                                    <span th:text="${project.lvsDiscountPercent}">0</span>% OFF
+                                </div>
+                            </div>
+                            <div th:unless="${project.lvsHasActiveDiscount}">
+                                <p class="text-[#fed700] font-bold text-xl"
+                                    th:text="${#numbers.formatCurrency(project.lvsPrice)}">$0</p>
+                            </div>
+                        </div>
 
                         <p class="text-gray-400 text-sm mb-4">
                             <i class="fas fa-eye mr-1"></i>

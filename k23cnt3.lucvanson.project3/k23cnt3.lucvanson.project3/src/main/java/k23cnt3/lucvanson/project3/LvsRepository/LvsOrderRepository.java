@@ -147,4 +147,13 @@ public interface LvsOrderRepository extends JpaRepository<LvsOrder, Long> {
                         @Param("userId") Long userId,
                         @Param("projectId") Long projectId,
                         @Param("status") LvsOrderStatus status);
+
+        /**
+         * Count downloads (completed orders) for a specific project
+         */
+        @Query("SELECT COUNT(DISTINCT o) FROM LvsOrder o " +
+                        "JOIN o.lvsOrderItems oi " +
+                        "WHERE oi.lvsProject.lvsProjectId = :projectId " +
+                        "AND o.lvsStatus = 'COMPLETED'")
+        long countByLvsProject_LvsProjectId(@Param("projectId") Long projectId);
 }

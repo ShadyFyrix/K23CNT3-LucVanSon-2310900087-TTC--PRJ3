@@ -42,9 +42,18 @@ public class LvsOrder {
     @Column(name = "LvsPaymentMethod", length = 50)
     private String lvsPaymentMethod = "COIN";
 
-    // Mã khuyến mãi
+    // Khuyến mãi áp dụng
+    @ManyToOne
+    @JoinColumn(name = "LvsPromotionId")
+    private LvsPromotion lvsPromotion;
+
+    // Mã khuyến mãi (lưu lại để tham khảo)
     @Column(name = "LvsPromotionCode", length = 20)
     private String lvsPromotionCode;
+
+    // Giảm giá từ promotion
+    @Column(name = "LvsPromotionDiscount")
+    private Double lvsPromotionDiscount = 0.0;
 
     // Đã thanh toán chưa
     @Column(name = "LvsIsPaid")
@@ -74,10 +83,16 @@ public class LvsOrder {
     private void calculateAmounts() {
         if (lvsOrderItems != null && !lvsOrderItems.isEmpty()) {
             lvsTotalAmount = lvsOrderItems.stream()
-                    .mapToDouble(LvsOrderItem::getLvsItemTotal)
+                    .mapToDouble(item -> item.getLvsItemTotal() != null ? item.getLvsItemTotal() : 0.0)
                     .sum();
         }
-        lvsFinalAmount = lvsTotalAmount - lvsDiscountAmount;
+        // Only recalculate lvsFinalAmount if not already set (to preserve cart checkout
+        // values)
+        if (lvsFinalAmount == null || lvsFinalAmount == 0.0) {
+            // Final amount = Total - Project Discounts - Promotion Discount
+            lvsFinalAmount = lvsTotalAmount - lvsDiscountAmount
+                    - (lvsPromotionDiscount != null ? lvsPromotionDiscount : 0.0);
+        }
     }
 
     // Enum trạng thái đơn hàng
@@ -205,6 +220,22 @@ public class LvsOrder {
 
     public void setLvsOrderItems(List<LvsOrderItem> lvsOrderItems) {
         this.lvsOrderItems = lvsOrderItems;
+    }
+
+    public LvsPromotion getLvsPromotion() {
+        return lvsPromotion;
+    }
+
+    public void setLvsPromotion(LvsPromotion lvsPromotion) {
+        this.lvsPromotion = lvsPromotion;
+    }
+
+    public Double getLvsPromotionDiscount() {
+        return lvsPromotionDiscount;
+    }
+
+    public void setLvsPromotionDiscount(Double lvsPromotionDiscount) {
+        this.lvsPromotionDiscount = lvsPromotionDiscount;
     }
 
 }

@@ -10,9 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Controller quản lý Đánh giá (Review) trong Admin Panel
@@ -34,6 +39,9 @@ public class LvsAdminReviewController {
 
     @Autowired
     private LvsProjectService lvsProjectService;
+
+    @Autowired
+    private LvsFileUploadService lvsFileUploadService;
 
     @GetMapping("/LvsList")
     public String lvsListReviews(
@@ -97,7 +105,8 @@ public class LvsAdminReviewController {
     }
 
     @PostMapping("/LvsDelete/{id}")
-    public String lvsDeleteReview(@PathVariable Long id, @RequestParam(required = false) String lvsReason, Model model) {
+    public String lvsDeleteReview(@PathVariable Long id, @RequestParam(required = false) String lvsReason,
+            Model model) {
         try {
             LvsReview lvsReview = lvsReviewService.lvsGetReviewById(id);
             Long lvsProjectId = lvsReview.getLvsProject().getLvsProjectId();
@@ -125,20 +134,60 @@ public class LvsAdminReviewController {
     }
 
     @PostMapping("/LvsEdit/{id}")
-    public String lvsEditReview(@PathVariable Long id, @ModelAttribute LvsReview lvsReview, Model model) {
+    public String lvsEditReview(@PathVariable Long id,
+            @ModelAttribute LvsReview lvsReview,
+            @RequestParam(required = false) MultipartFile[] lvsImageFiles,
+            Model model) {
         try {
+            System.out.println("=== EDIT REVIEW - IMAGE UPLOAD DEBUG ===");
+            System.out.println("Review ID: " + id);
+            System.out.println("lvsImageFiles: " + (lvsImageFiles != null ? lvsImageFiles.length : "null"));
+
             LvsReview lvsExistingReview = lvsReviewService.lvsGetReviewById(id);
+
+            // Upload images if provided
+            if (lvsImageFiles != null && lvsImageFiles.length > 0) {
+                List<MultipartFile> validFiles = Arrays.stream(lvsImageFiles)
+                        .filter(file -> file != null && !file.isEmpty())
+                        .collect(Collectors.toList());
+
+                System.out.println("Valid files count: " + validFiles.size());
+
+                if (!validFiles.isEmpty()) {
+                    List<String> imageUrls = lvsFileUploadService.lvsSaveFiles(validFiles, "reviews");
+                    System.out.println("Image URLs: " + imageUrls);
+
+                    ObjectMapper mapper = new ObjectMapper();
+                    String imagesJson = mapper.writeValueAsString(imageUrls);
+                    System.out.println("Images JSON: " + imagesJson);
+
+                    lvsReview.setLvsImages(imagesJson);
+                    System.out.println("Set images to review: " + lvsReview.getLvsImages());
+                } else {
+                    // Keep existing images if no new files
+                    lvsReview.setLvsImages(lvsExistingReview.getLvsImages());
+                    System.out.println("No new images, keeping existing: " + lvsExistingReview.getLvsImages());
+                }
+            } else {
+                // Keep existing images if no files provided
+                lvsReview.setLvsImages(lvsExistingReview.getLvsImages());
+                System.out.println("No files provided, keeping existing: " + lvsExistingReview.getLvsImages());
+            }
 
             lvsReview.setLvsReviewId(id);
             lvsReview.setLvsUser(lvsExistingReview.getLvsUser());
             lvsReview.setLvsProject(lvsExistingReview.getLvsProject());
 
+            System.out.println("Before save - Images: " + lvsReview.getLvsImages());
             lvsReviewService.lvsSaveReview(lvsReview);
+            System.out.println("After save - Success");
+
             lvsProjectService.lvsUpdateProjectRating(lvsExistingReview.getLvsProject().getLvsProjectId());
 
             model.addAttribute("LvsSuccess", "Cập nhật đánh giá thành công!");
             return "redirect:/LvsAdmin/LvsReview/LvsDetail/" + id;
         } catch (Exception e) {
+            e.printStackTrace();
             model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
             return "LvsAreas/LvsAdmin/LvsReview/LvsEdit";
         }
@@ -184,5 +233,88 @@ public class LvsAdminReviewController {
         model.addAttribute("LvsCurrentPage", page);
 
         return "LvsAreas/LvsAdmin/LvsReview/LvsUser";
+    }
+
+    /**
+     * Show create review form
+     */
+    @GetMapping("/LvsCreate")
+    public String lvsShowCreateReviewForm(Model model) {
+        model.addAttribute("LvsReview", new LvsReview());
+
+        // Get all projects and users for selection (unpaged for dropdown)
+        Pageable unpaged = Pageable.unpaged();
+        List<LvsProject> lvsProjects = lvsProjectService.lvsGetAllProjects(unpaged).getContent();
+        List<LvsUser> lvsUsers = lvsUserService.lvsGetAllUsers(unpaged).getContent();
+
+        model.addAttribute("LvsProjects", lvsProjects);
+        model.addAttribute("LvsUsers", lvsUsers);
+
+        return "LvsAreas/LvsAdmin/LvsReview/LvsCreate";
+    }
+
+    /**
+     * Create new review
+     */
+    @PostMapping("/LvsCreate")
+    public String lvsCreateReview(@ModelAttribute LvsReview lvsReview,
+            @RequestParam Long lvsProjectId,
+            @RequestParam Long lvsUserId,
+            @RequestParam(required = false) MultipartFile[] lvsImageFiles,
+            RedirectAttributes redirectAttributes) {
+        try {
+            // Get project and user
+            LvsProject lvsProject = lvsProjectService.lvsGetProjectById(lvsProjectId);
+            LvsUser lvsUser = lvsUserService.lvsGetUserById(lvsUserId);
+
+            if (lvsProject == null || lvsUser == null) {
+                redirectAttributes.addFlashAttribute("lvsError", "Project or User not found!");
+                return "redirect:/LvsAdmin/LvsReview/LvsCreate";
+            }
+
+            // Upload images if provided
+            System.out.println("=== IMAGE UPLOAD DEBUG ===");
+            System.out.println("lvsImageFiles: " + (lvsImageFiles != null ? lvsImageFiles.length : "null"));
+
+            if (lvsImageFiles != null && lvsImageFiles.length > 0) {
+                List<MultipartFile> validFiles = Arrays.stream(lvsImageFiles)
+                        .filter(file -> file != null && !file.isEmpty())
+                        .collect(Collectors.toList());
+
+                System.out.println("Valid files count: " + validFiles.size());
+
+                if (!validFiles.isEmpty()) {
+                    List<String> imageUrls = lvsFileUploadService.lvsSaveFiles(validFiles, "reviews");
+                    System.out.println("Image URLs: " + imageUrls);
+
+                    ObjectMapper mapper = new ObjectMapper();
+                    String imagesJson = mapper.writeValueAsString(imageUrls);
+                    System.out.println("Images JSON: " + imagesJson);
+
+                    lvsReview.setLvsImages(imagesJson);
+                    System.out.println("Set images to review: " + lvsReview.getLvsImages());
+                }
+            }
+
+            // Set relationships
+            lvsReview.setLvsProject(lvsProject);
+            lvsReview.setLvsUser(lvsUser);
+            lvsReview.setLvsIsApproved(true); // Auto-approve admin-created reviews
+
+            // Save review
+            System.out.println("Before save - Images: " + lvsReview.getLvsImages());
+            lvsReviewService.lvsSaveReview(lvsReview);
+            System.out.println("After save - Review ID: " + lvsReview.getLvsReviewId());
+
+            // Update project rating
+            lvsProjectService.lvsUpdateProjectRating(lvsProjectId);
+
+            redirectAttributes.addFlashAttribute("lvsSuccess", "Review created successfully!");
+            return "redirect:/LvsAdmin/LvsReview/LvsList";
+        } catch (Exception e) {
+            e.printStackTrace(); // Print full stack trace
+            redirectAttributes.addFlashAttribute("lvsError", "Error: " + e.getMessage());
+            return "redirect:/LvsAdmin/LvsReview/LvsCreate";
+        }
     }
 }

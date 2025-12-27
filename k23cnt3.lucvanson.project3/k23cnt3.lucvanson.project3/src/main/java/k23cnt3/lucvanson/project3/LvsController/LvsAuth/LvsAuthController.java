@@ -243,7 +243,7 @@ public class LvsAuthController {
      * @param logout Tham số khi đã đăng xuất
      * @return Đường dẫn đến template login của user
      */
-    @GetMapping("/LvsUser/LvsLogin")
+    @GetMapping({ "/LvsUser/LvsLogin", "/LvsAuth/LvsLogin" })
     public String lvsShowUserLoginPage(Model model,
             @RequestParam(value = "error", required = false) String error,
             @RequestParam(value = "logout", required = false) String logout) {
@@ -260,15 +260,13 @@ public class LvsAuthController {
     }
 
     /**
-     * Xử lý đăng nhập cho USER/MODERATOR
+     * Xử lý đăng nhập cho USER/MODERATOR/ADMIN (Unified Login)
      * 
      * Flow xử lý:
      * 1. Nhận username/email và password từ form
      * 2. Kiểm tra thông tin đăng nhập qua LvsUserService
-     * 3. Kiểm tra role (USER hoặc MODERATOR)
-     * 4. Redirect theo role:
-     * - MODERATOR → Trang phê duyệt
-     * - USER → Trang chủ forum
+     * 3. Allow all roles (ADMIN, MODERATOR, USER)
+     * 4. Redirect to user dashboard (admin can access admin panel via button)
      * 
      * @param lvsUsernameOrEmail Username hoặc email của user
      * @param lvsPassword        Mật khẩu của user
@@ -276,7 +274,7 @@ public class LvsAuthController {
      * @param redirectAttributes Để truyền flash message
      * @return Redirect đến trang tương ứng theo role
      */
-    @PostMapping("/LvsUser/LvsLogin")
+    @PostMapping({ "/LvsUser/LvsLogin", "/LvsAuth/LvsLogin" })
     public String lvsProcessUserLogin(
             @RequestParam String lvsUsernameOrEmail,
             @RequestParam String lvsPassword,
@@ -285,36 +283,36 @@ public class LvsAuthController {
             HttpServletRequest request) {
 
         try {
-            System.out.println("[USER LOGIN] Attempting login for: " + lvsUsernameOrEmail);
+            System.out.println("[UNIFIED LOGIN] Attempting login for: " + lvsUsernameOrEmail);
 
             // Tìm user theo username hoặc email
             LvsUser lvsUser = lvsUserService.lvsGetUserByUsername(lvsUsernameOrEmail);
 
             // Nếu không tìm thấy theo username, thử tìm theo email
             if (lvsUser == null) {
-                System.out.println("[USER LOGIN] Not found by username, trying email...");
+                System.out.println("[UNIFIED LOGIN] Not found by username, trying email...");
                 lvsUser = lvsUserService.lvsGetUserByEmail(lvsUsernameOrEmail);
             }
 
             // Kiểm tra user có tồn tại không
             if (lvsUser == null) {
-                System.out.println("[USER LOGIN] User not found!");
+                System.out.println("[UNIFIED LOGIN] User not found!");
                 redirectAttributes.addFlashAttribute("lvsError",
                         "Tên đăng nhập hoặc email không tồn tại!");
-                return "redirect:/LvsUser/LvsLogin";
+                return "redirect:/LvsAuth/LvsLogin";
             }
 
             System.out.println(
-                    "[USER LOGIN] User found: " + lvsUser.getLvsUsername() + ", Role: " + lvsUser.getLvsRole());
+                    "[UNIFIED LOGIN] User found: " + lvsUser.getLvsUsername() + ", Role: " + lvsUser.getLvsRole());
 
             // Kiểm tra password
             boolean passwordMatch = lvsUserService.lvsCheckPassword(lvsUser, lvsPassword);
-            System.out.println("[USER LOGIN] Password match: " + passwordMatch);
+            System.out.println("[UNIFIED LOGIN] Password match: " + passwordMatch);
 
             if (!passwordMatch) {
                 redirectAttributes.addFlashAttribute("lvsError",
                         "Mật khẩu không đúng!");
-                return "redirect:/LvsUser/LvsLogin";
+                return "redirect:/LvsAuth/LvsLogin";
             }
 
             // Allow all roles (ADMIN, MODERATOR, USER) to login via unified login page
@@ -324,18 +322,18 @@ public class LvsAuthController {
             if (lvsUser.getLvsStatus() == LvsUser.LvsUserStatus.BANNED) {
                 redirectAttributes.addFlashAttribute("lvsError",
                         "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin.");
-                return "redirect:/LvsUser/LvsLogin";
+                return "redirect:/LvsAuth/LvsLogin";
             }
 
             if (lvsUser.getLvsStatus() == LvsUser.LvsUserStatus.INACTIVE) {
                 redirectAttributes.addFlashAttribute("lvsError",
                         "Tài khoản của bạn chưa được kích hoạt.");
-                return "redirect:/LvsUser/LvsLogin";
+                return "redirect:/LvsAuth/LvsLogin";
             }
 
             // Lưu thông tin user vào session
             session.setAttribute("LvsCurrentUser", lvsUser);
-            System.out.println("[USER LOGIN] Session created for user: " + lvsUser.getLvsUsername());
+            System.out.println("[UNIFIED LOGIN] Session created for user: " + lvsUser.getLvsUsername());
 
             // IMPORTANT: Authenticate with Spring Security to avoid 403 Forbidden
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -352,7 +350,7 @@ public class LvsAuthController {
             SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
             securityContextRepository.saveContext(securityContext, request, null);
 
-            System.out.println("[USER LOGIN] Spring Security authentication set and saved to session for: "
+            System.out.println("[UNIFIED LOGIN] Spring Security authentication set and saved to session for: "
                     + lvsUser.getLvsUsername());
 
             redirectAttributes.addFlashAttribute("lvsSuccess",
@@ -367,7 +365,7 @@ public class LvsAuthController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("lvsError",
                     "Lỗi đăng nhập: " + e.getMessage());
-            return "redirect:/LvsUser/LvsLogin";
+            return "redirect:/LvsAuth/LvsLogin";
         }
     }
 

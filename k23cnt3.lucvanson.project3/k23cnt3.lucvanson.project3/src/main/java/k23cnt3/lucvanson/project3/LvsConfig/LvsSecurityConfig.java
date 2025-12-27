@@ -37,7 +37,8 @@ public class LvsSecurityConfig {
                                 .authorizeHttpRequests(auth -> auth
                                                 // Các tài nguyên tĩnh
                                                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**",
-                                                                "/fonts/**")
+                                                                "/fonts/**", "/uploads/**") // Added /uploads/** for
+                                                                                            // uploaded files
                                                 .permitAll()
                                                 // Các trang public
                                                 .requestMatchers("/", "/home", "/about", "/lvsforum").permitAll()

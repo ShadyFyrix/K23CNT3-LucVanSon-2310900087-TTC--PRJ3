@@ -9,14 +9,203 @@
 <body>
     <div layout:fragment="content">
         <div class="dashboard-container" style="max-width: 1300px; margin: 2rem auto; padding: 1rem;">
-            <h1 class="h3 mb-4">Tạo Đánh giá</h1>
+            <h1 class="h3 mb-4">Tạo Đánh giá Mới</h1>
+
+            <!-- Success/Error Messages -->
+            <div th:if="${lvsSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i> <span th:text="${lvsSuccess}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${lvsError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle"></i> <span th:text="${lvsError}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
             <div class="card">
                 <div class="card-body">
-                    <p class="text-muted">Chức năng tạo đánh giá chưa được triển khai.</p>
-                    <a th:href="@{/LvsAdmin/LvsReview/LvsList}" class="btn btn-secondary">Quay lại</a>
+                    <form th:action="@{/LvsAdmin/LvsReview/LvsCreate}" th:object="${LvsReview}" method="post"
+                        enctype="multipart/form-data">
+
+                        <!-- Project Selection -->
+                        <div class="mb-3">
+                            <label for="lvsProjectId" class="form-label">Dự án <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select" id="lvsProjectId" name="lvsProjectId" required>
+                                <option value="">-- Chọn dự án --</option>
+                                <option th:each="project : ${LvsProjects}" th:value="${project.lvsProjectId}"
+                                    th:text="${project.lvsProjectName}"></option>
+                            </select>
+                        </div>
+
+                        <!-- User Selection -->
+                        <div class="mb-3">
+                            <label for="lvsUserId" class="form-label">Người đánh giá <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select" id="lvsUserId" name="lvsUserId" required>
+                                <option value="">-- Chọn người dùng --</option>
+                                <option th:each="user : ${LvsUsers}" th:value="${user.lvsUserId}"
+                                    th:text="${user.lvsUsername}"></option>
+                            </select>
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="mb-3">
+                            <label class="form-label">Đánh giá <span class="text-danger">*</span></label>
+                            <div class="d-flex gap-2">
+                                <input type="radio" name="lvsRating" value="1" id="adminStar1" class="d-none" required>
+                                <label for="adminStar1" class="btn btn-outline-warning" style="cursor: pointer;">
+                                    <i class="far fa-star"></i>
+                                </label>
+                                <input type="radio" name="lvsRating" value="2" id="adminStar2" class="d-none">
+                                <label for="adminStar2" class="btn btn-outline-warning" style="cursor: pointer;">
+                                    <i class="far fa-star"></i>
+                                </label>
+                                <input type="radio" name="lvsRating" value="3" id="adminStar3" class="d-none">
+                                <label for="adminStar3" class="btn btn-outline-warning" style="cursor: pointer;">
+                                    <i class="far fa-star"></i>
+                                </label>
+                                <input type="radio" name="lvsRating" value="4" id="adminStar4" class="d-none">
+                                <label for="adminStar4" class="btn btn-outline-warning" style="cursor: pointer;">
+                                    <i class="far fa-star"></i>
+                                </label>
+                                <input type="radio" name="lvsRating" value="5" id="adminStar5" class="d-none">
+                                <label for="adminStar5" class="btn btn-outline-warning" style="cursor: pointer;">
+                                    <i class="far fa-star"></i>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label for="lvsTitle" class="form-label">Tiêu đề</label>
+                            <input type="text" class="form-control" th:field="*{lvsTitle}" id="lvsTitle"
+                                placeholder="Nhập tiêu đề đánh giá" maxlength="200">
+                        </div>
+
+                        <!-- Content -->
+                        <div class="mb-3">
+                            <label for="lvsContent" class="form-label">Nội dung <span
+                                    class="text-danger">*</span></label>
+                            <textarea class="form-control" th:field="*{lvsContent}" id="lvsContent" rows="5"
+                                placeholder="Nhập nội dung đánh giá" required></textarea>
+                        </div>
+
+                        <!-- Images -->
+                        <div class="mb-3">
+                            <label for="lvsImageFiles" class="form-label">Hình ảnh (Tùy chọn)</label>
+                            <input type="file" class="form-control" id="lvsImageFiles" name="lvsImageFiles" multiple
+                                accept="image/*">
+                            <small class="text-muted">Có thể upload nhiều ảnh</small>
+                            <div id="adminImagePreview" class="d-flex gap-2 mt-2 flex-wrap"></div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Tạo đánh giá
+                            </button>
+                            <a th:href="@{/LvsAdmin/LvsReview/LvsList}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+
+        <!-- JavaScript for Star Selection and Image Preview -->
+        <script>
+            console.log('=== ADMIN CREATE REVIEW SCRIPT LOADED ===');
+            document.addEventListener('DOMContentLoaded', function () {
+                console.log('=== DOM CONTENT LOADED ===');
+                // Star Rating Selection
+                const starInputs = document.querySelectorAll('input[name="lvsRating"]');
+                const starLabels = document.querySelectorAll('label[for^="adminStar"]');
+
+                starInputs.forEach((input, index) => {
+                    input.addEventListener('change', function () {
+                        starLabels.forEach((label, i) => {
+                            const icon = label.querySelector('i');
+                            if (i <= index) {
+                                icon.className = 'fas fa-star';
+                                label.classList.add('active');
+                            } else {
+                                icon.className = 'far fa-star';
+                                label.classList.remove('active');
+                            }
+                        });
+                    });
+                });
+
+                // Hover effect
+                starLabels.forEach((label, index) => {
+                    label.addEventListener('mouseenter', function () {
+                        starLabels.forEach((l, i) => {
+                            const icon = l.querySelector('i');
+                            if (i <= index) {
+                                icon.className = 'fas fa-star';
+                            }
+                        });
+                    });
+
+                    label.addEventListener('mouseleave', function () {
+                        const selectedInput = document.querySelector('input[name="lvsRating"]:checked');
+                        if (selectedInput) {
+                            const selectedIndex = Array.from(starInputs).indexOf(selectedInput);
+                            starLabels.forEach((l, i) => {
+                                const icon = l.querySelector('i');
+                                if (i <= selectedIndex) {
+                                    icon.className = 'fas fa-star';
+                                } else {
+                                    icon.className = 'far fa-star';
+                                }
+                            });
+                        } else {
+                            starLabels.forEach((l) => {
+                                l.querySelector('i').className = 'far fa-star';
+                            });
+                        }
+                    });
+                });
+
+                // Image Preview
+                const imageInput = document.getElementById('lvsImageFiles');
+                console.log('Image input found:', imageInput);
+                if (imageInput) {
+                    imageInput.addEventListener('change', function (e) {
+                        console.log('File input changed, files:', e.target.files);
+                        const files = e.target.files;
+                        const previewContainer = document.getElementById('adminImagePreview');
+                        console.log('Preview container:', previewContainer);
+
+                        if (!previewContainer) return;
+
+                        previewContainer.innerHTML = '';
+
+                        if (files.length > 0) {
+                            Array.from(files).forEach((file, index) => {
+                                console.log('Processing file:', file.name);
+                                if (file.type.startsWith('image/')) {
+                                    const reader = new FileReader();
+                                    reader.onload = function (e) {
+                                        console.log('Image loaded, creating preview');
+                                        const img = document.createElement('img');
+                                        img.src = e.target.result;
+                                        img.className = 'rounded border border-warning';
+                                        img.style.width = '80px';
+                                        img.style.height = '80px';
+                                        img.style.objectFit = 'cover';
+                                        img.alt = 'Preview ' + (index + 1);
+                                        previewContainer.appendChild(img);
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        </script>
     </div>
 </body>
 

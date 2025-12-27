@@ -179,4 +179,16 @@ public interface LvsProjectRepository extends JpaRepository<LvsProject, Long> {
         @Query("SELECT p FROM LvsProject p")
         @EntityGraph(attributePaths = { "lvsCategory", "lvsUser" })
         Page<LvsProject> findAllWithCategoryAndUser(Pageable pageable);
+
+        // Lấy dự án theo status với category và user eager loading
+        @Query("SELECT p FROM LvsProject p WHERE p.lvsStatus = :status")
+        @EntityGraph(attributePaths = { "lvsCategory", "lvsUser" })
+        Page<LvsProject> findByStatusWithCategoryAndUser(@Param("status") LvsProjectStatus status, Pageable pageable);
+
+        // Lấy dự án theo category và status với eager loading
+        @Query("SELECT p FROM LvsProject p WHERE p.lvsCategory.lvsCategoryId = :categoryId AND p.lvsStatus = :status")
+        @EntityGraph(attributePaths = { "lvsCategory", "lvsUser" })
+        Page<LvsProject> findByCategoryAndStatusWithDetails(@Param("categoryId") Integer categoryId,
+                        @Param("status") LvsProjectStatus status,
+                        Pageable pageable);
 }

@@ -92,6 +92,12 @@ public class LvsAdminProjectController {
     private LvsFileUploadService lvsFileUploadService;
 
     /**
+     * Service xử lý logic nghiệp vụ cho Review
+     */
+    @Autowired
+    private LvsReviewService lvsReviewService;
+
+    /**
      * Hiển thị danh sách dự án với phân trang, tìm kiếm và lọc
      * 
      * <p>
@@ -101,6 +107,7 @@ public class LvsAdminProjectController {
      * <li>Lấy danh sách dự án theo trang</li>
      * <li>Tìm kiếm theo từ khóa (tên dự án, mô tả)</li>
      * <li>Lọc theo trạng thái (PENDING, APPROVED, REJECTED)</li>
+     * <li>Lọc theo danh mục</li>
      * <li>Hiển thị thumbnail của từng dự án</li>
      * </ul>
      * 
@@ -109,14 +116,15 @@ public class LvsAdminProjectController {
      * </p>
      * <p>
      * Ví dụ:
-     * /LvsAdmin/LvsProject/LvsList?page=0&size=20&lvsStatus=APPROVED&lvsKeyword=web
+     * /LvsAdmin/LvsProject/LvsList?page=0&size=20&lvsStatus=APPROVED&lvsKeyword=web&lvsCategoryId=1
      * </p>
      * 
-     * @param page       Số trang hiện tại (mặc định = 0)
-     * @param size       Số items mỗi trang (mặc định = 20)
-     * @param lvsStatus  Trạng thái dự án để lọc (optional)
-     * @param lvsKeyword Từ khóa tìm kiếm (optional)
-     * @param model      Model để truyền dữ liệu ra view
+     * @param page          Số trang hiện tại (mặc định = 0)
+     * @param size          Số items mỗi trang (mặc định = 20)
+     * @param lvsStatus     Trạng thái dự án để lọc (optional)
+     * @param lvsKeyword    Từ khóa tìm kiếm (optional)
+     * @param lvsCategoryId Danh mục để lọc (optional)
+     * @param model         Model để truyền dữ liệu ra view
      * @return Template path: LvsAreas/LvsAdmin/LvsProject/LvsList
      * 
      *         <p>
@@ -128,6 +136,8 @@ public class LvsAdminProjectController {
      *         <li>lvsStatuses: LvsProjectStatus[] - Tất cả trạng thái có thể</li>
      *         <li>lvsSelectedStatus: String - Trạng thái đang được chọn</li>
      *         <li>lvsKeyword: String - Từ khóa đang tìm kiếm</li>
+     *         <li>lvsCategories: List&lt;LvsCategory&gt; - Danh sách danh mục</li>
+     *         <li>lvsCategoryId: Integer - Danh mục đang được chọn</li>
      *         <li>lvsCurrentPage: int - Trang hiện tại</li>
      *         </ul>
      */
@@ -137,26 +147,43 @@ public class LvsAdminProjectController {
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String lvsStatus,
             @RequestParam(required = false) String lvsKeyword,
+            @RequestParam(required = false) Integer lvsCategoryId,
             Model model) {
 
         // Tạo Pageable object
         Pageable lvsPageable = PageRequest.of(page, size);
         Page<LvsProject> lvsProjects;
 
-        // Ưu tiên tìm kiếm theo keyword, sau đó lọc theo status, cuối cùng lấy tất cả
+        // Ưu tiên tìm kiếm theo keyword, sau đó lọc theo category và status
         if (lvsKeyword != null && !lvsKeyword.isEmpty()) {
             lvsProjects = lvsProjectService.lvsSearchProjects(lvsKeyword, lvsPageable);
+        } else if (lvsCategoryId != null && lvsStatus != null && !lvsStatus.isEmpty()) {
+            // Filter by both category and status
+            lvsProjects = lvsProjectService.lvsGetProjectsByCategoryAndStatus(
+                    lvsCategoryId,
+                    LvsProject.LvsProjectStatus.valueOf(lvsStatus),
+                    lvsPageable);
+        } else if (lvsCategoryId != null) {
+            // Filter by category only
+            lvsProjects = lvsProjectService.lvsGetProjectsByCategory(lvsCategoryId, lvsPageable);
         } else if (lvsStatus != null && !lvsStatus.isEmpty()) {
+            // Filter by status only
             lvsProjects = lvsProjectService.lvsGetProjectsByStatus(lvsStatus, lvsPageable);
         } else {
+            // Get all projects
             lvsProjects = lvsProjectService.lvsGetAllProjects(lvsPageable);
         }
+
+        // Lấy danh sách categories
+        List<LvsCategory> lvsCategories = lvsCategoryService.lvsGetAllCategories();
 
         // Truyền dữ liệu ra view
         model.addAttribute("lvsProjects", lvsProjects);
         model.addAttribute("lvsStatuses", LvsProject.LvsProjectStatus.values());
         model.addAttribute("lvsSelectedStatus", lvsStatus);
         model.addAttribute("lvsKeyword", lvsKeyword);
+        model.addAttribute("lvsCategories", lvsCategories);
+        model.addAttribute("lvsCategoryId", lvsCategoryId);
         model.addAttribute("lvsCurrentPage", page);
 
         return "LvsAreas/LvsAdmin/LvsProject/LvsList";
@@ -205,8 +232,30 @@ public class LvsAdminProjectController {
             return "redirect:/LvsAdmin/LvsProject/LvsList";
         }
 
+        // Fetch ALL reviews (including unapproved) for admin
+        Pageable reviewPageable = PageRequest.of(0, 100); // Show more reviews for admin
+        Page<LvsReview> lvsReviews = lvsReviewService.lvsGetReviewsByProject(id, reviewPageable);
+
+        // Get review statistics
+        Double lvsAverageRating = lvsReviewService.lvsGetAverageRating(id);
+        java.util.Map<Integer, Long> lvsRatingDistribution = lvsReviewService.lvsGetRatingDistribution(id);
+
+        // Count reviews by status
+        long lvsPendingCount = lvsReviews.getContent().stream()
+                .filter(r -> r.getLvsIsApproved() != null && !r.getLvsIsApproved())
+                .count();
+        long lvsApprovedCount = lvsReviews.getContent().stream()
+                .filter(r -> r.getLvsIsApproved() != null && r.getLvsIsApproved())
+                .count();
+
         // Truyền dữ liệu ra view
         model.addAttribute("lvsProject", lvsProject);
+        model.addAttribute("LvsReviews", lvsReviews);
+        model.addAttribute("LvsAverageRating", lvsAverageRating != null ? lvsAverageRating : 0.0);
+        model.addAttribute("LvsRatingDistribution", lvsRatingDistribution);
+        model.addAttribute("LvsPendingCount", lvsPendingCount);
+        model.addAttribute("LvsApprovedCount", lvsApprovedCount);
+
         return "LvsAreas/LvsAdmin/LvsProject/LvsDetail";
     }
 
@@ -562,7 +611,26 @@ public class LvsAdminProjectController {
             // ===== CẬP NHẬT DỰ ÁN =====
             lvsProject.setLvsProjectId(id);
             lvsProject.setLvsUser(lvsExistingProject.getLvsUser()); // Giữ nguyên user
-            lvsProjectService.lvsUpdateProject(lvsProject);
+
+            // ✅ UPDATE ALL FIELDS (explicit binding like User controller)
+            lvsExistingProject.setLvsProjectName(lvsProject.getLvsProjectName());
+            lvsExistingProject.setLvsDescription(lvsProject.getLvsDescription());
+            lvsExistingProject.setLvsPrice(lvsProject.getLvsPrice());
+            lvsExistingProject.setLvsCategory(lvsProject.getLvsCategory());
+            lvsExistingProject.setLvsStatus(lvsProject.getLvsStatus());
+            lvsExistingProject.setLvsThumbnailUrl(lvsProject.getLvsThumbnailUrl());
+            lvsExistingProject.setLvsFileUrl(lvsProject.getLvsFileUrl());
+            lvsExistingProject.setLvsImages(lvsProject.getLvsImages());
+            lvsExistingProject.setLvsDemoUrl(lvsProject.getLvsDemoUrl());
+            lvsExistingProject.setLvsSourceCodeUrl(lvsProject.getLvsSourceCodeUrl());
+
+            // ✅ DISCOUNT FIELDS
+            lvsExistingProject.setLvsDiscountPercent(lvsProject.getLvsDiscountPercent());
+            lvsExistingProject.setLvsIsOnSale(lvsProject.getLvsIsOnSale());
+            lvsExistingProject.setLvsDiscountStartDate(lvsProject.getLvsDiscountStartDate());
+            lvsExistingProject.setLvsDiscountEndDate(lvsProject.getLvsDiscountEndDate());
+
+            lvsProjectService.lvsUpdateProject(lvsExistingProject);
 
             // Thêm thông báo thành công
             redirectAttributes.addFlashAttribute("LvsSuccess", "Cập nhật dự án thành công!");
@@ -720,6 +788,11 @@ public class LvsAdminProjectController {
             lvsProject.setLvsStatus(LvsProject.LvsProjectStatus.APPROVED); // Admin tạo -> tự động duyệt
             lvsProject.setLvsIsApproved(true);
 
+            // ✅ DISCOUNT FIELDS are already bound via @ModelAttribute
+            // lvsProject.lvsDiscountPercent, lvsIsOnSale, lvsDiscountStartDate,
+            // lvsDiscountEndDate
+            // are automatically populated from form
+
             // ===== LƯU VÀO DATABASE =====
             LvsProject lvsSavedProject = lvsProjectService.lvsSaveProject(lvsProject);
 
@@ -735,6 +808,80 @@ public class LvsAdminProjectController {
             // Lỗi khác
             redirectAttributes.addFlashAttribute("LvsError", "Lỗi: " + e.getMessage());
             return "redirect:/LvsAdmin/LvsProject/LvsAdd";
+        }
+    }
+
+    // ==================== REVIEW MANAGEMENT METHODS ====================
+
+    /**
+     * Approve a review
+     */
+    @PostMapping("/LvsReview/LvsApprove/{id}")
+    public String lvsApproveReview(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            LvsReview review = lvsReviewService.lvsGetReviewById(id);
+            if (review == null) {
+                redirectAttributes.addFlashAttribute("lvsError", "Review not found!");
+                return "redirect:/LvsAdmin/LvsReview/LvsList";
+            }
+
+            // Approve review
+            lvsReviewService.lvsApproveReview(id);
+
+            redirectAttributes.addFlashAttribute("lvsSuccess", "Review approved successfully!");
+            return "redirect:/LvsAdmin/LvsProject/LvsDetail/" + review.getLvsProject().getLvsProjectId();
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("lvsError", "Error: " + e.getMessage());
+            return "redirect:/LvsAdmin/LvsReview/LvsList";
+        }
+    }
+
+    /**
+     * Hide a review
+     */
+    @PostMapping("/LvsReview/LvsHide/{id}")
+    public String lvsHideReview(@PathVariable Long id, @RequestParam String reason,
+            RedirectAttributes redirectAttributes) {
+        try {
+            LvsReview review = lvsReviewService.lvsGetReviewById(id);
+            if (review == null) {
+                redirectAttributes.addFlashAttribute("lvsError", "Review not found!");
+                return "redirect:/LvsAdmin/LvsReview/LvsList";
+            }
+
+            // Hide review (set isApproved to false)
+            lvsReviewService.lvsHideReview(id, reason);
+
+            redirectAttributes.addFlashAttribute("lvsSuccess", "Review hidden successfully!");
+            return "redirect:/LvsAdmin/LvsProject/LvsDetail/" + review.getLvsProject().getLvsProjectId();
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("lvsError", "Error: " + e.getMessage());
+            return "redirect:/LvsAdmin/LvsReview/LvsList";
+        }
+    }
+
+    /**
+     * Delete a review
+     */
+    @PostMapping("/LvsReview/LvsDelete/{id}")
+    public String lvsDeleteReview(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            LvsReview review = lvsReviewService.lvsGetReviewById(id);
+            if (review == null) {
+                redirectAttributes.addFlashAttribute("lvsError", "Review not found!");
+                return "redirect:/LvsAdmin/LvsReview/LvsList";
+            }
+
+            Long projectId = review.getLvsProject().getLvsProjectId();
+
+            // Delete review
+            lvsReviewService.lvsDeleteReview(id);
+
+            redirectAttributes.addFlashAttribute("lvsSuccess", "Review deleted successfully!");
+            return "redirect:/LvsAdmin/LvsProject/LvsDetail/" + projectId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("lvsError", "Error: " + e.getMessage());
+            return "redirect:/LvsAdmin/LvsReview/LvsList";
         }
     }
 }

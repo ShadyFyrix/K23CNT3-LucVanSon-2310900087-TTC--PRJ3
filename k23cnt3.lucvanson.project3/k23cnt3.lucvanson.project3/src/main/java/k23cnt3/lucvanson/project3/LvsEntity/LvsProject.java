@@ -90,6 +90,19 @@ public class LvsProject {
     @Column(name = "LvsUpdatedAt")
     private LocalDateTime lvsUpdatedAt = LocalDateTime.now();
 
+    // ✨ DISCOUNT FIELDS - Owner can set discount for their project
+    @Column(name = "LvsDiscountPercent")
+    private Integer lvsDiscountPercent = 0; // 0-100%
+
+    @Column(name = "LvsDiscountStartDate")
+    private LocalDateTime lvsDiscountStartDate;
+
+    @Column(name = "LvsDiscountEndDate")
+    private LocalDateTime lvsDiscountEndDate;
+
+    @Column(name = "LvsIsOnSale")
+    private Boolean lvsIsOnSale = false;
+
     // Quan hệ
     @OneToMany(mappedBy = "lvsProject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<LvsPost> lvsPosts = new ArrayList<>();
@@ -313,6 +326,63 @@ public class LvsProject {
 
     public void setLvsOrderItems(List<LvsOrderItem> lvsOrderItems) {
         this.lvsOrderItems = lvsOrderItems;
+    }
+
+    // Discount getters and setters
+    public Integer getLvsDiscountPercent() {
+        return lvsDiscountPercent;
+    }
+
+    public void setLvsDiscountPercent(Integer lvsDiscountPercent) {
+        this.lvsDiscountPercent = lvsDiscountPercent;
+    }
+
+    public LocalDateTime getLvsDiscountStartDate() {
+        return lvsDiscountStartDate;
+    }
+
+    public void setLvsDiscountStartDate(LocalDateTime lvsDiscountStartDate) {
+        this.lvsDiscountStartDate = lvsDiscountStartDate;
+    }
+
+    public LocalDateTime getLvsDiscountEndDate() {
+        return lvsDiscountEndDate;
+    }
+
+    public void setLvsDiscountEndDate(LocalDateTime lvsDiscountEndDate) {
+        this.lvsDiscountEndDate = lvsDiscountEndDate;
+    }
+
+    public Boolean getLvsIsOnSale() {
+        return lvsIsOnSale;
+    }
+
+    public void setLvsIsOnSale(Boolean lvsIsOnSale) {
+        this.lvsIsOnSale = lvsIsOnSale;
+    }
+
+    // Helper method to calculate final price with discount
+    public Double getLvsFinalPrice() {
+        if (lvsIsOnSale != null && lvsIsOnSale && lvsDiscountPercent != null && lvsDiscountPercent > 0) {
+            LocalDateTime now = LocalDateTime.now();
+            // Check if discount is currently active
+            if ((lvsDiscountStartDate == null || now.isAfter(lvsDiscountStartDate)) &&
+                    (lvsDiscountEndDate == null || now.isBefore(lvsDiscountEndDate))) {
+                double discount = lvsPrice * (lvsDiscountPercent / 100.0);
+                return lvsPrice - discount;
+            }
+        }
+        return lvsPrice;
+    }
+
+    // Helper method to check if discount is active
+    public Boolean getLvsHasActiveDiscount() {
+        if (lvsIsOnSale != null && lvsIsOnSale && lvsDiscountPercent != null && lvsDiscountPercent > 0) {
+            LocalDateTime now = LocalDateTime.now();
+            return (lvsDiscountStartDate == null || now.isAfter(lvsDiscountStartDate)) &&
+                    (lvsDiscountEndDate == null || now.isBefore(lvsDiscountEndDate));
+        }
+        return false;
     }
 
 }

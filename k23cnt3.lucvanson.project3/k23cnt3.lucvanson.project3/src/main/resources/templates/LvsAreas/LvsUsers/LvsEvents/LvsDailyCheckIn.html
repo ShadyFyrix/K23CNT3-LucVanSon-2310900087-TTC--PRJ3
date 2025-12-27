@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Daily Check-In - WeJect</title>
+    <style>
+        .milestone-progress {
+            position: relative;
+            width: 100%;
+            height: 80px;
+            background: #1e1e1e;
+            border-radius: 30px;
+            overflow: hidden;
+            margin: 40px 0;
+        }
+
+        .milestone-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #fed700, #ffa500);
+            border-radius: 30px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .milestone-markers {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .milestone-marker {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            flex: 0 0 auto;
+        }
+
+        .milestone-dot {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #333;
+            border: 4px solid #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #999;
+            transition: all 0.3s;
+        }
+
+        .milestone-dot.achieved {
+            background: #fed700;
+            border-color: #fed700;
+            color: #000;
+            box-shadow: 0 0 20px #fed700;
+        }
+
+        .milestone-dot.current {
+            background: #ffa500;
+            border-color: #ffa500;
+            color: #fff;
+            animation: pulse 2s infinite;
+        }
+
+        .milestone-label {
+            position: absolute;
+            top: -35px;
+            font-size: 11px;
+            color: #fed700;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .milestone-reward {
+            position: absolute;
+            bottom: -35px;
+            font-size: 10px;
+            color: #999;
+            white-space: nowrap;
+        }
+
+        .milestone-reward.achieved {
+            color: #fed700;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .streak-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #fed700;
+            text-shadow: 0 0 30px #fed700;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold text-white mb-8">
+                <i class="fas fa-calendar-check text-[#fed700] mr-3"></i>Daily Check-In
+            </h1>
+
+            <!-- Check-In Card -->
+            <div class="max-w-4xl mx-auto bg-gradient-to-br from-[#fed700] to-yellow-600 rounded-xl p-8 mb-8">
+                <div class="text-center text-black">
+                    <i class="fas fa-gift text-6xl mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-2">Daily Reward</h2>
+                    <p class="text-xl mb-2">Base: 10 coins + Streak Bonus!</p>
+                    <div class="streak-display" th:text="${lvsStreak} ?: 0">0</div>
+                    <p class="text-lg font-bold mb-6">Day Streak 🔥</p>
+
+                    <form th:action="@{/LvsUser/LvsEvent/LvsCheckIn}" method="post">
+                        <button type="submit"
+                            class="bg-black text-[#fed700] px-8 py-4 rounded-lg font-bold text-xl hover:bg-gray-900 transition">
+                            <i class="fas fa-hand-pointer mr-2"></i>Check In Now!
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Milestone Progress -->
+            <div class="max-w-4xl mx-auto bg-[#2b2b2b] rounded-xl p-8 mb-8">
+                <h3 class="text-2xl font-bold text-white mb-6 text-center">Streak Milestones</h3>
+
+                <div class="milestone-progress">
+                    <!-- Progress Bar -->
+                    <div class="milestone-bar"
+                        th:style="'width: ' + ${lvsStreak != null ? (lvsStreak > 100 ? 100 : (lvsStreak * 100.0 / 100)) : 0} + '%'">
+                    </div>
+
+                    <!-- Milestone Markers -->
+                    <div class="milestone-markers">
+                        <!-- 7 Days -->
+                        <div class="milestone-marker">
+                            <span class="milestone-label">7 Days</span>
+                            <div class="milestone-dot"
+                                th:classappend="${lvsStreak >= 7} ? 'achieved' : (${lvsStreak == 6} ? 'current' : '')">
+                                7
+                            </div>
+                            <span class="milestone-reward" th:classappend="${lvsStreak >= 7} ? 'achieved' : ''">
+                                +50
+                            </span>
+                        </div>
+
+                        <!-- 14 Days -->
+                        <div class="milestone-marker">
+                            <span class="milestone-label">14 Days</span>
+                            <div class="milestone-dot"
+                                th:classappend="${lvsStreak >= 14} ? 'achieved' : (${lvsStreak == 13} ? 'current' : '')">
+                                14
+                            </div>
+                            <span class="milestone-reward" th:classappend="${lvsStreak >= 14} ? 'achieved' : ''">
+                                +100
+                            </span>
+                        </div>
+
+                        <!-- 30 Days -->
+                        <div class="milestone-marker">
+                            <span class="milestone-label">30 Days</span>
+                            <div class="milestone-dot"
+                                th:classappend="${lvsStreak >= 30} ? 'achieved' : (${lvsStreak == 29} ? 'current' : '')">
+                                30
+                            </div>
+                            <span class="milestone-reward" th:classappend="${lvsStreak >= 30} ? 'achieved' : ''">
+                                +300
+                            </span>
+                        </div>
+
+                        <!-- 60 Days -->
+                        <div class="milestone-marker">
+                            <span class="milestone-label">60 Days</span>
+                            <div class="milestone-dot"
+                                th:classappend="${lvsStreak >= 60} ? 'achieved' : (${lvsStreak == 59} ? 'current' : '')">
+                                60
+                            </div>
+                            <span class="milestone-reward" th:classappend="${lvsStreak >= 60} ? 'achieved' : ''">
+                                +600
+                            </span>
+                        </div>
+
+                        <!-- 100 Days -->
+                        <div class="milestone-marker">
+                            <span class="milestone-label">100!</span>
+                            <div class="milestone-dot"
+                                th:classappend="${lvsStreak >= 100} ? 'achieved' : (${lvsStreak == 99} ? 'current' : '')">
+                                100
+                            </div>
+                            <span class="milestone-reward" th:classappend="${lvsStreak >= 100} ? 'achieved' : ''">
+                                +1K
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Next Milestone Info -->
+                <div class="text-center mt-12 text-white">
+                    <div th:if="${lvsStreak < 7}">
+                        <p class="text-lg">Next milestone: <span class="text-[#fed700] font-bold">7 days</span></p>
+                        <p class="text-sm text-gray-400" th:text="'Only ' + ${7 - lvsStreak} + ' more days!'">Only X
+                            more days!</p>
+                    </div>
+                    <div th:if="${lvsStreak >= 7 and lvsStreak < 14}">
+                        <p class="text-lg">Next milestone: <span class="text-[#fed700] font-bold">14 days</span></p>
+                        <p class="text-sm text-gray-400" th:text="'Only ' + ${14 - lvsStreak} + ' more days!'">Only X
+                            more days!</p>
+                    </div>
+                    <div th:if="${lvsStreak >= 14 and lvsStreak < 30}">
+                        <p class="text-lg">Next milestone: <span class="text-[#fed700] font-bold">30 days</span></p>
+                        <p class="text-sm text-gray-400" th:text="'Only ' + ${30 - lvsStreak} + ' more days!'">Only X
+                            more days!</p>
+                    </div>
+                    <div th:if="${lvsStreak >= 30 and lvsStreak < 60}">
+                        <p class="text-lg">Next milestone: <span class="text-[#fed700] font-bold">60 days</span></p>
+                        <p class="text-sm text-gray-400" th:text="'Only ' + ${60 - lvsStreak} + ' more days!'">Only X
+                            more days!</p>
+                    </div>
+                    <div th:if="${lvsStreak >= 60 and lvsStreak < 100}">
+                        <p class="text-lg">Next milestone: <span class="text-[#fed700] font-bold">100 days</span></p>
+                        <p class="text-sm text-gray-400" th:text="'Only ' + ${100 - lvsStreak} + ' more days!'">Only X
+                            more days!</p>
+                    </div>
+                    <div th:if="${lvsStreak >= 100}">
+                        <p class="text-2xl text-[#fed700] font-bold">🏆 LEGEND STATUS! 🏆</p>
+                        <p class="text-sm text-gray-400">You've reached the maximum milestone!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History -->
+            <div class="bg-[#2b2b2b] rounded-xl p-6">
+                <h3 class="text-xl font-bold text-white mb-4">Check-In History</h3>
+                <div class="space-y-2">
+                    <div th:each="event : ${lvsHistory}"
+                        class="flex justify-between items-center bg-[#1e1e1e] p-4 rounded">
+                        <div class="text-white">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span th:text="${event.lvsEvent.lvsEventName}">Event</span>
+                            <span class="text-sm text-gray-400 ml-2"
+                                th:text="${#temporals.format(event.lvsCompletedAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                        </div>
+                        <div class="text-[#fed700] font-bold">
+                            +<span th:text="${event.lvsCoinsEarned}">0</span> coins
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty state -->
+                <div th:if="${lvsHistory == null or lvsHistory.isEmpty()}" class="text-center py-8 text-gray-400">
+                    <i class="fas fa-inbox text-4xl mb-2"></i>
+                    <p>No check-in history yet. Start today!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

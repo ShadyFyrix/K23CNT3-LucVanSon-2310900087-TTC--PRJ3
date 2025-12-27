@@ -3,8 +3,13 @@
 
 <body th:fragment="sidebar">
     <!-- Compact Sidebar with Dropdowns -->
-    <aside
-        class="w-72 bg-gradient-to-b from-[#2b2b2b] to-[#1e1e1e] border-r border-[#333] min-h-screen hidden lg:block sticky top-0 shadow-2xl">
+    <aside id="userSidebar"
+        class="w-72 bg-gradient-to-b from-[#2b2b2b] to-[#1e1e1e] border-r border-[#333] min-h-screen hidden lg:block sticky top-0 shadow-2xl transition-all duration-300">
+        <!-- Toggle Button -->
+        <button onclick="toggleSidebar()"
+            class="absolute -right-3 top-6 bg-[#fed700] text-black w-6 h-6 rounded-full flex items-center justify-center hover:bg-white transition-all duration-200 shadow-lg z-10">
+            <i class="fas fa-chevron-left text-xs sidebar-toggle-icon transition-transform duration-300"></i>
+        </button>
         <!-- User Profile Section -->
         <div class="p-6 border-b border-[#333]/50">
             <div class="flex items-center gap-4">
@@ -180,6 +185,33 @@
                 </div>
             </details>
 
+            <!-- Events & Rewards -->
+            <details class="group/events">
+                <summary
+                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-gift text-gray-400 group-hover/events:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 group-hover/events:text-white font-medium">Events</span>
+                    </div>
+                    <i
+                        class="fas fa-chevron-down text-gray-500 group-open/events:rotate-180 transition-transform duration-200"></i>
+                </summary>
+                <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
+                    <a th:href="@{/LvsUser/LvsEvent/LvsDailyCheckIn}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-calendar-check w-4"></i> Daily Check-In
+                    </a>
+                    <a th:href="@{/LvsUser/LvsQuest/LvsDashboard}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-tasks w-4"></i> Quest Dashboard
+                    </a>
+                    <a th:href="@{/LvsUser/LvsEvent/LvsHistory}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-history w-4"></i> Event History
+                    </a>
+                </div>
+            </details>
+
             <!-- Finance Dropdown -->
             <details class="group/finance">
                 <summary
@@ -212,7 +244,7 @@
             </details>
 
             <!-- Reports -->
-            <a th:href="@{/LvsUser/LvsReport/LvsMy}"
+            <a th:href="@{/LvsUser/LvsReport/LvsMyReports}"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
                 <i class="fas fa-flag text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
                 <span class="text-gray-300 group-hover:text-white font-medium">My Reports</span>
@@ -229,6 +261,62 @@
             </a>
         </div>
     </aside>
+
+    <!-- Sidebar Collapse Styles & Script -->
+    <style>
+        /* Collapsed state */
+        #userSidebar.sidebar-collapsed {
+            width: 4rem !important;
+        }
+
+        #userSidebar.sidebar-collapsed .sidebar-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Hide text when collapsed */
+        #userSidebar.sidebar-collapsed span:not(.sidebar-toggle-icon):not([class*="absolute"]) {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+
+        /* Hide dropdowns when collapsed */
+        #userSidebar.sidebar-collapsed details {
+            pointer-events: none;
+        }
+
+        /* Center icons when collapsed */
+        #userSidebar.sidebar-collapsed .flex.items-center {
+            justify-content: center;
+        }
+
+        /* Adjust main content margin */
+        body:has(#userSidebar.sidebar-collapsed) main {
+            margin-left: 4rem;
+        }
+    </style>
+
+    <script>
+        // Toggle sidebar function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('userSidebar');
+            sidebar.classList.toggle('sidebar-collapsed');
+
+            // Save state to localStorage
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+
+        // Restore sidebar state on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('userSidebar');
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+
+            if (isCollapsed && sidebar) {
+                sidebar.classList.add('sidebar-collapsed');
+            }
+        });
+    </script>
 </body>
 
 </html>

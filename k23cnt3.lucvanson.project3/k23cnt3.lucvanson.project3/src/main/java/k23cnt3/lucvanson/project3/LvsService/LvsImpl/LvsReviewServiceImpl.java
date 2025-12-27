@@ -26,39 +26,54 @@ public class LvsReviewServiceImpl implements LvsReviewService {
     private final LvsReviewRepository lvsReviewRepository;
 
     /**
-     * Lấy đánh giá theo ID
+     * Lấy đánh giá theo ID với eager loading
+     * Sử dụng JOIN FETCH để tránh LazyInitializationException trong admin templates
+     * 
      * @param lvsReviewId ID đánh giá
      * @return Đánh giá tìm thấy
      */
     @Override
     public LvsReview lvsGetReviewById(Long lvsReviewId) {
-        return lvsReviewRepository.findById(lvsReviewId).orElse(null);
+        return lvsReviewRepository.findByIdWithUserAndProject(lvsReviewId).orElse(null);
     }
 
     /**
-     * Lấy tất cả đánh giá với phân trang
+     * Lấy tất cả đánh giá với phân trang và eager loading
+     * Sử dụng JOIN FETCH để tránh LazyInitializationException trong admin templates
+     * 
      * @param lvsPageable Thông tin phân trang
      * @return Trang đánh giá
      */
     @Override
     public Page<LvsReview> lvsGetAllReviews(Pageable lvsPageable) {
-        return lvsReviewRepository.findAll(lvsPageable);
+        return lvsReviewRepository.findAllWithUserAndProject(lvsPageable);
     }
 
     /**
-     * Lấy đánh giá theo dự án
+     * Lấy đánh giá theo dự án với eager loading
+     * Sử dụng JOIN FETCH để tránh LazyInitializationException trong admin templates
+     * 
      * @param lvsProjectId ID dự án
-     * @param lvsPageable Thông tin phân trang
+     * @param lvsPageable  Thông tin phân trang
      * @return Trang đánh giá
      */
     @Override
     public Page<LvsReview> lvsGetReviewsByProject(Long lvsProjectId, Pageable lvsPageable) {
-        return lvsReviewRepository.findByLvsProject_LvsProjectId(lvsProjectId, lvsPageable);
+        return lvsReviewRepository.findByProjectIdWithUserAndProject(lvsProjectId, lvsPageable);
+    }
+
+    /**
+     * Get approved reviews by project (for user-facing pages)
+     */
+    @Override
+    public Page<LvsReview> lvsGetApprovedReviewsByProject(Long lvsProjectId, Pageable lvsPageable) {
+        return lvsReviewRepository.findByProjectIdAndApproved(lvsProjectId, true, lvsPageable);
     }
 
     /**
      * Lấy đánh giá theo user
-     * @param lvsUserId ID người dùng
+     * 
+     * @param lvsUserId   ID người dùng
      * @param lvsPageable Thông tin phân trang
      * @return Trang đánh giá
      */
@@ -68,18 +83,21 @@ public class LvsReviewServiceImpl implements LvsReviewService {
     }
 
     /**
-     * Lấy đánh giá theo approval
+     * Lấy đánh giá theo approval với eager loading
+     * Sử dụng JOIN FETCH để tránh LazyInitializationException trong admin templates
+     * 
      * @param lvsIsApproved Trạng thái duyệt
-     * @param lvsPageable Thông tin phân trang
+     * @param lvsPageable   Thông tin phân trang
      * @return Trang đánh giá
      */
     @Override
     public Page<LvsReview> lvsGetReviewsByApproval(Boolean lvsIsApproved, Pageable lvsPageable) {
-        return lvsReviewRepository.findByLvsIsApproved(lvsIsApproved, lvsPageable);
+        return lvsReviewRepository.findByLvsIsApprovedWithUserAndProject(lvsIsApproved, lvsPageable);
     }
 
     /**
      * Lưu đánh giá
+     * 
      * @param lvsReview Thông tin đánh giá
      * @return Đánh giá đã lưu
      */
@@ -92,6 +110,7 @@ public class LvsReviewServiceImpl implements LvsReviewService {
 
     /**
      * Cập nhật đánh giá
+     * 
      * @param lvsReview Thông tin đánh giá cập nhật
      * @return Đánh giá đã cập nhật
      */
@@ -111,6 +130,7 @@ public class LvsReviewServiceImpl implements LvsReviewService {
 
     /**
      * Xóa đánh giá
+     * 
      * @param lvsReviewId ID đánh giá
      */
     @Override
@@ -120,8 +140,9 @@ public class LvsReviewServiceImpl implements LvsReviewService {
 
     /**
      * Xóa đánh giá với lý do
+     * 
      * @param lvsReviewId ID đánh giá
-     * @param lvsReason Lý do xóa
+     * @param lvsReason   Lý do xóa
      */
     @Override
     public void lvsDeleteReview(Long lvsReviewId, String lvsReason) {
@@ -137,6 +158,7 @@ public class LvsReviewServiceImpl implements LvsReviewService {
 
     /**
      * Duyệt đánh giá
+     * 
      * @param lvsReviewId ID đánh giá
      * @return Đánh giá đã duyệt
      */
@@ -153,8 +175,9 @@ public class LvsReviewServiceImpl implements LvsReviewService {
 
     /**
      * Ẩn đánh giá
+     * 
      * @param lvsReviewId ID đánh giá
-     * @param lvsReason Lý do ẩn
+     * @param lvsReason   Lý do ẩn
      * @return Đánh giá đã ẩn
      */
     @Override
@@ -170,8 +193,9 @@ public class LvsReviewServiceImpl implements LvsReviewService {
 
     /**
      * Thích đánh giá
+     * 
      * @param lvsReviewId ID đánh giá
-     * @param lvsUserId ID người dùng
+     * @param lvsUserId   ID người dùng
      * @return true nếu thành công
      */
     @Override
@@ -188,7 +212,8 @@ public class LvsReviewServiceImpl implements LvsReviewService {
 
     /**
      * Kiểm tra user đã đánh giá chưa
-     * @param lvsUserId ID người dùng
+     * 
+     * @param lvsUserId    ID người dùng
      * @param lvsProjectId ID dự án
      * @return true nếu đã đánh giá
      */
@@ -199,6 +224,7 @@ public class LvsReviewServiceImpl implements LvsReviewService {
 
     /**
      * Lấy rating trung bình
+     * 
      * @param lvsProjectId ID dự án
      * @return Rating trung bình
      */
@@ -209,6 +235,7 @@ public class LvsReviewServiceImpl implements LvsReviewService {
 
     /**
      * Lấy số lượng đánh giá theo rating
+     * 
      * @param lvsProjectId ID dự án
      * @return Map phân bố rating
      */
@@ -226,9 +253,10 @@ public class LvsReviewServiceImpl implements LvsReviewService {
 
     /**
      * Báo cáo đánh giá
-     * @param lvsReviewId ID đánh giá
+     * 
+     * @param lvsReviewId   ID đánh giá
      * @param lvsReporterId ID người báo cáo
-     * @param lvsReason Lý do báo cáo
+     * @param lvsReason     Lý do báo cáo
      */
     @Override
     public void lvsReportReview(Long lvsReviewId, Long lvsReporterId, String lvsReason) {

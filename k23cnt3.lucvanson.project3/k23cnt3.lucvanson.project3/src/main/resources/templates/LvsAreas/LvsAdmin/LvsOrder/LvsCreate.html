@@ -70,7 +70,7 @@
                                                         name="lvsProjectIds"
                                                         th:id="'project-' + ${project.lvsProjectId}"
                                                         th:value="${project.lvsProjectId}"
-                                                        th:data-price="${project.lvsPrice}"
+                                                        th:data-price="${project.lvsFinalPrice}"
                                                         th:data-name="${project.lvsProjectName}"
                                                         onchange="updateTotal()">
                                                     <label class="form-check-label w-100"
@@ -82,7 +82,24 @@
                                                                 <small class="text-muted" th:if="${project.lvsCategory}"
                                                                     th:text="' (' + ${project.lvsCategory.lvsCategoryName} + ')'"></small>
                                                             </span>
-                                                            <span class="badge bg-success"
+                                                            <!-- Discount Display -->
+                                                            <span th:if="${project.lvsHasActiveDiscount}">
+                                                                <span class="badge bg-danger me-1">
+                                                                    <i class="fas fa-fire"></i> SALE!
+                                                                </span>
+                                                                <span
+                                                                    class="text-muted text-decoration-line-through small me-1"
+                                                                    th:text="${project.lvsPrice} + ' coins'">100
+                                                                    coins</span>
+                                                                <span class="badge bg-success"
+                                                                    th:text="${project.lvsFinalPrice} + ' coins'">80
+                                                                    coins</span>
+                                                                <span class="badge bg-warning text-dark ms-1"
+                                                                    th:text="'-' + ${project.lvsDiscountPercent} + '%'">-20%</span>
+                                                            </span>
+                                                            <!-- No Discount -->
+                                                            <span th:unless="${project.lvsHasActiveDiscount}"
+                                                                class="badge bg-success"
                                                                 th:text="${project.lvsPrice} + ' coins'">100
                                                                 coins</span>
                                                         </div>
