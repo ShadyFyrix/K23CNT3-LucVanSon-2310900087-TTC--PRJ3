@@ -163,7 +163,7 @@ public class LvsUserReviewController {
 
         if (lvsCurrentUser == null ||
                 !lvsReview.getLvsUser().getLvsUserId().equals(lvsCurrentUser.getLvsUserId())) {
-            return "redirect:/LvsUser/LvsDashboard";
+            return "redirect:/LvsUser/LvsHome";
         }
 
         model.addAttribute("LvsReview", lvsReview);
@@ -186,7 +186,7 @@ public class LvsUserReviewController {
             LvsReview lvsExistingReview = lvsReviewService.lvsGetReviewById(id);
 
             if (!lvsExistingReview.getLvsUser().getLvsUserId().equals(lvsCurrentUser.getLvsUserId())) {
-                return "redirect:/LvsUser/LvsDashboard";
+                return "redirect:/LvsUser/LvsHome";
             }
 
             lvsReview.setLvsReviewId(id);
@@ -223,7 +223,7 @@ public class LvsUserReviewController {
             lvsProjectService.lvsUpdateProjectRating(lvsProjectId);
         }
 
-        return "redirect:/LvsUser/LvsDashboard";
+        return "redirect:/LvsUser/LvsHome";
     }
 
     // Thích đánh giá

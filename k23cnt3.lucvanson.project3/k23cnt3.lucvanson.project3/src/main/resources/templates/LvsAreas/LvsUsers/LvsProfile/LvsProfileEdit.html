@@ -13,12 +13,40 @@
                 hồ sơ</h1>
 
             <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-8">
-                <form th:action="@{/LvsUser/LvsProfile/LvsUpdate}" method="post" th:object="${LvsUser}">
+                <form th:action="@{/LvsUser/LvsProfile/LvsEdit}" method="post" th:object="${LvsUser}"
+                    enctype="multipart/form-data">
                     <div class="mb-6">
                         <label class="block text-sm font-bold text-gray-300 mb-2">Username</label>
                         <input type="text" th:field="*{lvsUsername}" readonly
                             class="w-full bg-[#1e1e1e] border border-[#444] rounded-lg px-4 py-3 text-gray-500 cursor-not-allowed">
                         <p class="text-gray-500 text-sm mt-1">Username không thể thay đổi</p>
+                    </div>
+
+                    <!-- Avatar Upload Section -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-300 mb-2">Avatar</label>
+                        <div class="flex items-center gap-6">
+                            <!-- Current Avatar Preview -->
+                            <div class="flex-shrink-0">
+                                <img id="avatarPreview"
+                                    th:src="${LvsUser.lvsAvatarUrl != null ? LvsUser.lvsAvatarUrl : '/images/default-avatar.png'}"
+                                    class="w-24 h-24 rounded-full object-cover border-2 border-[#fed700]"
+                                    alt="Avatar Preview">
+                            </div>
+
+                            <!-- Upload Controls -->
+                            <div class="flex-grow">
+                                <input type="file" id="avatarInput" name="lvsAvatarFile"
+                                    accept="image/jpeg,image/png,image/gif" class="hidden"
+                                    onchange="previewAvatar(this)">
+                                <button type="button" onclick="document.getElementById('avatarInput').click()"
+                                    class="bg-[#fed700] text-black font-bold px-6 py-2 rounded-lg hover:bg-yellow-400 transition">
+                                    <i class="fas fa-upload mr-2"></i>Chọn ảnh
+                                </button>
+                                <p class="text-gray-500 text-sm mt-2">Chọn ảnh mới để thay đổi avatar (JPG, PNG, GIF -
+                                    Max 5MB)</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-6">
@@ -53,6 +81,18 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 </body>
 
 </html>

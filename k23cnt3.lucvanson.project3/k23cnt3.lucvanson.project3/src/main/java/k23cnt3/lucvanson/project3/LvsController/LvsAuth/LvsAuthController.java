@@ -2,6 +2,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsAuth;
 
 import k23cnt3.lucvanson.project3.LvsEntity.LvsUser;
 import k23cnt3.lucvanson.project3.LvsService.LvsUserService;
+import k23cnt3.lucvanson.project3.LvsService.LvsQuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,8 +33,8 @@ import java.util.Collections;
  * - Quên mật khẩu (Forgot Password): Gửi link reset password
  * 
  * Role-Based Redirection:
- * - ADMIN → /LvsAdmin/LvsDashboard
- * - MODERATOR → /LvsModerator/LvsDashboard (trang phê duyệt)
+ * - ADMIN → /LvsAdmin/LvsDashboard (via Admin Panel button)
+ * - MODERATOR → /LvsModerator/LvsDashboard (via Moderator button)
  * - USER → /lvsforum (trang chủ người dùng)
  * 
  * Session Management:
@@ -48,6 +49,9 @@ public class LvsAuthController {
 
     @Autowired
     private LvsUserService lvsUserService;
+
+    @Autowired
+    private LvsQuestService lvsQuestService;
 
     // ==================== ADMIN LOGIN (DEPRECATED - Use Unified Login)
     // ====================
@@ -335,6 +339,14 @@ public class LvsAuthController {
             session.setAttribute("LvsCurrentUser", lvsUser);
             System.out.println("[UNIFIED LOGIN] Session created for user: " + lvsUser.getLvsUsername());
 
+            // Auto-assign active quests to user
+            try {
+                lvsQuestService.lvsAssignActiveQuests(lvsUser);
+                System.out.println("[UNIFIED LOGIN] Active quests assigned to user: " + lvsUser.getLvsUsername());
+            } catch (Exception e) {
+                System.out.println("[UNIFIED LOGIN] Error assigning quests: " + e.getMessage());
+            }
+
             // IMPORTANT: Authenticate with Spring Security to avoid 403 Forbidden
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     lvsUser.getLvsUsername(),
@@ -359,8 +371,8 @@ public class LvsAuthController {
             // ALL users redirect to USER area first (not admin/moderator area)
             // Admin and Moderator can access their areas via special buttons
             System.out
-                    .println("[UNIFIED LOGIN] Redirecting to /LvsUser/LvsDashboard for role: " + lvsUser.getLvsRole());
-            return "redirect:/LvsUser/LvsDashboard";
+                    .println("[UNIFIED LOGIN] Redirecting to /LvsUser/LvsHome for role: " + lvsUser.getLvsRole());
+            return "redirect:/LvsUser/LvsHome";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("lvsError",

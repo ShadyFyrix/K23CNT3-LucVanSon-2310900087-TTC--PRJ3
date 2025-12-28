@@ -29,4 +29,11 @@ public interface LvsUserQuestRepository extends JpaRepository<LvsUserQuest, Long
 
     // Count completed quests
     long countByLvsUserAndLvsCompletedTrue(LvsUser lvsUser);
+
+    // Check if user already has this quest
+    boolean existsByLvsUserAndLvsQuest(LvsUser lvsUser, LvsQuest lvsQuest);
+
+    // Find incomplete quests by quest type (enum)
+    List<LvsUserQuest> findByLvsUserAndLvsCompletedFalseAndLvsQuest_LvsQuestType(
+            LvsUser lvsUser, LvsQuest.LvsQuestType lvsQuestType);
 }

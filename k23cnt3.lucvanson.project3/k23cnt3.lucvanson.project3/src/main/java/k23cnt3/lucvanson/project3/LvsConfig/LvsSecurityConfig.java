@@ -56,6 +56,9 @@ public class LvsSecurityConfig {
                                                 .requestMatchers("/lvsforum", "/LvsUser/LvsDashboard", "/LvsUser/",
                                                                 "/LvsUser")
                                                 .permitAll()
+                                                // Search endpoints - allow anonymous search
+                                                .requestMatchers("/LvsUser/api/search", "/LvsUser/LvsSearch")
+                                                .permitAll()
                                                 // Admin pages - yêu cầu ROLE_ADMIN
                                                 .requestMatchers("/LvsAdmin/**").hasAuthority("ROLE_ADMIN")
                                                 // Moderator pages - yêu cầu ROLE_MODERATOR

@@ -48,8 +48,13 @@ public class LvsUserMessageController {
 
         model.addAttribute("LvsMessages", lvsMessages);
         model.addAttribute("LvsConversations", lvsConversations);
-        model.addAttribute("LvsUnreadCount", lvsMessageService.lvsGetUnreadCount(
-                lvsCurrentUser.getLvsUserId()));
+
+        // Get unread count
+        int unreadCount = lvsMessageService.lvsGetUnreadCount(lvsCurrentUser.getLvsUserId());
+        model.addAttribute("LvsUnreadCount", unreadCount);
+
+        // SET SESSION ATTRIBUTE FOR UNREAD COUNT (for sidebar/header badges)
+        session.setAttribute("LvsUnreadCount", unreadCount);
 
         return "LvsAreas/LvsUsers/LvsMessages/LvsMessageInbox";
     }

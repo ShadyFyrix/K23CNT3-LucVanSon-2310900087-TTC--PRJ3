@@ -369,6 +369,9 @@ public class LvsOrderServiceImpl implements LvsOrderService {
 
         // 13. Tăng số lượt mua cho project
         lvsProject.setLvsPurchaseCount(lvsProject.getLvsPurchaseCount() + 1);
+        // Update download count (số người mua) for homepage display
+        Integer currentDownloadCount = lvsProject.getLvsDownloadCount();
+        lvsProject.setLvsDownloadCount(currentDownloadCount != null ? currentDownloadCount + 1 : 1);
         lvsProjectRepository.save(lvsProject);
 
         // 14. Tạo giao dịch thanh toán

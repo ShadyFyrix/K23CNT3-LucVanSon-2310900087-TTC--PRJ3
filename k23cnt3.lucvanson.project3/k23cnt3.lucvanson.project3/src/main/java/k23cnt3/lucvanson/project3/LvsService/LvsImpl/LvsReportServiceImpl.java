@@ -347,4 +347,65 @@ public class LvsReportServiceImpl implements LvsReportService {
             lvsReportRepository.save(lvsReport);
         }
     }
+
+    // ========== MODERATION PANEL METHODS IMPLEMENTATION ==========
+
+    /**
+     * Lấy tất cả báo cáo (không phân trang - cho moderation)
+     * 
+     * @return Danh sách tất cả báo cáo
+     */
+    @Override
+    public List<LvsReport> lvsGetAllReports() {
+        return lvsReportRepository.findAll();
+    }
+
+    /**
+     * Lấy báo cáo theo status (không phân trang)
+     * 
+     * @param status Trạng thái báo cáo
+     * @return Danh sách báo cáo theo status
+     */
+    @Override
+    public List<LvsReport> lvsGetReportsByStatus(LvsReportStatus status) {
+        return lvsReportRepository.findByLvsStatus(status);
+    }
+
+    /**
+     * Lấy báo cáo theo type (không phân trang)
+     * 
+     * @param type Loại báo cáo
+     * @return Danh sách báo cáo theo type
+     */
+    @Override
+    public List<LvsReport> lvsGetReportsByType(LvsReportType type) {
+        return lvsReportRepository.findByLvsReportType(type);
+    }
+
+    /**
+     * Xử lý báo cáo (moderation)
+     * 
+     * @param reportId    ID báo cáo
+     * @param handler     Moderator/Admin xử lý
+     * @param adminNote   Ghi chú của moderator
+     * @param actionTaken Hành động đã thực hiện
+     * @param newStatus   Trạng thái mới
+     */
+    @Override
+    public void lvsResolveReport(Long reportId, LvsUser handler, String adminNote,
+            String actionTaken, LvsReportStatus newStatus) {
+        LvsReport report = lvsGetReportById(reportId);
+        if (report != null) {
+            report.setLvsAdminHandler(handler);
+            report.setLvsAdminNote(adminNote);
+            report.setLvsActionTaken(actionTaken);
+            report.setLvsStatus(newStatus);
+
+            if (newStatus == LvsReportStatus.RESOLVED || newStatus == LvsReportStatus.REJECTED) {
+                report.setLvsResolvedAt(LocalDateTime.now());
+            }
+
+            lvsReportRepository.save(report);
+        }
+    }
 }

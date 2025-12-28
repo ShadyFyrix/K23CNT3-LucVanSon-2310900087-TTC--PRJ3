@@ -32,6 +32,12 @@ public class LvsHomeController {
     @Autowired
     private k23cnt3.lucvanson.project3.LvsRepository.LvsCategoryRepository lvsCategoryRepository;
 
+    @Autowired
+    private k23cnt3.lucvanson.project3.LvsService.LvsPostService lvsPostService;
+
+    @Autowired
+    private k23cnt3.lucvanson.project3.LvsService.LvsUserService lvsUserService;
+
     /**
      * Trang chủ - Hiển thị danh sách dự án nổi bật
      * 
@@ -40,11 +46,44 @@ public class LvsHomeController {
      */
     @GetMapping
     public String index(Model model) {
-        PageRequest pageable = PageRequest.of(0, 8);
-        List<LvsProject> projects = lvsProjectService.lvsGetAllProjects(pageable).getContent();
+        // For now, use newest APPROVED projects for ALL sections
+        // This ensures we get data even if purchase/view counts are 0
+        PageRequest pageable = PageRequest.of(0, 12); // Get 12 newest
+        List<LvsProject> newestProjects = lvsProjectService.lvsGetNewestProjects(pageable);
 
-        model.addAttribute("projects", projects);
-        model.addAttribute("categories", lvsCategoryRepository.findAll()); // Thêm danh mục cho menu
+        // Use first 4 for trending
+        List<LvsProject> trendingProjects = newestProjects.size() >= 4
+                ? newestProjects.subList(0, Math.min(4, newestProjects.size()))
+                : newestProjects;
+
+        // Use next 8 for popular (or all if less than 12)
+        List<LvsProject> popularProjects = newestProjects.size() > 4
+                ? newestProjects.subList(4, Math.min(12, newestProjects.size()))
+                : newestProjects;
+
+        // Recent Posts (6 items)
+        PageRequest postPageable = PageRequest.of(0, 6);
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsPost> recentPosts = lvsPostService.lvsGetNewestPosts(postPageable);
+
+        // Top Users - 3 separate rankings (5 each)
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsUser> topByCoin = lvsUserService.lvsGetTopByCoin(5);
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsUser> topBySales = lvsUserService.lvsGetTopBySales(5);
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsUser> topByActivity = lvsUserService.lvsGetTopByActivity(5);
+
+        model.addAttribute("trendingProjects", trendingProjects);
+        model.addAttribute("popularProjects", popularProjects);
+        model.addAttribute("newestProjects", newestProjects);
+        model.addAttribute("recentPosts", recentPosts);
+
+        // Add 3 separate top user lists
+        model.addAttribute("topByCoin", topByCoin);
+        model.addAttribute("topBySales", topBySales);
+        model.addAttribute("topByActivity", topByActivity);
+        model.addAttribute("topUsers", topByActivity); // Keep for backward compatibility
+
+        model.addAttribute("projects", newestProjects); // Keep for backward compatibility
+        model.addAttribute("categories", lvsCategoryRepository.findAll());
+
         return "LvsAreas/LvsUsers/LvsHome";
     }
 
@@ -56,11 +95,39 @@ public class LvsHomeController {
      */
     @GetMapping("/lvsforum")
     public String lvsforumHome(Model model) {
-        PageRequest pageable = PageRequest.of(0, 8);
-        List<LvsProject> projects = lvsProjectService.lvsGetAllProjects(pageable).getContent();
+        // Same as index
+        PageRequest pageable = PageRequest.of(0, 12);
+        List<LvsProject> newestProjects = lvsProjectService.lvsGetNewestProjects(pageable);
 
-        model.addAttribute("projects", projects);
+        List<LvsProject> trendingProjects = newestProjects.size() >= 4
+                ? newestProjects.subList(0, Math.min(4, newestProjects.size()))
+                : newestProjects;
+        List<LvsProject> popularProjects = newestProjects.size() > 4
+                ? newestProjects.subList(4, Math.min(12, newestProjects.size()))
+                : newestProjects;
+
+        PageRequest postPageable = PageRequest.of(0, 6);
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsPost> recentPosts = lvsPostService.lvsGetNewestPosts(postPageable);
+
+        // Top Users - 3 separate rankings (5 each)
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsUser> topByCoin = lvsUserService.lvsGetTopByCoin(5);
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsUser> topBySales = lvsUserService.lvsGetTopBySales(5);
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsUser> topByActivity = lvsUserService.lvsGetTopByActivity(5);
+
+        model.addAttribute("trendingProjects", trendingProjects);
+        model.addAttribute("popularProjects", popularProjects);
+        model.addAttribute("newestProjects", newestProjects);
+        model.addAttribute("recentPosts", recentPosts);
+
+        // Add 3 separate top user lists
+        model.addAttribute("topByCoin", topByCoin);
+        model.addAttribute("topBySales", topBySales);
+        model.addAttribute("topByActivity", topByActivity);
+        model.addAttribute("topUsers", topByActivity);
+
+        model.addAttribute("projects", newestProjects);
         model.addAttribute("categories", lvsCategoryRepository.findAll());
+
         return "LvsAreas/LvsUsers/LvsHome";
     }
 
@@ -113,5 +180,58 @@ public class LvsHomeController {
         }
         model.addAttribute("project", project);
         return "LvsAreas/LvsUsers/LvsDetail";
+    }
+
+    /**
+     * User Home - Trang chủ cho user đã login
+     * URL: /lvsforum/LvsUser/ hoặc /lvsforum/LvsUser/LvsHome
+     * 
+     * Hiển thị đầy đủ carousel, posts, users như homepage
+     * Merged from LvsUserDashboardController
+     * 
+     * @param model Model để truyền dữ liệu sang view
+     * @return Template trang chủ với đầy đủ data
+     */
+    @GetMapping({ "/LvsUser/", "/LvsUser/LvsHome" })
+    public String lvsUserDashboard(Model model) {
+        // Load full homepage data for carousel
+        PageRequest pageable = PageRequest.of(0, 12);
+
+        // ✨ FEATURED PRIORITY: Get projects with featured first, then newest
+        List<LvsProject> newestProjects = lvsProjectService.lvsGetFeaturedAndNewestProjects(pageable);
+
+        // Split into sections for carousel
+        List<LvsProject> trendingProjects = newestProjects.size() >= 4
+                ? newestProjects.subList(0, Math.min(4, newestProjects.size()))
+                : newestProjects;
+        List<LvsProject> popularProjects = newestProjects.size() > 4
+                ? newestProjects.subList(4, Math.min(12, newestProjects.size()))
+                : newestProjects;
+
+        // Recent Posts (6 items)
+        PageRequest postPageable = PageRequest.of(0, 6);
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsPost> recentPosts = lvsPostService.lvsGetNewestPosts(postPageable);
+
+        // Top Users - 3 separate rankings (5 each)
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsUser> topByCoin = lvsUserService.lvsGetTopByCoin(5);
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsUser> topBySales = lvsUserService.lvsGetTopBySales(5);
+        List<k23cnt3.lucvanson.project3.LvsEntity.LvsUser> topByActivity = lvsUserService.lvsGetTopByActivity(5);
+
+        // Add all data to model
+        model.addAttribute("trendingProjects", trendingProjects);
+        model.addAttribute("popularProjects", popularProjects);
+        model.addAttribute("newestProjects", newestProjects);
+        model.addAttribute("recentPosts", recentPosts);
+
+        // Add 3 separate top user lists
+        model.addAttribute("topByCoin", topByCoin);
+        model.addAttribute("topBySales", topBySales);
+        model.addAttribute("topByActivity", topByActivity);
+        model.addAttribute("topUsers", topByActivity);
+
+        model.addAttribute("projects", newestProjects);
+        model.addAttribute("categories", lvsCategoryRepository.findAll());
+
+        return "LvsAreas/LvsUsers/LvsHome";
     }
 }

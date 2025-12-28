@@ -1,315 +1,247 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}">
+    layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}">
+
 <head>
     <meta charset="UTF-8">
-    <title layout:title-pattern="$CONTENT_TITLE - LVS Admin" th:text="${pageTitle} + ' - LVS Admin'">Dashboard - LVS Admin</title>
+    <title layout:title-pattern="$CONTENT_TITLE - LVS Admin" th:text="${pageTitle} + ' - LVS Admin'">Dashboard - LVS
+        Admin</title>
 
-    <!-- Additional styles for dashboard -->
     <style>
-        .page-header {
-            margin-bottom: 30px;
+        .dashboard-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
         }
 
-        .page-header h1 {
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
             color: #2b2d42;
-            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-header .subtitle {
+            font-size: 1.1rem;
+            color: #6c757d;
+        }
+
+        .stat-card {
+            border-radius: 16px;
+            padding: 30px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: none;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
         }
 
         .stat-card-primary {
-            border-left: 4px solid #4361ee;
+            border-left: 5px solid #4361ee;
         }
 
         .stat-card-success {
-            border-left: 4px solid #28a745;
+            border-left: 5px solid #28a745;
         }
 
         .stat-card-info {
-            border-left: 4px solid #17a2b8;
+            border-left: 5px solid #17a2b8;
         }
 
         .stat-card-warning {
-            border-left: 4px solid #ffc107;
+            border-left: 5px solid #ffc107;
         }
 
-        .chart-card {
-            margin-top: 20px;
+        .stat-card-purple {
+            border-left: 5px solid #9333ea;
         }
 
-        .chart-card .card-header {
-            background-color: white;
-            border-bottom: 1px solid #eee;
-            padding: 15px 20px;
+        .stat-card-orange {
+            border-left: 5px solid #f97316;
         }
 
-        .chart-card .card-title {
-            margin: 0;
+        .stat-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #2b2d42;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
         }
 
-        .activity-time {
-            font-size: 0.8rem;
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #2b2d42;
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+
+        .stat-description {
+            font-size: 1rem;
             color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-icon {
+            font-size: 3.5rem;
+            opacity: 0.15;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .stat-icon {
+                font-size: 2.5rem;
+            }
         }
     </style>
 </head>
+
 <body>
-<div layout:fragment="content">
-    <!-- Page Header -->
-    <div class="page-header d-flex justify-content-between align-items-center">
-        <div>
-            <h1 th:text="${pageTitle}">Dashboard</h1>
-            <p class="text-muted mb-0" th:text="'Cập nhật lần cuối: ' + ${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm')}">
-                Cập nhật lần cuối: 12/12/2025 15:14
+    <div layout:fragment="content">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1>Dashboard</h1>
+            <p class="subtitle">
+                <i class="fas fa-calendar-alt me-2"></i>
+                <span th:text="'Cập nhật: ' + ${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm')}">
+                    Cập nhật: 28/12/2025 23:52
+                </span>
             </p>
         </div>
-        <div class="text-muted">
-            <i class="fas fa-calendar-alt me-1"></i>
-            <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}">12/12/2025</span>
-        </div>
-    </div>
 
-    <!-- Stats Cards -->
-    <div class="row">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card stat-card-primary h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="stat-title">Tổng số Users</div>
-                            <div class="stat-number" th:text="${totalUsers}">150</div>
-                            <div class="stat-change up">
-                                <i class="fas fa-arrow-up me-1"></i>
-                                <span>12% So với tháng trước</span>
-                            </div>
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <!-- Total Users -->
+            <div class="stat-card stat-card-primary">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-title">Tổng số Users</div>
+                        <div class="stat-number"
+                            th:text="${#numbers.formatDecimal(totalUsers, 0, 'COMMA', 0, 'POINT')}">0</div>
+                        <div class="stat-description">
+                            <i class="fas fa-database"></i>
+                            <span>Tổng trong hệ thống</span>
                         </div>
-                        <div>
-                            <i class="fas fa-users stat-icon text-primary"></i>
-                        </div>
+                    </div>
+                    <div>
+                        <i class="fas fa-users stat-icon text-primary"></i>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card stat-card-success h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="stat-title">Tổng Đơn hàng</div>
-                            <div class="stat-number" th:text="${totalOrders}">45</div>
-                            <div class="stat-change up">
-                                <i class="fas fa-arrow-up me-1"></i>
-                                <span>5% So với tháng trước</span>
-                            </div>
+            <!-- Total Orders -->
+            <div class="stat-card stat-card-success">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-title">Tổng Đơn hàng</div>
+                        <div class="stat-number"
+                            th:text="${#numbers.formatDecimal(totalOrders, 0, 'COMMA', 0, 'POINT')}">0</div>
+                        <div class="stat-description">
+                            <i class="fas fa-database"></i>
+                            <span>Tổng trong hệ thống</span>
                         </div>
-                        <div>
-                            <i class="fas fa-shopping-cart stat-icon text-success"></i>
-                        </div>
+                    </div>
+                    <div>
+                        <i class="fas fa-shopping-cart stat-icon text-success"></i>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card stat-card-info h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="stat-title">Doanh thu</div>
-                            <div class="stat-number" th:text="'$' + ${totalRevenue}">$12,500</div>
-                            <div class="stat-change up">
-                                <i class="fas fa-arrow-up me-1"></i>
-                                <span>8% So với tháng trước</span>
-                            </div>
+            <!-- Total Revenue -->
+            <div class="stat-card stat-card-info">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-title">Doanh thu</div>
+                        <div class="stat-number"
+                            th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">0</div>
+                        <div class="stat-description">
+                            <i class="fas fa-coins"></i>
+                            <span>Coins từ orders hoàn thành</span>
                         </div>
-                        <div>
-                            <i class="fas fa-dollar-sign stat-icon text-info"></i>
-                        </div>
+                    </div>
+                    <div>
+                        <i class="fas fa-dollar-sign stat-icon text-info"></i>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card stat-card-warning h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="stat-title">Bài viết</div>
-                            <div class="stat-number">35</div>
-                            <div class="stat-change up">
-                                <i class="fas fa-arrow-up me-1"></i>
-                                <span>3% So với tháng trước</span>
-                            </div>
+            <!-- Total Posts -->
+            <div class="stat-card stat-card-warning">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-title">Bài viết</div>
+                        <div class="stat-number"
+                            th:text="${#numbers.formatDecimal(totalPosts, 0, 'COMMA', 0, 'POINT')}">0</div>
+                        <div class="stat-description">
+                            <i class="fas fa-database"></i>
+                            <span>Tổng trong hệ thống</span>
                         </div>
-                        <div>
-                            <i class="fas fa-comments stat-icon text-warning"></i>
-                        </div>
+                    </div>
+                    <div>
+                        <i class="fas fa-file-alt stat-icon text-warning"></i>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Charts and Activities Row -->
-    <div class="row">
-        <!-- Chart Column -->
-        <div class="col-lg-8 mb-4">
-            <div class="card chart-card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Thống kê truy cập</h5>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-calendar-alt me-1"></i> Tháng này
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-day me-2"></i> Hôm nay</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-week me-2"></i> Tuần này</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-calendar me-2"></i> Tháng này</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-alt me-2"></i> Năm nay</a></li>
-                        </ul>
+            <!-- Total Projects -->
+            <div class="stat-card stat-card-purple">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-title">Dự án</div>
+                        <div class="stat-number"
+                            th:text="${#numbers.formatDecimal(totalProjects, 0, 'COMMA', 0, 'POINT')}">0</div>
+                        <div class="stat-description">
+                            <i class="fas fa-database"></i>
+                            <span>Tổng trong hệ thống</span>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="trafficChart"></canvas>
+                    <div>
+                        <i class="fas fa-box stat-icon" style="color: #9333ea;"></i>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Activities Column -->
-        <div class="col-lg-4 mb-4">
-            <div class="card chart-card">
-                <div class="card-header">
-                    <h5 class="card-title">Hoạt động gần đây</h5>
-                </div>
-                <div class="card-body">
-                    <div class="activity-list">
-                        <div class="activity-item d-flex">
-                            <div class="activity-icon bg-primary text-white">
-                                <i class="fas fa-user-plus"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-bold">User mới đăng ký</div>
-                                <div class="text-muted small">3 users trong 24h qua</div>
-                                <div class="activity-time">
-                                    <i class="far fa-clock me-1"></i> 2 giờ trước
-                                </div>
-                            </div>
+            <!-- Total Comments -->
+            <div class="stat-card stat-card-orange">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="stat-title">Bình luận</div>
+                        <div class="stat-number"
+                            th:text="${#numbers.formatDecimal(totalComments, 0, 'COMMA', 0, 'POINT')}">0</div>
+                        <div class="stat-description">
+                            <i class="fas fa-database"></i>
+                            <span>Tổng trong hệ thống</span>
                         </div>
-
-                        <div class="activity-item d-flex">
-                            <div class="activity-icon bg-success text-white">
-                                <i class="fas fa-shopping-cart"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-bold">Đơn hàng mới</div>
-                                <div class="text-muted small">5 đơn hàng hôm nay</div>
-                                <div class="activity-time">
-                                    <i class="far fa-clock me-1"></i> 4 giờ trước
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="activity-item d-flex">
-                            <div class="activity-icon bg-info text-white">
-                                <i class="fas fa-comment"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-bold">Bình luận mới</div>
-                                <div class="text-muted small">12 bình luận mới</div>
-                                <div class="activity-time">
-                                    <i class="far fa-clock me-1"></i> 6 giờ trước
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="activity-item d-flex">
-                            <div class="activity-icon bg-warning text-white">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-bold">Bài viết mới</div>
-                                <div class="text-muted small">2 bài viết mới</div>
-                                <div class="activity-time">
-                                    <i class="far fa-clock me-1"></i> 8 giờ trước
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                    <div>
+                        <i class="fas fa-comments stat-icon" style="color: #f97316;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<script layout:fragment="scripts">
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Dashboard loaded');
-
-        // Initialize traffic chart
-        const ctx = document.getElementById('trafficChart');
-        if (ctx) {
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
-                    datasets: [{
-                        label: 'Lượt truy cập',
-                        data: [120, 190, 300, 500, 200, 300, 450],
-                        borderColor: '#4361ee',
-                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: '#4361ee',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                            titleFont: { size: 14 },
-                            bodyFont: { size: 13 },
-                            padding: 12
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                drawBorder: false
-                            },
-                            ticks: {
-                                callback: function(value) {
-                                    return value + ' lượt';
-                                }
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    });
-</script>
 </body>
+
 </html>

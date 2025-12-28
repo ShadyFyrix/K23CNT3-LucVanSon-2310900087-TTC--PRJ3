@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Moderation Dashboard - WeJect</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-white mb-2">
+                        <i class="fas fa-gavel text-purple-400 mr-3"></i>Moderation Dashboard
+                    </h1>
+                    <p class="text-gray-400">Manage reports and moderate content</p>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Reports -->
+                <div class="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                            <i class="fas fa-flag text-blue-400 text-xl"></i>
+                        </div>
+                        <span class="text-3xl font-bold text-white" th:text="${totalReports}">0</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm font-semibold">Total Reports</h3>
+                </div>
+
+                <!-- Pending Reports -->
+                <div
+                    class="bg-gradient-to-br from-yellow-500/10 to-yellow-600/5 border border-yellow-500/20 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-yellow-500/20 flex items-center justify-center">
+                            <i class="fas fa-clock text-yellow-400 text-xl"></i>
+                        </div>
+                        <span class="text-3xl font-bold text-white" th:text="${pendingCount}">0</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm font-semibold">Pending</h3>
+                </div>
+
+                <!-- Under Review -->
+                <div
+                    class="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                            <i class="fas fa-eye text-purple-400 text-xl"></i>
+                        </div>
+                        <span class="text-3xl font-bold text-white" th:text="${underReviewCount}">0</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm font-semibold">Under Review</h3>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <a th:href="@{/LvsModeration/LvsReports}"
+                    class="group bg-gradient-to-br from-[#2a2a2a] to-[#1e1e1e] border border-[#333] rounded-xl p-6 hover:border-purple-500/50 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-14 h-14 rounded-lg bg-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fas fa-list text-purple-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-bold text-lg mb-1">View All Reports</h3>
+                            <p class="text-gray-400 text-sm">Browse and filter all reports</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a th:href="@{/LvsModeration/LvsReports(status='PENDING')}"
+                    class="group bg-gradient-to-br from-[#2a2a2a] to-[#1e1e1e] border border-[#333] rounded-xl p-6 hover:border-yellow-500/50 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-14 h-14 rounded-lg bg-yellow-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fas fa-exclamation-triangle text-yellow-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-bold text-lg mb-1">Pending Reports</h3>
+                            <p class="text-gray-400 text-sm">Review reports awaiting action</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Recent Reports -->
+            <div class="bg-gradient-to-br from-[#2a2a2a] to-[#1e1e1e] border border-[#333] rounded-xl p-6">
+                <h2 class="text-xl font-bold text-white mb-6">
+                    <i class="fas fa-history text-gray-400 mr-2"></i>Recent Reports
+                </h2>
+
+                <div th:if="${recentReports != null and !recentReports.isEmpty()}">
+                    <div class="space-y-3">
+                        <div th:each="report : ${recentReports}"
+                            class="bg-black/30 rounded-lg p-4 hover:bg-black/50 transition-all">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <!-- Type Badge -->
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold" th:classappend="${report.lvsReportType.name() == 'USER'} ? 'bg-red-500/20 text-red-400' :
+                                                           (${report.lvsReportType.name() == 'PROJECT'} ? 'bg-blue-500/20 text-blue-400' :
+                                                           (${report.lvsReportType.name() == 'POST'} ? 'bg-green-500/20 text-green-400' :
+                                                           (${report.lvsReportType.name() == 'COMMENT'} ? 'bg-yellow-500/20 text-yellow-400' :
+                                                           'bg-purple-500/20 text-purple-400')))"
+                                            th:text="${report.lvsReportType}">TYPE</span>
+
+                                        <!-- Status Badge -->
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold" th:classappend="${report.lvsStatus.name() == 'PENDING'} ? 'bg-yellow-500/20 text-yellow-400' :
+                                                           (${report.lvsStatus.name() == 'UNDER_REVIEW'} ? 'bg-purple-500/20 text-purple-400' :
+                                                           (${report.lvsStatus.name() == 'RESOLVED'} ? 'bg-green-500/20 text-green-400' :
+                                                           'bg-gray-500/20 text-gray-400'))"
+                                            th:text="${report.lvsStatus}">STATUS</span>
+                                    </div>
+
+                                    <p class="text-white font-semibold mb-1" th:text="${report.lvsReason}">Reason</p>
+                                    <p class="text-gray-400 text-sm">
+                                        Reported by <span th:text="${report.lvsReporter.lvsUsername}">User</span>
+                                        • <span
+                                            th:text="${#temporals.format(report.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                                    </p>
+                                </div>
+
+                                <a th:href="@{/LvsModeration/LvsReport/LvsDetail/{id}(id=${report.lvsReportId})}"
+                                    class="px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 rounded-lg font-semibold transition-all">
+                                    View
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${recentReports == null or recentReports.isEmpty()}"
+                    class="text-center py-12 text-gray-400">
+                    <i class="fas fa-inbox text-6xl mb-4"></i>
+                    <p class="text-lg">No reports yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -34,17 +34,88 @@
 
             <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6">
                 <h2 class="text-xl font-bold text-white mb-4">Lịch sử giao dịch</h2>
-                <div class="space-y-3">
-                    <div th:each="transaction : ${LvsTransactions}"
-                        class="bg-[#1e1e1e] border border-[#444] rounded-lg p-4 flex justify-between items-center">
-                        <div>
-                            <p class="text-white font-bold" th:text="${transaction.lvsDescription}">Transaction</p>
-                            <p class="text-gray-400 text-sm"
-                                th:text="${#temporals.format(transaction.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date</p>
+
+                <!-- Empty State -->
+                <div th:if="${#lists.isEmpty(LvsTransactions)}" class="text-center py-12">
+                    <i class="fas fa-receipt text-gray-600 text-5xl mb-4"></i>
+                    <p class="text-gray-400">Chưa có giao dịch nào</p>
+                </div>
+
+                <!-- Transaction List -->
+                <div class="space-y-3" th:unless="${#lists.isEmpty(LvsTransactions)}">
+                    <a th:each="transaction : ${LvsTransactions}"
+                        th:href="${transaction.lvsOrder != null} ? @{/LvsUser/LvsOrder/LvsDetail/{id}(id=${transaction.lvsOrder.lvsOrderId})} : '#'"
+                        th:class="${transaction.lvsOrder != null} ? 'block bg-[#1e1e1e] border border-[#444] rounded-lg p-4 hover:border-[#fed700] transition cursor-pointer' : 'block bg-[#1e1e1e] border border-[#444] rounded-lg p-4 cursor-default'"
+                        th:onclick="${transaction.lvsOrder == null} ? 'event.preventDefault(); return false;' : ''">
+                        <div class="flex justify-between items-start">
+                            <!-- Left: Icon + Info -->
+                            <div class="flex items-start gap-3">
+                                <!-- Transaction Type Icon -->
+                                <div th:if="${transaction.lvsType.toString() == 'DEPOSIT'}"
+                                    class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-arrow-down text-green-400"></i>
+                                </div>
+                                <div th:if="${transaction.lvsType.toString() == 'WITHDRAWAL'}"
+                                    class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-arrow-up text-blue-400"></i>
+                                </div>
+                                <div th:if="${transaction.lvsType.toString() == 'PURCHASE'}"
+                                    class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-shopping-cart text-red-400"></i>
+                                </div>
+                                <div th:if="${transaction.lvsType.toString() == 'SALE'}"
+                                    class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-dollar-sign text-yellow-400"></i>
+                                </div>
+                                <div th:if="${transaction.lvsType.toString() == 'REFUND'}"
+                                    class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-undo text-purple-400"></i>
+                                </div>
+                                <div th:if="${transaction.lvsType.toString() == 'BALANCE_TO_COIN'}"
+                                    class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-exchange-alt text-cyan-400"></i>
+                                </div>
+
+                                <!-- Transaction Info -->
+                                <div>
+                                    <p class="text-white font-bold" th:text="${transaction.lvsDescription}">Transaction
+                                    </p>
+                                    <p class="text-gray-400 text-sm"
+                                        th:text="${#temporals.format(transaction.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">
+                                        Date</p>
+                                    <!-- Status Badge -->
+                                    <span th:if="${transaction.lvsStatus.toString() == 'SUCCESS'}"
+                                        class="inline-block mt-1 px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-400 border border-green-500/50">
+                                        <i class="fas fa-check-circle mr-1"></i>Thành công
+                                    </span>
+                                    <span th:if="${transaction.lvsStatus.toString() == 'PENDING'}"
+                                        class="inline-block mt-1 px-2 py-0.5 text-xs rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/50">
+                                        <i class="fas fa-clock mr-1"></i>Đang xử lý
+                                    </span>
+                                    <span th:if="${transaction.lvsStatus.toString() == 'FAILED'}"
+                                        class="inline-block mt-1 px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-400 border border-red-500/50">
+                                        <i class="fas fa-times-circle mr-1"></i>Thất bại
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Right: Amount -->
+                            <div class="text-right">
+                                <p th:if="${transaction.lvsType.toString() == 'DEPOSIT' || transaction.lvsType.toString() == 'SALE' || transaction.lvsType.toString() == 'REFUND'}"
+                                    class="text-green-400 font-bold text-xl">
+                                    +<span
+                                        th:text="${#numbers.formatDecimal(transaction.lvsAmount, 1, 'COMMA', 0, 'POINT')}">0</span>
+                                    ₫
+                                </p>
+                                <p th:if="${transaction.lvsType.toString() == 'WITHDRAWAL' || transaction.lvsType.toString() == 'PURCHASE' || transaction.lvsType.toString() == 'BALANCE_TO_COIN'}"
+                                    class="text-red-400 font-bold text-xl">
+                                    -<span
+                                        th:text="${#numbers.formatDecimal(transaction.lvsAmount, 1, 'COMMA', 0, 'POINT')}">0</span>
+                                    ₫
+                                </p>
+                            </div>
                         </div>
-                        <p class="text-[#fed700] font-bold text-xl"
-                            th:text="${#numbers.formatCurrency(transaction.lvsAmount)}">$0</p>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>

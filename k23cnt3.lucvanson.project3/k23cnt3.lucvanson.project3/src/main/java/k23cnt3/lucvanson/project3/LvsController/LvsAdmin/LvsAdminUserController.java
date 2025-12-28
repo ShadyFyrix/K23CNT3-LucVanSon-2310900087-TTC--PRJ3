@@ -77,44 +77,10 @@ public class LvsAdminUserController {
     private LvsUserService lvsUserService;
 
     /**
-     * Upload directory for avatar images
+     * Service xử lý upload file
      */
-    private static final String UPLOAD_DIR = "src/main/resources/static/uploads/avatars/";
-
-    /**
-     * Save uploaded avatar file
-     * 
-     * @param file   Uploaded file
-     * @param userId User ID (can be null for new users)
-     * @return Relative path to saved file
-     */
-    private String lvsSaveAvatarFile(MultipartFile file, Long userId) throws IOException {
-        if (file == null || file.isEmpty()) {
-            return null;
-        }
-
-        // Create upload directory if not exists
-        File uploadDir = new File(UPLOAD_DIR);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
-        // Generate unique filename
-        String originalFilename = file.getOriginalFilename();
-        String extension = "";
-        if (originalFilename != null && originalFilename.contains(".")) {
-            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        }
-        String filename = (userId != null ? "user_" + userId : "user_new") + "_" +
-                System.currentTimeMillis() + extension;
-
-        // Save file
-        Path filePath = Paths.get(UPLOAD_DIR + filename);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        // Return relative path for URL (include context path)
-        return "/lvsforum/uploads/avatars/" + filename;
-    }
+    @Autowired
+    private k23cnt3.lucvanson.project3.LvsService.LvsFileUploadService lvsFileUploadService;
 
     /**
      * Hiển thị danh sách users với phân trang, tìm kiếm và lọc
@@ -302,15 +268,10 @@ public class LvsAdminUserController {
         }
 
         try {
-            // Handle avatar upload
+            // Handle avatar upload using service
             if (lvsAvatarFile != null && !lvsAvatarFile.isEmpty()) {
-                try {
-                    String avatarPath = lvsSaveAvatarFile(lvsAvatarFile, null);
-                    lvsUser.setLvsAvatarUrl(avatarPath);
-                } catch (IOException e) {
-                    lvsRedirectAttributes.addFlashAttribute("lvsError", "Lỗi upload avatar: " + e.getMessage());
-                    return "redirect:/LvsAdmin/LvsUser/LvsCreate";
-                }
+                String avatarUrl = lvsFileUploadService.lvsSaveFile(lvsAvatarFile, "avatars");
+                lvsUser.setLvsAvatarUrl(avatarUrl);
             }
 
             // Tạo user mới (service sẽ tự động mã hóa password)
@@ -494,13 +455,8 @@ public class LvsAdminUserController {
 
             // ===== CẬP NHẬT AVATAR (NẾU CÓ FILE MỚI) =====
             if (lvsAvatarFile != null && !lvsAvatarFile.isEmpty()) {
-                try {
-                    String avatarPath = lvsSaveAvatarFile(lvsAvatarFile, lvsUserId);
-                    lvsExistingUser.setLvsAvatarUrl(avatarPath);
-                } catch (IOException e) {
-                    lvsRedirectAttributes.addFlashAttribute("lvsError", "Lỗi upload avatar: " + e.getMessage());
-                    return "redirect:/LvsAdmin/LvsUser/" + lvsUserId + "/LvsEdit";
-                }
+                String avatarUrl = lvsFileUploadService.lvsSaveFile(lvsAvatarFile, "avatars");
+                lvsExistingUser.setLvsAvatarUrl(avatarUrl);
             }
             // Nếu không có file mới, giữ nguyên avatar cũ (không cần set lại)
 

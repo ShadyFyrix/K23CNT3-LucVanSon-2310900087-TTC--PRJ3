@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Active Promotions - WeJect</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 lg:px-6 py-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-4xl font-bold text-white mb-2">
+                    <i class="fas fa-tags mr-3 text-[#fed700]"></i>Active Promotions
+                </h1>
+                <p class="text-gray-400">Grab amazing deals and save on your favorite projects!</p>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${LvsPromotions == null or LvsPromotions.isEmpty()}" class="text-center py-16">
+                <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-12">
+                    <i class="fas fa-tags text-6xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400 text-xl mb-6">No active promotions at the moment</p>
+                    <p class="text-gray-500 mb-6">Check back later for exciting deals!</p>
+                    <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                        class="inline-block bg-[#fed700] text-black font-bold px-8 py-3 rounded-lg hover:bg-white transition">
+                        <i class="fas fa-gamepad mr-2"></i>Browse Projects
+                    </a>
+                </div>
+            </div>
+
+            <!-- Promotions Grid -->
+            <div th:if="${LvsPromotions != null and !LvsPromotions.isEmpty()}">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div th:each="promo : ${LvsPromotions}"
+                        class="bg-[#2b2b2b] border border-[#333] rounded-xl overflow-hidden hover:border-[#fed700] transition-all duration-300 hover:shadow-lg hover:shadow-[#fed700]/20 flex flex-col h-full">
+
+                        <!-- Card Header with Badge -->
+                        <div class="bg-gradient-to-r from-[#fed700] to-[#ffa500] p-4">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-black/30 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fas fa-fire mr-1"></i>HOT DEAL
+                                </span>
+                                <span class="text-black font-bold text-sm" th:text="${promo.lvsDiscountType == T(k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion.LvsDiscountType).PERCENT 
+                                              ? promo.lvsDiscountValue + '% OFF' 
+                                              : promo.lvsDiscountValue + ' COINS OFF'}">
+                                    20% OFF
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="p-6 flex-grow flex flex-col">
+                            <!-- Promotion Name -->
+                            <h3 class="text-white font-bold text-xl mb-3" th:text="${promo.lvsName}">
+                                Summer Sale 2024
+                            </h3>
+
+                            <!-- Promotion Code -->
+                            <div class="bg-[#1e1e1e] border border-[#444] rounded-lg p-3 mb-4">
+                                <p class="text-gray-400 text-xs mb-1">Promotion Code:</p>
+                                <div class="flex items-center justify-between">
+                                    <code class="text-[#fed700] font-mono font-bold text-lg" th:text="${promo.lvsCode}"
+                                        th:id="'code-' + ${promo.lvsPromotionId}">
+                                        SUMMER2024
+                                    </code>
+                                    <button th:attr="data-code=${promo.lvsCode},data-promo-id=${promo.lvsPromotionId}"
+                                        onclick="copyCode(this.dataset.code, this.dataset.promoId)"
+                                        class="bg-[#fed700] text-black px-3 py-1 rounded text-sm font-bold hover:bg-white transition">
+                                        <i class="fas fa-copy mr-1"></i>Copy
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <p class="text-gray-400 text-sm mb-4 flex-grow" th:text="${promo.lvsDescription}">
+                                Get amazing discounts on all projects this summer!
+                            </p>
+
+                            <!-- Conditions -->
+                            <div class="space-y-2 mb-4">
+                                <div th:if="${promo.lvsMinOrderValue != null and promo.lvsMinOrderValue > 0}"
+                                    class="flex items-center text-sm text-gray-400">
+                                    <i class="fas fa-shopping-cart text-[#fed700] mr-2 w-4"></i>
+                                    <span>Min. order: <span class="text-white font-semibold"
+                                            th:text="${#numbers.formatDecimal(promo.lvsMinOrderValue, 0, 'COMMA', 0, 'POINT')}">10,000</span>
+                                        coins</span>
+                                </div>
+                                <div class="flex items-center text-sm text-gray-400">
+                                    <i class="fas fa-users text-[#fed700] mr-2 w-4"></i>
+                                    <span>Used: <span class="text-white font-semibold"
+                                            th:text="${promo.lvsUsedCount}">45</span>/<span
+                                            th:text="${promo.lvsUsageLimit}">100</span></span>
+                                </div>
+                                <div class="flex items-center text-sm text-gray-400">
+                                    <i class="fas fa-calendar text-[#fed700] mr-2 w-4"></i>
+                                    <span>Valid until: <span class="text-white font-semibold"
+                                            th:text="${#temporals.format(promo.lvsEndDate, 'dd/MM/yyyy')}">31/12/2024</span></span>
+                                </div>
+                            </div>
+
+                            <!-- Usage Progress Bar -->
+                            <div class="mb-4">
+                                <div class="flex justify-between text-xs text-gray-400 mb-1">
+                                    <span>Usage Progress</span>
+                                    <span
+                                        th:text="${promo.lvsUsageLimit > 0 ? (promo.lvsUsedCount * 100 / promo.lvsUsageLimit) : 0} + '%'">45%</span>
+                                </div>
+                                <div class="w-full bg-[#1e1e1e] rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-[#fed700] to-[#ffa500] h-2 rounded-full transition-all duration-300"
+                                        th:style="'width: ' + ${promo.lvsUsageLimit > 0 ? (promo.lvsUsedCount * 100.0 / promo.lvsUsageLimit) : 0} + '%'">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CTA Button -->
+                            <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                                class="block w-full bg-[#fed700] text-black font-bold py-3 rounded-lg hover:bg-white transition text-center mt-auto">
+                                <i class="fas fa-shopping-bag mr-2"></i>Shop Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div th:if="${LvsTotalPages > 1}" class="flex justify-center items-center gap-2">
+                    <!-- Previous Button -->
+                    <a th:if="${LvsCurrentPage > 0}"
+                        th:href="@{/lvsforum/LvsPromotion/LvsList(page=${LvsCurrentPage - 1})}"
+                        class="bg-[#2b2b2b] border border-[#333] text-white px-4 py-2 rounded-lg hover:border-[#fed700] transition">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    <span th:unless="${LvsCurrentPage > 0}"
+                        class="bg-[#1e1e1e] border border-[#333] text-gray-600 px-4 py-2 rounded-lg cursor-not-allowed">
+                        <i class="fas fa-chevron-left"></i>
+                    </span>
+
+                    <!-- Page Numbers -->
+                    <span class="text-gray-400">
+                        Page <span class="text-white font-bold" th:text="${LvsCurrentPage + 1}">1</span> of <span
+                            th:text="${LvsTotalPages}">5</span>
+                    </span>
+
+                    <!-- Next Button -->
+                    <a th:if="${LvsCurrentPage < LvsTotalPages - 1}"
+                        th:href="@{/lvsforum/LvsPromotion/LvsList(page=${LvsCurrentPage + 1})}"
+                        class="bg-[#2b2b2b] border border-[#333] text-white px-4 py-2 rounded-lg hover:border-[#fed700] transition">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <span th:unless="${LvsCurrentPage < LvsTotalPages - 1}"
+                        class="bg-[#1e1e1e] border border-[#333] text-gray-600 px-4 py-2 rounded-lg cursor-not-allowed">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copy to Clipboard Script -->
+        <script th:inline="javascript">
+            function copyCode(code, promoId) {
+                // Copy to clipboard
+                navigator.clipboard.writeText(code).then(function () {
+                    // Show success feedback
+                    const button = event.target.closest('button');
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check mr-1"></i>Copied!';
+                    button.classList.add('bg-green-500');
+                    button.classList.remove('bg-[#fed700]');
+
+                    // Reset after 2 seconds
+                    setTimeout(function () {
+                        button.innerHTML = originalHTML;
+                        button.classList.remove('bg-green-500');
+                        button.classList.add('bg-[#fed700]');
+                    }, 2000);
+                }).catch(function (err) {
+                    console.error('Failed to copy:', err);
+                    alert('Failed to copy code. Please copy manually: ' + code);
+                });
+            }
+        </script>
+    </div>
+</body>
+
+</html>

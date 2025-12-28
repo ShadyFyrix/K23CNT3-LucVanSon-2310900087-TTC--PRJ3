@@ -25,7 +25,7 @@
         <!-- Breadcrumb -->
         <div class="bg-[#1e1e1e] border-b border-[#333]">
             <div class="container mx-auto px-4 py-4 flex items-center gap-2 text-sm text-gray-400">
-                <a th:href="@{/LvsUser/LvsDashboard}" class="hover:text-[#fed700] transition">
+                <a th:href="@{/LvsUser/LvsHome}" class="hover:text-[#fed700] transition">
                     <i class="fas fa-home mr-1"></i>Home
                 </a>
                 <i class="fas fa-chevron-right text-xs"></i>
@@ -517,10 +517,10 @@
                             </button>
                         </form>
 
-                        <!-- Wishlist -->
-                        <button
-                            class="w-full bg-transparent border border-[#444] text-gray-400 font-bold py-3 rounded-lg hover:border-[#fed700] hover:text-[#fed700] transition flex items-center justify-center gap-2">
-                            <i class="far fa-heart"></i> Add to Wishlist
+                        <!-- Get Promo Code Button -->
+                        <button onclick="showPromoModal()"
+                            class="w-full bg-gradient-to-r from-[#fed700] to-[#ffa500] text-black font-bold py-3 rounded-lg hover:from-[#ffa500] hover:to-[#fed700] transition flex items-center justify-center gap-2 shadow-lg">
+                            <i class="fas fa-tags"></i> Get Promo Code
                         </button>
 
                         <!-- Project Info -->
@@ -587,6 +587,114 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Promo Code Modal -->
+        <div id="promoModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+            <div class="bg-[#2b2b2b] border border-[#333] rounded-xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">
+                        <i class="fas fa-tags text-[#fed700] mr-2"></i>Available Promo Codes
+                    </h2>
+                    <button onclick="hidePromoModal()" class="text-gray-400 hover:text-white transition">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+
+                <!-- Promotions List -->
+                <div th:if="${LvsValidPromotions != null and !LvsValidPromotions.isEmpty()}" class="space-y-4">
+                    <div th:each="promo : ${LvsValidPromotions}"
+                        class="bg-[#1e1e1e] border border-[#444] rounded-lg p-4 hover:border-[#fed700] transition">
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex-grow">
+                                <!-- Promo Name -->
+                                <h3 class="text-white font-bold text-lg mb-2" th:text="${promo.lvsName}">Summer Sale
+                                </h3>
+
+                                <!-- Promo Code -->
+                                <div class="bg-[#2b2b2b] border border-[#555] rounded-lg p-3 mb-3">
+                                    <p class="text-gray-400 text-xs mb-1">Code:</p>
+                                    <div class="flex items-center justify-between">
+                                        <code class="text-[#fed700] font-mono font-bold text-xl"
+                                            th:text="${promo.lvsCode}"
+                                            th:id="'promo-code-' + ${promo.lvsPromotionId}">SUMMER2024</code>
+                                        <button
+                                            th:attr="data-code=${promo.lvsCode},data-promo-id=${promo.lvsPromotionId}"
+                                            onclick="copyPromoCode(this.dataset.code, this.dataset.promoId)"
+                                            class="bg-[#fed700] text-black px-4 py-2 rounded text-sm font-bold hover:bg-white transition">
+                                            <i class="fas fa-copy mr-1"></i>Copy
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Discount Info -->
+                                <div class="flex items-center gap-4 mb-3">
+                                    <div class="bg-green-500/20 border border-green-500 rounded-lg px-3 py-1">
+                                        <span class="text-green-400 font-bold text-sm">
+                                            <span
+                                                th:if="${promo.lvsDiscountType == T(k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion.LvsDiscountType).PERCENT}">
+                                                <i class="fas fa-percent mr-1"></i><span
+                                                    th:text="${promo.lvsDiscountValue}">20</span>% OFF
+                                            </span>
+                                            <span
+                                                th:unless="${promo.lvsDiscountType == T(k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion.LvsDiscountType).PERCENT}">
+                                                <i class="fas fa-coins mr-1"></i><span
+                                                    th:text="${#numbers.formatDecimal(promo.lvsDiscountValue, 0, 'COMMA', 0, 'POINT')}">5,000</span>
+                                                Coins OFF
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Details -->
+                                <div class="space-y-1 text-sm text-gray-400">
+                                    <p th:if="${promo.lvsMinOrderValue != null and promo.lvsMinOrderValue > 0}">
+                                        <i class="fas fa-shopping-cart text-[#fed700] mr-2 w-4"></i>
+                                        Min. order: <span class="text-white"
+                                            th:text="${#numbers.formatDecimal(promo.lvsMinOrderValue, 0, 'COMMA', 0, 'POINT')}">10,000</span>
+                                        coins
+                                    </p>
+                                    <p>
+                                        <i class="fas fa-calendar text-[#fed700] mr-2 w-4"></i>
+                                        Valid until: <span class="text-white"
+                                            th:text="${#temporals.format(promo.lvsEndDate, 'dd/MM/yyyy')}">31/12/2024</span>
+                                    </p>
+                                    <p>
+                                        <i class="fas fa-users text-[#fed700] mr-2 w-4"></i>
+                                        Used: <span class="text-white" th:text="${promo.lvsUsedCount}">45</span>/<span
+                                            th:text="${promo.lvsUsageLimit}">100</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Apply Button -->
+                            <form th:action="@{/LvsUser/LvsCart/LvsApplyPromotion}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <input type="hidden" name="lvsPromotionCode" th:value="${promo.lvsCode}" />
+                                <button type="submit"
+                                    class="bg-[#fed700] text-black font-bold px-6 py-3 rounded-lg hover:bg-white transition whitespace-nowrap">
+                                    <i class="fas fa-check mr-1"></i>Apply
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${LvsValidPromotions == null or LvsValidPromotions.isEmpty()}" class="text-center py-12">
+                    <i class="fas fa-tags text-6xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400 text-lg mb-4">No promotions available at the moment</p>
+                    <p class="text-gray-500 text-sm">Check back later for exciting deals!</p>
+                </div>
+
+                <!-- View All Link -->
+                <div class="mt-6 pt-6 border-t border-[#333]">
+                    <a th:href="@{/lvsforum/LvsPromotion/LvsList}"
+                        class="block text-center text-[#fed700] hover:text-white transition font-bold">
+                        <i class="fas fa-external-link-alt mr-2"></i>View All Promotions
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -804,8 +912,47 @@
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') {
                     hideGiftModal();
+                    hidePromoModal();
                 }
             });
+
+            // Promo Modal Functions
+            function showPromoModal() {
+                document.getElementById('promoModal').classList.remove('hidden');
+            }
+
+            function hidePromoModal() {
+                document.getElementById('promoModal').classList.add('hidden');
+            }
+
+            // Close promo modal on outside click
+            document.getElementById('promoModal')?.addEventListener('click', function (e) {
+                if (e.target === this) {
+                    hidePromoModal();
+                }
+            });
+
+            // Copy Promo Code Function
+            function copyPromoCode(code, promoId) {
+                navigator.clipboard.writeText(code).then(function () {
+                    // Show success feedback
+                    const button = event.target.closest('button');
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check mr-1"></i>Copied!';
+                    button.classList.add('bg-green-500');
+                    button.classList.remove('bg-[#fed700]');
+
+                    // Reset after 2 seconds
+                    setTimeout(function () {
+                        button.innerHTML = originalHTML;
+                        button.classList.remove('bg-green-500');
+                        button.classList.add('bg-[#fed700]');
+                    }, 2000);
+                }).catch(function (err) {
+                    console.error('Failed to copy:', err);
+                    alert('Failed to copy code. Please copy manually: ' + code);
+                });
+            }
 
             // Star Rating Selection
             const starInputs = document.querySelectorAll('input[name="lvsRating"]');

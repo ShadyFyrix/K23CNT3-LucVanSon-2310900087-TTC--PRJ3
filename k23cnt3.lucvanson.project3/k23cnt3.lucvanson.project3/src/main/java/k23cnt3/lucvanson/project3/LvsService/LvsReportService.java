@@ -45,7 +45,7 @@ public interface LvsReportService {
 
     // Xử lý báo cáo
     LvsReport lvsHandleReport(Long lvsReportId, Long lvsAdminId, LvsReportStatus lvsStatus,
-                              String lvsActionTaken, String lvsAdminNote);
+            String lvsActionTaken, String lvsAdminNote);
 
     // Cập nhật trạng thái báo cáo
     LvsReport lvsUpdateReportStatus(Long lvsReportId, LvsReportStatus lvsStatus);
@@ -73,4 +73,19 @@ public interface LvsReportService {
 
     // Gửi báo cáo tự động
     void lvsSendAutoReport(Long lvsTargetId, LvsReportType lvsType, String lvsReason, String lvsDetails);
+
+    // ========== MODERATION PANEL METHODS ==========
+
+    // Lấy tất cả báo cáo (không phân trang - cho moderation)
+    List<LvsReport> lvsGetAllReports();
+
+    // Lấy báo cáo theo status (không phân trang)
+    List<LvsReport> lvsGetReportsByStatus(LvsReportStatus status);
+
+    // Lấy báo cáo theo type (không phân trang)
+    List<LvsReport> lvsGetReportsByType(LvsReportType type);
+
+    // Xử lý báo cáo (moderation)
+    void lvsResolveReport(Long reportId, k23cnt3.lucvanson.project3.LvsEntity.LvsUser handler,
+            String adminNote, String actionTaken, LvsReportStatus newStatus);
 }

@@ -68,22 +68,42 @@ public class LvsQuestServiceImpl implements LvsQuestService {
         }
     }
 
-    /**
-     * Initialize all active quests for a user (called on first login or manually)
-     */
+    @Override
     @Transactional
-    public void lvsInitializeUserQuests(LvsUser lvsUser) {
+    public void lvsAssignActiveQuests(LvsUser lvsUser) {
         List<LvsQuest> allActiveQuests = lvsQuestRepository.findByLvsIsActiveTrue();
 
         for (LvsQuest quest : allActiveQuests) {
             // Check if user already has this quest
-            Optional<LvsUserQuest> existing = lvsUserQuestRepository.findByLvsUserAndLvsQuest(lvsUser, quest);
+            boolean exists = lvsUserQuestRepository.existsByLvsUserAndLvsQuest(lvsUser, quest);
 
-            if (existing.isEmpty()) {
-                // Create new quest progress with 0 count
+            if (!exists) {
+                // Create new quest progress with 0 progress
                 LvsUserQuest userQuest = new LvsUserQuest(lvsUser, quest);
                 lvsUserQuestRepository.save(userQuest);
             }
+        }
+    }
+
+    @Override
+    @Transactional
+    public void lvsUpdateQuestProgress(LvsUser lvsUser, LvsQuest.LvsQuestType lvsQuestType, int lvsIncrement) {
+        // Find all incomplete quests matching quest type
+        List<LvsUserQuest> userQuests = lvsUserQuestRepository
+                .findByLvsUserAndLvsCompletedFalseAndLvsQuest_LvsQuestType(lvsUser, lvsQuestType);
+
+        for (LvsUserQuest userQuest : userQuests) {
+            // Increment progress
+            int currentProgress = userQuest.getLvsCurrentCount() != null ? userQuest.getLvsCurrentCount() : 0;
+            userQuest.setLvsCurrentCount(currentProgress + lvsIncrement);
+
+            // Check if completed
+            if (userQuest.getLvsCurrentCount() >= userQuest.getLvsQuest().getLvsTargetCount()) {
+                userQuest.setLvsCompleted(true);
+                userQuest.setLvsCompletedAt(LocalDateTime.now());
+            }
+
+            lvsUserQuestRepository.save(userQuest);
         }
     }
 

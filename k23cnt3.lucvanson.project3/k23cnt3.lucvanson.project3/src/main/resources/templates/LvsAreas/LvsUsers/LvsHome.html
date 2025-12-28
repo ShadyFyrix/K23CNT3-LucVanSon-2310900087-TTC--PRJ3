@@ -8,117 +8,970 @@
 
 <body>
     <div layout:fragment="content">
-        <!-- Hero Section -->
+        <!-- Title Badge Styles -->
+        <style>
+            /* Title Badge Base Styles */
+            .title-badge {
+                padding: 0.2rem 0.4rem;
+                border-radius: 12px;
+                font-size: 0.65rem;
+                font-weight: bold;
+                display: inline-block;
+                transition: all 0.3s ease;
+                color: white;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Rainbow Badge for Admin (matches admin panel) */
+            .rainbow-badge {
+                background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+                background-size: 200% auto;
+                animation: rainbow 3s linear infinite;
+                box-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
+                padding: 0.2rem 0.4rem;
+                border-radius: 12px;
+                font-size: 0.65rem;
+                font-weight: bold;
+                display: inline-block;
+                color: white;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            }
+
+            .rainbow-badge:hover {
+                transform: scale(1.15);
+                box-shadow: 0 0 20px rgba(255, 0, 255, 0.8);
+            }
+
+            @keyframes rainbow {
+                to {
+                    background-position: 200% center;
+                }
+            }
+
+            /* Tier Colors */
+            .title-tier-9 {
+                background-color: #06B6D4;
+                box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+            }
+
+            .title-tier-8 {
+                background-color: #FBBF24;
+                box-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+            }
+
+            .title-tier-7 {
+                background-color: #EF4444;
+                box-shadow: 0 0 6px rgba(239, 68, 68, 0.3);
+            }
+
+            .title-tier-6 {
+                background-color: #EC4899;
+                box-shadow: 0 0 6px rgba(236, 72, 153, 0.3);
+            }
+
+            .title-tier-5 {
+                background-color: #F59E0B;
+            }
+
+            .title-tier-4 {
+                background-color: #8B5CF6;
+            }
+
+            .title-tier-3 {
+                background-color: #3B82F6;
+            }
+
+            .title-tier-2 {
+                background-color: #10B981;
+            }
+
+            .title-tier-1 {
+                background-color: #9CA3AF;
+                opacity: 0.8;
+            }
+
+            .title-badge:hover {
+                transform: scale(1.05);
+                filter: brightness(1.1);
+            }
+
+            /* Shine Sweep Animation */
+            .top-user-card {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .top-user-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                transition: left 0.5s ease;
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .top-user-card:hover::before {
+                left: 100%;
+            }
+
+            /* ========================================
+               SCROLL ANIMATIONS - Basic
+               ======================================== */
+            .fade-in-up {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: opacity 0.6s ease, transform 0.6s ease;
+            }
+
+            .fade-in-up.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* ========================================
+               HOVER EFFECTS - Basic
+               ======================================== */
+            .hover-lift {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .hover-lift:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+
+            .hover-glow {
+                transition: all 0.3s ease;
+            }
+
+            .hover-glow:hover {
+                box-shadow: 0 0 20px rgba(254, 215, 0, 0.5);
+            }
+
+            /* ========================================
+               CATEGORY CARDS
+               ======================================== */
+            .category-card {
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+            .category-card:hover {
+                transform: translateY(-8px) scale(1.05);
+                border-color: #fed700;
+            }
+
+            /* ========================================
+               GRADIENT TEXT ANIMATION
+               ======================================== */
+            .gradient-text {
+                background: linear-gradient(90deg, #fed700, #ffa500, #fed700);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                animation: gradient-shift 3s ease infinite;
+            }
+
+            @keyframes gradient-shift {
+
+                0%,
+                100% {
+                    background-position: 0% center;
+                }
+
+                50% {
+                    background-position: 100% center;
+                }
+            }
+
+            /* ========================================
+               SCALE IN ANIMATION
+               ======================================== */
+            .scale-in {
+                opacity: 0;
+                transform: scale(0.8);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+
+            .scale-in.visible {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            /* Staggered animation delays */
+            .stagger-1 {
+                transition-delay: 0.1s;
+            }
+
+            .stagger-2 {
+                transition-delay: 0.2s;
+            }
+
+            .stagger-3 {
+                transition-delay: 0.3s;
+            }
+
+            .stagger-4 {
+                transition-delay: 0.4s;
+            }
+
+            .stagger-5 {
+                transition-delay: 0.5s;
+            }
+
+            .stagger-6 {
+                transition-delay: 0.6s;
+            }
+        </style>
+
+        <!-- Hero Carousel Section -->
         <section class="mb-12">
             <div class="container mx-auto px-4 mt-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Main Slider -->
+                    <!-- Main Hero Carousel -->
                     <div
-                        class="lg:col-span-2 bg-[url('https://placehold.co/800x400/1e1e1e/333')] bg-cover bg-center h-[400px] rounded-2xl relative overflow-hidden flex items-center p-12 border border-[#333]">
-                        <div class="relative z-10 max-w-md">
-                            <span class="text-[#fed700] font-bold uppercase tracking-widest text-sm mb-2 block">Value of
-                                the Day</span>
-                            <h2 class="text-white text-5xl font-light mb-6">Virtual Reality <br><strong
-                                    class="font-bold">Oculus Rift</strong></h2>
-                            <p class="text-gray-400 mb-8 text-lg">Experience the world of tomorrow.</p>
-                            <a th:href="@{/LvsUser/LvsProject/LvsList}"
-                                class="inline-block bg-[#fed700] text-black font-bold px-8 py-3 rounded-full hover:bg-white transition">
-                                Shop Now <i class="fas fa-arrow-right ml-2"></i>
-                            </a>
+                        class="lg:col-span-2 relative h-[600px] rounded-2xl overflow-hidden border border-[#333] hover-glow">
+                        <!-- Carousel Wrapper -->
+                        <div id="heroCarousel" class="relative h-full">
+                            <!-- Carousel Items -->
+                            <div th:each="project, iterStat : ${trendingProjects}"
+                                th:classappend="${iterStat.index == 0} ? 'opacity-100 z-10' : 'opacity-0 z-0'"
+                                class="carousel-item absolute inset-0 transition-opacity duration-500 bg-gradient-to-r from-[#1e1e1e] to-[#2b2b2b]">
+                                <!-- Background Image with Parallax -->
+                                <div th:if="${project.lvsThumbnailUrl}" class="parallax-bg absolute inset-0 opacity-20"
+                                    data-speed="0.5">
+                                    <img th:src="@{${project.lvsThumbnailUrl}}" class="w-full h-full object-cover">
+                                </div>
+                                <!-- Gradient Overlay -->
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent">
+                                </div>
+
+                                <!-- Discount Badge -->
+                                <span th:if="${project.lvsDiscountPercent != null && project.lvsDiscountPercent > 0}"
+                                    class="absolute top-8 right-8 z-40 bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-3 rounded-full font-black text-xl shadow-2xl animate-pulse">
+                                    <i class="fas fa-fire mr-2"></i>
+                                    -<span th:text="${project.lvsDiscountPercent}">0</span>% OFF
+                                </span>
+
+                                <!-- Content -->
+                                <div class="relative z-30 h-full flex items-center p-12">
+                                    <div class="max-w-md">
+                                        <span
+                                            class="text-[#fed700] font-bold uppercase tracking-widest text-sm mb-2 block">
+                                            🔥 Trending Now
+                                        </span>
+                                        <h2 class="text-4xl font-black mb-3 line-clamp-2 bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent"
+                                            th:text="${project.lvsProjectName}">Project Name</h2>
+                                        <p class="text-gray-300 mb-4 text-lg leading-relaxed line-clamp-2 font-light"
+                                            th:text="${project.lvsDescription}">Description</p>
+                                        <!-- Price Section -->
+                                        <div class="mb-4 space-y-2">
+                                            <!-- Main Price Display -->
+                                            <div class="flex items-baseline gap-3">
+                                                <!-- Final Price -->
+                                                <div class="flex items-baseline gap-2">
+                                                    <span
+                                                        class="text-5xl font-black text-[#fed700] drop-shadow-[0_0_20px_rgba(254,215,0,0.5)]">
+                                                        <span
+                                                            th:text="${#numbers.formatDecimal(project.lvsFinalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                                    </span>
+                                                    <span class="text-xl font-bold text-[#fed700]">Coins</span>
+                                                </div>
+
+                                                <!-- Original Price -->
+                                                <div th:if="${project.lvsDiscountPercent != null && project.lvsDiscountPercent > 0}"
+                                                    class="flex items-baseline gap-2">
+                                                    <span
+                                                        class="text-xl font-medium text-gray-500 line-through opacity-75">
+                                                        <span
+                                                            th:text="${#numbers.formatDecimal(project.lvsPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                                    </span>
+                                                    <span class="text-base text-gray-500">Coins</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Savings Badge -->
+                                            <div th:if="${project.lvsDiscountPercent != null && project.lvsDiscountPercent > 0}"
+                                                class="inline-flex items-center gap-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-400 px-4 py-2 rounded-full backdrop-blur-sm">
+                                                <i class="fas fa-tag"></i>
+                                                <span class="font-bold text-sm">
+                                                    You Save: <span
+                                                        th:text="${#numbers.formatDecimal(project.lvsPrice - project.lvsFinalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                                    Coins!
+                                                </span>
+                                            </div>
+
+                                            <!-- Stats -->
+                                            <div class="flex items-center gap-4">
+                                                <div
+                                                    class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
+                                                    <i class="fas fa-download text-[#fed700]"></i>
+                                                    <span class="font-bold text-white"
+                                                        th:text="${#numbers.formatDecimal(project.lvsDownloadCount ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                                    <span class="text-sm text-gray-400">downloads</span>
+                                                </div>
+                                                <div
+                                                    class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
+                                                    <i class="fas fa-eye text-blue-400"></i>
+                                                    <span class="font-bold text-white"
+                                                        th:text="${#numbers.formatDecimal(project.lvsViewCount ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                                    <span class="text-sm text-gray-400">views</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${project.lvsProjectId})}"
+                                            class="inline-flex items-center gap-3 bg-gradient-to-r from-[#fed700] to-[#ffa500] text-black font-black px-10 py-4 rounded-full hover:scale-105 hover:shadow-2xl hover:shadow-[#fed700]/50 transition-all duration-300">
+                                            <span class="text-lg">View Details</span>
+                                            <i class="fas fa-arrow-right text-xl"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Carousel Controls -->
+                        <button onclick="prevSlide()"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition z-20">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button onclick="nextSlide()"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition z-20">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+
+                        <!-- Carousel Indicators -->
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                            <button th:each="project, iterStat : ${trendingProjects}"
+                                th:onclick="'goToSlide(' + ${iterStat.index} + ')'"
+                                th:classappend="${iterStat.index == 0} ? 'bg-[#fed700] w-8' : 'bg-white/30 w-2'"
+                                class="carousel-indicator h-2 rounded-full transition-all duration-300"></button>
                         </div>
                     </div>
 
                     <!-- Side Banners -->
                     <div class="flex flex-col gap-6">
                         <div
-                            class="bg-[#2b2b2b] rounded-2xl p-6 flex-grow flex flex-col justify-center border border-[#333] relative overflow-hidden group">
+                            class="bg-[#2b2b2b] rounded-2xl p-6 flex-grow flex flex-col justify-center border border-[#333] relative overflow-hidden group hover-lift">
                             <div class="relative z-10">
-                                <span class="text-[#fed700] font-bold text-xs uppercase mb-1 block">Extreme 4K</span>
-                                <h3 class="text-white text-2xl font-light">Game Console <br><strong
-                                        class="font-bold">PlayStation 5</strong></h3>
-                                <a href="#"
-                                    class="text-white text-sm font-bold mt-4 inline-block hover:text-[#fed700] transition underline decoration-[#fed700]">Shop
-                                    Now</a>
+                                <span class="text-[#fed700] font-bold text-xs uppercase mb-1 block">Featured</span>
+                                <h3 class="text-white text-2xl font-light">New <br><strong
+                                        class="font-bold">Arrivals</strong></h3>
+                                <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                                    class="text-white text-sm font-bold mt-4 inline-block hover:text-[#fed700] transition underline decoration-[#fed700]">
+                                    Explore Now
+                                </a>
                             </div>
                             <i
-                                class="fas fa-gamepad absolute -right-4 -bottom-4 text-9xl text-[#1e1e1e] group-hover:scale-110 transition duration-500"></i>
+                                class="fas fa-star absolute -right-4 -bottom-4 text-9xl text-[#1e1e1e] group-hover:scale-110 transition duration-500"></i>
                         </div>
                         <div
-                            class="bg-[#2b2b2b] rounded-2xl p-6 flex-grow flex flex-col justify-center border border-[#333] relative overflow-hidden group">
+                            class="bg-[#2b2b2b] rounded-2xl p-6 flex-grow flex flex-col justify-center border border-[#333] relative overflow-hidden group hover-lift">
                             <div class="relative z-10">
-                                <span class="text-[#fed700] font-bold text-xs uppercase mb-1 block">New Arrival</span>
-                                <h3 class="text-white text-2xl font-light">Accessories <br><strong
-                                        class="font-bold">Gaming Chairs</strong></h3>
-                                <a href="#"
-                                    class="text-white text-sm font-bold mt-4 inline-block hover:text-[#fed700] transition underline decoration-[#fed700]">Shop
-                                    Now</a>
+                                <span class="text-[#fed700] font-bold text-xs uppercase mb-1 block">Hot Deal</span>
+                                <h3 class="text-white text-2xl font-light">Special <br><strong
+                                        class="font-bold">Offers</strong></h3>
+                                <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                                    class="text-white text-sm font-bold mt-4 inline-block hover:text-[#fed700] transition underline decoration-[#fed700]">
+                                    Shop Now
+                                </a>
                             </div>
                             <i
-                                class="fas fa-chair absolute -right-4 -bottom-4 text-9xl text-[#1e1e1e] group-hover:scale-110 transition duration-500"></i>
+                                class="fas fa-gift absolute -right-4 -bottom-4 text-9xl text-[#1e1e1e] group-hover:scale-110 transition duration-500"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Product Carousel Section -->
+        <!-- Best Sellers Section -->
         <section class="container mx-auto px-4 mb-16">
             <div class="flex items-center justify-between mb-8 pb-4 border-b border-[#333]">
                 <h2 class="text-2xl text-white font-light">Best <strong class="font-bold">Sellers</strong></h2>
-                <div class="flex gap-4 text-sm font-bold text-gray-500">
-                    <a href="#" class="text-[#fed700] border-b-2 border-[#fed700] pb-4 -mb-4.5">Top 20</a>
-                    <a href="#" class="hover:text-white transition">Smart Phones</a>
-                    <a href="#" class="hover:text-white transition">Laptops</a>
-                    <a href="#" class="hover:text-white transition">Cameras</a>
-                </div>
+                <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                    class="text-[#fed700] hover:text-white transition text-sm font-bold">
+                    View All <i class="fas fa-arrow-right ml-1"></i>
+                </a>
             </div>
 
-            <!-- Products Grid (Using Electro Card Style) -->
+            <!-- Products Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Product Card -->
-                <div th:each="p : ${projects}" class="electro-card group h-full flex flex-col">
-                    <div class="p-4 relative">
-                        <span
-                            class="electro-badge-new absolute top-4 left-4 text-[10px] font-bold px-2 py-1 rounded">NEW</span>
-                        <!-- Wishlist Button -->
-                        <button
-                            class="absolute top-4 right-4 text-gray-400 hover:text-white transition opacity-0 group-hover:opacity-100">
-                            <i class="far fa-heart"></i>
-                        </button>
+                <div th:each="p : ${popularProjects}"
+                    class="electro-card group h-full flex flex-col relative overflow-hidden hover:shadow-2xl hover:shadow-[#fed700]/20 transition-all duration-300 hover:scale-105">
+                    <div class="p-4 relative flex flex-col h-full">
+                        <!-- Badges -->
+                        <div class="absolute top-4 left-4 z-10 flex flex-col gap-2">
+                            <span
+                                class="bg-gradient-to-r from-red-500 to-orange-500 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg">
+                                🔥 HOT
+                            </span>
+                            <span th:if="${p.lvsDiscountPercent != null && p.lvsDiscountPercent > 0}"
+                                class="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg animate-pulse">
+                                -<span th:text="${p.lvsDiscountPercent}">0</span>% OFF
+                            </span>
+                        </div>
 
+                        <!-- Image -->
                         <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${p.lvsProjectId})}"
-                            class="block h-48 flex items-center justify-center mb-4">
+                            class="block h-48 flex items-center justify-center mb-4 relative overflow-hidden rounded-lg">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
                             <img th:if="${p.lvsThumbnailUrl}" th:src="@{${p.lvsThumbnailUrl}}"
-                                class="max-h-full max-w-full object-contain transition duration-300 group-hover:scale-105"
+                                class="max-h-full max-w-full object-contain transition duration-300 group-hover:scale-110"
                                 alt="Product">
                             <i th:unless="${p.lvsThumbnailUrl}" class="fas fa-camera text-6xl text-[#333]"></i>
                         </a>
 
-                        <div class="mb-1">
-                            <a href="#" class="text-xs text-gray-500 hover:text-[#fed700] transition"
-                                th:text="${p.lvsCategory != null ? p.lvsCategory.lvsCategoryName : 'Gadgets'}">Category</a>
+                        <!-- Category -->
+                        <div class="mb-2">
+                            <a href="#"
+                                class="text-xs text-gray-500 hover:text-[#fed700] transition uppercase tracking-wider"
+                                th:text="${p.lvsCategory != null ? p.lvsCategory.lvsCategoryName : 'Uncategorized'}">Category</a>
                         </div>
 
-                        <h3 class="mb-2 h-10 overflow-hidden">
+                        <!-- Title -->
+                        <h3 class="mb-3 flex-grow">
                             <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${p.lvsProjectId})}"
-                                class="text-[#3edbf0] text-sm font-bold leading-tight hover:text-[#fed700] transition line-clamp-2"
+                                class="text-white text-base font-bold leading-tight hover:text-[#fed700] transition line-clamp-2"
                                 th:text="${p.lvsProjectName}">Product Name</a>
                         </h3>
 
-                        <div class="flex items-center justify-between mt-auto">
-                            <span class="electro-price" th:text="${#numbers.formatCurrency(p.lvsPrice)}">$0.00</span>
+                        <!-- Price Section -->
+                        <div class="mb-3 space-y-2">
+                            <!-- Main Price -->
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-2xl font-black text-[#fed700]">
+                                    <span
+                                        th:text="${#numbers.formatDecimal(p.lvsFinalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                </span>
+                                <span class="text-sm font-bold text-[#fed700]">Coins</span>
+                                <span th:if="${p.lvsDiscountPercent != null && p.lvsDiscountPercent > 0}"
+                                    class="text-sm text-gray-500 line-through ml-2">
+                                    <span
+                                        th:text="${#numbers.formatDecimal(p.lvsPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                </span>
+                            </div>
+
+                            <!-- Savings -->
+                            <div th:if="${p.lvsDiscountPercent != null && p.lvsDiscountPercent > 0}"
+                                class="inline-flex items-center gap-1 bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs font-bold">
+                                <i class="fas fa-tag text-[10px]"></i>
+                                Save: <span
+                                    th:text="${#numbers.formatDecimal(p.lvsPrice - p.lvsFinalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                Coins!
+                            </div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="flex items-center gap-3 mb-3 text-xs text-gray-400">
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-download text-[#fed700]"></i>
+                                <span
+                                    th:text="${#numbers.formatDecimal(p.lvsDownloadCount ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-eye text-blue-400"></i>
+                                <span
+                                    th:text="${#numbers.formatDecimal(p.lvsViewCount ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="mt-auto">
                             <form th:if="${session.LvsCurrentUser}" th:action="@{/LvsUser/LvsCart/LvsAddItem}"
-                                method="post" class="inline">
+                                method="post" class="w-full">
                                 <input type="hidden" name="lvsProjectId" th:value="${p.lvsProjectId}">
                                 <input type="hidden" name="lvsQuantity" value="1">
                                 <button type="submit"
-                                    class="bg-[#333] hover:bg-[#fed700] hover:text-black text-white w-8 h-8 rounded-full flex items-center justify-center transition">
-                                    <i class="fas fa-shopping-cart text-xs"></i>
+                                    class="w-full bg-gradient-to-r from-[#fed700] to-[#ffa500] hover:from-[#ffa500] hover:to-[#fed700] text-black font-bold py-2 px-4 rounded-full flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:shadow-[#fed700]/50">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>Add to Cart</span>
                                 </button>
                             </form>
                             <a th:unless="${session.LvsCurrentUser}" th:href="@{/LvsAuth/LvsLogin}"
-                                class="bg-[#333] hover:bg-[#fed700] hover:text-black text-white w-8 h-8 rounded-full flex items-center justify-center transition">
-                                <i class="fas fa-shopping-cart text-xs"></i>
+                                class="w-full bg-gradient-to-r from-[#fed700] to-[#ffa500] hover:from-[#ffa500] hover:to-[#fed700] text-black font-bold py-2 px-4 rounded-full flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:shadow-[#fed700]/50">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newest Projects Section -->
+        <section class="container mx-auto px-4 mb-16">
+            <div class="flex items-center justify-between mb-8 pb-4 border-b border-[#333]">
+                <h2 class="text-2xl text-white font-light">New <strong class="font-bold">Arrivals</strong></h2>
+                <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                    class="text-[#fed700] hover:text-white transition text-sm font-bold">
+                    View All <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div th:each="p : ${newestProjects}"
+                    class="electro-card group h-full flex flex-col relative overflow-hidden hover:shadow-2xl hover:shadow-[#3edbf0]/20 transition-all duration-300 hover:scale-105">
+                    <div class="p-4 relative flex flex-col h-full">
+                        <!-- Badges -->
+                        <div class="absolute top-4 left-4 z-10 flex flex-col gap-2">
+                            <span
+                                class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg">
+                                ✨ NEW
+                            </span>
+                            <span th:if="${p.lvsDiscountPercent != null && p.lvsDiscountPercent > 0}"
+                                class="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg animate-pulse">
+                                -<span th:text="${p.lvsDiscountPercent}">0</span>% OFF
+                            </span>
+                        </div>
+
+                        <!-- Image -->
+                        <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${p.lvsProjectId})}"
+                            class="block h-48 flex items-center justify-center mb-4 relative overflow-hidden rounded-lg">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
+                            <img th:if="${p.lvsThumbnailUrl}" th:src="@{${p.lvsThumbnailUrl}}"
+                                class="max-h-full max-w-full object-contain transition duration-300 group-hover:scale-110"
+                                alt="Product">
+                            <i th:unless="${p.lvsThumbnailUrl}" class="fas fa-camera text-6xl text-[#333]"></i>
+                        </a>
+
+                        <!-- Category -->
+                        <div class="mb-2">
+                            <a href="#"
+                                class="text-xs text-gray-500 hover:text-[#fed700] transition uppercase tracking-wider"
+                                th:text="${p.lvsCategory != null ? p.lvsCategory.lvsCategoryName : 'Uncategorized'}">Category</a>
+                        </div>
+
+                        <!-- Title -->
+                        <h3 class="mb-3 flex-grow">
+                            <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${p.lvsProjectId})}"
+                                class="text-white text-base font-bold leading-tight hover:text-[#fed700] transition line-clamp-2"
+                                th:text="${p.lvsProjectName}">Product Name</a>
+                        </h3>
+
+                        <!-- Price Section -->
+                        <div class="mb-3 space-y-2">
+                            <!-- Main Price -->
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-2xl font-black text-[#fed700]">
+                                    <span
+                                        th:text="${#numbers.formatDecimal(p.lvsFinalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                </span>
+                                <span class="text-sm font-bold text-[#fed700]">Coins</span>
+                                <span th:if="${p.lvsDiscountPercent != null && p.lvsDiscountPercent > 0}"
+                                    class="text-sm text-gray-500 line-through ml-2">
+                                    <span
+                                        th:text="${#numbers.formatDecimal(p.lvsPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                </span>
+                            </div>
+
+                            <!-- Savings -->
+                            <div th:if="${p.lvsDiscountPercent != null && p.lvsDiscountPercent > 0}"
+                                class="inline-flex items-center gap-1 bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs font-bold">
+                                <i class="fas fa-tag text-[10px]"></i>
+                                Save: <span
+                                    th:text="${#numbers.formatDecimal(p.lvsPrice - p.lvsFinalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                Coins!
+                            </div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="flex items-center gap-3 mb-3 text-xs text-gray-400">
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-download text-[#fed700]"></i>
+                                <span
+                                    th:text="${#numbers.formatDecimal(p.lvsDownloadCount ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-eye text-blue-400"></i>
+                                <span
+                                    th:text="${#numbers.formatDecimal(p.lvsViewCount ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="mt-auto">
+                            <form th:if="${session.LvsCurrentUser}" th:action="@{/LvsUser/LvsCart/LvsAddItem}"
+                                method="post" class="w-full">
+                                <input type="hidden" name="lvsProjectId" th:value="${p.lvsProjectId}">
+                                <input type="hidden" name="lvsQuantity" value="1">
+                                <button type="submit"
+                                    class="w-full bg-gradient-to-r from-[#fed700] to-[#ffa500] hover:from-[#ffa500] hover:to-[#fed700] text-black font-bold py-2 px-4 rounded-full flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:shadow-[#fed700]/50">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </form>
+                            <a th:unless="${session.LvsCurrentUser}" th:href="@{/LvsAuth/LvsLogin}"
+                                class="w-full bg-gradient-to-r from-[#fed700] to-[#ffa500] hover:from-[#ffa500] hover:to-[#fed700] text-black font-bold py-2 px-4 rounded-full flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:shadow-[#fed700]/50">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Posts & Top Users Section -->
+        <section class="container mx-auto px-4 mb-16">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Recent Posts (2/3) -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center justify-between mb-8 pb-4 border-b border-[#333]">
+                        <h2 class="text-2xl text-white font-light">Recent <strong class="font-bold">Posts</strong></h2>
+                        <a th:href="@{/LvsUser/LvsBlog/LvsList}"
+                            class="text-[#fed700] hover:text-white transition text-sm font-bold">
+                            View All <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+
+                    <!-- Posts Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <a th:each="post : ${recentPosts}"
+                            th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})}"
+                            class="post-card bg-gradient-to-br from-[#2b2b2b] to-[#252525] border border-[#333] rounded-xl overflow-hidden hover:border-[#fed700] transition-all duration-500 group block relative">
+
+                            <!-- Post Image with Overlay -->
+                            <div th:if="${post.lvsThumbnailUrl}" class="h-48 bg-[#1e1e1e] overflow-hidden relative">
+                                <img th:src="@{${post.lvsThumbnailUrl}}"
+                                    class="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
+                                    alt="Post image">
+                                <!-- Gradient Overlay -->
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                </div>
+                            </div>
+                            <div th:unless="${post.lvsThumbnailUrl}"
+                                class="h-48 bg-gradient-to-br from-[#1e1e1e] to-[#2b2b2b] flex items-center justify-center">
+                                <i class="fas fa-image text-6xl text-[#333]"></i>
+                            </div>
+
+                            <!-- Post Content -->
+                            <div class="p-5">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <!-- Enhanced Type Badge -->
+                                    <span
+                                        class="post-type-badge text-xs px-3 py-1.5 bg-gradient-to-r from-[#fed700]/20 to-[#ffa500]/20 text-[#fed700] rounded-full font-bold flex items-center gap-1.5"
+                                        th:text="${post.lvsType?.name()}">
+                                        <i class="fas fa-bookmark"></i>
+                                        Type
+                                    </span>
+                                    <span class="text-gray-500 text-xs flex items-center gap-1">
+                                        <i class="far fa-clock"></i>
+                                        <span
+                                            th:text="${#temporals.format(post.lvsCreatedAt, 'dd/MM/yyyy')}">Date</span>
+                                    </span>
+                                </div>
+
+                                <h3 class="text-white font-bold text-lg mb-2 line-clamp-2 group-hover:text-[#fed700] transition-all duration-300"
+                                    th:text="${post.lvsTitle}">Post Title</h3>
+
+                                <p class="text-gray-400 text-sm line-clamp-2 mb-4" th:text="${post.lvsContent}">Content
+                                    preview...</p>
+
+                                <!-- Enhanced Engagement Stats -->
+                                <div class="flex items-center gap-4 text-sm">
+                                    <span
+                                        class="flex items-center gap-1.5 text-gray-400 hover:text-blue-400 transition">
+                                        <i class="fas fa-eye text-blue-400"></i>
+                                        <span class="font-semibold"
+                                            th:text="${#numbers.formatDecimal(post.lvsViewCount ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                    </span>
+                                    <span class="flex items-center gap-1.5 text-gray-400 hover:text-red-400 transition">
+                                        <i class="fas fa-heart text-red-400"></i>
+                                        <span class="font-semibold"
+                                            th:text="${#numbers.formatDecimal(post.lvsLikeCount ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                    </span>
+                                    <span
+                                        class="flex items-center gap-1.5 text-gray-400 hover:text-green-400 transition">
+                                        <i class="fas fa-comment text-green-400"></i>
+                                        <span class="font-semibold"
+                                            th:text="${#numbers.formatDecimal(post.lvsCommentCount ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Shine Effect -->
+                            <div class="shine-overlay"></div>
+                        </a>
+                    </div>
+                </div>
+
+
+                <!-- Top Users - 3 Separate Rankings (1/3 width) -->
+                <div class="space-y-8">
+                    <!-- Top Coins Section -->
+                    <div>
+                        <div class="flex items-center justify-between mb-6 pb-3 border-b border-[#333]">
+                            <h3 class="text-xl text-white font-light flex items-center gap-2">
+                                <i class="fas fa-coins text-[#fed700] text-2xl"></i>
+                                💰 Top <strong class="font-bold">Coins</strong>
+                            </h3>
+                        </div>
+
+                        <!-- Users List -->
+                        <div class="space-y-2">
+                            <a th:each="user, iterStat : ${topByCoin}"
+                                th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${user.lvsUserId})}"
+                                class="top-user-card flex items-center gap-3 p-3 bg-gradient-to-r from-[#2b2b2b] to-[#252525] border border-[#333] rounded-lg hover:border-[#fed700] transition-all duration-500 group relative overflow-hidden">
+
+                                <!-- Rank Badge -->
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm relative z-10"
+                                    th:classappend="${iterStat.index == 0} ? 'rank-1' : (${iterStat.index == 1} ? 'rank-2' : (${iterStat.index == 2} ? 'rank-3' : 'bg-[#333] text-gray-400'))">
+                                    <i th:if="${iterStat.index == 0}" class="fas fa-trophy text-xl"></i>
+                                    <i th:if="${iterStat.index == 1}" class="fas fa-trophy text-xl"></i>
+                                    <i th:if="${iterStat.index == 2}" class="fas fa-trophy text-xl"></i>
+                                    <span th:if="${iterStat.index >= 3}" th:text="${iterStat.index + 1}">4</span>
+                                </div>
+
+                                <!-- Avatar -->
+                                <div
+                                    class="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden bg-[#1e1e1e] border-2 border-[#333] group-hover:border-[#fed700] transition-all duration-500 relative avatar-container">
+                                    <img th:if="${user.lvsAvatarUrl}" th:src="@{${user.lvsAvatarUrl}}"
+                                        class="w-full h-full object-cover" alt="Avatar">
+                                    <div th:unless="${user.lvsAvatarUrl}"
+                                        class="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#fed700] to-[#ffa500]">
+                                        <span class="text-black font-bold text-lg"
+                                            th:text="${#strings.substring(user.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                                    </div>
+                                </div>
+
+                                <!-- User Info -->
+                                <div class="flex-grow min-w-0">
+                                    <p class="text-white font-bold text-sm truncate group-hover:text-[#fed700] transition-all duration-300"
+                                        th:text="${user.lvsUsername}">Username</p>
+                                    <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                        <!-- Title Badge with proper styling -->
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'ADMIN'}"
+                                            class="rainbow-badge">Admin</span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'MODERATOR'}"
+                                            class="title-badge title-tier-9"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'LEGEND'}"
+                                            class="title-badge title-tier-8"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span
+                                            th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'MASTER_CREATOR'}"
+                                            class="title-badge title-tier-7"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'INFLUENCER'}"
+                                            class="title-badge title-tier-6"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'SELLER'}"
+                                            class="title-badge title-tier-5"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'CREATOR'}"
+                                            class="title-badge title-tier-4"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'CONTRIBUTOR'}"
+                                            class="title-badge title-tier-3"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span
+                                            th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'ACTIVE_MEMBER'}"
+                                            class="title-badge title-tier-2"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'NEWBIE'}"
+                                            class="title-badge title-tier-1"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <!-- Coin Amount -->
+                                        <span class="text-gray-400 text-[10px] flex items-center gap-0.5">
+                                            <i class="fas fa-coins text-[#fed700]"></i>
+                                            <span class="font-bold"
+                                                th:text="${#numbers.formatDecimal(user.lvsCoin ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Shine Effect -->
+                                <div class="shine-overlay"></div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Top Sellers Section -->
+                    <div>
+                        <div class="flex items-center justify-between mb-6 pb-3 border-b border-[#333]">
+                            <h3 class="text-xl text-white font-light flex items-center gap-2">
+                                <i class="fas fa-chart-line text-green-500 text-2xl"></i>
+                                📦 Top <strong class="font-bold">Sellers</strong>
+                            </h3>
+                        </div>
+
+                        <!-- Users List -->
+                        <div class="space-y-2">
+                            <a th:each="user, iterStat : ${topBySales}"
+                                th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${user.lvsUserId})}"
+                                class="top-user-card flex items-center gap-3 p-3 bg-gradient-to-r from-[#2b2b2b] to-[#252525] border border-[#333] rounded-lg hover:border-green-500 transition-all duration-500 group relative overflow-hidden">
+
+                                <!-- Rank Badge -->
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm relative z-10"
+                                    th:classappend="${iterStat.index == 0} ? 'rank-1' : (${iterStat.index == 1} ? 'rank-2' : (${iterStat.index == 2} ? 'rank-3' : 'bg-[#333] text-gray-400'))">
+                                    <i th:if="${iterStat.index == 0}" class="fas fa-trophy text-xl"></i>
+                                    <i th:if="${iterStat.index == 1}" class="fas fa-trophy text-xl"></i>
+                                    <i th:if="${iterStat.index == 2}" class="fas fa-trophy text-xl"></i>
+                                    <span th:if="${iterStat.index >= 3}" th:text="${iterStat.index + 1}">4</span>
+                                </div>
+
+                                <!-- Avatar -->
+                                <div
+                                    class="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden bg-[#1e1e1e] border-2 border-[#333] group-hover:border-green-500 transition-all duration-500 relative avatar-container">
+                                    <img th:if="${user.lvsAvatarUrl}" th:src="@{${user.lvsAvatarUrl}}"
+                                        class="w-full h-full object-cover" alt="Avatar">
+                                    <div th:unless="${user.lvsAvatarUrl}"
+                                        class="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-500 to-emerald-500">
+                                        <span class="text-white font-bold text-lg"
+                                            th:text="${#strings.substring(user.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                                    </div>
+                                </div>
+
+                                <!-- User Info -->
+                                <div class="flex-grow min-w-0">
+                                    <p class="text-white font-bold text-sm truncate group-hover:text-green-500 transition-all duration-300"
+                                        th:text="${user.lvsUsername}">Username</p>
+                                    <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                        <!-- Title Badge with proper styling -->
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'ADMIN'}"
+                                            class="rainbow-badge">Admin</span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'MODERATOR'}"
+                                            class="title-badge title-tier-9"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'LEGEND'}"
+                                            class="title-badge title-tier-8"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span
+                                            th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'MASTER_CREATOR'}"
+                                            class="title-badge title-tier-7"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'INFLUENCER'}"
+                                            class="title-badge title-tier-6"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'SELLER'}"
+                                            class="title-badge title-tier-5"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'CREATOR'}"
+                                            class="title-badge title-tier-4"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'CONTRIBUTOR'}"
+                                            class="title-badge title-tier-3"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span
+                                            th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'ACTIVE_MEMBER'}"
+                                            class="title-badge title-tier-2"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'NEWBIE'}"
+                                            class="title-badge title-tier-1"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <!-- Sales Amount -->
+                                        <span class="text-gray-400 text-[10px] flex items-center gap-0.5">
+                                            <i class="fas fa-dollar-sign text-green-500"></i>
+                                            <span class="font-bold"
+                                                th:text="${#numbers.formatDecimal(user.lvsBalance ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Shine Effect -->
+                                <div class="shine-overlay"></div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Most Active Section -->
+                    <div>
+                        <div class="flex items-center justify-between mb-6 pb-3 border-b border-[#333]">
+                            <h3 class="text-xl text-white font-light flex items-center gap-2">
+                                <i class="fas fa-fire text-orange-500 text-2xl"></i>
+                                🎯 Most <strong class="font-bold">Active</strong>
+                            </h3>
+                        </div>
+
+                        <!-- Users List -->
+                        <div class="space-y-2">
+                            <a th:each="user, iterStat : ${topByActivity}"
+                                th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${user.lvsUserId})}"
+                                class="top-user-card flex items-center gap-3 p-3 bg-gradient-to-r from-[#2b2b2b] to-[#252525] border border-[#333] rounded-lg hover:border-orange-500 transition-all duration-500 group relative overflow-hidden">
+
+                                <!-- Rank Badge -->
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm relative z-10"
+                                    th:classappend="${iterStat.index == 0} ? 'rank-1' : (${iterStat.index == 1} ? 'rank-2' : (${iterStat.index == 2} ? 'rank-3' : 'bg-[#333] text-gray-400'))">
+                                    <i th:if="${iterStat.index == 0}" class="fas fa-trophy text-xl"></i>
+                                    <i th:if="${iterStat.index == 1}" class="fas fa-trophy text-xl"></i>
+                                    <i th:if="${iterStat.index == 2}" class="fas fa-trophy text-xl"></i>
+                                    <span th:if="${iterStat.index >= 3}" th:text="${iterStat.index + 1}">4</span>
+                                </div>
+
+                                <!-- Avatar -->
+                                <div
+                                    class="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden bg-[#1e1e1e] border-2 border-[#333] group-hover:border-orange-500 transition-all duration-500 relative avatar-container">
+                                    <img th:if="${user.lvsAvatarUrl}" th:src="@{${user.lvsAvatarUrl}}"
+                                        class="w-full h-full object-cover" alt="Avatar">
+                                    <div th:unless="${user.lvsAvatarUrl}"
+                                        class="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-500 to-red-500">
+                                        <span class="text-white font-bold text-lg"
+                                            th:text="${#strings.substring(user.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                                    </div>
+                                </div>
+
+                                <!-- User Info -->
+                                <div class="flex-grow min-w-0">
+                                    <p class="text-white font-bold text-sm truncate group-hover:text-orange-500 transition-all duration-300"
+                                        th:text="${user.lvsUsername}">Username</p>
+                                    <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                        <!-- Title Badge with proper styling -->
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'ADMIN'}"
+                                            class="rainbow-badge">Admin</span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'MODERATOR'}"
+                                            class="title-badge title-tier-9"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'LEGEND'}"
+                                            class="title-badge title-tier-8"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span
+                                            th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'MASTER_CREATOR'}"
+                                            class="title-badge title-tier-7"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'INFLUENCER'}"
+                                            class="title-badge title-tier-6"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'SELLER'}"
+                                            class="title-badge title-tier-5"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'CREATOR'}"
+                                            class="title-badge title-tier-4"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'CONTRIBUTOR'}"
+                                            class="title-badge title-tier-3"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span
+                                            th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'ACTIVE_MEMBER'}"
+                                            class="title-badge title-tier-2"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <span th:if="${user.lvsTitle != null and user.lvsTitle.name() == 'NEWBIE'}"
+                                            class="title-badge title-tier-1"
+                                            th:text="${user.lvsTitle.displayName}"></span>
+                                        <!-- Activity Score - Calculated -->
+                                        <!-- Activity Score - Accurate from backend -->
+                                        <span
+                                            class="text-orange-500 text-[10px] flex items-center gap-0.5 font-bold bg-orange-500/10 px-1.5 py-0.5 rounded">
+                                            <i class="fas fa-chart-line"></i>
+                                            <span
+                                                th:text="${user.lvsActivityScore != null ? #numbers.formatDecimal(user.lvsActivityScore, 0, 'COMMA', 0, 'POINT') : '0'}">0</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Shine Effect -->
+                                <div class="shine-overlay"></div>
                             </a>
                         </div>
                     </div>
@@ -167,6 +1020,959 @@
             </div>
         </section>
     </div>
+
+    <!-- Carousel Script -->
+    <script layout:fragment="scripts">
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-item');
+        const indicators = document.querySelectorAll('.carousel-indicator');
+        const totalSlides = slides.length;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                if (i === index) {
+                    slide.style.display = 'block'; // Ensure slide is visible
+                    slide.classList.remove('opacity-0', 'z-0');
+                    slide.classList.add('opacity-100', 'z-10');
+                } else {
+                    slide.style.display = 'none'; // Hide other slides
+                    slide.classList.remove('opacity-100', 'z-10');
+                    slide.classList.add('opacity-0', 'z-0');
+                }
+            });
+
+            indicators.forEach((indicator, i) => {
+                if (i === index) {
+                    indicator.classList.remove('bg-white/30', 'w-2');
+                    indicator.classList.add('bg-[#fed700]', 'w-8');
+                } else {
+                    indicator.classList.remove('bg-[#fed700]', 'w-8');
+                    indicator.classList.add('bg-white/30', 'w-2');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            showSlide(currentSlide);
+        }
+
+        // Auto-play carousel
+        setInterval(nextSlide, 5000);
+
+        // Initialize carousel - show first slide on page load
+        showSlide(0);
+    </script>
+
+    <!-- Advanced Animations -->
+    <style>
+        /* Enhanced Card Hover with EXTREME 3D Effect */
+        .electro-card {
+            position: relative;
+            overflow: visible !important;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+            perspective: 1500px;
+        }
+
+        /* EXTREME Hover Effects - ALL IN ONE */
+        .electro-card:hover {
+            /* 3D Transform */
+            transform: translateY(-25px) translateZ(50px) rotateX(8deg) rotateY(-3deg) scale(1.12);
+
+            /* Color Boost */
+            filter: brightness(1.15) saturate(1.3);
+
+            /* Rainbow Border Animation */
+            animation: rainbow-border 3s linear infinite;
+        }
+
+        /* Animated Rainbow Border Keyframes */
+        @keyframes rainbow-border {
+            0% {
+                box-shadow:
+                    0 35px 70px rgba(254, 215, 0, 0.6),
+                    0 0 0 4px rgba(255, 0, 0, 0.9),
+                    0 0 30px rgba(255, 0, 0, 0.8),
+                    0 0 60px rgba(255, 0, 0, 0.6),
+                    0 0 90px rgba(255, 0, 0, 0.4),
+                    inset 0 0 40px rgba(255, 0, 0, 0.2);
+            }
+
+            25% {
+                box-shadow:
+                    0 35px 70px rgba(254, 215, 0, 0.6),
+                    0 0 0 4px rgba(255, 215, 0, 0.9),
+                    0 0 30px rgba(255, 215, 0, 0.8),
+                    0 0 60px rgba(255, 215, 0, 0.6),
+                    0 0 90px rgba(255, 215, 0, 0.4),
+                    inset 0 0 40px rgba(255, 215, 0, 0.2);
+            }
+
+            50% {
+                box-shadow:
+                    0 35px 70px rgba(254, 215, 0, 0.6),
+                    0 0 0 4px rgba(0, 255, 0, 0.9),
+                    0 0 30px rgba(0, 255, 0, 0.8),
+                    0 0 60px rgba(0, 255, 0, 0.6),
+                    0 0 90px rgba(0, 255, 0, 0.4),
+                    inset 0 0 40px rgba(0, 255, 0, 0.2);
+            }
+
+            75% {
+                box-shadow:
+                    0 35px 70px rgba(254, 215, 0, 0.6),
+                    0 0 0 4px rgba(0, 191, 255, 0.9),
+                    0 0 30px rgba(0, 191, 255, 0.8),
+                    0 0 60px rgba(0, 191, 255, 0.6),
+                    0 0 90px rgba(0, 191, 255, 0.4),
+                    inset 0 0 40px rgba(0, 191, 255, 0.2);
+            }
+
+            100% {
+                box-shadow:
+                    0 35px 70px rgba(254, 215, 0, 0.6),
+                    0 0 0 4px rgba(255, 0, 0, 0.9),
+                    0 0 30px rgba(255, 0, 0, 0.8),
+                    0 0 60px rgba(255, 0, 0, 0.6),
+                    0 0 90px rgba(255, 0, 0, 0.4),
+                    inset 0 0 40px rgba(255, 0, 0, 0.2);
+            }
+        }
+
+        /* EXTREME Image Zoom & Effects */
+        .electro-card img {
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center center;
+        }
+
+        .electro-card:hover img {
+            transform: scale(1.35) rotate(5deg);
+            filter: brightness(1.3) contrast(1.2) saturate(1.5) drop-shadow(0 0 20px rgba(254, 215, 0, 0.8));
+        }
+
+        /* Category Tag Slide Effect */
+        .electro-card a[href="#"] {
+            position: relative;
+            display: inline-block;
+        }
+
+        .electro-card a[href="#"]::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #fed700, #ffa500);
+            transition: width 0.3s ease;
+        }
+
+        .electro-card:hover a[href="#"]::after {
+            width: 100%;
+        }
+
+        /* Title Glow on Hover */
+        .electro-card h3 a {
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .electro-card:hover h3 a {
+            text-shadow:
+                0 0 10px rgba(254, 215, 0, 0.6),
+                0 0 20px rgba(254, 215, 0, 0.4);
+            transform: translateX(3px);
+        }
+
+        /* Stats Icons Bounce */
+        @keyframes bounce-icon {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+
+        .electro-card:hover .fa-download,
+        .electro-card:hover .fa-eye {
+            animation: bounce-icon 0.6s ease-in-out infinite;
+        }
+
+        /* Button Glow Pulse on Hover */
+        @keyframes button-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 15px rgba(254, 215, 0, 0.6);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 25px rgba(254, 215, 0, 0.9),
+                    0 0 35px rgba(254, 215, 0, 0.7),
+                    0 8px 45px rgba(254, 215, 0, 0.5);
+            }
+        }
+
+        .electro-card button:hover,
+        .electro-card a[class*="bg-gradient"]:hover {
+            animation: button-glow 1.2s ease-in-out infinite;
+            transform: scale(1.08) translateY(-2px);
+        }
+
+        /* Shimmer Effect for Badges */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .electro-card:hover span[class*="bg-gradient"] {
+            background-size: 200% auto;
+            animation: shimmer 2s linear infinite;
+        }
+
+        /* Floating Animation for Discount Badges */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        span.animate-pulse {
+            animation: float 2.5s ease-in-out infinite;
+        }
+
+        /* Glow Pulse for Price */
+        @keyframes glow-pulse {
+
+            0%,
+            100% {
+                text-shadow: 0 0 12px rgba(254, 215, 0, 0.6);
+            }
+
+            50% {
+                text-shadow:
+                    0 0 25px rgba(254, 215, 0, 0.9),
+                    0 0 35px rgba(254, 215, 0, 0.7);
+            }
+        }
+
+        /* Apply glow to price elements */
+        .electro-card:hover .text-2xl {
+            animation: glow-pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Fade In on Scroll */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.7s ease-out forwards;
+        }
+
+        /* Staggered Animation Delays */
+        .electro-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .electro-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .electro-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .electro-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .electro-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .electro-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .electro-card:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        .electro-card:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+
+        /* Shine Effect on Hover */
+        @keyframes shine {
+            0% {
+                left: -150%;
+            }
+
+            100% {
+                left: 150%;
+            }
+        }
+
+        .electro-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.25),
+                    transparent);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .electro-card:hover::before {
+            animation: shine 1s ease-in-out;
+        }
+
+        /* Savings Badge Pulse */
+        .electro-card:hover div[class*="bg-green"] {
+            animation: pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            transform: scale(1.08);
+        }
+
+        /* ========================================
+           TOP USERS SECTION - EXTREME WOW ANIMATIONS
+        ======================================== */
+
+        /* Premium Rank Badges with Enhanced Effects */
+        .rank-1 {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 25%, #fff 50%, #ffed4e 75%, #ffd700 100%);
+            background-size: 200% 200%;
+            color: #000;
+            font-weight: 900;
+            box-shadow:
+                0 0 25px rgba(255, 215, 0, 1),
+                0 0 50px rgba(255, 215, 0, 0.7),
+                0 0 75px rgba(255, 215, 0, 0.5),
+                inset 0 0 20px rgba(255, 255, 255, 0.4);
+            animation: rank-1-mega-pulse 2s ease-in-out infinite, rank-gradient-shift 3s linear infinite;
+            position: relative;
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 25%, #fff 50%, #e8e8e8 75%, #c0c0c0 100%);
+            background-size: 200% 200%;
+            color: #000;
+            font-weight: 900;
+            box-shadow:
+                0 0 20px rgba(192, 192, 192, 0.9),
+                0 0 40px rgba(192, 192, 192, 0.6),
+                inset 0 0 15px rgba(255, 255, 255, 0.3);
+            animation: rank-2-pulse 2.5s ease-in-out infinite, rank-gradient-shift 3s linear infinite;
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 25%, #f4d9b3 50%, #e6a85c 75%, #cd7f32 100%);
+            background-size: 200% 200%;
+            color: #000;
+            font-weight: 900;
+            box-shadow:
+                0 0 20px rgba(205, 127, 50, 0.9),
+                0 0 40px rgba(205, 127, 50, 0.6),
+                inset 0 0 15px rgba(255, 255, 255, 0.3);
+            animation: rank-3-pulse 3s ease-in-out infinite, rank-gradient-shift 3s linear infinite;
+        }
+
+        /* Gradient Shift Animation for Rank Badges */
+        @keyframes rank-gradient-shift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Rank 1 MEGA Pulse Animation */
+        @keyframes rank-1-mega-pulse {
+
+            0%,
+            100% {
+                box-shadow:
+                    0 0 25px rgba(255, 215, 0, 1),
+                    0 0 50px rgba(255, 215, 0, 0.7),
+                    0 0 75px rgba(255, 215, 0, 0.5),
+                    inset 0 0 20px rgba(255, 255, 255, 0.4);
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 35px rgba(255, 215, 0, 1),
+                    0 0 70px rgba(255, 215, 0, 0.9),
+                    0 0 105px rgba(255, 215, 0, 0.7),
+                    inset 0 0 30px rgba(255, 255, 255, 0.6);
+                transform: scale(1.08) rotate(2deg);
+            }
+        }
+
+        /* Rank 2 Pulse Animation */
+        @keyframes rank-2-pulse {
+
+            0%,
+            100% {
+                box-shadow:
+                    0 0 20px rgba(192, 192, 192, 0.9),
+                    0 0 40px rgba(192, 192, 192, 0.6),
+                    inset 0 0 15px rgba(255, 255, 255, 0.3);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 30px rgba(192, 192, 192, 1),
+                    0 0 60px rgba(192, 192, 192, 0.8),
+                    inset 0 0 25px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        /* Rank 3 Pulse Animation */
+        @keyframes rank-3-pulse {
+
+            0%,
+            100% {
+                box-shadow:
+                    0 0 20px rgba(205, 127, 50, 0.9),
+                    0 0 40px rgba(205, 127, 50, 0.6),
+                    inset 0 0 15px rgba(255, 255, 255, 0.3);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 30px rgba(205, 127, 50, 1),
+                    0 0 60px rgba(205, 127, 50, 0.8),
+                    inset 0 0 25px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        /* EXTREME Top User Card Hover Effects */
+        .top-user-card {
+            position: relative;
+            overflow: visible !important;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+            perspective: 1500px;
+        }
+
+        .top-user-card:hover {
+            /* EXTREME 3D Transform */
+            transform: translateY(-20px) translateZ(50px) rotateX(6deg) rotateY(-2deg) scale(1.08);
+
+            /* Enhanced Filter */
+            filter: brightness(1.15) saturate(1.3);
+
+            /* Rainbow Border Animation */
+            animation: rainbow-border-user 3s linear infinite;
+        }
+
+        /* Rainbow Border Animation for User Cards */
+        @keyframes rainbow-border-user {
+            0% {
+                box-shadow:
+                    0 30px 60px rgba(254, 215, 0, 0.6),
+                    0 0 0 3px rgba(255, 0, 0, 0.9),
+                    0 0 25px rgba(255, 0, 0, 0.8),
+                    0 0 50px rgba(255, 0, 0, 0.6),
+                    0 0 75px rgba(255, 0, 0, 0.4),
+                    inset 0 0 30px rgba(255, 0, 0, 0.2);
+            }
+
+            25% {
+                box-shadow:
+                    0 30px 60px rgba(254, 215, 0, 0.6),
+                    0 0 0 3px rgba(255, 215, 0, 0.9),
+                    0 0 25px rgba(255, 215, 0, 0.8),
+                    0 0 50px rgba(255, 215, 0, 0.6),
+                    0 0 75px rgba(255, 215, 0, 0.4),
+                    inset 0 0 30px rgba(255, 215, 0, 0.2);
+            }
+
+            50% {
+                box-shadow:
+                    0 30px 60px rgba(254, 215, 0, 0.6),
+                    0 0 0 3px rgba(0, 255, 0, 0.9),
+                    0 0 25px rgba(0, 255, 0, 0.8),
+                    0 0 50px rgba(0, 255, 0, 0.6),
+                    0 0 75px rgba(0, 255, 0, 0.4),
+                    inset 0 0 30px rgba(0, 255, 0, 0.2);
+            }
+
+            75% {
+                box-shadow:
+                    0 30px 60px rgba(254, 215, 0, 0.6),
+                    0 0 0 3px rgba(0, 191, 255, 0.9),
+                    0 0 25px rgba(0, 191, 255, 0.8),
+                    0 0 50px rgba(0, 191, 255, 0.6),
+                    0 0 75px rgba(0, 191, 255, 0.4),
+                    inset 0 0 30px rgba(0, 191, 255, 0.2);
+            }
+
+            100% {
+                box-shadow:
+                    0 30px 60px rgba(254, 215, 0, 0.6),
+                    0 0 0 3px rgba(255, 0, 0, 0.9),
+                    0 0 25px rgba(255, 0, 0, 0.8),
+                    0 0 50px rgba(255, 0, 0, 0.6),
+                    0 0 75px rgba(255, 0, 0, 0.4),
+                    inset 0 0 30px rgba(255, 0, 0, 0.2);
+            }
+        }
+
+        /* EXTREME Avatar Container Animation */
+        .avatar-container {
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center center;
+        }
+
+        .top-user-card:hover .avatar-container {
+            transform: scale(1.25) rotate(8deg);
+            box-shadow:
+                0 0 30px rgba(254, 215, 0, 0.9),
+                0 0 60px rgba(254, 215, 0, 0.6),
+                0 0 90px rgba(254, 215, 0, 0.4);
+            filter: brightness(1.2) saturate(1.3) drop-shadow(0 0 15px rgba(254, 215, 0, 0.8));
+        }
+
+        /* Username Glow on Hover */
+        .top-user-card p {
+            transition: all 0.3s ease;
+        }
+
+        .top-user-card:hover p {
+            text-shadow:
+                0 0 10px rgba(254, 215, 0, 0.7),
+                0 0 20px rgba(254, 215, 0, 0.5),
+                0 0 30px rgba(254, 215, 0, 0.3);
+        }
+
+        /* Coin Icon Bounce */
+        @keyframes coin-bounce {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-4px) rotate(10deg);
+            }
+
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            75% {
+                transform: translateY(-4px) rotate(-10deg);
+            }
+        }
+
+        .top-user-card:hover .fa-coins {
+            animation: coin-bounce 0.8s ease-in-out infinite;
+        }
+
+        /* Trophy Icon Spin */
+        @keyframes trophy-spin {
+            0% {
+                transform: rotateY(0deg);
+            }
+
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+
+        .top-user-card:hover .fa-trophy {
+            animation: trophy-spin 1.5s ease-in-out infinite;
+        }
+
+        /* Shine Overlay for User Cards */
+        .top-user-card .shine-overlay {
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.3),
+                    transparent);
+            z-index: 10;
+            pointer-events: none;
+            transition: left 0.6s ease-in-out;
+        }
+
+        .top-user-card:hover .shine-overlay {
+            left: 150%;
+        }
+
+        /* ========================================
+           RECENT POSTS SECTION - EXTREME WOW ANIMATIONS
+        ======================================== */
+
+        /* Post Card Base Styles */
+        .post-card {
+            position: relative;
+            overflow: visible !important;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+            perspective: 1500px;
+        }
+
+        /* EXTREME Post Card Hover - 3D Transform + Rainbow Border */
+        .post-card:hover {
+            /* Dramatic 3D Transform */
+            transform: translateY(-20px) translateZ(50px) rotateX(5deg) rotateY(-2deg) scale(1.08);
+
+            /* Enhanced Filter */
+            filter: brightness(1.12) saturate(1.25);
+
+            /* Rainbow Border Animation */
+            animation: rainbow-border-post 3s linear infinite;
+        }
+
+        /* Rainbow Border Animation for Posts */
+        @keyframes rainbow-border-post {
+            0% {
+                box-shadow:
+                    0 30px 60px rgba(254, 215, 0, 0.5),
+                    0 0 0 3px rgba(255, 0, 0, 0.8),
+                    0 0 25px rgba(255, 0, 0, 0.7),
+                    0 0 50px rgba(255, 0, 0, 0.5),
+                    0 0 75px rgba(255, 0, 0, 0.3),
+                    inset 0 0 30px rgba(255, 0, 0, 0.15);
+            }
+
+            25% {
+                box-shadow:
+                    0 30px 60px rgba(254, 215, 0, 0.5),
+                    0 0 0 3px rgba(255, 215, 0, 0.8),
+                    0 0 25px rgba(255, 215, 0, 0.7),
+                    0 0 50px rgba(255, 215, 0, 0.5),
+                    0 0 75px rgba(255, 215, 0, 0.3),
+                    inset 0 0 30px rgba(255, 215, 0, 0.15);
+            }
+
+            50% {
+                box-shadow:
+                    0 30px 60px rgba(254, 215, 0, 0.5),
+                    0 0 0 3px rgba(0, 255, 0, 0.8),
+                    0 0 25px rgba(0, 255, 0, 0.7),
+                    0 0 50px rgba(0, 255, 0, 0.5),
+                    0 0 75px rgba(0, 255, 0, 0.3),
+                    inset 0 0 30px rgba(0, 255, 0, 0.15);
+            }
+
+            75% {
+                box-shadow:
+                    0 30px 60px rgba(254, 215, 0, 0.5),
+                    0 0 0 3px rgba(0, 191, 255, 0.8),
+                    0 0 25px rgba(0, 191, 255, 0.7),
+                    0 0 50px rgba(0, 191, 255, 0.5),
+                    0 0 75px rgba(0, 191, 255, 0.3),
+                    inset 0 0 30px rgba(0, 191, 255, 0.15);
+            }
+
+            100% {
+                box-shadow:
+                    0 30px 60px rgba(254, 215, 0, 0.5),
+                    0 0 0 3px rgba(255, 0, 0, 0.8),
+                    0 0 25px rgba(255, 0, 0, 0.7),
+                    0 0 50px rgba(255, 0, 0, 0.5),
+                    0 0 75px rgba(255, 0, 0, 0.3),
+                    inset 0 0 30px rgba(255, 0, 0, 0.15);
+            }
+        }
+
+        /* EXTREME Image Zoom & Effects */
+        .post-card img {
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center center;
+        }
+
+        .post-card:hover img {
+            transform: scale(1.2) rotate(2deg);
+            filter: brightness(1.25) contrast(1.15) saturate(1.4) drop-shadow(0 0 15px rgba(254, 215, 0, 0.7));
+        }
+
+        /* Enhanced Gradient Overlay Animation */
+        .post-card .absolute.inset-0.bg-gradient-to-t {
+            transition: opacity 0.5s ease;
+        }
+
+        /* Post Type Badge - Animated Gradient & Glow */
+        .post-type-badge {
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+        }
+
+        .post-card:hover .post-type-badge {
+            background: linear-gradient(135deg, #fed700 0%, #ffa500 50%, #fed700 100%);
+            background-size: 200% 200%;
+            color: #000;
+            box-shadow:
+                0 0 20px rgba(254, 215, 0, 0.8),
+                0 0 40px rgba(254, 215, 0, 0.5);
+            transform: scale(1.1);
+            animation: badge-gradient-shift 2s ease infinite;
+        }
+
+        /* Badge Gradient Animation */
+        @keyframes badge-gradient-shift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* Badge Icon Animation */
+        .post-type-badge i {
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover .post-type-badge i {
+            animation: badge-icon-spin 0.6s ease;
+        }
+
+        @keyframes badge-icon-spin {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(180deg) scale(1.2);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        /* Post Title Glow on Hover */
+        .post-card h3 {
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover h3 {
+            text-shadow:
+                0 0 10px rgba(254, 215, 0, 0.6),
+                0 0 20px rgba(254, 215, 0, 0.4),
+                0 0 30px rgba(254, 215, 0, 0.2);
+            transform: translateX(3px);
+        }
+
+        /* Enhanced Engagement Stats Icons */
+        .post-card .fas.fa-eye,
+        .post-card .fas.fa-heart,
+        .post-card .fas.fa-comment {
+            transition: all 0.3s ease;
+        }
+
+        /* Icon Bounce Animation */
+        @keyframes stat-icon-bounce {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-4px) scale(1.15);
+            }
+        }
+
+        .post-card:hover .fas.fa-eye {
+            animation: stat-icon-bounce 0.6s ease-in-out infinite;
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8));
+        }
+
+        .post-card:hover .fas.fa-heart {
+            animation: stat-icon-bounce 0.6s ease-in-out infinite 0.1s;
+            filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.8));
+        }
+
+        .post-card:hover .fas.fa-comment {
+            animation: stat-icon-bounce 0.6s ease-in-out infinite 0.2s;
+            filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.8));
+        }
+
+        /* Engagement Stats Number Glow */
+        .post-card:hover span.font-semibold {
+            text-shadow: 0 0 8px rgba(254, 215, 0, 0.5);
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+
+        /* Post Card Shine Effect */
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.3),
+                    transparent);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .post-card:hover::before {
+            animation: shine-sweep 1s ease-in-out;
+        }
+
+        @keyframes shine-sweep {
+            0% {
+                left: -150%;
+            }
+
+            100% {
+                left: 150%;
+            }
+        }
+
+        /* ========================================
+           SHARED EFFECTS
+        ======================================== */
+
+        /* Shine Overlay Effect */
+        .shine-overlay {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent);
+            z-index: 10;
+            pointer-events: none;
+            transition: left 0.6s ease;
+        }
+
+        .top-user-card:hover .shine-overlay,
+        .post-card:hover .shine-overlay {
+            left: 150%;
+        }
+    </style>
+
+    <script>
+        // Animated Counter Function
+        function animateCounter(element, target, duration = 2000) {
+            const isDecimal = target.toString().includes('.');
+            const start = 0;
+            const increment = target / (duration / 16); // 60fps
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = isDecimal ? target.toFixed(1) : Math.floor(target).toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    element.textContent = isDecimal ? current.toFixed(1) : Math.floor(current).toLocaleString();
+                }
+            }, 16);
+        }
+
+        // Enhanced Intersection Observer for Scroll Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+
+                    // Animate counters when they come into view
+                    if (entry.target.classList.contains('stat-counter')) {
+                        const target = parseFloat(entry.target.getAttribute('data-target'));
+                        animateCounter(entry.target, target);
+                        observer.unobserve(entry.target); // Only animate once
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Observe project cards
+            const cards = document.querySelectorAll('.electro-card');
+            cards.forEach(card => observer.observe(card));
+
+            // Observe elements with fade-in-up class
+            const fadeElements = document.querySelectorAll('.fade-in-up');
+            fadeElements.forEach(el => observer.observe(el));
+
+            // Observe elements with scale-in class
+            const scaleElements = document.querySelectorAll('.scale-in');
+            scaleElements.forEach(el => observer.observe(el));
+
+            // Observe stat counters
+            const statCounters = document.querySelectorAll('.stat-counter');
+            statCounters.forEach(counter => observer.observe(counter));
+        });
+    </script>
 </body>
 
 </html>

@@ -35,6 +35,9 @@ public class LvsUserProfileController {
     @Autowired
     private LvsPostService lvsPostService;
 
+    @Autowired
+    private LvsFileUploadService lvsFileUploadService;
+
     // Xem hồ sơ cá nhân
     @GetMapping("/LvsView")
     public String lvsViewProfile(Model model, HttpSession session) {
@@ -66,6 +69,7 @@ public class LvsUserProfileController {
         int lvsPostsCount = (int) lvsPosts.getTotalElements();
 
         model.addAttribute("LvsUser", lvsCurrentUser);
+        model.addAttribute("LvsIsFollowing", false); // Not applicable for own profile
         model.addAttribute("LvsFollowersCount", lvsFollowersCount);
         model.addAttribute("LvsFollowingCount", lvsFollowingCount);
         model.addAttribute("LvsProjectsCount", lvsProjectsCount);
@@ -74,7 +78,7 @@ public class LvsUserProfileController {
         model.addAttribute("LvsFollowers", lvsFollowers);
         model.addAttribute("LvsFollowing", lvsFollowing);
 
-        return "LvsAreas/LvsUsers/LvsProfile/LvsProfileView";
+        return "LvsAreas/LvsUsers/LvsProfile/LvsProfileViewOther";
     }
 
     // Xem hồ sơ người dùng khác
@@ -88,7 +92,7 @@ public class LvsUserProfileController {
         LvsUser lvsUser = lvsUserService.lvsGetUserById(userId);
 
         if (lvsUser == null) {
-            return "redirect:/LvsUser/LvsDashboard";
+            return "redirect:/LvsUser/LvsHome";
         }
 
         // Kiểm tra đang theo dõi chưa
@@ -156,6 +160,7 @@ public class LvsUserProfileController {
     @PostMapping("/LvsEdit")
     public String lvsEditProfile(@ModelAttribute LvsUser lvsUser,
             @RequestParam(required = false) String lvsNewPassword,
+            @RequestParam(required = false) org.springframework.web.multipart.MultipartFile lvsAvatarFile,
             HttpSession session,
             Model model) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
@@ -164,8 +169,25 @@ public class LvsUserProfileController {
         }
 
         try {
-            // Cập nhật thông tin
+            // CRITICAL: Preserve all non-editable fields from current user
+            // Form only contains: username, email, fullName, bio
+            // Must preserve: role, title, coin, balance, status, createdAt, etc.
             lvsUser.setLvsUserId(lvsCurrentUser.getLvsUserId());
+            lvsUser.setLvsRole(lvsCurrentUser.getLvsRole());
+            lvsUser.setLvsTitle(lvsCurrentUser.getLvsTitle());
+            lvsUser.setLvsCoin(lvsCurrentUser.getLvsCoin());
+            lvsUser.setLvsBalance(lvsCurrentUser.getLvsBalance());
+            lvsUser.setLvsStatus(lvsCurrentUser.getLvsStatus());
+            lvsUser.setLvsCreatedAt(lvsCurrentUser.getLvsCreatedAt());
+
+            // Handle avatar upload
+            if (lvsAvatarFile != null && !lvsAvatarFile.isEmpty()) {
+                String avatarUrl = lvsFileUploadService.lvsSaveFile(lvsAvatarFile, "avatars");
+                lvsUser.setLvsAvatarUrl(avatarUrl);
+            } else {
+                // Keep existing avatar
+                lvsUser.setLvsAvatarUrl(lvsCurrentUser.getLvsAvatarUrl());
+            }
 
             // Giữ nguyên mật khẩu cũ nếu không thay đổi
             if (lvsNewPassword == null || lvsNewPassword.isEmpty()) {
@@ -223,11 +245,13 @@ public class LvsUserProfileController {
         Double lvsAvailableBalance = lvsCurrentUser.getLvsBalance();
         Double lvsTotalWithdrawn = lvsUserService.lvsGetTotalWithdrawn(lvsCurrentUser.getLvsUserId());
 
-        // Lấy lịch sử giao dịch
-        // TODO: Fix method signature - add Pageable parameter
-        // List<LvsTransaction> lvsTransactions =
-        // lvsTransactionService.lvsGetTransactionsByUser(lvsCurrentUser.getLvsUserId());
-        List<LvsTransaction> lvsTransactions = new ArrayList<>();
+        // Lấy lịch sử giao dịch (10 giao dịch gần nhất)
+        org.springframework.data.domain.Pageable lvsPageable = org.springframework.data.domain.PageRequest.of(0, 10,
+                org.springframework.data.domain.Sort.by(
+                        org.springframework.data.domain.Sort.Order.desc("lvsCreatedAt")));
+        org.springframework.data.domain.Page<LvsTransaction> lvsTransactionPage = lvsTransactionService
+                .lvsGetTransactionsByUser(lvsCurrentUser.getLvsUserId(), lvsPageable);
+        List<LvsTransaction> lvsTransactions = lvsTransactionPage.getContent();
 
         // Lấy dự án bán chạy
         // TODO: Fix return type - method returns List<Object[]> not List<LvsProject>

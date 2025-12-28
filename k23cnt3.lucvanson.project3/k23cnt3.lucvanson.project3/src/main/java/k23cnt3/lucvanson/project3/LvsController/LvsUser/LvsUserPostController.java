@@ -31,6 +31,7 @@ public class LvsUserPostController {
     private final LvsPostService lvsPostService;
     private final LvsCommentService lvsCommentService;
     private final LvsUserService lvsUserService;
+    private final LvsQuestService lvsQuestService;
 
     /**
      * List all published blog posts
@@ -135,6 +136,14 @@ public class LvsUserPostController {
                 lvsPost = lvsPostService.lvsSavePost(lvsPost);
             }
 
+            // Track CREATE_POST quest progress
+            try {
+                lvsQuestService.lvsUpdateQuestProgress(lvsCurrentUser,
+                        LvsQuest.LvsQuestType.CREATE_POST, 1);
+            } catch (Exception e) {
+                System.out.println("[QUEST] Error updating CREATE_POST progress: " + e.getMessage());
+            }
+
             redirectAttributes.addFlashAttribute("LvsSuccess", "Post created successfully!");
             return "redirect:/LvsUser/LvsBlog/LvsDetail/" + lvsPost.getLvsPostId();
 
@@ -165,6 +174,17 @@ public class LvsUserPostController {
         if (session.getAttribute(viewedKey) == null) {
             lvsPostService.lvsIncrementViewCount(id);
             session.setAttribute(viewedKey, true);
+
+            // Track VIEW_POST quest progress (only once per session)
+            LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
+            if (lvsCurrentUser != null) {
+                try {
+                    lvsQuestService.lvsUpdateQuestProgress(lvsCurrentUser,
+                            LvsQuest.LvsQuestType.VIEW_POST, 1);
+                } catch (Exception e) {
+                    System.out.println("[QUEST] Error updating VIEW_POST progress: " + e.getMessage());
+                }
+            }
         }
 
         // Get comments

@@ -35,4 +35,10 @@ public interface LvsQuestService {
 
     // Admin: Delete quest
     void lvsDeleteQuest(Long lvsQuestId);
+
+    // Auto-assign active quests to user
+    void lvsAssignActiveQuests(LvsUser lvsUser);
+
+    // Update quest progress by quest type
+    void lvsUpdateQuestProgress(LvsUser lvsUser, LvsQuest.LvsQuestType lvsQuestType, int lvsIncrement);
 }

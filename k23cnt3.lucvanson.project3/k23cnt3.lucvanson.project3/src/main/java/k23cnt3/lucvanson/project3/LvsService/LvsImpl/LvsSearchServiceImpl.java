@@ -1,12 +1,19 @@
 package k23cnt3.lucvanson.project3.LvsService.LvsImpl;
 
+import k23cnt3.lucvanson.project3.LvsEntity.LvsProject;
+import k23cnt3.lucvanson.project3.LvsEntity.LvsUser;
+import k23cnt3.lucvanson.project3.LvsService.LvsProjectService;
 import k23cnt3.lucvanson.project3.LvsService.LvsSearchService;
+import k23cnt3.lucvanson.project3.LvsService.LvsUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service implementation cho tìm kiếm toàn văn
@@ -16,79 +23,82 @@ import java.util.*;
 @Transactional
 public class LvsSearchServiceImpl implements LvsSearchService {
 
-    // Giả sử có các repository để tìm kiếm
-    // private final LvsProjectRepository lvsProjectRepository;
-    // private final LvsPostRepository lvsPostRepository;
-    // private final LvsUserRepository lvsUserRepository;
+    @Autowired
+    private LvsProjectService lvsProjectService;
+
+    @Autowired
+    private LvsUserService lvsUserService;
 
     /**
      * Tìm kiếm toàn bộ hệ thống
+     * 
      * @param lvsKeyword Từ khóa tìm kiếm
-     * @param lvsLimit Giới hạn kết quả
+     * @param lvsLimit   Giới hạn kết quả
      * @return Map kết quả tìm kiếm
      */
     @Override
     public Map<String, Object> lvsGlobalSearch(String lvsKeyword, int lvsLimit) {
         Map<String, Object> lvsResults = new HashMap<>();
 
-        // TODO: Thực hiện tìm kiếm trên nhiều entity
-        // Hiện tại trả về kết quả mẫu
+        try {
+            // Tìm kiếm dự án
+            Pageable lvsPageable = PageRequest.of(0, lvsLimit);
+            Page<LvsProject> lvsProjectPage = lvsProjectService.lvsSearchProjects(lvsKeyword, lvsPageable);
 
-        // Tìm kiếm dự án
-        List<Map<String, Object>> lvsProjects = new ArrayList<>();
-        for (int i = 1; i <= Math.min(5, lvsLimit); i++) {
-            Map<String, Object> lvsProject = new HashMap<>();
-            lvsProject.put("id", i);
-            lvsProject.put("name", "Dự án " + lvsKeyword + " " + i);
-            lvsProject.put("description", "Mô tả dự án tìm kiếm " + lvsKeyword);
-            lvsProject.put("type", "project");
-            lvsProjects.add(lvsProject);
+            List<Map<String, Object>> lvsProjects = lvsProjectPage.getContent().stream()
+                    .map(project -> {
+                        Map<String, Object> projectMap = new HashMap<>();
+                        projectMap.put("lvsProjectId", project.getLvsProjectId());
+                        projectMap.put("lvsTitle", project.getLvsProjectName());
+                        projectMap.put("lvsPrice", project.getLvsPrice());
+                        projectMap.put("lvsDescription", project.getLvsDescription());
+                        projectMap.put("lvsThumbnailUrl", project.getLvsThumbnailUrl());
+                        return projectMap;
+                    })
+                    .collect(Collectors.toList());
+            lvsResults.put("projects", lvsProjects);
+
+            // Tìm kiếm người dùng
+            Page<LvsUser> lvsUserPage = lvsUserService.lvsSearchUsers(lvsKeyword, lvsPageable);
+
+            List<Map<String, Object>> lvsUsers = lvsUserPage.getContent().stream()
+                    .map(user -> {
+                        Map<String, Object> userMap = new HashMap<>();
+                        userMap.put("lvsUserId", user.getLvsUserId());
+                        userMap.put("lvsUsername", user.getLvsUsername());
+                        userMap.put("lvsRole", user.getLvsRole().name());
+                        userMap.put("lvsAvatarUrl", user.getLvsAvatarUrl());
+                        return userMap;
+                    })
+                    .collect(Collectors.toList());
+            lvsResults.put("users", lvsUsers);
+
+            // Thống kê
+            Map<String, Integer> lvsStats = new HashMap<>();
+            lvsStats.put("projects", lvsProjects.size());
+            lvsStats.put("users", lvsUsers.size());
+            lvsStats.put("total", lvsProjects.size() + lvsUsers.size());
+            lvsResults.put("stats", lvsStats);
+
+        } catch (Exception e) {
+            // Fallback to empty results on error
+            lvsResults.put("projects", new ArrayList<>());
+            lvsResults.put("users", new ArrayList<>());
+            lvsResults.put("stats", Map.of("projects", 0, "users", 0, "total", 0));
         }
-        lvsResults.put("projects", lvsProjects);
-
-        // Tìm kiếm bài viết
-        List<Map<String, Object>> lvsPosts = new ArrayList<>();
-        for (int i = 1; i <= Math.min(5, lvsLimit); i++) {
-            Map<String, Object> lvsPost = new HashMap<>();
-            lvsPost.put("id", i);
-            lvsPost.put("title", "Bài viết " + lvsKeyword + " " + i);
-            lvsPost.put("content", "Nội dung bài viết tìm kiếm " + lvsKeyword);
-            lvsPost.put("type", "post");
-            lvsPosts.add(lvsPost);
-        }
-        lvsResults.put("posts", lvsPosts);
-
-        // Tìm kiếm người dùng
-        List<Map<String, Object>> lvsUsers = new ArrayList<>();
-        for (int i = 1; i <= Math.min(5, lvsLimit); i++) {
-            Map<String, Object> lvsUser = new HashMap<>();
-            lvsUser.put("id", i);
-            lvsUser.put("username", "user_" + lvsKeyword + i);
-            lvsUser.put("fullName", "Người dùng " + lvsKeyword + " " + i);
-            lvsUser.put("type", "user");
-            lvsUsers.add(lvsUser);
-        }
-        lvsResults.put("LvsUsers", lvsUsers);
-
-        // Thống kê
-        Map<String, Integer> lvsStats = new HashMap<>();
-        lvsStats.put("projects", lvsProjects.size());
-        lvsStats.put("posts", lvsPosts.size());
-        lvsStats.put("LvsUsers", lvsUsers.size());
-        lvsStats.put("total", lvsProjects.size() + lvsPosts.size() + lvsUsers.size());
-        lvsResults.put("stats", lvsStats);
 
         return lvsResults;
     }
 
     /**
      * Tìm kiếm dự án nâng cao
-     * @param lvsKeyword Từ khóa
+     * 
+     * @param lvsKeyword    Từ khóa
      * @param lvsCategoryId ID danh mục
-     * @param lvsMinPrice Giá tối thiểu
-     * @param lvsMaxPrice Giá tối đa
-     * @param lvsSortBy Sắp xếp theo
-     * @param lvsPageable Thông tin phân trang
+     * @param lvsMinPrice   Giá tối thiểu
+     * @param lvsMaxPrice   Giá tối đa
+     * @param lvsSortBy     Sắp xếp theo
+     * @param lvsPageable   Thông tin phân trang
      * @return Trang kết quả
      */
     @Override
@@ -162,10 +172,11 @@ public class LvsSearchServiceImpl implements LvsSearchService {
 
     /**
      * Tìm kiếm bài viết nâng cao
-     * @param lvsKeyword Từ khóa
+     * 
+     * @param lvsKeyword  Từ khóa
      * @param lvsPostType Loại bài viết
-     * @param lvsTags Tags
-     * @param lvsSortBy Sắp xếp theo
+     * @param lvsTags     Tags
+     * @param lvsSortBy   Sắp xếp theo
      * @param lvsPageable Thông tin phân trang
      * @return Trang kết quả
      */
@@ -183,9 +194,10 @@ public class LvsSearchServiceImpl implements LvsSearchService {
 
     /**
      * Tìm kiếm user nâng cao
-     * @param lvsKeyword Từ khóa
-     * @param lvsRole Vai trò
-     * @param lvsStatus Trạng thái
+     * 
+     * @param lvsKeyword  Từ khóa
+     * @param lvsRole     Vai trò
+     * @param lvsStatus   Trạng thái
      * @param lvsPageable Thông tin phân trang
      * @return Trang kết quả
      */
@@ -202,7 +214,8 @@ public class LvsSearchServiceImpl implements LvsSearchService {
 
     /**
      * Tìm kiếm theo tag
-     * @param lvsTag Tag cần tìm
+     * 
+     * @param lvsTag   Tag cần tìm
      * @param lvsLimit Giới hạn kết quả
      * @return Danh sách kết quả
      */
@@ -225,6 +238,7 @@ public class LvsSearchServiceImpl implements LvsSearchService {
 
     /**
      * Tìm kiếm gợi ý
+     * 
      * @param lvsKeyword Từ khóa
      * @return Danh sách gợi ý
      */
@@ -267,6 +281,7 @@ public class LvsSearchServiceImpl implements LvsSearchService {
 
     /**
      * Lịch sử tìm kiếm
+     * 
      * @param lvsUserId ID người dùng
      * @return Danh sách lịch sử
      */
@@ -283,6 +298,7 @@ public class LvsSearchServiceImpl implements LvsSearchService {
 
     /**
      * Xóa lịch sử tìm kiếm
+     * 
      * @param lvsUserId ID người dùng
      */
     @Override
@@ -293,6 +309,7 @@ public class LvsSearchServiceImpl implements LvsSearchService {
 
     /**
      * Thống kê tìm kiếm
+     * 
      * @return Map thống kê
      */
     @Override

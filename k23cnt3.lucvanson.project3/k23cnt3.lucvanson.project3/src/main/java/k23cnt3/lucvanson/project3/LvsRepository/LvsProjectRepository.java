@@ -60,6 +60,14 @@ public interface LvsProjectRepository extends JpaRepository<LvsProject, Long> {
 
         Page<LvsProject> findByLvsIsFeaturedTrue(Pageable pageable);
 
+        // Tìm dự án theo status và featured, sorted by newest
+        List<LvsProject> findByLvsStatusAndLvsIsFeaturedOrderByLvsCreatedAtDesc(
+                        LvsProjectStatus status, Boolean isFeatured);
+
+        // Tìm dự án theo status và featured với pagination
+        Page<LvsProject> findByLvsStatusAndLvsIsFeaturedOrderByLvsCreatedAtDesc(
+                        LvsProjectStatus status, Boolean isFeatured, Pageable pageable);
+
         // Tìm dự án đã được approved
         List<LvsProject> findByLvsIsApprovedTrue();
 
@@ -119,6 +127,18 @@ public interface LvsProjectRepository extends JpaRepository<LvsProject, Long> {
 
         // Lấy dự án rating cao nhất
         Page<LvsProject> findByLvsStatusOrderByLvsRatingDesc(LvsProjectStatus lvsStatus, Pageable pageable);
+
+        // Lấy tất cả dự án mới nhất (không filter status) - for homepage
+        @Query("SELECT p FROM LvsProject p ORDER BY p.lvsCreatedAt DESC")
+        Page<LvsProject> findAllByOrderByLvsCreatedAtDesc(Pageable pageable);
+
+        // Lấy tất cả dự án phổ biến (không filter status) - for homepage
+        @Query("SELECT p FROM LvsProject p ORDER BY p.lvsViewCount DESC")
+        Page<LvsProject> findAllByOrderByLvsViewCountDesc(Pageable pageable);
+
+        // Lấy tất cả dự án bán chạy (không filter status) - for homepage
+        @Query("SELECT p FROM LvsProject p ORDER BY p.lvsPurchaseCount DESC")
+        Page<LvsProject> findAllByOrderByLvsPurchaseCountDesc(Pageable pageable);
 
         // Tăng view count
         @Modifying

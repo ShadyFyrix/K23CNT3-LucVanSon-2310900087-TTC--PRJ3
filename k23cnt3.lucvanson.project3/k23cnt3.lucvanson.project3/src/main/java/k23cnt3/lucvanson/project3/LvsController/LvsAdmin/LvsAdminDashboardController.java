@@ -1,10 +1,20 @@
 package k23cnt3.lucvanson.project3.LvsController.LvsAdmin;
 
 import jakarta.servlet.http.HttpServletRequest;
+import k23cnt3.lucvanson.project3.LvsEntity.LvsOrder;
+import k23cnt3.lucvanson.project3.LvsEntity.LvsOrder.LvsOrderStatus;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsCommentRepository;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsPostRepository;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 /**
  * Controller hiển thị Dashboard (Trang tổng quan) của Admin Panel
@@ -35,22 +45,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * <li>Dashboard: LvsAreas/LvsAdmin/LvsLayout/LvsDashboard.html</li>
  * </ul>
  * 
- * <p>
- * Lưu ý:
- * </p>
- * <ul>
- * <li>Hiện tại đang dùng mock data</li>
- * <li>Cần thay thế bằng dữ liệu thực từ database</li>
- * <li>Có thể thêm biểu đồ, charts để trực quan hóa dữ liệu</li>
- * </ul>
- * 
  * @author LucVanSon
- * @version 1.0
+ * @version 2.0
  * @since 2024
  */
 @Controller
 @RequestMapping("/LvsAdmin")
 public class LvsAdminDashboardController {
+
+    @Autowired
+    private LvsUserRepository lvsUserRepository;
+
+    @Autowired
+    private LvsOrderRepository lvsOrderRepository;
+
+    @Autowired
+    private LvsPostRepository lvsPostRepository;
+
+    @Autowired
+    private LvsProjectRepository lvsProjectRepository;
+
+    @Autowired
+    private LvsCommentRepository lvsCommentRepository;
 
     /**
      * Hiển thị trang Dashboard với các thống kê tổng quan
@@ -59,8 +75,8 @@ public class LvsAdminDashboardController {
      * Chức năng:
      * </p>
      * <ul>
-     * <li>Tính toán các chỉ số thống kê</li>
-     * <li>Lấy dữ liệu cho biểu đồ</li>
+     * <li>Tính toán các chỉ số thống kê từ database</li>
+     * <li>Lấy dữ liệu thực từ hệ thống</li>
      * <li>Hiển thị thông tin tổng quan</li>
      * </ul>
      * 
@@ -76,38 +92,52 @@ public class LvsAdminDashboardController {
      *         Model attributes:
      *         </p>
      *         <ul>
-     *         <li>totalUsers: int - Tổng số users</li>
-     *         <li>totalOrders: int - Tổng số orders</li>
-     *         <li>totalRevenue: double - Tổng doanh thu</li>
+     *         <li>totalUsers: Long - Tổng số users</li>
+     *         <li>totalOrders: Long - Tổng số orders</li>
+     *         <li>totalRevenue: Double - Tổng doanh thu (Coins)</li>
+     *         <li>totalPosts: Long - Tổng số bài viết</li>
+     *         <li>totalProjects: Long - Tổng số dự án</li>
+     *         <li>totalComments: Long - Tổng số bình luận</li>
      *         <li>pageTitle: String - Tiêu đề trang</li>
      *         <li>activePage: String - Trang đang active (để highlight
      *         sidebar)</li>
      *         </ul>
-     * 
-     *         <p>
-     *         TODO:
-     *         </p>
-     *         <ul>
-     *         <li>Thay mock data bằng dữ liệu thực từ services</li>
-     *         <li>Thêm thống kê theo thời gian (hôm nay, tuần này, tháng này)</li>
-     *         <li>Thêm biểu đồ doanh thu theo thời gian</li>
-     *         <li>Thêm top 5 dự án bán chạy nhất</li>
-     *         <li>Thêm danh sách orders gần đây</li>
-     *         </ul>
      */
     @GetMapping("/LvsDashboard")
     public String dashboard(Model model, HttpServletRequest request) {
-        // ===== MOCK DATA - CẦN THAY BẰNG DỮ LIỆU THỰC =====
-        // TODO: Lấy dữ liệu thực từ các services
-        // Ví dụ: int totalUsers = lvsUserService.lvsCountAllUsers();
+        // ===== REAL DATA FROM DATABASE =====
 
-        model.addAttribute("totalUsers", 150); // Tổng số users
-        model.addAttribute("totalOrders", 45); // Tổng số orders
-        model.addAttribute("totalRevenue", 12500); // Tổng doanh thu (VNĐ)
+        // 1. Tổng số users trong hệ thống
+        Long totalUsers = lvsUserRepository.count();
+
+        // 2. Tổng số orders
+        Long totalOrders = lvsOrderRepository.count();
+
+        // 3. Tính tổng doanh thu từ các orders đã hoàn thành
+        List<LvsOrder> completedOrders = lvsOrderRepository.findByLvsStatus(LvsOrderStatus.COMPLETED);
+        Double totalRevenue = completedOrders.stream()
+                .mapToDouble(order -> order.getLvsFinalAmount() != null ? order.getLvsFinalAmount() : 0.0)
+                .sum();
+
+        // 4. Tổng số bài viết
+        Long totalPosts = lvsPostRepository.count();
+
+        // 5. Tổng số dự án
+        Long totalProjects = lvsProjectRepository.count();
+
+        // 6. Tổng số bình luận
+        Long totalComments = lvsCommentRepository.count();
+
+        // Add to model
+        model.addAttribute("totalUsers", totalUsers);
+        model.addAttribute("totalOrders", totalOrders);
+        model.addAttribute("totalRevenue", totalRevenue);
+        model.addAttribute("totalPosts", totalPosts);
+        model.addAttribute("totalProjects", totalProjects);
+        model.addAttribute("totalComments", totalComments);
         model.addAttribute("pageTitle", "Dashboard");
 
         // Set activePage để sidebar biết trang nào đang active
-        // Dùng để highlight menu item tương ứng
         model.addAttribute("activePage", "dashboard");
 
         return "LvsAreas/LvsAdmin/LvsLayout/LvsDashboard";

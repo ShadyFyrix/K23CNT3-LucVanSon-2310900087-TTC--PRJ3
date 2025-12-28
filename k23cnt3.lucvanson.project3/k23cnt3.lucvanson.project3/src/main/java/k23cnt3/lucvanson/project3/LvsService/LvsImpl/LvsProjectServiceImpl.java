@@ -6,12 +6,14 @@ import k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository;
 import k23cnt3.lucvanson.project3.LvsService.LvsProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -169,7 +171,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
      */
     @Override
     public List<LvsProject> lvsGetNewestProjects(Pageable lvsPageable) {
-        // Lấy tất cả dự án đã approved và sắp xếp theo ngày tạo
+        // Lấy dự án đã APPROVED và sắp xếp theo ngày tạo
         return lvsProjectRepository.findByLvsStatusOrderByLvsCreatedAtDesc(
                 LvsProjectStatus.APPROVED, lvsPageable).getContent();
     }
@@ -182,7 +184,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
      */
     @Override
     public List<LvsProject> lvsGetPopularProjects(Pageable lvsPageable) {
-        // Lấy dự án đã approved và sắp xếp theo lượt xem
+        // Lấy dự án đã APPROVED và sắp xếp theo lượt xem
         return lvsProjectRepository.findByLvsStatusOrderByLvsViewCountDesc(
                 LvsProjectStatus.APPROVED, lvsPageable).getContent();
     }
@@ -200,6 +202,45 @@ public class LvsProjectServiceImpl implements LvsProjectService {
         // Lọc chỉ lấy dự án đã approved
         return featuredProjects.getContent().stream()
                 .filter(project -> project.getLvsStatus() == LvsProjectStatus.APPROVED)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Lấy dự án với ưu tiên featured
+     * Featured projects hiển thị trước, sau đó mới đến newest projects
+     * 
+     * @param lvsPageable Thông tin phân trang
+     * @return Danh sách dự án với featured priority
+     */
+    @Override
+    public List<LvsProject> lvsGetFeaturedAndNewestProjects(Pageable lvsPageable) {
+        int requestedSize = lvsPageable.getPageSize();
+
+        // 1. Lấy featured projects (APPROVED và featured = true, sorted by newest)
+        List<LvsProject> featuredProjects = lvsProjectRepository
+                .findByLvsStatusAndLvsIsFeaturedOrderByLvsCreatedAtDesc(
+                        LvsProjectStatus.APPROVED, true);
+
+        // 2. Lấy newest projects (APPROVED và featured = false, sorted by newest)
+        // Tính số lượng cần lấy thêm
+        int remainingSize = Math.max(0, requestedSize - featuredProjects.size());
+        List<LvsProject> newestProjects = new ArrayList<>();
+
+        if (remainingSize > 0) {
+            Pageable newestPageable = PageRequest.of(0, remainingSize);
+            Page<LvsProject> newestPage = lvsProjectRepository
+                    .findByLvsStatusAndLvsIsFeaturedOrderByLvsCreatedAtDesc(
+                            LvsProjectStatus.APPROVED, false, newestPageable);
+            newestProjects = newestPage.getContent();
+        }
+
+        // 3. Combine: featured first, then newest
+        List<LvsProject> result = new ArrayList<>(featuredProjects);
+        result.addAll(newestProjects);
+
+        // 4. Return only requested amount
+        return result.stream()
+                .limit(requestedSize)
                 .collect(Collectors.toList());
     }
 
@@ -479,7 +520,7 @@ public class LvsProjectServiceImpl implements LvsProjectService {
      */
     @Override
     public List<LvsProject> lvsGetTopSellingProjects(int lvsLimit) {
-        // Sử dụng phương thức từ repository với Pageable
+        // Lấy dự án đã APPROVED và sắp xếp theo lượt mua
         Pageable pageable = Pageable.ofSize(lvsLimit);
         return lvsProjectRepository.findByLvsStatusOrderByLvsPurchaseCountDesc(
                 LvsProjectStatus.APPROVED, pageable).getContent();
@@ -538,5 +579,31 @@ public class LvsProjectServiceImpl implements LvsProjectService {
         lvsChartData.put("data", lvsStats.values());
 
         return lvsChartData;
+    }
+
+    // ========== MODERATION METHODS IMPLEMENTATION ==========
+
+    /**
+     * Hide project (set lvsIsApproved = false)
+     */
+    @Override
+    public void lvsHideProject(Long projectId) {
+        LvsProject project = lvsProjectRepository.findById(projectId).orElse(null);
+        if (project != null) {
+            project.setLvsIsApproved(false);
+            lvsProjectRepository.save(project);
+        }
+    }
+
+    /**
+     * Show project (set lvsIsApproved = true)
+     */
+    @Override
+    public void lvsShowProject(Long projectId) {
+        LvsProject project = lvsProjectRepository.findById(projectId).orElse(null);
+        if (project != null) {
+            project.setLvsIsApproved(true);
+            lvsProjectRepository.save(project);
+        }
     }
 }

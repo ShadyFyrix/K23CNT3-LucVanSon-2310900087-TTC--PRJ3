@@ -2,134 +2,471 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body th:fragment="header">
-    <header class="bg-[#1e1e1e] border-b border-[#333]">
-        <!-- Top Bar -->
-        <div class="bg-[#151515] text-[#b7b7b7] text-xs py-2">
-            <div class="container mx-auto px-4 flex justify-between items-center">
-                <div class="hidden md:block">
-                    Welcome to WeJect - Your Project Marketplace
-                </div>
-                <div class="flex gap-6">
-                    <a th:href="@{/LvsUser/LvsOrders/LvsMyOrders}"
-                        class="hover:text-yellow-400 flex items-center gap-1"><i class="fas fa-truck"></i> My Orders</a>
-                    <a th:href="@{/LvsUser/LvsProject/LvsList}" class="hover:text-yellow-400 flex items-center gap-1"><i
-                            class="fas fa-shopping-bag"></i> Shop</a>
-                    <a th:if="${session.LvsCurrentUser != null}" th:href="@{/LvsUser/LvsProfile/LvsView}"
-                        class="hover:text-yellow-400 flex items-center gap-1"><i class="fas fa-user"></i> My Account</a>
-                    <a th:unless="${session.LvsCurrentUser != null}" th:href="@{/LvsAuth/LvsLogin}"
-                        class="hover:text-yellow-400 flex items-center gap-1"><i class="fas fa-sign-in-alt"></i>
-                        Login</a>
+    <!-- Premium Glassmorphism Header -->
+    <header
+        class="bg-gradient-to-r from-[#1a1a1a] via-[#1e1e1e] to-[#1a1a1a] border-b border-[#fed700]/20 sticky top-0 z-50 shadow-2xl backdrop-blur-xl">
+        <!-- Top Bar - Premium -->
+        <div class="bg-gradient-to-r from-[#151515] via-[#1a1a1a] to-[#151515] border-b border-[#fed700]/10">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-between h-10 text-xs">
+                    <div class="hidden md:flex items-center gap-3 text-gray-400">
+                        <div
+                            class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#fed700]/10 border border-[#fed700]/20">
+                            <i class="fas fa-star text-[#fed700] text-[10px] animate-pulse"></i>
+                            <span class="text-[#fed700] font-semibold">Welcome to WeJect</span>
+                        </div>
+                        <span class="text-gray-500">|</span>
+                        <span class="text-gray-500">Your Premium Project Marketplace</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-gray-400">
+                        <a th:href="@{/LvsUser/LvsOrders/LvsMyOrders}"
+                            class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-[#fed700]/10 hover:text-[#fed700] transition-all duration-200 group">
+                            <i class="fas fa-truck text-[10px] group-hover:scale-110 transition-transform"></i>
+                            <span>Orders</span>
+                        </a>
+                        <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                            class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-[#fed700]/10 hover:text-[#fed700] transition-all duration-200 group">
+                            <i class="fas fa-shopping-bag text-[10px] group-hover:scale-110 transition-transform"></i>
+                            <span>Shop</span>
+                        </a>
+                        <a th:if="${session.LvsCurrentUser != null}"
+                            th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${session.LvsCurrentUser.lvsUserId})}"
+                            class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-[#fed700]/10 hover:text-[#fed700] transition-all duration-200 group">
+                            <i class="fas fa-user text-[10px] group-hover:scale-110 transition-transform"></i>
+                            <span>Account</span>
+                        </a>
+                        <a th:unless="${session.LvsCurrentUser != null}" th:href="@{/LvsAuth/LvsLogin}"
+                            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#fed700] to-[#ffa500] text-black font-semibold hover:from-[#ffa500] hover:to-[#fed700] transition-all duration-200 group">
+                            <i class="fas fa-sign-in-alt text-[10px] group-hover:scale-110 transition-transform"></i>
+                            <span>Login</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Header -->
-        <div class="container mx-auto px-4 py-8">
-            <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
-                <!-- Logo -->
-                <a th:href="@{/LvsUser/LvsDashboard}" class="text-2xl font-bold">
-                    WeJect<span class="text-[#fed700]"></span>
+        <!-- Main Header - Premium Design -->
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-20 gap-6">
+                <!-- Logo with Glow Effect -->
+                <a th:href="@{/LvsUser/LvsHome}"
+                    class="flex items-center gap-3 text-2xl font-bold text-white hover:text-[#fed700] transition-all duration-300 group">
+                    <div class="relative">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-r from-[#fed700] to-[#ffa500] rounded-xl blur-md group-hover:blur-lg transition-all animate-pulse">
+                        </div>
+                        <div
+                            class="relative w-12 h-12 rounded-xl bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <i class="fas fa-rocket text-black text-lg"></i>
+                        </div>
+                    </div>
+                    <span
+                        class="hidden md:block bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">WeJect</span>
                 </a>
 
-                <!-- Search Bar -->
-                <div class="flex-grow max-w-2xl w-full relative">
-                    <form th:action="@{/LvsUser/LvsProject/LvsList}" method="get" class="flex w-full">
-                        <select
-                            class="bg-[#2b2b2b] text-white border border-[#333] border-r-0 rounded-l-full px-4 py-3 outline-none focus:border-[#fed700] hidden md:block w-40 text-sm appearance-none cursor-pointer">
-                            <option value="">All Categories</option>
-                            <option th:if="${categories != null}" th:each="cat : ${categories}"
-                                th:value="${cat.lvsCategoryId}" th:text="${cat.lvsCategoryName}">Category</option>
-                        </select>
-                        <input type="text" name="keyword" placeholder="Search products..."
-                            class="w-full bg-[#2b2b2b] text-white border border-[#333] border-l-0 px-4 py-3 outline-none focus:border-[#fed700] placeholder-gray-500">
-                        <button type="submit"
-                            class="bg-[#fed700] text-black font-bold px-8 py-3 rounded-r-full hover:bg-yellow-500 transition">
-                            <i class="fas fa-search"></i>
-                        </button>
+                <!-- Premium Search Bar with Autocomplete -->
+                <div class="flex-1 max-w-2xl relative">
+                    <form th:action="@{/LvsUser/LvsSearch}" method="get" class="relative group" id="searchForm">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-r from-[#fed700]/20 to-[#ffa500]/20 rounded-xl blur-sm group-hover:blur-md transition-all opacity-0 group-hover:opacity-100">
+                        </div>
+                        <div class="relative flex items-center">
+                            <input type="text" name="keyword" id="searchInput"
+                                placeholder="Search projects, users, or content..." autocomplete="off"
+                                onkeyup="liveSearch(this.value)" onfocus="showSearchResults()"
+                                class="w-full h-12 pl-12 pr-4 bg-[#2a2a2a]/50 border border-[#333] rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#fed700] focus:bg-[#2a2a2a] transition-all duration-200 backdrop-blur-sm">
+                            <button type="submit"
+                                class="absolute left-3 w-8 h-8 rounded-lg bg-gradient-to-r from-[#fed700] to-[#ffa500] flex items-center justify-center hover:scale-110 transition-transform shadow-lg">
+                                <i class="fas fa-search text-black text-sm"></i>
+                            </button>
+                        </div>
                     </form>
+
+                    <!-- Autocomplete Dropdown -->
+                    <div id="searchResults"
+                        class="hidden absolute top-full mt-2 w-full bg-[#1e1e1e] border border-[#333] rounded-xl shadow-2xl overflow-hidden z-50 max-h-96 overflow-y-auto custom-scrollbar">
+                        <!-- Loading State -->
+                        <div id="searchLoading" class="hidden p-4 text-center">
+                            <i class="fas fa-spinner fa-spin text-[#fed700] text-xl"></i>
+                            <p class="text-gray-400 text-sm mt-2">Searching...</p>
+                        </div>
+
+                        <!-- No Results -->
+                        <div id="searchEmpty" class="hidden p-6 text-center">
+                            <i class="fas fa-search text-gray-600 text-3xl mb-2"></i>
+                            <p class="text-gray-400">No results found</p>
+                        </div>
+
+                        <!-- Results Container -->
+                        <div id="searchContent" class="hidden">
+                            <!-- Projects Section -->
+                            <div id="projectsSection" class="hidden">
+                                <div
+                                    class="px-4 py-2 bg-gradient-to-r from-[#fed700]/10 to-transparent border-b border-[#333]">
+                                    <h3 class="text-[#fed700] text-xs font-bold uppercase">Projects</h3>
+                                </div>
+                                <div id="projectsList" class="p-2"></div>
+                            </div>
+
+                            <!-- Users Section -->
+                            <div id="usersSection" class="hidden">
+                                <div
+                                    class="px-4 py-2 bg-gradient-to-r from-[#fed700]/10 to-transparent border-b border-[#333]">
+                                    <h3 class="text-[#fed700] text-xs font-bold uppercase">Users</h3>
+                                </div>
+                                <div id="usersList" class="p-2"></div>
+                            </div>
+
+                            <!-- View All Link -->
+                            <div class="p-2 border-t border-[#333]">
+                                <a href="#" id="viewAllLink"
+                                    class="block px-3 py-2 text-center text-[#fed700] hover:bg-[#fed700]/10 rounded-lg transition-colors text-sm font-semibold">
+                                    <i class="fas fa-arrow-right mr-2"></i>View All Results
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Icons -->
-                <div class="flex items-center gap-6 text-white">
-                    <a href="#" class="flex flex-col items-center group">
-                        <div class="relative">
-                            <i class="fas fa-sync-alt text-xl group-hover:text-[#fed700] transition"></i>
-                            <span
-                                class="absolute -top-2 -right-2 bg-[#fed700] text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
-                        </div>
+                <!-- Action Icons with Badges -->
+                <div class="flex items-center gap-3">
+                    <!-- Coin Display -->
+                    <div th:if="${session.LvsCurrentUser != null}"
+                        class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#fed700]/10 to-[#ffa500]/10 border border-[#fed700]/20 hover:scale-105 transition-transform cursor-pointer">
+                        <i class="fas fa-coins text-[#fed700] text-sm"></i>
+                        <span class="text-white font-bold text-sm"
+                            th:text="${#numbers.formatDecimal(session.LvsCurrentUser.lvsCoin ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                    </div>
+
+                    <!-- Cart Icon with Badge -->
+                    <a th:href="@{/LvsUser/LvsCart/LvsView}"
+                        class="relative w-12 h-12 rounded-xl bg-[#2a2a2a]/50 border border-[#333] flex items-center justify-center hover:bg-[#fed700]/10 hover:border-[#fed700] transition-all duration-200 group">
+                        <i class="fas fa-shopping-cart text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
+                        <span th:if="${session.LvsCartItemCount != null and session.LvsCartItemCount > 0}"
+                            class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-[#fed700] to-[#ffa500] text-black text-[10px] font-bold rounded-full flex items-center justify-center animate-bounce shadow-lg"
+                            th:text="${session.LvsCartItemCount}">0</span>
                     </a>
-                    <a href="#" class="flex flex-col items-center group">
-                        <div class="relative">
-                            <i class="far fa-heart text-xl group-hover:text-[#fed700] transition"></i>
-                            <span
-                                class="absolute -top-2 -right-2 bg-[#fed700] text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
-                        </div>
+
+                    <!-- Messages Icon with Badge -->
+                    <a th:href="@{/LvsUser/LvsMessage/LvsInbox}"
+                        class="relative w-12 h-12 rounded-xl bg-[#2a2a2a]/50 border border-[#333] flex items-center justify-center hover:bg-[#fed700]/10 hover:border-[#fed700] transition-all duration-200 group">
+                        <i class="fas fa-envelope text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
+                        <span th:if="${session.LvsUnreadCount != null and session.LvsUnreadCount > 0}"
+                            class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse shadow-lg"
+                            th:text="${session.LvsUnreadCount}">0</span>
                     </a>
-                    <!-- Admin Panel Button - Only for ADMIN role -->
+
+                    <!-- Admin Shield (If Admin) -->
                     <a th:if="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsRole.name() == 'ADMIN'}"
-                        th:href="@{/LvsAdmin/LvsDashboard}" class="flex flex-col items-center group"
+                        th:href="@{/LvsAdmin/LvsDashboard}"
+                        class="w-12 h-12 rounded-xl bg-gradient-to-r from-red-500/20 to-red-600/20 border border-red-500/30 flex items-center justify-center hover:scale-110 transition-transform group"
                         title="Admin Panel">
-                        <i class="fas fa-shield-alt text-xl text-[#fed700] group-hover:text-[#ffa500] transition"></i>
+                        <i class="fas fa-shield-alt text-red-400 group-hover:text-red-300 transition-colors"></i>
                     </a>
-                    <a th:if="${session.LvsCurrentUser != null}" th:href="@{/LvsUser/LvsProfile/LvsView}"
-                        class="flex flex-col items-center group" title="My Profile">
-                        <i class="far fa-user text-xl group-hover:text-[#fed700] transition"></i>
+
+                    <!-- Moderation Panel (If Admin or Moderator) -->
+                    <a th:if="${session.LvsCurrentUser != null and (session.LvsCurrentUser.lvsRole.name() == 'ADMIN' or session.LvsCurrentUser.lvsRole.name() == 'MODERATOR')}"
+                        th:href="@{/LvsModeration/LvsDashboard}"
+                        class="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500/20 to-purple-600/20 border border-purple-500/30 flex items-center justify-center hover:scale-110 transition-transform group"
+                        title="Moderation Panel">
+                        <i class="fas fa-gavel text-purple-400 group-hover:text-purple-300 transition-colors"></i>
                     </a>
-                    <a th:unless="${session.LvsCurrentUser != null}" th:href="@{/LvsAuth/LvsLogin}"
-                        class="flex flex-col items-center group" title="Login">
-                        <i class="far fa-user text-xl group-hover:text-[#fed700] transition"></i>
-                    </a>
-                    <a th:href="@{/LvsUser/LvsCart/LvsView}" class="flex items-center gap-3 group">
-                        <div class="relative">
-                            <i class="fas fa-shopping-bag text-xl group-hover:text-[#fed700] transition"></i>
-                            <span
-                                class="absolute -top-2 -right-2 bg-[#fed700] text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+
+                    <!-- Profile Avatar Dropdown -->
+                    <div th:if="${session.LvsCurrentUser != null}" class="relative group">
+                        <button onclick="toggleProfileDropdown()" class="relative focus:outline-none">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-[#fed700] to-[#ffa500] rounded-full blur-sm group-hover:blur-md transition-all">
+                            </div>
+                            <div class="relative w-12 h-12 rounded-full bg-[#1a1a1a] p-0.5">
+                                <img th:if="${session.LvsCurrentUser.lvsAvatarUrl != null}"
+                                    th:src="@{${session.LvsCurrentUser.lvsAvatarUrl}}"
+                                    class="w-full h-full rounded-full object-cover border-2 border-[#fed700]/30"
+                                    alt="Avatar">
+                                <div th:unless="${session.LvsCurrentUser.lvsAvatarUrl != null}"
+                                    class="w-full h-full rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center">
+                                    <span class="text-black font-bold text-lg"
+                                        th:text="${#strings.substring(session.LvsCurrentUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                                </div>
+                            </div>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div id="profileDropdown"
+                            class="hidden absolute right-0 mt-2 w-64 bg-[#1e1e1e] border border-[#333] rounded-xl shadow-2xl overflow-hidden z-50">
+                            <!-- User Info -->
+                            <div class="p-4 border-b border-[#333] bg-gradient-to-r from-[#fed700]/5 to-transparent">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center">
+                                        <img th:if="${session.LvsCurrentUser.lvsAvatarUrl != null}"
+                                            th:src="@{${session.LvsCurrentUser.lvsAvatarUrl}}"
+                                            class="w-full h-full rounded-full object-cover" alt="Avatar">
+                                        <span th:unless="${session.LvsCurrentUser.lvsAvatarUrl != null}"
+                                            class="text-black font-bold"
+                                            th:text="${#strings.substring(session.LvsCurrentUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-white font-bold truncate"
+                                            th:text="${session.LvsCurrentUser.lvsUsername}">Username</p>
+                                        <p class="text-gray-400 text-xs" th:text="${session.LvsCurrentUser.lvsRole}">
+                                            USER</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Menu Items -->
+                            <div class="p-2">
+                                <a th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${session.LvsCurrentUser.lvsUserId})}"
+                                    class="flex items-center gap-3 px-3 py-2.5 text-gray-300 hover:bg-[#fed700]/10 hover:text-[#fed700] rounded-lg transition-colors">
+                                    <i class="fas fa-user w-5"></i>
+                                    <span>View Profile</span>
+                                </a>
+                                <a th:href="@{/LvsUser/LvsProfile/LvsEdit}"
+                                    class="flex items-center gap-3 px-3 py-2.5 text-gray-300 hover:bg-[#fed700]/10 hover:text-[#fed700] rounded-lg transition-colors">
+                                    <i class="fas fa-edit w-5"></i>
+                                    <span>Edit Profile</span>
+                                </a>
+                                <a th:href="@{/LvsUser/LvsProfile/LvsRevenue}"
+                                    class="flex items-center gap-3 px-3 py-2.5 text-gray-300 hover:bg-[#fed700]/10 hover:text-[#fed700] rounded-lg transition-colors">
+                                    <i class="fas fa-wallet w-5"></i>
+                                    <span>My Revenue</span>
+                                </a>
+                                <a th:href="@{/LvsUser/LvsProfile/LvsChangePassword}"
+                                    class="flex items-center gap-3 px-3 py-2.5 text-gray-300 hover:bg-[#fed700]/10 hover:text-[#fed700] rounded-lg transition-colors">
+                                    <i class="fas fa-key w-5"></i>
+                                    <span>Change Password</span>
+                                </a>
+                            </div>
+
+                            <!-- Logout -->
+                            <div class="p-2 border-t border-[#333]">
+                                <a th:href="${session.LvsCurrentUser.lvsRole.name() == 'ADMIN'} ? @{/LvsAdmin/LvsLogout} : @{/LvsUser/LvsLogout}"
+                                    class="flex items-center gap-3 px-3 py-2.5 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                                    <i class="fas fa-sign-out-alt w-5"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
                         </div>
-                        <span class="font-bold group-hover:text-[#fed700] transition hidden lg:block">$0.00</span>
-                    </a>
+                    </div>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button onclick="toggleMobileMenu()"
+                        class="lg:hidden w-12 h-12 rounded-xl bg-[#2a2a2a]/50 border border-[#333] flex items-center justify-center hover:bg-[#fed700]/10 hover:border-[#fed700] transition-all duration-200">
+                        <i class="fas fa-bars text-gray-400"></i>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Navigation Bar -->
-        <div class="border-t border-[#333]">
+        <!-- Navigation Bar - Premium -->
+        <div class="bg-gradient-to-r from-[#1a1a1a] via-[#1e1e1e] to-[#1a1a1a] border-t border-[#fed700]/10">
             <div class="container mx-auto px-4">
-                <div class="flex items-center justify-between">
-                    <!-- Hamburger Menu (Mobile/Vertical) -->
-                    <div class="relative group py-3 pr-8 border-r border-[#333] hidden lg:block">
-                        <a href="#" class="flex items-center gap-3 font-bold hover:text-[#fed700] transition">
-                            <i class="fas fa-bars text-[#fed700]"></i>
-                            <span>All Departments</span>
-                        </a>
-                        <!-- Dropdown could go here -->
-                    </div>
-
-                    <!-- Horizontal Menu -->
-                    <nav class="hidden lg:flex gap-8 text-sm font-bold uppercase tracking-wide flex-grow pl-8">
-                        <a th:href="@{/LvsUser/LvsDashboard}"
-                            class="text-[#fed700] border-b-2 border-[#fed700] py-3">Home</a>
-                        <a th:href="@{/LvsUser/LvsProject/LvsList}"
-                            class="hover:text-[#fed700] transition py-3">Shop</a>
-                        <a th:href="@{/LvsUser/LvsBlog/LvsList}" class="hover:text-[#fed700] transition py-3">Blog</a>
-                        <a href="#" class="hover:text-[#fed700] transition py-3">Contact</a>
-                    </nav>
-
-                    <div class="block lg:hidden py-3">
-                        <button onclick="toggleMobileMenu()" class="text-white text-xl flex items-center gap-2">
-                            <i class="fas fa-bars"></i> Menu
-                        </button>
-                    </div>
-
-                    <a href="#" class="text-[#e62e04] font-bold text-sm hidden lg:block">
-                        % Weekly Discount!
+                <nav class="flex items-center gap-1 h-12 overflow-x-auto scrollbar-hide">
+                    <a th:href="@{/LvsUser/LvsHome}"
+                        class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-[#fed700] hover:bg-[#fed700]/10 rounded-lg transition-all duration-200 whitespace-nowrap">
+                        <i class="fas fa-home mr-2"></i>Home
                     </a>
-                </div>
+                    <a th:href="@{/LvsUser/LvsProject/LvsList}"
+                        class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-[#fed700] hover:bg-[#fed700]/10 rounded-lg transition-all duration-200 whitespace-nowrap">
+                        <i class="fas fa-folder mr-2"></i>Projects
+                    </a>
+                    <a th:href="@{/LvsUser/LvsBlog/LvsList}"
+                        class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-[#fed700] hover:bg-[#fed700]/10 rounded-lg transition-all duration-200 whitespace-nowrap">
+                        <i class="fas fa-blog mr-2"></i>Blog
+                    </a>
+                    <a th:href="@{/lvsforum/LvsPromotion/LvsList}"
+                        class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-[#fed700] hover:bg-[#fed700]/10 rounded-lg transition-all duration-200 whitespace-nowrap">
+                        <i class="fas fa-tags mr-2"></i>Promotions
+                    </a>
+                    <a th:href="@{/LvsUser/LvsEvent/LvsDailyCheckIn}"
+                        class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-[#fed700] hover:bg-[#fed700]/10 rounded-lg transition-all duration-200 whitespace-nowrap">
+                        <i class="fas fa-calendar-check mr-2"></i>Events
+                    </a>
+                    <a th:href="@{/LvsUser/LvsQuest/LvsDashboard}"
+                        class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-[#fed700] hover:bg-[#fed700]/10 rounded-lg transition-all duration-200 whitespace-nowrap">
+                        <i class="fas fa-tasks mr-2"></i>Quests
+                    </a>
+                    <div class="flex-1"></div>
+                    <a th:href="@{/LvsUser/LvsTransaction/LvsDeposit}"
+                        class="px-4 py-2 text-sm font-bold bg-gradient-to-r from-[#fed700] to-[#ffa500] text-black rounded-lg hover:from-[#ffa500] hover:to-[#fed700] transition-all duration-200 whitespace-nowrap">
+                        <i class="fas fa-plus-circle mr-2"></i>Deposit NOW
+                    </a>
+                </nav>
             </div>
         </div>
     </header>
 
-    <!-- Mobile Menu -->
-    <div th:replace="~{LvsAreas/LvsUsers/LvsFragments/LvsMobileMenu :: mobile-menu}"></div>
+    <!-- Scripts -->
+    <script>
+        // Toggle profile dropdown
+        function toggleProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            const dropdown = document.getElementById('profileDropdown');
+            const button = event.target.closest('button[onclick="toggleProfileDropdown()"]');
+
+            if (!button && dropdown && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+
+            // Close search results when clicking outside
+            const searchResults = document.getElementById('searchResults');
+            const searchInput = document.getElementById('searchInput');
+            if (searchResults && !searchResults.contains(event.target) && event.target !== searchInput) {
+                searchResults.classList.add('hidden');
+            }
+        });
+
+        // Live Search Variables
+        let searchTimeout;
+        let currentQuery = '';
+
+        // Live Search Function
+        function liveSearch(query) {
+            clearTimeout(searchTimeout);
+            currentQuery = query;
+
+            // Hide results if query too short
+            if (query.length < 2) {
+                hideSearchResults();
+                return;
+            }
+
+            // Show loading state
+            showLoading();
+
+            // Debounce - wait 300ms before searching
+            searchTimeout = setTimeout(() => {
+                fetch(`/lvsforum/LvsUser/api/search?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => displaySearchResults(data))
+                    .catch(error => {
+                        console.error('Search error:', error);
+                        hideSearchResults();
+                    });
+            }, 300);
+        }
+
+        // Show Search Results Dropdown
+        function showSearchResults() {
+            const input = document.getElementById('searchInput');
+            if (input.value.length >= 2) {
+                document.getElementById('searchResults').classList.remove('hidden');
+            }
+        }
+
+        // Hide Search Results
+        function hideSearchResults() {
+            document.getElementById('searchResults').classList.add('hidden');
+            document.getElementById('searchLoading').classList.add('hidden');
+            document.getElementById('searchEmpty').classList.add('hidden');
+            document.getElementById('searchContent').classList.add('hidden');
+        }
+
+        // Show Loading State
+        function showLoading() {
+            const results = document.getElementById('searchResults');
+            results.classList.remove('hidden');
+            document.getElementById('searchLoading').classList.remove('hidden');
+            document.getElementById('searchEmpty').classList.add('hidden');
+            document.getElementById('searchContent').classList.add('hidden');
+        }
+
+        // Display Search Results
+        function displaySearchResults(data) {
+            document.getElementById('searchLoading').classList.add('hidden');
+
+            const projects = data.projects || [];
+            const users = data.users || [];
+
+            // No results
+            if (projects.length === 0 && users.length === 0) {
+                document.getElementById('searchEmpty').classList.remove('hidden');
+                document.getElementById('searchContent').classList.add('hidden');
+                return;
+            }
+
+            // Show results
+            document.getElementById('searchEmpty').classList.add('hidden');
+            document.getElementById('searchContent').classList.remove('hidden');
+
+            // Render Projects
+            if (projects.length > 0) {
+                document.getElementById('projectsSection').classList.remove('hidden');
+                document.getElementById('projectsList').innerHTML = projects.map(project => `
+                    <a href="/lvsforum/LvsUser/LvsProject/LvsDetail/${project.lvsProjectId}" 
+                       class="flex items-center gap-3 px-3 py-2.5 hover:bg-[#fed700]/10 rounded-lg transition-colors group">
+                        ${project.lvsThumbnailUrl ?
+                        `<img src="/lvsforum${project.lvsThumbnailUrl}" class="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-[#333]" alt="Thumbnail">` :
+                        `<div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-folder text-black text-lg"></i>
+                            </div>`
+                    }
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-box text-[#fed700] text-xs"></i>
+                                <p class="text-white font-semibold text-sm truncate group-hover:text-[#fed700] transition-colors">${escapeHtml(project.lvsTitle)}</p>
+                            </div>
+                            <p class="text-[#fed700] text-xs font-bold">${formatPrice(project.lvsPrice)}</p>
+                        </div>
+                    </a>
+                `).join('');
+            } else {
+                document.getElementById('projectsSection').classList.add('hidden');
+            }
+
+            // Render Users
+            if (users.length > 0) {
+                document.getElementById('usersSection').classList.remove('hidden');
+                document.getElementById('usersList').innerHTML = users.map(user => `
+                    <a href="/lvsforum/LvsUser/LvsProfile/LvsView/${user.lvsUserId}" 
+                       class="flex items-center gap-3 px-3 py-2.5 hover:bg-[#fed700]/10 rounded-lg transition-colors group">
+                        ${user.lvsAvatarUrl ?
+                        `<img src="/lvsforum${user.lvsAvatarUrl}" class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2 border-blue-500/30" alt="Avatar">` :
+                        `<div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                                <span class="text-white font-bold text-sm">${user.lvsUsername.charAt(0).toUpperCase()}</span>
+                            </div>`
+                    }
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-user text-blue-400 text-xs"></i>
+                                <p class="text-white font-semibold text-sm truncate group-hover:text-[#fed700] transition-colors">${escapeHtml(user.lvsUsername)}</p>
+                            </div>
+                            <p class="text-gray-400 text-xs">${user.lvsRole}</p>
+                        </div>
+                    </a>
+                `).join('');
+            } else {
+                document.getElementById('usersSection').classList.add('hidden');
+            }
+
+            // Update "View All" link
+            document.getElementById('viewAllLink').href = `/lvsforum/LvsUser/LvsSearch?keyword=${encodeURIComponent(currentQuery)}`;
+        }
+
+        // Helper: Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Helper: Format Price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(price);
+        }
+
+        // Toggle mobile menu
+    </script>
 </body>
 
 </html>

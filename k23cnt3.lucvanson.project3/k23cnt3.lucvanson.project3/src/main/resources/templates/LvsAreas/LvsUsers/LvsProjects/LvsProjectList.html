@@ -3,103 +3,474 @@
     layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
 
 <head>
-    <title>Danh sách dự án - Electro Store</title>
+    <title>All Projects - WeJect</title>
+    <style>
+        /* ========================================
+           FILTER SIDEBAR
+           ======================================== */
+        .filter-sidebar {
+            transition: transform 0.3s ease;
+        }
+
+        .filter-sidebar.hidden-mobile {
+            transform: translateX(-100%);
+        }
+
+        @media (min-width: 1024px) {
+            .filter-sidebar.hidden-mobile {
+                transform: translateX(0);
+            }
+        }
+
+        /* Range Slider Styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #333;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fed700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(254, 215, 0, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fed700;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Project Card Hover Effects */
+        .project-card {
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(254, 215, 0, 0.2);
+        }
+
+        .project-card:hover .card-overlay {
+            opacity: 1;
+        }
+
+        .card-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* View Mode Buttons */
+        .view-btn.active {
+            background: #fed700;
+            color: black;
+        }
+
+        /* Filter Badge */
+        .filter-badge {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div layout:fragment="content">
         <div class="container mx-auto px-4 py-8">
-            <h1 class="text-3xl font-bold text-white mb-8"><i class="fas fa-th-large mr-3 text-[#fed700]"></i>Tất cả dự
-                án</h1>
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="text-4xl font-black text-white mb-2">
+                    <i class="fas fa-th-large mr-3 text-[#fed700]"></i>
+                    Tất cả dự án
+                </h1>
+                <p class="text-gray-400">Khám phá hàng trăm dự án chất lượng cao</p>
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div th:each="project : ${LvsProjects.content}" class="electro-card p-4">
-                    <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${project.lvsProjectId})}">
-                        <div class="h-40 bg-[#1e1e1e] rounded-lg mb-3 overflow-hidden">
-                            <img th:if="${project.lvsThumbnailUrl}" th:src="@{${project.lvsThumbnailUrl}}"
-                                th:alt="${project.lvsProjectName}"
-                                class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
-                            <div th:unless="${project.lvsThumbnailUrl}"
-                                class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-image text-5xl text-gray-600"></i>
-                            </div>
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- FILTER SIDEBAR (Mobile: Hidden by default, Desktop: Always visible) -->
+                <aside id="filterSidebar"
+                    class="filter-sidebar hidden-mobile lg:block w-full lg:w-1/4 bg-[#1e1e1e] border border-[#333] rounded-xl p-6 lg:sticky lg:top-4 h-fit">
+
+                    <!-- Filter Form -->
+                    <form id="filterForm" method="get" th:action="@{/LvsUser/LvsProject/LvsList}">
+
+                        <!-- Mobile Close Button -->
+                        <div class="flex items-center justify-between mb-6 lg:hidden">
+                            <h2 class="text-xl font-bold text-white">Filters</h2>
+                            <button onclick="toggleFilters()" class="text-gray-400 hover:text-white">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
                         </div>
-                        <h3 class="text-white font-bold mb-2 line-clamp-2" th:text="${project.lvsProjectName}">Project
-                        </h3>
 
-                        <!-- Price with Discount -->
-                        <div class="mb-2">
-                            <!-- If discount active -->
-                            <div th:if="${project.lvsHasActiveDiscount}">
-                                <!-- Sale Badge -->
-                                <span
-                                    class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold mb-1 inline-block">
-                                    <i class="fas fa-fire mr-1"></i>SALE!
-                                </span>
+                        <div class="space-y-6">
+                            <!-- Clear All Filters -->
+                            <button onclick="clearAllFilters()"
+                                class="w-full bg-red-500/20 text-red-400 border border-red-500/50 py-2 px-4 rounded-lg hover:bg-red-500/30 transition">
+                                <i class="fas fa-times-circle mr-2"></i>Clear All Filters
+                            </button>
 
-                                <!-- Prices -->
-                                <div class="mt-1">
-                                    <div class="text-gray-400 line-through text-sm">
-                                        <span th:text="${#numbers.formatCurrency(project.lvsPrice)}">$0</span>
-                                    </div>
-                                    <div class="text-[#fed700] font-bold text-xl">
-                                        <span th:text="${#numbers.formatCurrency(project.lvsFinalPrice)}">$0</span>
-                                    </div>
-                                    <div class="text-orange-400 text-xs font-semibold">
-                                        <span th:text="${project.lvsDiscountPercent}">0</span>% OFF
-                                    </div>
+                            <!-- Category Filter -->
+                            <div>
+                                <h3 class="text-white font-bold mb-3 flex items-center">
+                                    <i class="fas fa-folder text-[#fed700] mr-2"></i>
+                                    Categories
+                                </h3>
+                                <div class="space-y-2">
+                                    <!-- All Categories Option -->
+                                    <label
+                                        class="flex items-center text-gray-300 hover:text-white cursor-pointer group">
+                                        <input type="radio" name="lvsCategoryId" value=""
+                                            th:checked="${LvsSelectedCategoryId == null}"
+                                            onchange="document.getElementById('filterForm').submit()"
+                                            class="mr-3 w-4 h-4 accent-[#fed700]">
+                                        <span class="group-hover:text-[#fed700] transition">All Categories</span>
+                                        <span class="ml-auto text-xs text-gray-500"
+                                            th:text="'(' + ${LvsProjects.totalElements} + ')'">(0)</span>
+                                    </label>
+
+                                    <!-- Dynamic Categories from Database -->
+                                    <label th:each="cat : ${LvsCategories}"
+                                        class="flex items-center text-gray-300 hover:text-white cursor-pointer group">
+                                        <input type="radio" name="lvsCategoryId" th:value="${cat.lvsCategoryId}"
+                                            th:checked="${LvsSelectedCategoryId != null && LvsSelectedCategoryId == cat.lvsCategoryId}"
+                                            onchange="document.getElementById('filterForm').submit()"
+                                            class="mr-3 w-4 h-4 accent-[#fed700]">
+                                        <i th:if="${cat.lvsIcon}" th:class="'fas ' + ${cat.lvsIcon} + ' text-sm mr-2'"
+                                            th:style="'color: ' + ${cat.lvsColor ?: '#fed700'}"></i>
+                                        <i th:unless="${cat.lvsIcon}"
+                                            class="fas fa-folder text-sm mr-2 text-gray-400"></i>
+                                        <span class="group-hover:text-[#fed700] transition"
+                                            th:text="${cat.lvsCategoryName}">Category</span>
+                                        <span class="ml-auto text-xs text-gray-500"
+                                            th:text="'(' + ${cat.lvsProjectCount ?: 0} + ')'">(0)</span>
+                                    </label>
                                 </div>
                             </div>
 
-                            <!-- No discount -->
-                            <p th:unless="${project.lvsHasActiveDiscount}" class="text-[#fed700] font-bold text-lg mb-2"
-                                th:text="${#numbers.formatCurrency(project.lvsPrice)}">$0
-                            </p>
+                            <hr class="border-[#333]">
+
+                            <!-- On Sale Filter -->
+                            <div>
+                                <h3 class="text-white font-bold mb-3 flex items-center">
+                                    <i class="fas fa-tags text-[#fed700] mr-2"></i>
+                                    Deals
+                                </h3>
+                                <label class="flex items-center text-gray-300 hover:text-white cursor-pointer group">
+                                    <input type="checkbox" name="onSale" value="true"
+                                        th:checked="${param.onSale != null && param.onSale[0] == 'true'}"
+                                        onchange="document.getElementById('filterForm').submit()"
+                                        class="mr-3 w-4 h-4 accent-[#fed700]">
+                                    <i class="fas fa-fire text-red-500 mr-2"></i>
+                                    <span class="group-hover:text-[#fed700] transition">On Sale Only</span>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </aside>
+
+                <!-- MAIN CONTENT AREA -->
+                <main class="flex-1">
+                    <!-- Top Bar: Search, Sort, View Mode -->
+                    <div class="bg-[#1e1e1e] border border-[#333] rounded-xl p-4 mb-6">
+                        <div class="flex flex-col md:flex-row md:items-center gap-4">
+                            <!-- Mobile Filter Toggle Button -->
+                            <button onclick="toggleFilters()"
+                                class="lg:hidden bg-[#fed700] text-black font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2">
+                                <i class="fas fa-filter"></i>
+                                Filters
+                                <span
+                                    class="filter-badge bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                            </button>
+
+                            <!-- Search Bar -->
+                            <div class="flex-1 relative">
+                                <input type="text" name="lvsKeyword" placeholder="Search projects..."
+                                    th:value="${LvsKeyword}" form="filterForm"
+                                    class="w-full bg-[#2b2b2b] border border-[#444] text-white py-2 pl-10 pr-4 rounded-lg focus:border-[#fed700] focus:outline-none transition">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <button type="submit" form="filterForm"
+                                    class="absolute right-2 top-1/2 -translate-y-1/2 bg-[#fed700] text-black px-3 py-1 rounded text-sm font-bold hover:bg-white transition">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+
+                            <!-- Sort Dropdown -->
+                            <select name="sort" form="filterForm"
+                                onchange="document.getElementById('filterForm').submit()"
+                                class="bg-[#2b2b2b] border border-[#444] text-white py-2 px-4 rounded-lg focus:border-[#fed700] focus:outline-none transition">
+                                <option value="newest"
+                                    th:selected="${LvsSelectedSort == null || LvsSelectedSort == 'newest'}">Newest First
+                                </option>
+                                <option value="popular" th:selected="${LvsSelectedSort == 'popular'}">Most Popular
+                                </option>
+                                <option value="price-low" th:selected="${LvsSelectedSort == 'price-low'}">Price: Low to
+                                    High</option>
+                                <option value="price-high" th:selected="${LvsSelectedSort == 'price-high'}">Price: High
+                                    to Low</option>
+                            </select>
+
+                            <!-- View Mode Toggle (Desktop only) -->
+                            <div class="hidden md:flex items-center gap-2 bg-[#2b2b2b] p-1 rounded-lg">
+                                <button onclick="setViewMode('grid-3')"
+                                    class="view-btn active p-2 rounded transition hover:bg-[#fed700] hover:text-black">
+                                    <i class="fas fa-th"></i>
+                                </button>
+                                <button onclick="setViewMode('grid-2')"
+                                    class="view-btn p-2 rounded transition hover:bg-[#fed700] hover:text-black">
+                                    <i class="fas fa-th-large"></i>
+                                </button>
+                                <button onclick="setViewMode('list')"
+                                    class="view-btn p-2 rounded transition hover:bg-[#fed700] hover:text-black">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <p class="text-gray-400 text-sm">
-                            <i class="fas fa-user mr-1"></i><span
-                                th:text="${project.lvsUser?.lvsUsername ?: 'Unknown'}">User</span>
-                        </p>
-                    </a>
-
-                    <!-- Action Buttons -->
-                    <div class="mt-4 space-y-2">
-                        <!-- Buy Now Button -->
-                        <form th:if="${session.LvsCurrentUser != null}" th:action="@{/LvsUser/LvsCart/LvsAddItem}"
-                            method="post">
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                            <input type="hidden" name="lvsProjectId" th:value="${project.lvsProjectId}" />
-                            <input type="hidden" name="lvsQuantity" value="1" />
-                            <input type="hidden" name="lvsAutoSelect" value="true" />
-                            <button type="submit"
-                                class="w-full bg-[#fed700] text-black font-bold py-2 px-4 rounded-lg hover:bg-white transition flex items-center justify-center gap-2">
-                                <i class="fas fa-bolt"></i> Mua ngay
-                            </button>
-                        </form>
-
-                        <!-- Add to Cart Button -->
-                        <form th:if="${session.LvsCurrentUser != null}" th:action="@{/LvsUser/LvsCart/LvsAddItem}"
-                            method="post">
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                            <input type="hidden" name="lvsProjectId" th:value="${project.lvsProjectId}">
-                            <input type="hidden" name="lvsQuantity" value="1">
-                            <button type="submit"
-                                class="w-full bg-[#1e1e1e] border border-[#444] text-white font-bold py-2 px-4 rounded-lg hover:border-[#fed700] transition flex items-center justify-center gap-2">
-                                <i class="fas fa-shopping-cart"></i> Thêm giỏ hàng
-                            </button>
-                        </form>
-
-                        <!-- Login Required Message -->
-                        <div th:unless="${session.LvsCurrentUser != null}"
-                            class="text-center text-gray-400 text-sm py-2">
-                            <i class="fas fa-lock mr-1"></i> Đăng nhập để mua
+                        <!-- Results Count -->
+                        <div class="mt-3 text-gray-400 text-sm">
+                            Showing <span class="text-white font-bold"
+                                th:text="${LvsProjects.numberOfElements}">0</span>
+                            of <span class="text-white font-bold" th:text="${LvsProjects.totalElements}">0</span>
+                            projects
                         </div>
                     </div>
-                </div>
+
+                    <!-- Projects Grid (Responsive: 1 col mobile, 2 cols tablet, 3 cols desktop) -->
+                    <div id="projectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Project Card -->
+                        <div th:each="project : ${LvsProjects.content}"
+                            class="project-card bg-[#1e1e1e] border border-[#333] rounded-xl overflow-hidden group">
+
+                            <!-- Thumbnail -->
+                            <div class="relative h-48 bg-[#2b2b2b] overflow-hidden">
+                                <img th:if="${project.lvsThumbnailUrl}" th:src="@{${project.lvsThumbnailUrl}}"
+                                    th:alt="${project.lvsProjectName}"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <div th:unless="${project.lvsThumbnailUrl}"
+                                    class="w-full h-full flex items-center justify-center">
+                                    <i class="fas fa-image text-5xl text-gray-600"></i>
+                                </div>
+
+                                <!-- Overlay with Quick Actions -->
+                                <div
+                                    class="card-overlay absolute inset-0 bg-black/60 flex items-center justify-center gap-3">
+                                    <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${project.lvsProjectId})}"
+                                        class="bg-[#fed700] text-black w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <form th:if="${session.LvsCurrentUser != null}"
+                                        th:action="@{/LvsUser/LvsCart/LvsAddItem}" method="post" class="inline-block">
+                                        <input type="hidden" th:name="${_csrf.parameterName}"
+                                            th:value="${_csrf.token}" />
+                                        <input type="hidden" name="lvsProjectId" th:value="${project.lvsProjectId}" />
+                                        <input type="hidden" name="lvsQuantity" value="1" />
+                                        <button type="submit"
+                                            class="bg-white text-black w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
+                                    </form>
+                                    <a th:unless="${session.LvsCurrentUser != null}" th:href="@{/LvsLogin}"
+                                        class="bg-white text-black w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </a>
+                                </div>
+
+                                <!-- Badges -->
+                                <div class="absolute top-3 left-3 flex flex-col gap-2">
+                                    <span th:if="${project.lvsHasActiveDiscount}"
+                                        class="bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-lg animate-pulse">
+                                        <i class="fas fa-fire mr-1"></i>
+                                        -<span th:text="${project.lvsDiscountPercent}">0</span>% OFF
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="p-4">
+                                <!-- Category Badge -->
+                                <span
+                                    class="inline-block bg-[#2b2b2b] text-[#fed700] text-xs px-3 py-1 rounded-full mb-2">
+                                    <i class="fas fa-folder mr-1"></i>
+                                    <span
+                                        th:text="${project.lvsCategory?.lvsCategoryName ?: 'Uncategorized'}">Category</span>
+                                </span>
+
+                                <!-- Title -->
+                                <h3 class="text-white font-bold text-lg mb-2 line-clamp-2 group-hover:text-[#fed700] transition"
+                                    th:text="${project.lvsProjectName}">
+                                    Project Name
+                                </h3>
+
+                                <!-- Author -->
+                                <p class="text-gray-400 text-sm mb-3">
+                                    <i class="fas fa-user mr-1"></i>
+                                    <span th:text="${project.lvsUser?.lvsUsername ?: 'Unknown'}">Author</span>
+                                </p>
+
+                                <!-- Stats -->
+                                <div class="flex items-center gap-4 text-xs text-gray-400 mb-3">
+                                    <span>
+                                        <i class="fas fa-download text-[#fed700] mr-1"></i>
+                                        <span th:text="${project.lvsDownloadCount ?: 0}">0</span>
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-eye text-blue-400 mr-1"></i>
+                                        <span th:text="${project.lvsViewCount ?: 0}">0</span>
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        4.5
+                                    </span>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="mb-4">
+                                    <div th:if="${project.lvsHasActiveDiscount}">
+                                        <div class="text-gray-400 line-through text-sm">
+                                            <span
+                                                th:text="${#numbers.formatDecimal(project.lvsPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                            Coins
+                                        </div>
+                                        <div class="text-[#fed700] font-black text-2xl">
+                                            <span
+                                                th:text="${#numbers.formatDecimal(project.lvsFinalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                            <span class="text-sm font-normal">Coins</span>
+                                        </div>
+                                    </div>
+                                    <div th:unless="${project.lvsHasActiveDiscount}"
+                                        class="text-[#fed700] font-black text-2xl">
+                                        <span
+                                            th:text="${#numbers.formatDecimal(project.lvsPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                        <span class="text-sm font-normal">Coins</span>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="space-y-2">
+                                    <form th:if="${session.LvsCurrentUser != null}"
+                                        th:action="@{/LvsUser/LvsCart/LvsAddItem}" method="post">
+                                        <input type="hidden" th:name="${_csrf.parameterName}"
+                                            th:value="${_csrf.token}" />
+                                        <input type="hidden" name="lvsProjectId" th:value="${project.lvsProjectId}" />
+                                        <input type="hidden" name="lvsQuantity" value="1" />
+                                        <button type="submit"
+                                            class="w-full bg-[#fed700] text-black font-bold py-3 px-4 rounded-lg hover:bg-white transition flex items-center justify-center gap-2 shadow-lg hover:shadow-[#fed700]/50">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            Add to Cart
+                                        </button>
+                                    </form>
+
+                                    <div th:unless="${session.LvsCurrentUser != null}"
+                                        class="text-center text-gray-400 text-sm py-3 border border-[#333] rounded-lg">
+                                        <i class="fas fa-lock mr-1"></i> Login to purchase
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-8 flex items-center justify-center gap-2">
+                        <button
+                            class="bg-[#2b2b2b] border border-[#444] text-white px-4 py-2 rounded-lg hover:border-[#fed700] transition">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="bg-[#fed700] text-black font-bold px-4 py-2 rounded-lg">1</button>
+                        <button
+                            class="bg-[#2b2b2b] border border-[#444] text-white px-4 py-2 rounded-lg hover:border-[#fed700] transition">2</button>
+                        <button
+                            class="bg-[#2b2b2b] border border-[#444] text-white px-4 py-2 rounded-lg hover:border-[#fed700] transition">3</button>
+                        <span class="text-gray-400">...</span>
+                        <button
+                            class="bg-[#2b2b2b] border border-[#444] text-white px-4 py-2 rounded-lg hover:border-[#fed700] transition">10</button>
+                        <button
+                            class="bg-[#2b2b2b] border border-[#444] text-white px-4 py-2 rounded-lg hover:border-[#fed700] transition">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </main>
             </div>
         </div>
     </div>
+
+    <script layout:fragment="scripts">
+        // Toggle mobile filter sidebar
+        function toggleFilters() {
+            const sidebar = document.getElementById('filterSidebar');
+            sidebar.classList.toggle('hidden-mobile');
+        }
+
+        // Price range slider
+        const priceRange = document.getElementById('priceRange');
+        const priceValue = document.getElementById('priceValue');
+
+        if (priceRange && priceValue) {
+            priceRange.addEventListener('input', function () {
+                priceValue.textContent = parseInt(this.value).toLocaleString() + ' ₫';
+            });
+        }
+
+        function setPriceRange(value) {
+            if (priceRange && priceValue) {
+                priceRange.value = value;
+                priceValue.textContent = parseInt(value).toLocaleString() + ' ₫';
+            }
+        }
+
+        // View mode switcher
+        function setViewMode(mode) {
+            const grid = document.getElementById('projectsGrid');
+            const buttons = document.querySelectorAll('.view-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.view-btn').classList.add('active');
+
+            if (mode === 'grid-3') {
+                grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
+            } else if (mode === 'grid-2') {
+                grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-6';
+            } else if (mode === 'list') {
+                grid.className = 'flex flex-col gap-4';
+            }
+        }
+
+        // Clear all filters
+        function clearAllFilters() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[type="radio"]').forEach(rb => {
+                if (rb.value === 'all') rb.checked = true;
+                else rb.checked = false;
+            });
+            setPriceRange(10000);
+        }
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Reports Management - WeJect</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-white mb-2">
+                        <i class="fas fa-flag text-purple-400 mr-3"></i>Reports Management
+                    </h1>
+                    <p class="text-gray-400">Review and manage user reports</p>
+                </div>
+                <a th:href="@{/LvsModeration/LvsDashboard}"
+                    class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-all">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                </a>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-gradient-to-br from-[#2a2a2a] to-[#1e1e1e] border border-[#333] rounded-xl p-6 mb-6">
+                <form th:action="@{/LvsModeration/LvsReports}" method="get"
+                    class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Status Filter -->
+                    <div>
+                        <label class="block text-gray-400 text-sm font-semibold mb-2">Filter by Status</label>
+                        <select name="status"
+                            class="w-full bg-black/30 border border-[#333] rounded-lg px-4 py-2 text-white focus:border-purple-500 focus:outline-none">
+                            <option value="">All Statuses</option>
+                            <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">Pending</option>
+                            <option value="UNDER_REVIEW" th:selected="${selectedStatus == 'UNDER_REVIEW'}">Under Review
+                            </option>
+                            <option value="RESOLVED" th:selected="${selectedStatus == 'RESOLVED'}">Resolved</option>
+                            <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
+                        </select>
+                    </div>
+
+                    <!-- Type Filter -->
+                    <div>
+                        <label class="block text-gray-400 text-sm font-semibold mb-2">Filter by Type</label>
+                        <select name="type"
+                            class="w-full bg-black/30 border border-[#333] rounded-lg px-4 py-2 text-white focus:border-purple-500 focus:outline-none">
+                            <option value="">All Types</option>
+                            <option value="USER" th:selected="${selectedType == 'USER'}">User</option>
+                            <option value="PROJECT" th:selected="${selectedType == 'PROJECT'}">Project</option>
+                            <option value="POST" th:selected="${selectedType == 'POST'}">Post</option>
+                            <option value="COMMENT" th:selected="${selectedType == 'COMMENT'}">Comment</option>
+                            <option value="REVIEW" th:selected="${selectedType == 'REVIEW'}">Review</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex items-end">
+                        <button type="submit"
+                            class="w-full px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-bold transition-all">
+                            <i class="fas fa-filter mr-2"></i>Apply Filters
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Reports Table -->
+            <div class="bg-gradient-to-br from-[#2a2a2a] to-[#1e1e1e] border border-[#333] rounded-xl overflow-hidden">
+                <div th:if="${reports != null and !reports.isEmpty()}">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-black/30">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">ID
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Type
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Reason
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">
+                                        Reporter</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Status
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Date
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#333]">
+                                <tr th:each="report : ${reports}" class="hover:bg-black/30 transition-all">
+                                    <td class="px-6 py-4 text-gray-300" th:text="${report.lvsReportId}">#1</td>
+
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold" th:classappend="${report.lvsReportType.name() == 'USER'} ? 'bg-red-500/20 text-red-400' :
+                                                           (${report.lvsReportType.name() == 'PROJECT'} ? 'bg-blue-500/20 text-blue-400' :
+                                                           (${report.lvsReportType.name() == 'POST'} ? 'bg-green-500/20 text-green-400' :
+                                                           (${report.lvsReportType.name() == 'COMMENT'} ? 'bg-yellow-500/20 text-yellow-400' :
+                                                           'bg-purple-500/20 text-purple-400')))"
+                                            th:text="${report.lvsReportType}">TYPE</span>
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        <p class="text-white font-semibold" th:text="${report.lvsReason}">Reason</p>
+                                        <p class="text-gray-400 text-sm truncate max-w-xs"
+                                            th:text="${report.lvsDetails}">Details</p>
+                                    </td>
+
+                                    <td class="px-6 py-4 text-gray-300" th:text="${report.lvsReporter.lvsUsername}">User
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold" th:classappend="${report.lvsStatus.name() == 'PENDING'} ? 'bg-yellow-500/20 text-yellow-400' :
+                                                           (${report.lvsStatus.name() == 'UNDER_REVIEW'} ? 'bg-purple-500/20 text-purple-400' :
+                                                           (${report.lvsStatus.name() == 'RESOLVED'} ? 'bg-green-500/20 text-green-400' :
+                                                           'bg-gray-500/20 text-gray-400'))"
+                                            th:text="${report.lvsStatus}">STATUS</span>
+                                    </td>
+
+                                    <td class="px-6 py-4 text-gray-300 text-sm"
+                                        th:text="${#temporals.format(report.lvsCreatedAt, 'dd/MM/yyyy HH:mm')}">Date
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        <a th:href="@{/LvsModeration/LvsReport/LvsDetail/{id}(id=${report.lvsReportId})}"
+                                            class="px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 rounded-lg font-semibold transition-all inline-block">
+                                            <i class="fas fa-eye mr-1"></i>View
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div th:if="${reports == null or reports.isEmpty()}" class="text-center py-16 text-gray-400">
+                    <i class="fas fa-inbox text-6xl mb-4"></i>
+                    <p class="text-lg">No reports found</p>
+                    <p class="text-sm">Try adjusting your filters</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

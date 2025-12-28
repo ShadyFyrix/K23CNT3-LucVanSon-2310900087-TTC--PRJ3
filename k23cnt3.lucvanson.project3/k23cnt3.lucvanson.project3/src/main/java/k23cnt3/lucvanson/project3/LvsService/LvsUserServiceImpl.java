@@ -3,7 +3,12 @@ package k23cnt3.lucvanson.project3.LvsService;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsUser;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsRole;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsUser.LvsUserStatus;
+import k23cnt3.lucvanson.project3.LvsEntity.LvsProject;
+import k23cnt3.lucvanson.project3.LvsEntity.LvsProject.LvsProjectStatus;
 import k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsCommentRepository;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsTransactionRepository;
+import k23cnt3.lucvanson.project3.LvsEntity.LvsTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +31,12 @@ public class LvsUserServiceImpl implements LvsUserService {
 
     @Autowired
     private LvsUserRepository lvsUserRepository;
+
+    @Autowired
+    private LvsCommentRepository lvsCommentRepository;
+
+    @Autowired
+    private LvsTransactionRepository lvsTransactionRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -295,10 +306,67 @@ public class LvsUserServiceImpl implements LvsUserService {
 
     @Override
     public List<LvsUser> lvsGetTopBuyers(int lvsLimit) {
-        // Using top users by balance as proxy for top buyers
-        // You might need to adjust this based on your actual business logic
-        return lvsUserRepository.findTopByBalance(org.springframework.data.domain.PageRequest.of(0, lvsLimit))
-                .getContent();
+        // Updated to use comprehensive activity score
+        // Score considers: coins (25%), projects (20%), comments (15%), posts (10%),
+        // reviews (5%)
+        // Only includes ACTIVE users
+        List<LvsUser> users = lvsUserRepository.findTopByActivityScore(
+                org.springframework.data.domain.PageRequest.of(0, lvsLimit)).getContent();
+
+        // Calculate and set activity score for each user
+        users.forEach(this::calculateAndSetActivityScore);
+
+        return users;
+    }
+
+    @Override
+    public List<LvsUser> lvsGetTopByCoin(int lvsLimit) {
+        // Get users ranked by coin balance only
+        return lvsUserRepository.findTopByCoinBalance(
+                org.springframework.data.domain.PageRequest.of(0, lvsLimit)).getContent();
+    }
+
+    @Override
+    public List<LvsUser> lvsGetTopBySales(int lvsLimit) {
+        // Get users ranked by sales revenue (balance)
+        return lvsUserRepository.findTopBySales(
+                org.springframework.data.domain.PageRequest.of(0, lvsLimit)).getContent();
+    }
+
+    @Override
+    public List<LvsUser> lvsGetTopByActivity(int lvsLimit) {
+        // Same as lvsGetTopBuyers - comprehensive activity score
+        return lvsGetTopBuyers(lvsLimit);
+    }
+
+    /**
+     * Calculate and set activity score for a user
+     * Formula: (Coin × 0.25) + (Projects × 10) + (Comments × 1.5) + (Posts × 2) +
+     * (Reviews × 0.75)
+     */
+    private void calculateAndSetActivityScore(LvsUser user) {
+        double coinScore = (user.getLvsCoin() != null ? user.getLvsCoin() : 0.0) * 0.25;
+
+        // Count approved projects
+        long projectCount = user.getLvsProjects() != null ? user.getLvsProjects().stream()
+                .filter(p -> p.getLvsStatus() == LvsProjectStatus.APPROVED)
+                .count() : 0;
+        double projectScore = projectCount * 10;
+
+        // Count comments via repository
+        long commentCount = lvsCommentRepository.countByLvsUser_LvsUserId(user.getLvsUserId());
+        double commentScore = commentCount * 1.5;
+
+        // Count posts
+        long postCount = user.getLvsPosts() != null ? user.getLvsPosts().size() : 0;
+        double postScore = postCount * 2;
+
+        // Count reviews
+        long reviewCount = user.getLvsReviews() != null ? user.getLvsReviews().size() : 0;
+        double reviewScore = reviewCount * 0.75;
+
+        double totalScore = coinScore + projectScore + commentScore + postScore + reviewScore;
+        user.setLvsActivityScore(totalScore);
     }
 
     @Override
@@ -382,9 +450,30 @@ public class LvsUserServiceImpl implements LvsUserService {
 
     @Override
     public Double lvsGetTotalWithdrawn(Long lvsUserId) {
-        // This should query from Transaction repository where type = WITHDRAWAL
-        // For now, return 0.0 as placeholder
-        return 0.0;
+        // Query WITHDRAWAL transactions with SUCCESS status
+        List<LvsTransaction> withdrawals = lvsTransactionRepository
+                .findByLvsUser_LvsUserIdAndLvsTypeAndLvsStatus(
+                        lvsUserId,
+                        LvsTransaction.LvsTransactionType.WITHDRAWAL,
+                        LvsTransaction.LvsTransactionStatus.SUCCESS);
+
+        // Query BALANCE_TO_COIN transactions with SUCCESS status
+        List<LvsTransaction> balanceToCoin = lvsTransactionRepository
+                .findByLvsUser_LvsUserIdAndLvsTypeAndLvsStatus(
+                        lvsUserId,
+                        LvsTransaction.LvsTransactionType.BALANCE_TO_COIN,
+                        LvsTransaction.LvsTransactionStatus.SUCCESS);
+
+        // Sum up all amounts
+        double withdrawalTotal = withdrawals.stream()
+                .mapToDouble(t -> t.getLvsAmount() != null ? t.getLvsAmount() : 0.0)
+                .sum();
+
+        double balanceToCoinTotal = balanceToCoin.stream()
+                .mapToDouble(t -> t.getLvsAmount() != null ? t.getLvsAmount() : 0.0)
+                .sum();
+
+        return withdrawalTotal + balanceToCoinTotal;
     }
 
     @Override

@@ -3,6 +3,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsUser;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsUser;
 import k23cnt3.lucvanson.project3.LvsEntity.LvsUserQuest;
 import k23cnt3.lucvanson.project3.LvsService.LvsQuestService;
+import k23cnt3.lucvanson.project3.LvsService.LvsUserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,9 @@ public class LvsUserQuestController {
     @Autowired
     private LvsQuestService lvsQuestService;
 
+    @Autowired
+    private LvsUserService lvsUserService;
+
     /**
      * Quest Dashboard - View all quests and progress
      */
@@ -34,7 +38,15 @@ public class LvsUserQuestController {
         List<LvsUserQuest> completedQuests = lvsQuestService.lvsGetUserCompletedQuests(currentUser);
         List<LvsUserQuest> unclaimedQuests = lvsQuestService.lvsGetUnclaimedQuests(currentUser);
 
+        // Group active quests by type
+        java.util.Map<String, List<LvsUserQuest>> questsByType = new java.util.LinkedHashMap<>();
+        for (LvsUserQuest quest : activeQuests) {
+            String type = quest.getLvsQuest().getLvsQuestType().name();
+            questsByType.computeIfAbsent(type, k -> new java.util.ArrayList<>()).add(quest);
+        }
+
         model.addAttribute("lvsActiveQuests", activeQuests);
+        model.addAttribute("lvsQuestsByType", questsByType);
         model.addAttribute("lvsCompletedQuests", completedQuests);
         model.addAttribute("lvsUnclaimedQuests", unclaimedQuests);
         model.addAttribute("pageTitle", "Quest Dashboard");
@@ -58,6 +70,13 @@ public class LvsUserQuestController {
 
         try {
             lvsQuestService.lvsClaimQuestReward(id);
+
+            // Refresh user session to update coin balance
+            LvsUser updatedUser = lvsUserService.lvsGetUserById(currentUser.getLvsUserId());
+            if (updatedUser != null) {
+                session.setAttribute("LvsCurrentUser", updatedUser);
+            }
+
             redirectAttributes.addFlashAttribute("LvsSuccess", "Quest reward claimed!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("LvsError", "Error claiming reward: " + e.getMessage());
@@ -78,6 +97,13 @@ public class LvsUserQuestController {
 
         try {
             lvsQuestService.lvsClaimAllQuestRewards(currentUser);
+
+            // Refresh user session to update coin balance
+            LvsUser updatedUser = lvsUserService.lvsGetUserById(currentUser.getLvsUserId());
+            if (updatedUser != null) {
+                session.setAttribute("LvsCurrentUser", updatedUser);
+            }
+
             redirectAttributes.addFlashAttribute("LvsSuccess", "All rewards claimed!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("LvsError", "Error claiming rewards: " + e.getMessage());

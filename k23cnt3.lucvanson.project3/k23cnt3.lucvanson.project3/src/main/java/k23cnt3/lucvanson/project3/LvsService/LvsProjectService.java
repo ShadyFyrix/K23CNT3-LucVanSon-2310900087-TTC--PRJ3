@@ -55,6 +55,9 @@ public interface LvsProjectService {
     // Lấy dự án nổi bật
     List<LvsProject> lvsGetFeaturedProjects(Pageable lvsPageable);
 
+    // Lấy dự án với ưu tiên featured (featured first, then newest)
+    List<LvsProject> lvsGetFeaturedAndNewestProjects(Pageable lvsPageable);
+
     // Lấy dự án đã mua gần đây
     List<LvsProject> lvsGetRecentPurchases(Long lvsUserId, int lvsLimit);
 
@@ -117,4 +120,16 @@ public interface LvsProjectService {
 
     // Lấy dữ liệu biểu đồ thống kê dự án
     Map<String, Object> lvsGetProjectStatsChartData();
+
+    // ========== MODERATION METHODS ==========
+
+    /**
+     * Hide project (set lvsIsApproved = false)
+     */
+    void lvsHideProject(Long projectId);
+
+    /**
+     * Show project (set lvsIsApproved = true)
+     */
+    void lvsShowProject(Long projectId);
 }

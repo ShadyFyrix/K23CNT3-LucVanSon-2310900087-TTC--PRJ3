@@ -55,6 +55,12 @@ public class LvsUserProjectController {
     @Autowired
     private LvsOrderRepository lvsOrderRepository;
 
+    @Autowired
+    private LvsQuestService lvsQuestService;
+
+    @Autowired
+    private LvsPromotionService lvsPromotionService;
+
     /**
      * Show Add Project Form
      * URL: GET /LvsUser/LvsProject/LvsAdd
@@ -139,6 +145,14 @@ public class LvsUserProjectController {
 
             // Save project
             LvsProject savedProject = lvsProjectService.lvsSaveProject(lvsProject);
+
+            // Track CREATE_PROJECT quest progress
+            try {
+                lvsQuestService.lvsUpdateQuestProgress(lvsCurrentUser,
+                        LvsQuest.LvsQuestType.CREATE_PROJECT, 1);
+            } catch (Exception e) {
+                System.out.println("[QUEST] Error updating CREATE_PROJECT progress: " + e.getMessage());
+            }
 
             redirectAttributes.addFlashAttribute("success", "Tạo dự án thành công! Đang chờ duyệt.");
             return "redirect:/LvsUser/LvsProject/LvsMyProjects";
@@ -322,10 +336,35 @@ public class LvsUserProjectController {
             @RequestParam(defaultValue = "12") int size,
             @RequestParam(required = false) String lvsKeyword,
             @RequestParam(required = false) Integer lvsCategoryId,
+            @RequestParam(defaultValue = "newest") String sort,
+            @RequestParam(required = false) Boolean onSale,
             Model model,
             HttpSession session) {
 
-        Pageable lvsPageable = PageRequest.of(page, size);
+        // Create Sort object based on sort parameter
+        org.springframework.data.domain.Sort sortObj;
+        switch (sort) {
+            case "popular":
+                sortObj = org.springframework.data.domain.Sort.by(
+                        org.springframework.data.domain.Sort.Order.desc("lvsDownloadCount"),
+                        org.springframework.data.domain.Sort.Order.desc("lvsViewCount"));
+                break;
+            case "price-low":
+                sortObj = org.springframework.data.domain.Sort.by(
+                        org.springframework.data.domain.Sort.Order.asc("lvsPrice"));
+                break;
+            case "price-high":
+                sortObj = org.springframework.data.domain.Sort.by(
+                        org.springframework.data.domain.Sort.Order.desc("lvsPrice"));
+                break;
+            case "newest":
+            default:
+                sortObj = org.springframework.data.domain.Sort.by(
+                        org.springframework.data.domain.Sort.Order.desc("lvsCreatedAt"));
+                break;
+        }
+
+        Pageable lvsPageable = PageRequest.of(page, size, sortObj);
         Page<LvsProject> lvsProjects;
 
         // Lấy danh sách categories
@@ -351,11 +390,24 @@ public class LvsUserProjectController {
                     lvsPageable);
         }
 
+        // Post-filter for onSale if requested
+        if (onSale != null && onSale) {
+            java.util.List<LvsProject> filteredList = lvsProjects.getContent().stream()
+                    .filter(p -> p.getLvsIsOnSale() != null && p.getLvsIsOnSale()
+                            && p.getLvsHasActiveDiscount())
+                    .collect(java.util.stream.Collectors.toList());
+            lvsProjects = new org.springframework.data.domain.PageImpl<>(
+                    filteredList,
+                    lvsPageable,
+                    filteredList.size());
+        }
+
         // Truyền dữ liệu
         model.addAttribute("LvsProjects", lvsProjects);
         model.addAttribute("LvsCategories", lvsCategories);
         model.addAttribute("LvsKeyword", lvsKeyword);
         model.addAttribute("LvsSelectedCategoryId", lvsCategoryId);
+        model.addAttribute("LvsSelectedSort", sort);
         model.addAttribute("LvsCurrentPage", page);
 
         return "LvsAreas/LvsUsers/LvsProjects/LvsProjectList";
@@ -392,6 +444,16 @@ public class LvsUserProjectController {
         // Tăng view count
         lvsProjectService.lvsIncrementViewCount(id);
 
+        // Track VIEW_PROJECT quest progress
+        if (lvsCurrentUser != null) {
+            try {
+                lvsQuestService.lvsUpdateQuestProgress(lvsCurrentUser,
+                        LvsQuest.LvsQuestType.VIEW_PROJECT, 1);
+            } catch (Exception e) {
+                System.out.println("[QUEST] Error updating VIEW_PROJECT progress: " + e.getMessage());
+            }
+        }
+
         // Kiểm tra user đã mua chưa (lvsCurrentUser already declared above)
         boolean lvsHasPurchased = false;
         if (lvsCurrentUser != null) {
@@ -424,6 +486,16 @@ public class LvsUserProjectController {
 
         // Get download count (number of orders for this project)
         long lvsDownloadCount = lvsOrderRepository.countByLvsProject_LvsProjectId(id);
+
+        // Get valid promotions for this project price
+        try {
+            java.util.List<LvsPromotion> lvsValidPromotions = lvsPromotionService
+                    .lvsGetValidPromotions(lvsProject.getLvsFinalPrice());
+            model.addAttribute("LvsValidPromotions", lvsValidPromotions);
+        } catch (Exception e) {
+            // If loading fails, set empty list
+            model.addAttribute("LvsValidPromotions", new java.util.ArrayList<>());
+        }
 
         // Truyền dữ liệu
         model.addAttribute("project", lvsProject);

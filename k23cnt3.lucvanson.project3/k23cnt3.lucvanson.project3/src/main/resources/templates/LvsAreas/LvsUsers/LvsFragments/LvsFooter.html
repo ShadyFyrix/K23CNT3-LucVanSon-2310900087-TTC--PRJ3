@@ -2,114 +2,208 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body th:fragment="footer">
-    <!-- Newsletter Section -->
-    <div class="bg-[#fed700] py-8">
-        <div class="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-4 text-black">
-                <i class="fas fa-paper-plane text-2xl"></i>
+    <!-- Modern Premium Footer -->
+    <footer class="bg-gradient-to-b from-[#1a1a1a] via-[#1e1e1e] to-[#151515] border-t border-[#fed700]/20 mt-auto">
+        <div class="container mx-auto px-4 py-12">
+            <!-- Main Footer Content -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <!-- Brand Section -->
                 <div>
-                    <h3 class="font-bold text-xl uppercase tracking-tighter">Sign up to Newsletter</h3>
-                    <p class="text-sm font-medium">...and receive <strong class="text-black">$20 coupon</strong> for
-                        first shopping</p>
-                </div>
-            </div>
-            <div class="flex-grow max-w-xl w-full">
-                <form class="flex">
-                    <input type="email" placeholder="Enter your email address"
-                        class="w-full bg-white text-black px-4 py-3 rounded-l-full outline-none border-none placeholder-gray-500">
-                    <button
-                        class="bg-[#333] text-white font-bold px-8 py-3 rounded-r-full hover:bg-black transition text-sm uppercase tracking-wide">SignUp</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Footer -->
-    <footer class="bg-[#1e1e1e] pt-16 pb-8 border-t border-[#333]">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                <!-- Contact Info -->
-                <div>
-                    <a href="/" class="text-white text-3xl font-bold tracking-tighter block mb-6">
-                        electro<span class="text-[#fed700]">.</span>
+                    <a th:href="@{/LvsUser/LvsHome}" class="flex items-center gap-3 mb-6 group">
+                        <div class="relative">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-[#fed700] to-[#ffa500] rounded-xl blur-md group-hover:blur-lg transition-all">
+                            </div>
+                            <div
+                                class="relative w-12 h-12 rounded-xl bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center shadow-lg">
+                                <i class="fas fa-rocket text-black text-xl"></i>
+                            </div>
+                        </div>
+                        <span
+                            class="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">WeJect</span>
                     </a>
-
-                    <div class="flex items-start gap-4 mb-6">
-                        <i class="fas fa-headset text-[#fed700] text-4xl mt-1"></i>
-                        <div>
-                            <p class="text-gray-400 text-xs mb-1">Got Questions ? Call us 24/7!</p>
-                            <a href="tel:80080018588"
-                                class="text-white text-xl font-medium hover:text-[#fed700] transition">(800) 8001-8588,
-                                (0600) 874 548</a>
-                        </div>
-                    </div>
-
-                    <div class="text-gray-400 text-sm space-y-2">
-                        <h4 class="font-bold text-white mb-2">Contact Info</h4>
-                        <p>17 Princess Road, London, Greater London NW1 8JR, UK</p>
-                        <div class="flex gap-4 mt-6 text-xl text-gray-400">
-                            <a href="#" class="hover:text-white transition"><i class="fab fa-facebook"></i></a>
-                            <a href="#" class="hover:text-white transition"><i class="fab fa-whatsapp"></i></a>
-                            <a href="#" class="hover:text-white transition"><i class="fab fa-pinterest"></i></a>
-                            <a href="#" class="hover:text-white transition"><i class="fab fa-linkedin"></i></a>
-                            <a href="#" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="hover:text-white transition"><i class="fab fa-youtube"></i></a>
-                        </div>
+                    <p class="text-gray-400 text-sm mb-4">Your Premium Project Marketplace. Buy, sell, and discover
+                        amazing digital projects.</p>
+                    <div class="flex gap-3 text-gray-400">
+                        <a href="#"
+                            class="w-10 h-10 rounded-lg bg-[#2a2a2a] hover:bg-[#fed700]/20 hover:text-[#fed700] flex items-center justify-center transition-all">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-lg bg-[#2a2a2a] hover:bg-[#fed700]/20 hover:text-[#fed700] flex items-center justify-center transition-all">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-lg bg-[#2a2a2a] hover:bg-[#fed700]/20 hover:text-[#fed700] flex items-center justify-center transition-all">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-lg bg-[#2a2a2a] hover:bg-[#fed700]/20 hover:text-[#fed700] flex items-center justify-center transition-all">
+                            <i class="fab fa-github"></i>
+                        </a>
                     </div>
                 </div>
 
-                <!-- Find It Fast -->
+                <!-- Quick Links -->
                 <div>
-                    <h3 class="text-white font-bold text-lg mb-6">Find It Fast</h3>
-                    <ul class="text-gray-400 text-sm space-y-3">
-                        <li><a href="#" class="hover:text-[#fed700] transition">Laptops & Computers</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Cameras & Photography</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Smart Phones & Tablets</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Video Games & Consoles</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">TV & Audio</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Gadgets</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Waterproof Headphones</a></li>
+                    <h3 class="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                        <i class="fas fa-link text-[#fed700] text-sm"></i>
+                        Quick Links
+                    </h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a th:href="@{/LvsUser/LvsHome}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-home text-xs"></i> Home
+                            </a></li>
+                        <li><a th:href="@{/LvsUser/LvsProject/LvsList}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-folder text-xs"></i> Browse Projects
+                            </a></li>
+                        <li><a th:href="@{/LvsUser/LvsBlog/LvsList}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-blog text-xs"></i> Blog
+                            </a></li>
+                        <li><a th:href="@{/LvsUser/LvsEvent/LvsDailyCheckIn}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-calendar-check text-xs"></i> Events
+                            </a></li>
+                        <li><a th:href="@{/LvsUser/LvsQuest/LvsDashboard}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-tasks text-xs"></i> Quests
+                            </a></li>
                     </ul>
                 </div>
 
-                <!-- Customer Care -->
+                <!-- Account -->
                 <div>
-                    <h3 class="text-white font-bold text-lg mb-6">Customer Care</h3>
-                    <ul class="text-gray-400 text-sm space-y-3">
-                        <li><a href="#" class="hover:text-[#fed700] transition">My Account</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Track your Order</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Customer Service</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Returns/Exchange</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">FAQs</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Product Support</a></li>
+                    <h3 class="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                        <i class="fas fa-user text-[#fed700] text-sm"></i>
+                        Account
+                    </h3>
+                    <ul class="space-y-2 text-sm">
+                        <li th:if="${session.LvsCurrentUser}">
+                            <a th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${session.LvsCurrentUser.lvsUserId})}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-user-circle text-xs"></i> My Profile
+                            </a>
+                        </li>
+                        <li th:unless="${session.LvsCurrentUser}">
+                            <a th:href="@{/LvsAuth/LvsLogin}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-sign-in-alt text-xs"></i> Login
+                            </a>
+                        </li>
+                        <li><a th:href="@{/LvsUser/LvsOrders/LvsMyOrders}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-shopping-bag text-xs"></i> My Orders
+                            </a></li>
+                        <li><a th:href="@{/LvsUser/LvsProject/LvsMyProjects}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-folder-open text-xs"></i> My Projects
+                            </a></li>
+                        <li><a th:href="@{/LvsUser/LvsProfile/LvsRevenue}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-wallet text-xs"></i> My Revenue
+                            </a></li>
+                        <li><a th:href="@{/LvsUser/LvsMessage/LvsInbox}"
+                                class="text-gray-400 hover:text-[#fed700] transition-colors flex items-center gap-2">
+                                <i class="fas fa-envelope text-xs"></i> Messages
+                            </a></li>
                     </ul>
                 </div>
 
-                <!-- Pages -->
+                <!-- Support -->
                 <div>
-                    <h3 class="text-white font-bold text-lg mb-6">About</h3>
-                    <ul class="text-gray-400 text-sm space-y-3">
-                        <li><a href="#" class="hover:text-[#fed700] transition">About Us</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Contact Us</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-[#fed700] transition">Terms & Conditions</a></li>
+                    <h3 class="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                        <i class="fas fa-headset text-[#fed700] text-sm"></i>
+                        Support
+                    </h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-envelope text-[#fed700] text-xs mt-1"></i>
+                            <div>
+                                <p class="text-xs text-gray-500">Email</p>
+                                <a href="mailto:support@weject.com"
+                                    class="hover:text-[#fed700] transition-colors">support@weject.com</a>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-phone text-[#fed700] text-xs mt-1"></i>
+                            <div>
+                                <p class="text-xs text-gray-500">24/7 Support</p>
+                                <a href="tel:+1234567890" class="hover:text-[#fed700] transition-colors">+1 (234)
+                                    567-890</a>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-map-marker-alt text-[#fed700] text-xs mt-1"></i>
+                            <div>
+                                <p class="text-xs text-gray-500">Location</p>
+                                <p>Hanoi, Vietnam</p>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
 
             <!-- Bottom Bar -->
-            <div
-                class="bg-[#2b2b2b] p-4 rounded flex flex-col md:flex-row items-center justify-between text-xs text-gray-500">
-                <p>&copy; 2024 Electro - All Rights Reserved</p>
-                <div class="flex gap-2 text-2xl">
-                    <i class="fab fa-cc-visa hover:text-white transition"></i>
-                    <i class="fab fa-cc-paypal hover:text-white transition"></i>
-                    <i class="fab fa-cc-mastercard hover:text-white transition"></i>
-                    <i class="fab fa-cc-amex hover:text-white transition"></i>
+            <div class="pt-8 border-t border-[#333]/50">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-gray-500 text-sm">
+                        &copy; 2025 <span class="text-[#fed700] font-semibold">WeJect</span>. All rights reserved.
+                    </p>
+                    <div class="flex items-center gap-6 text-sm text-gray-500">
+                        <a href="#" class="hover:text-[#fed700] transition-colors">Privacy Policy</a>
+                        <span class="text-gray-700">|</span>
+                        <a href="#" class="hover:text-[#fed700] transition-colors">Terms of Service</a>
+                        <span class="text-gray-700">|</span>
+                        <a href="#" class="hover:text-[#fed700] transition-colors">Help Center</a>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 text-xs">Powered by</span>
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-code text-[#fed700]"></i>
+                            <span class="text-white font-semibold text-sm">K23CNT3</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTop" onclick="scrollToTop()"
+        class="fixed bottom-8 right-8 w-12 h-12 bg-gradient-to-r from-[#fed700] to-[#ffa500] rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300 opacity-0 invisible z-50"
+        title="Scroll to Top">
+        <i class="fas fa-arrow-up text-black text-lg"></i>
+    </button>
+
+    <script>
+        // Scroll to Top functionality
+        window.addEventListener('scroll', function () {
+            const scrollBtn = document.getElementById('scrollToTop');
+            if (window.pageYOffset > 300) {
+                scrollBtn.classList.remove('opacity-0', 'invisible');
+                scrollBtn.classList.add('opacity-100', 'visible');
+            } else {
+                scrollBtn.classList.add('opacity-0', 'invisible');
+                scrollBtn.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        function scrollToTop() {
+            // Smooth scroll to top using vanilla JS
+            const scrollDuration = 800;
+            const scrollStep = -window.scrollY / (scrollDuration / 15);
+            const scrollInterval = setInterval(function () {
+                if (window.scrollY != 0) {
+                    window.scrollBy(0, scrollStep);
+                } else {
+                    clearInterval(scrollInterval);
+                }
+            }, 15);
+        }
+    </script>
 </body>
 
 </html>

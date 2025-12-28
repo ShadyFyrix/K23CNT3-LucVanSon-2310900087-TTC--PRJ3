@@ -76,6 +76,17 @@ public class LvsUserCartController {
         if (lvsCart.getLvsPromotion() != null) {
             model.addAttribute("LvsAppliedPromotion", lvsCart.getLvsPromotion());
         }
+
+        // Get valid promotions for current cart total
+        try {
+            List<LvsPromotion> lvsValidPromotions = lvsPromotionService
+                    .lvsGetValidPromotions(lvsCart.getLvsTotalPrice());
+            model.addAttribute("LvsValidPromotions", lvsValidPromotions);
+        } catch (Exception e) {
+            // If loading fails, set empty list
+            model.addAttribute("LvsValidPromotions", new java.util.ArrayList<>());
+        }
+
         // Get followers for gift recipient selection
         try {
             org.springframework.data.domain.Page<LvsUser> followersPage = lvsFollowService.lvsGetFollowers(
@@ -87,6 +98,10 @@ public class LvsUserCartController {
             // If followers loading fails, set empty list
             model.addAttribute("LvsFollowers", new java.util.ArrayList<>());
         }
+
+        // SET SESSION ATTRIBUTE FOR CART COUNT (for sidebar/header badges)
+        session.setAttribute("LvsCartItemCount", lvsCartItems != null ? lvsCartItems.size() : 0);
+
         return "LvsAreas/LvsUsers/LvsCartView";
     }
 

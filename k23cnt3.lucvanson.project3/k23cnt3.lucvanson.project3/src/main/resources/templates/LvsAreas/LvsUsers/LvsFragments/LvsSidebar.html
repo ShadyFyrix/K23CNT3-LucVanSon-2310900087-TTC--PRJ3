@@ -2,62 +2,134 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body th:fragment="sidebar">
-    <!-- Compact Sidebar with Dropdowns -->
+    <!-- Premium Sidebar with Dropdown Sections & Toggle -->
     <aside id="userSidebar"
-        class="w-72 bg-gradient-to-b from-[#2b2b2b] to-[#1e1e1e] border-r border-[#333] min-h-screen hidden lg:block sticky top-0 shadow-2xl transition-all duration-300">
-        <!-- Toggle Button -->
-        <button onclick="toggleSidebar()"
-            class="absolute -right-3 top-6 bg-[#fed700] text-black w-6 h-6 rounded-full flex items-center justify-center hover:bg-white transition-all duration-200 shadow-lg z-10">
-            <i class="fas fa-chevron-left text-xs sidebar-toggle-icon transition-transform duration-300"></i>
+        class="w-72 bg-gradient-to-b from-[#1a1a1a] via-[#1e1e1e] to-[#1a1a1a] border-r border-[#333]/50 min-h-screen hidden lg:flex flex-col shadow-2xl backdrop-blur-xl transition-all duration-500 ease-in-out">
+
+        <!-- Toggle Collapse Button -->
+        <button onclick="toggleSidebar()" id="sidebarToggle"
+            class="fixed left-[285px] top-6 z-50 w-8 h-8 rounded-full bg-gradient-to-r from-[#fed700] to-[#ffa500] hover:from-[#ffa500] hover:to-[#fed700] flex items-center justify-center shadow-lg transition-all duration-500 group"
+            title="Toggle Sidebar">
+            <i class="fas fa-chevron-left text-black text-sm sidebar-toggle-icon transition-transform duration-300"></i>
         </button>
-        <!-- User Profile Section -->
-        <div class="p-6 border-b border-[#333]/50">
-            <div class="flex items-center gap-4">
-                <div
-                    class="w-14 h-14 rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center text-black font-bold text-2xl shadow-lg">
-                    <span th:if="${session.LvsCurrentUser}"
-                        th:text="${#strings.substring(session.LvsCurrentUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
-                    <i th:unless="${session.LvsCurrentUser}" class="fas fa-user"></i>
+        <!-- Premium User Profile Card -->
+        <div class="p-6 border-b border-[#333]/50 bg-gradient-to-br from-[#fed700]/5 to-transparent">
+            <a th:if="${session.LvsCurrentUser}"
+                th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${session.LvsCurrentUser.lvsUserId})}"
+                class="flex items-center gap-4 mb-4 group cursor-pointer">
+                <!-- Real Avatar with Premium Ring -->
+                <div class="relative">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-[#fed700] via-[#ffa500] to-[#fed700] rounded-full blur-sm group-hover:blur-md transition-all animate-pulse">
+                    </div>
+                    <div class="relative w-16 h-16 rounded-full bg-[#1a1a1a] p-0.5">
+                        <img th:if="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsAvatarUrl != null}"
+                            th:src="@{${session.LvsCurrentUser.lvsAvatarUrl}}"
+                            class="w-full h-full rounded-full object-cover border-2 border-[#fed700]/30" alt="Avatar">
+                        <div th:unless="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsAvatarUrl != null}"
+                            class="w-full h-full rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center">
+                            <span th:if="${session.LvsCurrentUser}" class="text-black font-bold text-2xl"
+                                th:text="${#strings.substring(session.LvsCurrentUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
+                            <i th:unless="${session.LvsCurrentUser}" class="fas fa-user text-black text-xl"></i>
+                        </div>
+                    </div>
+                    <!-- Online Pulse Indicator -->
+                    <div class="absolute bottom-1 right-1">
+                        <div class="w-4 h-4 bg-green-500 rounded-full border-2 border-[#1a1a1a] animate-pulse"></div>
+                        <div class="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-75"></div>
+                    </div>
                 </div>
+
+                <!-- User Info -->
                 <div class="flex-1 min-w-0">
-                    <p class="text-white font-bold text-lg truncate" th:if="${session.LvsCurrentUser}"
-                        th:text="${session.LvsCurrentUser.lvsUsername}">User</p>
-                    <p class="text-gray-400 text-sm" th:if="${session.LvsCurrentUser}">
-                        <i class="fas fa-coins text-[#fed700]"></i>
-                        <span th:text="${session.LvsCurrentUser.lvsCoin ?: 0}">0</span> coins
+                    <p class="text-white font-bold text-base truncate group-hover:text-[#fed700] transition-colors"
+                        th:if="${session.LvsCurrentUser}" th:text="${session.LvsCurrentUser.lvsUsername}">Username</p>
+                    <p class="text-gray-400 text-xs" th:if="${session.LvsCurrentUser}">
+                        <span th:text="${session.LvsCurrentUser.lvsRole}">USER</span>
                     </p>
+                </div>
+            </a>
+
+            <!-- Premium Stats Cards -->
+            <div class="grid grid-cols-2 gap-2">
+                <!-- Coin Card -->
+                <div
+                    class="bg-gradient-to-br from-[#fed700]/10 to-[#ffa500]/5 border border-[#fed700]/20 rounded-lg p-3 backdrop-blur-sm hover:scale-105 transition-transform cursor-pointer">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-coins text-[#fed700] text-sm"></i>
+                        <span class="text-gray-400 text-[10px] uppercase font-semibold">Coins</span>
+                    </div>
+                    <p class="text-white font-bold text-lg" th:if="${session.LvsCurrentUser}"
+                        th:text="${#numbers.formatDecimal(session.LvsCurrentUser.lvsCoin ?: 0, 0, 'COMMA', 0, 'POINT')}">
+                        0</p>
+                </div>
+
+                <!-- Balance Card -->
+                <div
+                    class="bg-gradient-to-br from-green-500/10 to-emerald-500/5 border border-green-500/20 rounded-lg p-3 backdrop-blur-sm hover:scale-105 transition-transform cursor-pointer">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-wallet text-green-400 text-sm"></i>
+                        <span class="text-gray-400 text-[10px] uppercase font-semibold">Balance</span>
+                    </div>
+                    <p class="text-white font-bold text-lg" th:if="${session.LvsCurrentUser}"
+                        th:text="${#numbers.formatDecimal(session.LvsCurrentUser.lvsBalance ?: 0, 0, 'COMMA', 0, 'POINT')}">
+                        0</p>
                 </div>
             </div>
         </div>
 
         <!-- Navigation Menu with Dropdowns -->
-        <nav class="p-4 space-y-1 overflow-y-auto" style="max-height: calc(100vh - 200px);">
-            <!-- Dashboard -->
-            <a th:href="@{/LvsUser/LvsDashboard}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 hover:border-l-4 hover:border-[#fed700] transition-all duration-200 group">
-                <i class="fas fa-home text-[#fed700] text-lg group-hover:scale-110 transition-transform"></i>
-                <span class="text-gray-300 group-hover:text-white font-medium">Dashboard</span>
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
+            <!-- Dashboard (Always Visible, Highlighted) -->
+            <a th:href="@{/LvsUser/LvsHome}"
+                class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#fed700]/10 to-transparent border-l-2 border-[#fed700] hover:from-[#fed700]/20 transition-all duration-200">
+                <div
+                    class="w-8 h-8 rounded-lg bg-[#fed700]/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-home text-[#fed700] text-sm"></i>
+                </div>
+                <span class="text-white text-sm font-semibold">Home</span>
             </a>
 
-            <!-- Admin Panel - Only for ADMIN role -->
+            <!-- Admin Panel (If Admin) -->
             <a th:if="${session.LvsCurrentUser != null and session.LvsCurrentUser.lvsRole.name() == 'ADMIN'}"
                 th:href="@{/LvsAdmin/LvsDashboard}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#fed700]/20 to-transparent border-l-4 border-[#fed700] hover:from-[#fed700]/30 transition-all duration-200 group">
-                <i class="fas fa-shield-alt text-[#fed700] text-lg group-hover:scale-110 transition-transform"></i>
-                <span class="text-[#fed700] group-hover:text-white font-bold">Admin Panel</span>
-                <span class="ml-auto bg-[#fed700] text-black text-[10px] font-bold px-2 py-1 rounded-full">ADMIN</span>
+                class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-red-500/10 to-transparent border-l-2 border-red-500 hover:from-red-500/20 transition-all duration-200">
+                <div
+                    class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-shield-alt text-red-400 text-sm"></i>
+                </div>
+                <span class="text-red-400 text-sm font-bold">Admin Panel</span>
+                <span class="ml-auto bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">ADMIN</span>
             </a>
+
+            <!-- Moderation Panel (If Admin or Moderator) -->
+            <a th:if="${session.LvsCurrentUser != null and (session.LvsCurrentUser.lvsRole.name() == 'ADMIN' or session.LvsCurrentUser.lvsRole.name() == 'MODERATOR')}"
+                th:href="@{/LvsModeration/LvsDashboard}"
+                class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500/10 to-transparent border-l-2 border-purple-500 hover:from-purple-500/20 transition-all duration-200">
+                <div
+                    class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-gavel text-purple-400 text-sm"></i>
+                </div>
+                <span class="text-purple-400 text-sm font-bold">Moderation</span>
+                <span class="ml-auto bg-purple-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">MOD</span>
+            </a>
+
+            <!-- Divider -->
+            <div class="relative h-px my-3">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#fed700]/30 to-transparent"></div>
+            </div>
 
             <!-- Account Dropdown -->
             <details class="group/account">
                 <summary
-                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    class="flex items-center justify-between px-4 py-2.5 rounded-lg hover:bg-[#2a2a2a]/50 cursor-pointer transition-all duration-200">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-user text-gray-400 group-hover/account:text-[#fed700] transition-colors"></i>
-                        <span class="text-gray-300 group-hover/account:text-white font-medium">Account</span>
+                        <i
+                            class="fas fa-user-circle text-gray-400 text-sm group-hover/account:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 text-sm group-hover/account:text-white">Account</span>
                     </div>
                     <i
-                        class="fas fa-chevron-down text-gray-500 group-open/account:rotate-180 transition-transform duration-200"></i>
+                        class="fas fa-chevron-down text-gray-500 text-xs group-open/account:rotate-180 transition-transform duration-200"></i>
                 </summary>
                 <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
                     <a th:if="${session.LvsCurrentUser != null}"
@@ -77,40 +149,47 @@
             </details>
 
             <!-- Shopping Dropdown -->
-            <details class="group/shop">
+            <details class="group/shopping">
                 <summary
-                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    class="flex items-center justify-between px-4 py-2.5 rounded-lg hover:bg-[#2a2a2a]/50 cursor-pointer transition-all duration-200">
                     <div class="flex items-center gap-3">
                         <i
-                            class="fas fa-shopping-bag text-gray-400 group-hover/shop:text-[#fed700] transition-colors"></i>
-                        <span class="text-gray-300 group-hover/shop:text-white font-medium">Shopping</span>
+                            class="fas fa-shopping-bag text-gray-400 text-sm group-hover/shopping:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 text-sm group-hover/shopping:text-white">Shopping</span>
                     </div>
                     <i
-                        class="fas fa-chevron-down text-gray-500 group-open/shop:rotate-180 transition-transform duration-200"></i>
+                        class="fas fa-chevron-down text-gray-500 text-xs group-open/shopping:rotate-180 transition-transform duration-200"></i>
                 </summary>
                 <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
                     <a th:href="@{/LvsUser/LvsCart/LvsView}"
-                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
-                        <i class="fas fa-shopping-cart w-4"></i> My Cart
+                        class="flex items-center justify-between px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <span><i class="fas fa-shopping-cart w-4"></i> My Cart</span>
+                        <span th:if="${session.LvsCartItemCount != null and session.LvsCartItemCount > 0}"
+                            class="bg-[#fed700] text-black text-[9px] font-bold px-2 py-0.5 rounded-full animate-bounce"
+                            th:text="${session.LvsCartItemCount}">0</span>
                     </a>
                     <a th:href="@{/LvsUser/LvsOrder/LvsMyOrders}"
                         class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
                         <i class="fas fa-box w-4"></i> My Orders
                     </a>
+                    <a th:href="@{/lvsforum/LvsPromotion/LvsList}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-tags w-4"></i> Promotions
+                    </a>
                 </div>
             </details>
 
             <!-- Projects Dropdown -->
-            <details class="group/project">
+            <details class="group/projects">
                 <summary
-                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    class="flex items-center justify-between px-4 py-2.5 rounded-lg hover:bg-[#2a2a2a]/50 cursor-pointer transition-all duration-200">
                     <div class="flex items-center gap-3">
                         <i
-                            class="fas fa-project-diagram text-gray-400 group-hover/project:text-[#fed700] transition-colors"></i>
-                        <span class="text-gray-300 group-hover/project:text-white font-medium">Projects</span>
+                            class="fas fa-folder-open text-gray-400 text-sm group-hover/projects:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 text-sm group-hover/projects:text-white">Projects</span>
                     </div>
                     <i
-                        class="fas fa-chevron-down text-gray-500 group-open/project:rotate-180 transition-transform duration-200"></i>
+                        class="fas fa-chevron-down text-gray-500 text-xs group-open/projects:rotate-180 transition-transform duration-200"></i>
                 </summary>
                 <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
                     <a th:href="@{/LvsUser/LvsProject/LvsList}"
@@ -128,42 +207,48 @@
                 </div>
             </details>
 
-            <!-- Messages -->
-            <a th:href="@{/LvsUser/LvsMessage/LvsInbox}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
-                <div class="relative">
-                    <i class="fas fa-envelope text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
-                    <span th:if="${session.LvsUnreadCount != null and session.LvsUnreadCount > 0}"
-                        class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
-                        th:text="${session.LvsUnreadCount}">0</span>
+            <!-- Content Dropdown -->
+            <details class="group/content">
+                <summary
+                    class="flex items-center justify-between px-4 py-2.5 rounded-lg hover:bg-[#2a2a2a]/50 cursor-pointer transition-all duration-200">
+                    <div class="flex items-center gap-3">
+                        <i
+                            class="fas fa-newspaper text-gray-400 text-sm group-hover/content:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 text-sm group-hover/content:text-white">Content</span>
+                    </div>
+                    <i
+                        class="fas fa-chevron-down text-gray-500 text-xs group-open/content:rotate-180 transition-transform duration-200"></i>
+                </summary>
+                <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
+                    <a th:href="@{/LvsUser/LvsMessage/LvsInbox}"
+                        class="flex items-center justify-between px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <span><i class="fas fa-envelope w-4"></i> Messages</span>
+                        <span th:if="${session.LvsUnreadCount != null and session.LvsUnreadCount > 0}"
+                            class="bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full animate-pulse"
+                            th:text="${session.LvsUnreadCount}">0</span>
+                    </a>
+                    <a th:href="@{/LvsUser/LvsBlog/LvsList}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-blog w-4"></i> Blog
+                    </a>
+                    <a th:href="@{/LvsUser/LvsBlog/LvsMyPosts}"
+                        class="block px-3 py-2 text-sm text-gray-400 hover:text-[#fed700] hover:bg-[#333]/30 rounded-lg transition-colors">
+                        <i class="fas fa-file-alt w-4"></i> My Posts
+                    </a>
                 </div>
-                <span class="text-gray-300 group-hover:text-white font-medium">Messages</span>
-            </a>
-
-            <!-- Blog -->
-            <a th:href="@{/LvsUser/LvsBlog/LvsList}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
-                <i class="fas fa-blog text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
-                <span class="text-gray-300 group-hover:text-white font-medium">Blog</span>
-            </a>
-
-            <!-- My Posts -->
-            <a th:href="@{/LvsUser/LvsBlog/LvsMyPosts}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
-                <i class="fas fa-file-alt text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
-                <span class="text-gray-300 group-hover:text-white font-medium">My Posts</span>
-            </a>
+            </details>
 
             <!-- Social Dropdown -->
             <details class="group/social">
                 <summary
-                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    class="flex items-center justify-between px-4 py-2.5 rounded-lg hover:bg-[#2a2a2a]/50 cursor-pointer transition-all duration-200">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-users text-gray-400 group-hover/social:text-[#fed700] transition-colors"></i>
-                        <span class="text-gray-300 group-hover/social:text-white font-medium">Social</span>
+                        <i
+                            class="fas fa-users text-gray-400 text-sm group-hover/social:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 text-sm group-hover/social:text-white">Social</span>
                     </div>
                     <i
-                        class="fas fa-chevron-down text-gray-500 group-open/social:rotate-180 transition-transform duration-200"></i>
+                        class="fas fa-chevron-down text-gray-500 text-xs group-open/social:rotate-180 transition-transform duration-200"></i>
                 </summary>
                 <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
                     <a th:href="@{/LvsUser/LvsFollow/LvsMyFollowers}"
@@ -185,16 +270,17 @@
                 </div>
             </details>
 
-            <!-- Events & Rewards -->
+            <!-- Events Dropdown -->
             <details class="group/events">
                 <summary
-                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    class="flex items-center justify-between px-4 py-2.5 rounded-lg hover:bg-[#2a2a2a]/50 cursor-pointer transition-all duration-200">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-gift text-gray-400 group-hover/events:text-[#fed700] transition-colors"></i>
-                        <span class="text-gray-300 group-hover/events:text-white font-medium">Events</span>
+                        <i
+                            class="fas fa-calendar-alt text-gray-400 text-sm group-hover/events:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 text-sm group-hover/events:text-white">Events</span>
                     </div>
                     <i
-                        class="fas fa-chevron-down text-gray-500 group-open/events:rotate-180 transition-transform duration-200"></i>
+                        class="fas fa-chevron-down text-gray-500 text-xs group-open/events:rotate-180 transition-transform duration-200"></i>
                 </summary>
                 <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
                     <a th:href="@{/LvsUser/LvsEvent/LvsDailyCheckIn}"
@@ -215,13 +301,14 @@
             <!-- Finance Dropdown -->
             <details class="group/finance">
                 <summary
-                    class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-[#fed700]/10 cursor-pointer transition-all duration-200 list-none">
+                    class="flex items-center justify-between px-4 py-2.5 rounded-lg hover:bg-[#2a2a2a]/50 cursor-pointer transition-all duration-200">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-wallet text-gray-400 group-hover/finance:text-[#fed700] transition-colors"></i>
-                        <span class="text-gray-300 group-hover/finance:text-white font-medium">Finance</span>
+                        <i
+                            class="fas fa-dollar-sign text-gray-400 text-sm group-hover/finance:text-[#fed700] transition-colors"></i>
+                        <span class="text-gray-300 text-sm group-hover/finance:text-white">Finance</span>
                     </div>
                     <i
-                        class="fas fa-chevron-down text-gray-500 group-open/finance:rotate-180 transition-transform duration-200"></i>
+                        class="fas fa-chevron-down text-gray-500 text-xs group-open/finance:rotate-180 transition-transform duration-200"></i>
                 </summary>
                 <div class="ml-8 mt-1 space-y-1 border-l-2 border-[#333] pl-4">
                     <a th:href="@{/LvsUser/LvsTransaction/LvsHistory}"
@@ -245,75 +332,130 @@
 
             <!-- Reports -->
             <a th:href="@{/LvsUser/LvsReport/LvsMyReports}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#fed700]/10 transition-all duration-200 group">
-                <i class="fas fa-flag text-gray-400 group-hover:text-[#fed700] transition-colors"></i>
-                <span class="text-gray-300 group-hover:text-white font-medium">My Reports</span>
+                class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-[#2a2a2a]/50 transition-all duration-200 group">
+                <i class="fas fa-flag text-gray-400 text-sm group-hover:text-[#fed700] transition-colors"></i>
+                <span class="text-gray-300 text-sm group-hover:text-white">My Reports</span>
             </a>
         </nav>
 
-        <!-- Logout Button (Fixed at bottom) - Only show when logged in -->
+        <!-- Logout Button (Fixed at bottom) -->
         <div th:if="${session.LvsCurrentUser != null}"
-            class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#1e1e1e] to-transparent">
+            class="p-4 border-t border-[#333]/50 bg-gradient-to-t from-[#1a1a1a] to-transparent">
             <a th:href="${session.LvsCurrentUser.lvsRole.name() == 'ADMIN'} ? @{/LvsAdmin/LvsLogout} : @{/LvsUser/LvsLogout}"
-                class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 transition-all duration-200 group">
-                <i class="fas fa-sign-out-alt text-red-400 group-hover:text-red-300 transition-colors"></i>
-                <span class="text-red-400 group-hover:text-red-300 font-medium">Logout</span>
+                class="group flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-red-500/10 to-red-600/10 border border-red-500/20 hover:from-red-500/20 hover:to-red-600/20 hover:border-red-500/40 transition-all duration-200">
+                <i class="fas fa-sign-out-alt text-red-400 text-sm group-hover:scale-110 transition-transform"></i>
+                <span class="text-red-400 text-sm font-semibold">Logout</span>
             </a>
         </div>
     </aside>
 
-    <!-- Sidebar Collapse Styles & Script -->
+    <!-- Custom Scrollbar -->
     <style>
-        /* Collapsed state */
-        #userSidebar.sidebar-collapsed {
-            width: 4rem !important;
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
         }
 
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: linear-gradient(to bottom, #1a1a1a, #1e1e1e);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #fed700, #ffa500);
+            border-radius: 3px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #ffa500, #fed700);
+        }
+
+        /* Collapsed Sidebar State - Hide Completely (Only Toggle Button Visible) */
+        #userSidebar.sidebar-collapsed {
+            width: 0 !important;
+            min-width: 0 !important;
+            padding: 0 !important;
+            overflow: visible !important;
+            /* Changed to visible so toggle button shows */
+            border: none !important;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hide ALL content when collapsed */
+        #userSidebar.sidebar-collapsed>* {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Keep ONLY the toggle button visible when collapsed */
+        #userSidebar.sidebar-collapsed #sidebarToggle {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            display: flex !important;
+        }
+
+        /* Rotate toggle icon when collapsed */
         #userSidebar.sidebar-collapsed .sidebar-toggle-icon {
             transform: rotate(180deg);
         }
 
-        /* Hide text when collapsed */
-        #userSidebar.sidebar-collapsed span:not(.sidebar-toggle-icon):not([class*="absolute"]) {
-            opacity: 0;
-            width: 0;
-            overflow: hidden;
+        /* Ensure sidebar doesn't overlap footer */
+        #userSidebar {
+            position: relative;
+            z-index: 40;
         }
 
-        /* Hide dropdowns when collapsed */
-        #userSidebar.sidebar-collapsed details {
-            pointer-events: none;
-        }
-
-        /* Center icons when collapsed */
-        #userSidebar.sidebar-collapsed .flex.items-center {
-            justify-content: center;
-        }
-
-        /* Adjust main content margin */
-        body:has(#userSidebar.sidebar-collapsed) main {
-            margin-left: 4rem;
+        /* Show tooltips on hover when collapsed - Fixed CSS property */
+        #userSidebar.sidebar-collapsed [title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            left: 100%;
+            margin-left: 0.5rem;
+            background: #2a2a2a;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            white-space: nowrap;
+            /* Fixed from 'whitespace' to 'white-space' */
+            z-index: 100;
+            font-size: 0.875rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
     </style>
 
     <script>
-        // Toggle sidebar function
+        // Toggle sidebar collapse
         function toggleSidebar() {
             const sidebar = document.getElementById('userSidebar');
+            const toggleBtn = document.getElementById('sidebarToggle');
             sidebar.classList.toggle('sidebar-collapsed');
 
-            // Save state to localStorage
+            // Move toggle button position
             const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+            if (isCollapsed) {
+                toggleBtn.style.left = '8px'; // Move to left edge when collapsed
+            } else {
+                toggleBtn.style.left = '285px'; // Move to sidebar edge when expanded
+            }
+
+            // Save state to localStorage
             localStorage.setItem('sidebarCollapsed', isCollapsed);
         }
 
         // Restore sidebar state on page load
         document.addEventListener('DOMContentLoaded', function () {
             const sidebar = document.getElementById('userSidebar');
-            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const savedState = localStorage.getItem('sidebarCollapsed');
 
-            if (isCollapsed && sidebar) {
+            // Only collapse if explicitly saved as 'true'
+            // Default is expanded (no class added)
+            if (savedState === 'true' && sidebar && toggleBtn) {
                 sidebar.classList.add('sidebar-collapsed');
+                toggleBtn.style.left = '8px';
+            } else {
+                // Ensure expanded state
+                if (sidebar) sidebar.classList.remove('sidebar-collapsed');
+                if (toggleBtn) toggleBtn.style.left = '285px';
             }
         });
     </script>

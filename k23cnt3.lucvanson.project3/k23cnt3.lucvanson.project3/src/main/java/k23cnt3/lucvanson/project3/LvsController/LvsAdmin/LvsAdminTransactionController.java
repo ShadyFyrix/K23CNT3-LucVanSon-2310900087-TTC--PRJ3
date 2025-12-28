@@ -172,7 +172,7 @@ public class LvsAdminTransactionController {
         return "redirect:/LvsAdmin/LvsTransaction/LvsList";
     }
 
-    @GetMapping("/LvsAdd")
+    @GetMapping("/LvsCreate")
     public String lvsShowAddTransactionForm(Model model) {
         Page<LvsUser> lvsUsersPage = lvsUserService.lvsGetAllUsers(Pageable.unpaged());
         List<LvsUser> lvsUsers = lvsUsersPage.getContent();
@@ -183,7 +183,7 @@ public class LvsAdminTransactionController {
         return "LvsAreas/LvsAdmin/LvsTransaction/LvsCreate";
     }
 
-    @PostMapping("/LvsAdd")
+    @PostMapping("/LvsCreate")
     public String lvsAddTransaction(@ModelAttribute LvsTransaction lvsTransaction,
             @RequestParam Long lvsUserId, HttpSession session, RedirectAttributes redirectAttributes, Model model) {
         try {

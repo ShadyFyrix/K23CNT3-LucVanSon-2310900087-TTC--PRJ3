@@ -10,8 +10,8 @@
 </head>
 
 <body>
-    <div layout:fragment="content" class="min-h-screen bg-[#18191a] p-4">
-        <div class="max-w-[680px] mx-auto">
+    <div layout:fragment="content" class="min-h-screen bg-[#18191a] p-4 lg:p-6">
+        <div class="max-w-6xl mx-auto">
 
             <!-- Create Post Card (Facebook Style) -->
             <div class="bg-[#242526] rounded-lg p-4 mb-4 shadow-lg">
@@ -67,35 +67,37 @@
                 </div>
             </div>
 
-            <!-- Posts Feed -->
-            <div th:if="${LvsPosts != null and !LvsPosts.content.isEmpty()}" class="space-y-4">
-                <article th:each="post : ${LvsPosts.content}" class="bg-[#242526] rounded-lg shadow-lg overflow-hidden">
+            <!-- Posts Feed - Grid Layout -->
+            <div th:if="${LvsPosts != null and !LvsPosts.content.isEmpty()}"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <article th:each="post : ${LvsPosts.content}"
+                    class="bg-[#242526] rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
 
                     <!-- Post Header -->
-                    <div class="p-4">
-                        <div class="flex items-start gap-3">
+                    <div class="p-3">
+                        <div class="flex items-start gap-2">
                             <!-- Avatar with profile link -->
                             <a th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${post.lvsUser.lvsUserId})}"
                                 class="flex-shrink-0">
                                 <div th:if="${post.lvsUser.lvsAvatarUrl != null and !post.lvsUser.lvsAvatarUrl.isEmpty()}"
-                                    class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-[#3a3b3c]">
+                                    class="w-9 h-9 rounded-full overflow-hidden ring-2 ring-[#3a3b3c]">
                                     <img th:src="@{${post.lvsUser.lvsAvatarUrl}}" alt="Avatar"
                                         class="w-full h-full object-cover">
                                 </div>
                                 <div th:unless="${post.lvsUser.lvsAvatarUrl != null and !post.lvsUser.lvsAvatarUrl.isEmpty()}"
-                                    class="w-10 h-10 rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center text-black font-bold">
+                                    class="w-9 h-9 rounded-full bg-gradient-to-br from-[#fed700] to-[#ffa500] flex items-center justify-center text-black font-bold text-sm">
                                     <span
                                         th:text="${#strings.substring(post.lvsUser.lvsUsername, 0, 1).toUpperCase()}">U</span>
                                 </div>
                             </a>
 
                             <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1 flex-wrap">
                                     <a th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${post.lvsUser.lvsUserId})}"
-                                        class="font-bold text-white hover:underline"
+                                        class="font-bold text-white hover:underline text-sm truncate"
                                         th:text="${post.lvsUser.lvsUsername}">Username</a>
-                                    <!-- User Title Badge -->
-                                    <span th:if="${post.lvsUser.lvsTitle != null}" th:class="${'text-xs font-bold px-2 py-0.5 rounded ' + 
+                                    <!-- User Title Badge (smaller) -->
+                                    <span th:if="${post.lvsUser.lvsTitle != null}" th:class="${'text-[10px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap ' + 
                                                    (post.lvsUser.lvsTitle.name() == 'ADMIN' ? 'rainbow-text title-badge' : 
                                                     post.lvsUser.lvsTitle.name() == 'MODERATOR' ? 'title-badge title-tier-9' :
                                                     post.lvsUser.lvsTitle.name() == 'LEGEND' ? 'title-badge title-tier-8' :
@@ -110,36 +112,37 @@
                                         th:text="${post.lvsUser.lvsTitle.displayName}">
                                     </span>
                                 </div>
-                                <div class="flex items-center gap-2 text-xs text-gray-400">
+                                <div class="flex items-center gap-1.5 text-[11px] text-gray-400">
                                     <span th:text="${#temporals.format(post.lvsCreatedAt, 'dd MMM yyyy')}">Date</span>
                                     <span>·</span>
                                     <span th:text="${post.lvsType.name()}" class="text-[#fed700]">Type</span>
                                 </div>
                             </div>
 
-                            <!-- Report Button -->
+                            <!-- Report Button (smaller) -->
                             <a th:href="@{/LvsUser/LvsReport/LvsCreate(lvsReportType='POST', lvsTargetId=${post.lvsPostId})}"
-                                class="w-9 h-9 flex items-center justify-center hover:bg-red-600/20 rounded-full transition-colors flex-shrink-0"
+                                class="w-7 h-7 flex items-center justify-center hover:bg-red-600/20 rounded-full transition-colors flex-shrink-0"
                                 title="Report this post">
-                                <i class="fas fa-flag text-red-400"></i>
+                                <i class="fas fa-flag text-red-400 text-xs"></i>
                             </a>
                         </div>
                     </div>
 
                     <!-- Post Title (if exists) -->
-                    <div th:if="${post.lvsTitle != null and !post.lvsTitle.isEmpty()}" class="px-4 pb-2">
-                        <h2 class="text-xl font-bold text-white">
+                    <div th:if="${post.lvsTitle != null and !post.lvsTitle.isEmpty()}" class="px-3 pb-2">
+                        <h2 class="text-base font-bold text-white line-clamp-2">
                             <a th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})}"
                                 class="hover:underline" th:text="${post.lvsTitle}">Post Title</a>
                         </h2>
                     </div>
 
                     <!-- Post Content -->
-                    <div class="px-4 pb-3">
-                        <p class="text-gray-300 whitespace-pre-wrap line-clamp-3" th:text="${post.lvsContent}">Post
+                    <div class="px-3 pb-2 flex-1">
+                        <p class="text-gray-300 text-sm whitespace-pre-wrap line-clamp-3" th:text="${post.lvsContent}">
+                            Post
                             content...</p>
                         <a th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})}"
-                            class="text-[#fed700] hover:underline text-sm font-medium">
+                            class="text-[#fed700] hover:underline text-xs font-medium inline-block mt-1">
                             Read more
                         </a>
                     </div>
@@ -149,7 +152,7 @@
                         <!-- Single Image -->
                         <div th:if="${#lists.size(post.lvsImages) == 1}">
                             <img th:src="@{${post.lvsImages[0].lvsImageUrl}}" alt="Post image"
-                                class="w-full max-h-[500px] object-cover cursor-pointer"
+                                class="w-full h-48 object-cover cursor-pointer"
                                 th:onclick="'window.location.href=\'' + @{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})} + '\''">
                         </div>
                         <!-- Multiple Images Grid -->
@@ -164,7 +167,7 @@
                                 <div th:if="${iterStat.index == 3 and #lists.size(post.lvsImages) > 4}"
                                     class="absolute inset-0 bg-black/70 flex items-center justify-center cursor-pointer"
                                     th:onclick="'window.location.href=\'' + @{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})} + '\''">
-                                    <span class="text-white text-3xl font-bold">
+                                    <span class="text-white text-2xl font-bold">
                                         +<span th:text="${#lists.size(post.lvsImages) - 4}">0</span>
                                     </span>
                                 </div>
@@ -174,8 +177,8 @@
 
                     <!-- Post Stats -->
                     <div
-                        class="px-4 py-2 flex items-center justify-between text-sm text-gray-400 border-t border-[#3a3b3c]">
-                        <div class="flex gap-4">
+                        class="px-3 py-2 flex items-center justify-between text-xs text-gray-400 border-t border-[#3a3b3c] mt-auto">
+                        <div class="flex gap-3">
                             <span><i class="fas fa-eye mr-1"></i><span th:text="${post.lvsViewCount}">0</span></span>
                             <span><i class="fas fa-heart mr-1"></i><span th:text="${post.lvsLikeCount}">0</span></span>
                         </div>
@@ -186,20 +189,20 @@
                     <div class="border-t border-[#3a3b3c] px-2 py-1 flex gap-1">
                         <button th:onclick="'likePostInList(' + ${post.lvsPostId} + ', this)'"
                             th:id="'likeBtn_' + ${post.lvsPostId}"
-                            class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#3a3b3c] rounded-lg transition-colors">
-                            <i class="far fa-heart text-gray-400"></i>
-                            <span class="text-gray-300 font-medium">Like (<span class="like-count"
+                            class="flex-1 flex items-center justify-center gap-1.5 py-1.5 hover:bg-[#3a3b3c] rounded-lg transition-colors">
+                            <i class="far fa-heart text-gray-400 text-sm"></i>
+                            <span class="text-gray-300 font-medium text-xs">Like (<span class="like-count"
                                     th:text="${post.lvsLikeCount}">0</span>)</span>
                         </button>
                         <a th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})}"
-                            class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#3a3b3c] rounded-lg transition-colors">
-                            <i class="far fa-comment text-gray-400"></i>
-                            <span class="text-gray-300 font-medium">Comment</span>
+                            class="flex-1 flex items-center justify-center gap-1.5 py-1.5 hover:bg-[#3a3b3c] rounded-lg transition-colors">
+                            <i class="far fa-comment text-gray-400 text-sm"></i>
+                            <span class="text-gray-300 font-medium text-xs">Comment</span>
                         </a>
                         <button th:onclick="'sharePostInList(' + ${post.lvsPostId} + ')'"
-                            class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-[#3a3b3c] rounded-lg transition-colors">
-                            <i class="far fa-share-square text-gray-400"></i>
-                            <span class="text-gray-300 font-medium">Share</span>
+                            class="flex-1 flex items-center justify-center gap-1.5 py-1.5 hover:bg-[#3a3b3c] rounded-lg transition-colors">
+                            <i class="far fa-share-square text-gray-400 text-sm"></i>
+                            <span class="text-gray-300 font-medium text-xs">Share</span>
                         </button>
                     </div>
                 </article>

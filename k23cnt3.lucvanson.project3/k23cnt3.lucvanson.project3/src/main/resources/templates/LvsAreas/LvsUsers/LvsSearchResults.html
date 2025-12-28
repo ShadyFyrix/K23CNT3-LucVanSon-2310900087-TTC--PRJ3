@@ -22,22 +22,22 @@
 
             <!-- Tabs -->
             <div class="flex gap-4 mb-8 border-b border-[#333]">
-                <a th:href="@{/LvsUser/LvsSearch(lvsKeyword=${LvsKeyword},lvsType='all')}"
+                <a th:href="@{/LvsUser/LvsSearch(keyword=${LvsKeyword},type='all')}"
                     th:classappend="${LvsSearchType == 'all' ? 'border-[#fed700] text-[#fed700]' : 'border-transparent text-gray-400'}"
                     class="px-4 py-3 border-b-2 font-bold hover:text-white transition">
                     Tất cả
                 </a>
-                <a th:href="@{/LvsUser/LvsSearch(lvsKeyword=${LvsKeyword},lvsType='projects')}"
+                <a th:href="@{/LvsUser/LvsSearch(keyword=${LvsKeyword},type='projects')}"
                     th:classappend="${LvsSearchType == 'projects' ? 'border-[#fed700] text-[#fed700]' : 'border-transparent text-gray-400'}"
                     class="px-4 py-3 border-b-2 font-bold hover:text-white transition">
                     Dự án (<span th:text="${LvsProjects != null ? LvsProjects.size() : 0}">0</span>)
                 </a>
-                <a th:href="@{/LvsUser/LvsSearch(lvsKeyword=${LvsKeyword},lvsType='posts')}"
+                <a th:href="@{/LvsUser/LvsSearch(keyword=${LvsKeyword},type='posts')}"
                     th:classappend="${LvsSearchType == 'posts' ? 'border-[#fed700] text-[#fed700]' : 'border-transparent text-gray-400'}"
                     class="px-4 py-3 border-b-2 font-bold hover:text-white transition">
                     Bài viết (<span th:text="${LvsPosts != null ? LvsPosts.size() : 0}">0</span>)
                 </a>
-                <a th:href="@{/LvsUser/LvsSearch(lvsKeyword=${LvsKeyword},lvsType='users')}"
+                <a th:href="@{/LvsUser/LvsSearch(keyword=${LvsKeyword},type='users')}"
                     th:classappend="${LvsSearchType == 'users' ? 'border-[#fed700] text-[#fed700]' : 'border-transparent text-gray-400'}"
                     class="px-4 py-3 border-b-2 font-bold hover:text-white transition">
                     Người dùng (<span th:text="${LvsUsers != null ? LvsUsers.size() : 0}">0</span>)
@@ -50,8 +50,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div th:each="project : ${LvsProjects}" class="electro-card p-4">
                         <a th:href="@{/LvsUser/LvsProject/LvsDetail/{id}(id=${project.lvsProjectId})}">
-                            <div class="h-32 bg-[#1e1e1e] rounded-lg mb-3 flex items-center justify-center">
-                                <i class="fas fa-image text-4xl text-gray-600"></i>
+                            <div class="h-32 bg-[#1e1e1e] rounded-lg mb-3 overflow-hidden">
+                                <img th:if="${project.lvsThumbnailUrl}" th:src="@{${project.lvsThumbnailUrl}}"
+                                    class="w-full h-full object-cover" alt="Project thumbnail">
+                                <div th:unless="${project.lvsThumbnailUrl}"
+                                    class="w-full h-full flex items-center justify-center">
+                                    <i class="fas fa-image text-4xl text-gray-600"></i>
+                                </div>
                             </div>
                             <h3 class="text-white font-bold text-sm mb-2 line-clamp-2"
                                 th:text="${project.lvsProjectName}">Project</h3>
@@ -84,6 +89,125 @@
                         </a>
                     </div>
                 </div>
+            </div>
+
+            <!-- Projects Empty State -->
+            <div th:if="${(LvsSearchType == 'all' or LvsSearchType == 'projects') and (LvsProjects == null or LvsProjects.isEmpty())}"
+                class="text-center py-12 mb-8">
+                <i class="fas fa-folder-open text-5xl text-gray-600 mb-3"></i>
+                <p class="text-gray-400 text-lg">Không tìm thấy dự án nào</p>
+            </div>
+
+            <!-- Users Results -->
+            <div th:if="${LvsUsers != null and !LvsUsers.isEmpty()}" class="mb-8">
+                <h2 class="text-xl font-bold text-white mb-4">Người dùng</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div th:each="user : ${LvsUsers}" class="electro-card p-4">
+                        <a th:href="@{/LvsUser/LvsProfile/LvsView/{id}(id=${user.lvsUserId})}"
+                            class="flex items-center gap-4">
+                            <!-- Avatar -->
+                            <div
+                                class="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
+                                <img th:if="${user.lvsAvatarUrl}" th:src="@{${user.lvsAvatarUrl}}"
+                                    class="w-full h-full object-cover" alt="Avatar">
+                                <div th:unless="${user.lvsAvatarUrl}"
+                                    class="w-full h-full flex items-center justify-center">
+                                    <span class="text-white font-bold text-xl"
+                                        th:text="${user.lvsUsername.substring(0,1).toUpperCase()}">U</span>
+                                </div>
+                            </div>
+                            <!-- User Info -->
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-white font-bold text-sm mb-1 truncate" th:text="${user.lvsUsername}">
+                                    Username</h3>
+                                <p class="text-gray-400 text-xs mb-1" th:text="${user.lvsFullName}">Full Name</p>
+                                <span class="inline-block px-2 py-1 bg-[#fed700]/20 text-[#fed700] text-xs rounded-full"
+                                    th:text="${user.lvsRole}">USER</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Empty State -->
+            <div th:if="${(LvsSearchType == 'all' or LvsSearchType == 'users') and (LvsUsers == null or LvsUsers.isEmpty())}"
+                class="text-center py-12 mb-8">
+                <i class="fas fa-users text-5xl text-gray-600 mb-3"></i>
+                <p class="text-gray-400 text-lg">Không tìm thấy người dùng nào</p>
+            </div>
+
+            <!-- Posts Results -->
+            <div th:if="${LvsPosts != null and !LvsPosts.isEmpty()}" class="mb-8">
+                <h2 class="text-xl font-bold text-white mb-4">Bài viết</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div th:each="post : ${LvsPosts}" class="electro-card p-4 hover:border-[#fed700]/30 transition-all">
+                        <a th:href="@{/LvsUser/LvsBlog/LvsDetail/{id}(id=${post.lvsPostId})}">
+                            <!-- Post Thumbnail/Cover Image -->
+                            <div class="h-32 bg-[#1e1e1e] rounded-lg mb-3 overflow-hidden">
+                                <img th:if="${post.lvsThumbnailUrl != null && !post.lvsThumbnailUrl.isEmpty()}"
+                                    th:src="@{${post.lvsThumbnailUrl}}" class="w-full h-full object-cover"
+                                    alt="Post cover">
+                                <div th:unless="${post.lvsThumbnailUrl != null && !post.lvsThumbnailUrl.isEmpty()}"
+                                    class="w-full h-full flex items-center justify-center">
+                                    <i class="fas fa-newspaper text-4xl text-gray-600"></i>
+                                </div>
+                            </div>
+
+                            <!-- Author Info -->
+                            <div class="flex items-center gap-3 mb-3">
+                                <div
+                                    class="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-purple-500 to-pink-600 flex-shrink-0">
+                                    <img th:if="${post.lvsUser != null && post.lvsUser.lvsAvatarUrl != null && !post.lvsUser.lvsAvatarUrl.isEmpty()}"
+                                        th:src="@{${post.lvsUser.lvsAvatarUrl}}" class="w-full h-full object-cover"
+                                        alt="Author avatar">
+                                    <div th:unless="${post.lvsUser != null && post.lvsUser.lvsAvatarUrl != null && !post.lvsUser.lvsAvatarUrl.isEmpty()}"
+                                        class="w-full h-full flex items-center justify-center">
+                                        <span class="text-white font-bold text-xs"
+                                            th:text="${post.lvsUser != null ? post.lvsUser.lvsUsername.substring(0,1).toUpperCase() : 'A'}">A</span>
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-gray-400 text-xs truncate"
+                                        th:text="${post.lvsUser != null ? post.lvsUser.lvsUsername : 'Anonymous'}">
+                                        Author</p>
+                                    <p class="text-gray-500 text-xs"
+                                        th:text="${#temporals.format(post.lvsCreatedAt, 'dd/MM/yyyy')}">Date</p>
+                                </div>
+                            </div>
+
+                            <!-- Post Title -->
+                            <h3 class="text-white font-bold text-sm mb-2 line-clamp-2" th:text="${post.lvsTitle}">Post
+                                Title</h3>
+
+                            <!-- Post Content Preview -->
+                            <p class="text-gray-400 text-xs line-clamp-3 mb-3" th:text="${post.lvsContent}">Content...
+                            </p>
+
+                            <!-- Post Metadata -->
+                            <div class="flex items-center gap-4 text-gray-500 text-xs">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-eye"></i>
+                                    <span th:text="${post.lvsViewCount != null ? post.lvsViewCount : 0}">0</span>
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-comment"></i>
+                                    <span th:text="${post.lvsCommentCount != null ? post.lvsCommentCount : 0}">0</span>
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-heart"></i>
+                                    <span th:text="${post.lvsLikeCount != null ? post.lvsLikeCount : 0}">0</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Posts Empty State -->
+            <div th:if="${(LvsSearchType == 'all' or LvsSearchType == 'posts') and (LvsPosts == null or LvsPosts.isEmpty())}"
+                class="text-center py-12 mb-8">
+                <i class="fas fa-newspaper text-5xl text-gray-600 mb-3"></i>
+                <p class="text-gray-400 text-lg">Không tìm thấy bài viết nào</p>
             </div>
 
             <!-- No Results -->

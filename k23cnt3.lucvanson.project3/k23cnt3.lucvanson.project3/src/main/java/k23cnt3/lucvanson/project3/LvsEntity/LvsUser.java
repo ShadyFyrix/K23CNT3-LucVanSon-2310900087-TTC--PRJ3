@@ -61,6 +61,10 @@ public class LvsUser {
     @Column(name = "LvsTitle")
     private LvsUserTitle lvsTitle = LvsUserTitle.NEWBIE;
 
+    // Activity Score (transient - not persisted)
+    @Transient
+    private Double lvsActivityScore;
+
     // Thời gian
     @Column(name = "LvsLastLogin")
     private LocalDateTime lvsLastLogin;
@@ -371,6 +375,14 @@ public class LvsUser {
 
     public void setLvsReviews(List<LvsReview> lvsReviews) {
         this.lvsReviews = lvsReviews;
+    }
+
+    public Double getLvsActivityScore() {
+        return lvsActivityScore;
+    }
+
+    public void setLvsActivityScore(Double lvsActivityScore) {
+        this.lvsActivityScore = lvsActivityScore;
     }
 
 }

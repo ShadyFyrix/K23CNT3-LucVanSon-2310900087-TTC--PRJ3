@@ -30,6 +30,9 @@ public class LvsUserCommentController {
     @Autowired
     private LvsUserService lvsUserService;
 
+    @Autowired
+    private LvsQuestService lvsQuestService;
+
     // Thêm bình luận mới
     @PostMapping("/LvsAdd")
     public String lvsAddComment(@RequestParam Long lvsPostId,
@@ -57,6 +60,14 @@ public class LvsUserCommentController {
 
             // Lưu comment với ảnh
             lvsCommentService.lvsSaveCommentWithImages(lvsComment, images);
+
+            // Track CREATE_COMMENT quest progress
+            try {
+                lvsQuestService.lvsUpdateQuestProgress(lvsCurrentUser,
+                        k23cnt3.lucvanson.project3.LvsEntity.LvsQuest.LvsQuestType.CREATE_COMMENT, 1);
+            } catch (Exception e) {
+                System.out.println("[QUEST] Error updating quest progress: " + e.getMessage());
+            }
 
             model.addAttribute("LvsSuccess", "Đã thêm bình luận!");
         } catch (Exception e) {
@@ -101,7 +112,7 @@ public class LvsUserCommentController {
             return "redirect:/LvsUser/LvsBlog/LvsDetail/" + lvsPostId;
         }
 
-        return "redirect:/LvsUser/LvsDashboard";
+        return "redirect:/LvsUser/LvsHome";
     }
 
     // Thích bình luận
@@ -150,7 +161,7 @@ public class LvsUserCommentController {
         model.addAttribute("LvsComments", lvsComments);
         model.addAttribute("LvsCurrentPage", page);
 
-        return "LvsAreas/LvsUsers/LvsMyComments";
+        return "LvsAreas/LvsUsers/LvsComments/LvsMyComments";
     }
 
     /**
@@ -203,6 +214,6 @@ public class LvsUserCommentController {
             model.addAttribute("LvsError", "Lỗi: " + e.getMessage());
         }
 
-        return "redirect:/LvsUser/LvsDashboard";
+        return "redirect:/LvsUser/LvsHome";
     }
 }
