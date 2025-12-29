@@ -43,7 +43,7 @@ public class LvsUserProfileController {
     public String lvsViewProfile(Model model, HttpSession session) {
         LvsUser lvsCurrentUser = (LvsUser) session.getAttribute("LvsCurrentUser");
         if (lvsCurrentUser == null) {
-            return "redirect:/LvsAuth/LvsLogin.html";
+            return "redirect:/LvsAuth/LvsLogin";
         }
 
         // Lấy thông tin mới nhất
@@ -151,6 +151,11 @@ public class LvsUserProfileController {
         if (lvsCurrentUser == null) {
             return "redirect:/LvsAuth/LvsLogin.html";
         }
+
+        // IMPORTANT: Refresh user data from database to get latest avatar and all
+        // fields
+        lvsCurrentUser = lvsUserService.lvsGetUserById(lvsCurrentUser.getLvsUserId());
+        session.setAttribute("LvsCurrentUser", lvsCurrentUser);
 
         model.addAttribute("LvsUser", lvsCurrentUser);
         return "LvsAreas/LvsUsers/LvsProfile/LvsProfileEdit";

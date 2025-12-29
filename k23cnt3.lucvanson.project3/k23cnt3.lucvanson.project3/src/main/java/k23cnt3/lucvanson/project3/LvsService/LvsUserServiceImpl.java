@@ -62,13 +62,13 @@ public class LvsUserServiceImpl implements LvsUserService {
     @Override
     public LvsUser lvsGetUserByUsername(String lvsUsername) {
         return lvsUserRepository.findByLvsUsername(lvsUsername)
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + lvsUsername));
+                .orElse(null);
     }
 
     @Override
     public LvsUser lvsGetUserByEmail(String lvsEmail) {
         return lvsUserRepository.findByLvsEmail(lvsEmail)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + lvsEmail));
+                .orElse(null);
     }
 
     @Override

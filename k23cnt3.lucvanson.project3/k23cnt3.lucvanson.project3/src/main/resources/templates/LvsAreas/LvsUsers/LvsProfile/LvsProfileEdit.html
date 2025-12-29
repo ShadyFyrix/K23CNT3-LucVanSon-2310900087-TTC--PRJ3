@@ -29,7 +29,7 @@
                             <!-- Current Avatar Preview -->
                             <div class="flex-shrink-0">
                                 <img id="avatarPreview"
-                                    th:src="${LvsUser.lvsAvatarUrl != null ? LvsUser.lvsAvatarUrl : '/images/default-avatar.png'}"
+                                    th:src="${LvsUser.lvsAvatarUrl != null and !#strings.isEmpty(LvsUser.lvsAvatarUrl) ? LvsUser.lvsAvatarUrl : 'https://ui-avatars.com/api/?name=' + #strings.replace(LvsUser.lvsUsername, ' ', '+') + '&size=200&background=fed700&color=000&bold=true'}"
                                     class="w-24 h-24 rounded-full object-cover border-2 border-[#fed700]"
                                     alt="Avatar Preview">
                             </div>
@@ -83,15 +83,19 @@
     </div>
 
     <script>
-        function previewAvatar(input) {
-            if (input.files && input.files[0]) {
+        // Define previewAvatar function globally to avoid "not defined" errors
+        window.previewAvatar = function (input) {
+            if (input && input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    document.getElementById('avatarPreview').src = e.target.result;
+                    const preview = document.getElementById('avatarPreview');
+                    if (preview) {
+                        preview.src = e.target.result;
+                    }
                 };
                 reader.readAsDataURL(input.files[0]);
             }
-        }
+        };
     </script>
 </body>
 
