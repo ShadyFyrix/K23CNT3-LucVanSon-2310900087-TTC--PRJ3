@@ -9,6 +9,9 @@ import k23cnt3.lucvanson.project3.LvsRepository.LvsPostRepository;
 import k23cnt3.lucvanson.project3.LvsRepository.LvsProjectRepository;
 import k23cnt3.lucvanson.project3.LvsRepository.LvsUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -128,6 +131,11 @@ public class LvsAdminDashboardController {
         // 6. Tổng số bình luận
         Long totalComments = lvsCommentRepository.count();
 
+        // 7. Get recent activities (last 5 orders)
+        Pageable recentPageable = PageRequest.of(0, 5);
+        Page<LvsOrder> recentOrdersPage = lvsOrderRepository.findByOrderByLvsCreatedAtDesc(recentPageable);
+        List<LvsOrder> recentOrders = recentOrdersPage.getContent();
+
         // Add to model
         model.addAttribute("totalUsers", totalUsers);
         model.addAttribute("totalOrders", totalOrders);
@@ -135,6 +143,7 @@ public class LvsAdminDashboardController {
         model.addAttribute("totalPosts", totalPosts);
         model.addAttribute("totalProjects", totalProjects);
         model.addAttribute("totalComments", totalComments);
+        model.addAttribute("recentOrders", recentOrders);
         model.addAttribute("pageTitle", "Dashboard");
 
         // Set activePage để sidebar biết trang nào đang active

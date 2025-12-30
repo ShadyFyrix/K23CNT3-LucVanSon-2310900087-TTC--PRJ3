@@ -3,245 +3,366 @@
     layout:decorate="~{LvsAreas/LvsAdmin/LvsLayout/LvsAdmin-layout}">
 
 <head>
-    <meta charset="UTF-8">
-    <title layout:title-pattern="$CONTENT_TITLE - LVS Admin" th:text="${pageTitle} + ' - LVS Admin'">Dashboard - LVS
-        Admin</title>
-
-    <style>
-        .dashboard-header {
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-
-        .dashboard-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #2b2d42;
-            margin-bottom: 10px;
-        }
-
-        .dashboard-header .subtitle {
-            font-size: 1.1rem;
-            color: #6c757d;
-        }
-
-        .stat-card {
-            border-radius: 16px;
-            padding: 30px;
-            background: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-            transition: all 0.3s ease;
-            height: 100%;
-            border: none;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
-        }
-
-        .stat-card-primary {
-            border-left: 5px solid #4361ee;
-        }
-
-        .stat-card-success {
-            border-left: 5px solid #28a745;
-        }
-
-        .stat-card-info {
-            border-left: 5px solid #17a2b8;
-        }
-
-        .stat-card-warning {
-            border-left: 5px solid #ffc107;
-        }
-
-        .stat-card-purple {
-            border-left: 5px solid #9333ea;
-        }
-
-        .stat-card-orange {
-            border-left: 5px solid #f97316;
-        }
-
-        .stat-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 15px;
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 800;
-            color: #2b2d42;
-            line-height: 1;
-            margin-bottom: 15px;
-        }
-
-        .stat-description {
-            font-size: 1rem;
-            color: #6c757d;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .stat-icon {
-            font-size: 3.5rem;
-            opacity: 0.15;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-header h1 {
-                font-size: 2rem;
-            }
-
-            .stat-number {
-                font-size: 2.5rem;
-            }
-
-            .stat-icon {
-                font-size: 2.5rem;
-            }
-        }
-    </style>
+    <title>Dashboard</title>
 </head>
 
 <body>
     <div layout:fragment="content">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <h1>Dashboard</h1>
-            <p class="subtitle">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">
                 <i class="fas fa-calendar-alt me-2"></i>
                 <span th:text="'Cập nhật: ' + ${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm')}">
-                    Cập nhật: 28/12/2025 23:52
+                    Cập nhật: 30/12/2025 16:44
                 </span>
             </p>
         </div>
 
         <!-- Stats Grid -->
-        <div class="stats-grid">
+        <div class="row g-4 mb-4">
             <!-- Total Users -->
-            <div class="stat-card stat-card-primary">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <div class="stat-title">Tổng số Users</div>
-                        <div class="stat-number"
-                            th:text="${#numbers.formatDecimal(totalUsers, 0, 'COMMA', 0, 'POINT')}">0</div>
-                        <div class="stat-description">
-                            <i class="fas fa-database"></i>
-                            <span>Tổng trong hệ thống</span>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="stat-label">TỔNG SỐ USERS</div>
+                            <div class="stat-value"
+                                th:text="${#numbers.formatDecimal(totalUsers, 0, 'COMMA', 0, 'POINT')}">24</div>
+                            <div class="stat-change up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>Tổng trong hệ thống</span>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <i class="fas fa-users stat-icon text-primary"></i>
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Total Orders -->
-            <div class="stat-card stat-card-success">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <div class="stat-title">Tổng Đơn hàng</div>
-                        <div class="stat-number"
-                            th:text="${#numbers.formatDecimal(totalOrders, 0, 'COMMA', 0, 'POINT')}">0</div>
-                        <div class="stat-description">
-                            <i class="fas fa-database"></i>
-                            <span>Tổng trong hệ thống</span>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="stat-label">TỔNG ĐƠN HÀNG</div>
+                            <div class="stat-value"
+                                th:text="${#numbers.formatDecimal(totalOrders, 0, 'COMMA', 0, 'POINT')}">62</div>
+                            <div class="stat-change up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>Tổng trong hệ thống</span>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <i class="fas fa-shopping-cart stat-icon text-success"></i>
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Total Revenue -->
-            <div class="stat-card stat-card-info">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <div class="stat-title">Doanh thu</div>
-                        <div class="stat-number"
-                            th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">0</div>
-                        <div class="stat-description">
-                            <i class="fas fa-coins"></i>
-                            <span>Coins từ orders hoàn thành</span>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="stat-label">DOANH THU</div>
+                            <div class="stat-value"
+                                th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">4,325,322
+                            </div>
+                            <div class="stat-change up">
+                                <i class="fas fa-coins"></i>
+                                <span>Coins từ orders hoàn thành</span>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <i class="fas fa-dollar-sign stat-icon text-info"></i>
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Total Posts -->
-            <div class="stat-card stat-card-warning">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <div class="stat-title">Bài viết</div>
-                        <div class="stat-number"
-                            th:text="${#numbers.formatDecimal(totalPosts, 0, 'COMMA', 0, 'POINT')}">0</div>
-                        <div class="stat-description">
-                            <i class="fas fa-database"></i>
-                            <span>Tổng trong hệ thống</span>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="stat-label">BÀI VIẾT</div>
+                            <div class="stat-value"
+                                th:text="${#numbers.formatDecimal(totalPosts, 0, 'COMMA', 0, 'POINT')}">5</div>
+                            <div class="stat-change up">
+                                <i class="fas fa-database"></i>
+                                <span>Tổng trong hệ thống</span>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <i class="fas fa-file-alt stat-icon text-warning"></i>
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Total Projects -->
-            <div class="stat-card stat-card-purple">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <div class="stat-title">Dự án</div>
-                        <div class="stat-number"
-                            th:text="${#numbers.formatDecimal(totalProjects, 0, 'COMMA', 0, 'POINT')}">0</div>
-                        <div class="stat-description">
-                            <i class="fas fa-database"></i>
-                            <span>Tổng trong hệ thống</span>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="stat-label">DỰ ÁN</div>
+                            <div class="stat-value"
+                                th:text="${#numbers.formatDecimal(totalProjects, 0, 'COMMA', 0, 'POINT')}">13</div>
+                            <div class="stat-change up">
+                                <i class="fas fa-database"></i>
+                                <span>Tổng trong hệ thống</span>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <i class="fas fa-box stat-icon" style="color: #9333ea;"></i>
+                        <div class="stat-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Total Comments -->
-            <div class="stat-card stat-card-orange">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <div class="stat-title">Bình luận</div>
-                        <div class="stat-number"
-                            th:text="${#numbers.formatDecimal(totalComments, 0, 'COMMA', 0, 'POINT')}">0</div>
-                        <div class="stat-description">
-                            <i class="fas fa-database"></i>
-                            <span>Tổng trong hệ thống</span>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="stat-label">BÌNH LUẬN</div>
+                            <div class="stat-value"
+                                th:text="${#numbers.formatDecimal(totalComments, 0, 'COMMA', 0, 'POINT')}">6</div>
+                            <div class="stat-change up">
+                                <i class="fas fa-database"></i>
+                                <span>Tổng trong hệ thống</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-comments"></i>
                         </div>
                     </div>
-                    <div>
-                        <i class="fas fa-comments stat-icon" style="color: #f97316;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row g-4">
+            <!-- Revenue Stats (Replaced Chart) -->
+            <div class="col-12 col-xl-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-coins me-2"></i>
+                            Thống kê doanh thu
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="revenue-stat-box">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">Tổng doanh thu</div>
+                                        <div class="stat-value"
+                                            th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' coins'">
+                                            4,325,322 coins</div>
+                                        <div class="stat-desc">Từ orders đã hoàn thành</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="revenue-stat-box">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">Trung bình/tháng</div>
+                                        <div class="stat-value"
+                                            th:text="${#numbers.formatDecimal(totalRevenue / 12, 0, 'COMMA', 0, 'POINT')} + ' coins'">
+                                            360,443 coins</div>
+                                        <div class="stat-desc">Ước tính theo 12 tháng</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="col-12 col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-clock me-2"></i>
+                            Hoạt động gần đây
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-list">
+                            <!-- Dynamic recent orders -->
+                            <div class="activity-item" th:each="order : ${recentOrders}">
+                                <div class="activity-icon bg-primary">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">
+                                        <span th:text="'Đơn hàng ' + ${order.lvsOrderCode}">Đơn hàng
+                                            ORD20241230001</span>
+                                        <span class="badge bg-success ms-2" th:if="${order.lvsIsPaid}">Đã thanh
+                                            toán</span>
+                                    </div>
+                                    <div class="activity-time">
+                                        <span
+                                            th:text="${order.lvsBuyer != null ? order.lvsBuyer.lvsUsername : 'N/A'}">username</span>
+                                        •
+                                        <span
+                                            th:text="${#numbers.formatDecimal(order.lvsFinalAmount, 0, 'COMMA', 0, 'POINT')} + ' coins'">1,000
+                                            coins</span>
+                                        •
+                                        <span th:text="${#temporals.format(order.lvsCreatedAt, 'dd/MM HH:mm')}">30/12
+                                            14:30</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Empty state -->
+                            <div th:if="${recentOrders == null || recentOrders.isEmpty()}" class="text-center py-4">
+                                <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                                <p class="text-muted">Chưa có hoạt động gần đây</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Chart script removed - using simple revenue display -->
+
+    <style>
+        /* Revenue Stat Boxes */
+        .revenue-stat-box {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(254, 215, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .revenue-stat-box:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(254, 215, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .revenue-stat-box .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #fed700 0%, #ffa500 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #1a1a2e;
+            flex-shrink: 0;
+        }
+
+        .revenue-stat-box .stat-info {
+            flex: 1;
+        }
+
+        .revenue-stat-box .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .revenue-stat-box .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fed700;
+            margin-bottom: 4px;
+        }
+
+        .revenue-stat-box .stat-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+
+        .card-header {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(254, 215, 0, 0.2);
+            padding: 16px 24px;
+        }
+
+        .card-title {
+            color: #fed700;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #fff;
+        }
+
+        .activity-icon.bg-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        .activity-icon.bg-primary {
+            background: linear-gradient(135deg, #fed700 0%, #ffa500 100%);
+        }
+
+        .activity-icon.bg-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
 </body>
 
 </html>

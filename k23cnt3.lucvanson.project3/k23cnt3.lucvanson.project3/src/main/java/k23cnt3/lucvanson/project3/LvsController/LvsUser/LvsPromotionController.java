@@ -2,11 +2,15 @@ package k23cnt3.lucvanson.project3.LvsController.LvsUser;
 
 import k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion;
 import k23cnt3.lucvanson.project3.LvsService.LvsPromotionService;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +28,9 @@ public class LvsPromotionController {
     @Autowired
     private LvsPromotionService lvsPromotionService;
 
+    @Autowired
+    private LvsOrderRepository lvsOrderRepository;
+
     /**
      * Hiển thị danh sách promotion đang hoạt động
      * GET /lvsforum/LvsPromotion/LvsList
@@ -38,6 +45,16 @@ public class LvsPromotionController {
 
         // Get active promotions
         Page<LvsPromotion> promotionsPage = lvsPromotionService.lvsGetActivePromotions(pageable);
+
+        // IMPORTANT: Update actual usage count from orders for accurate progress bar
+        Map<Integer, Long> actualUsageCounts = new HashMap<>();
+        for (LvsPromotion promo : promotionsPage.getContent()) {
+            long actualCount = lvsOrderRepository.countByLvsPromotion_LvsPromotionId(
+                    promo.getLvsPromotionId());
+            actualUsageCounts.put(promo.getLvsPromotionId(), actualCount);
+            // Update the promotion object with actual count for display
+            promo.setLvsUsedCount((int) actualCount);
+        }
 
         // Add to model
         model.addAttribute("LvsPromotions", promotionsPage.getContent());

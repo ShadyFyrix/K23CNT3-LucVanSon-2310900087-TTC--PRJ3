@@ -244,20 +244,30 @@ public class LvsCartServiceImpl implements LvsCartService {
             throw new RuntimeException("Mã khuyến mãi đã hết hạn");
         }
 
-        // 4. Check usage limit
-        if (lvsPromotion.getLvsUsageLimit() != null &&
-                lvsPromotion.getLvsUsedCount() >= lvsPromotion.getLvsUsageLimit()) {
-            throw new RuntimeException("Mã khuyến mãi đã hết lượt sử dụng");
+        // 4. IMPORTANT: Check if user has already used this promotion
+        boolean hasUsed = lvsOrderRepository.existsByLvsBuyer_LvsUserIdAndLvsPromotion_LvsPromotionId(
+                lvsUserId, lvsPromotion.getLvsPromotionId());
+        if (hasUsed) {
+            throw new RuntimeException("Bạn đã sử dụng mã khuyến mãi này rồi!");
         }
 
-        // 5. Check minimum order value
+        // 5. Check usage limit (count from actual orders)
+        if (lvsPromotion.getLvsUsageLimit() != null) {
+            long actualUsageCount = lvsOrderRepository.countByLvsPromotion_LvsPromotionId(
+                    lvsPromotion.getLvsPromotionId());
+            if (actualUsageCount >= lvsPromotion.getLvsUsageLimit()) {
+                throw new RuntimeException("Mã khuyến mãi đã hết lượt sử dụng!");
+            }
+        }
+
+        // 6. Check minimum order value
         if (lvsPromotion.getLvsMinOrderValue() != null &&
                 lvsCart.getLvsTotalPrice() < lvsPromotion.getLvsMinOrderValue()) {
             throw new RuntimeException("Đơn hàng chưa đạt giá trị tối thiểu " +
                     lvsPromotion.getLvsMinOrderValue() + " coins");
         }
 
-        // 6. Calculate discount
+        // 7. Calculate discount
         double discount = 0.0;
         if (lvsPromotion.getLvsDiscountType() == LvsPromotion.LvsDiscountType.PERCENT) {
             discount = lvsCart.getLvsTotalPrice() * (lvsPromotion.getLvsDiscountValue() / 100.0);
@@ -265,12 +275,12 @@ public class LvsCartServiceImpl implements LvsCartService {
             discount = lvsPromotion.getLvsDiscountValue();
         }
 
-        // 7. Apply promotion to cart
+        // 8. Apply promotion to cart
         lvsCart.setLvsPromotion(lvsPromotion);
         lvsCart.setLvsPromotionCode(lvsPromotionCode);
         lvsCart.setLvsPromotionDiscount(discount);
 
-        // 8. Save cart
+        // 9. Save cart
         lvsCartRepository.save(lvsCart);
 
         return true;

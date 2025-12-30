@@ -511,12 +511,14 @@ public class LvsAuthController {
                 return "redirect:/LvsUser/LvsForgotPassword";
             }
 
-            // TODO: Implement email service để gửi link reset password
-            // lvsEmailService.lvsSendResetPasswordEmail(lvsUser);
+            // Generate new random password
+            String lvsNewPassword = lvsUserService.lvsResetPassword(lvsUser.getLvsUserId());
 
+            // Display new password to user
+            // NOTE: In production, should send via email instead of displaying directly
             redirectAttributes.addFlashAttribute("lvsSuccess",
-                    "Link reset mật khẩu đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư!");
-            return "redirect:/LvsUser/LvsLogin";
+                    "Mật khẩu mới của bạn là: " + lvsNewPassword + " - Vui lòng copy lại mật khẩu này để đăng nhập!");
+            return "redirect:/LvsUser/LvsForgotPassword";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("lvsError",

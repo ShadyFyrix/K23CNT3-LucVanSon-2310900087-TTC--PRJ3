@@ -2,6 +2,7 @@ package k23cnt3.lucvanson.project3.LvsService.LvsImpl;
 
 import k23cnt3.lucvanson.project3.LvsEntity.LvsPromotion;
 import k23cnt3.lucvanson.project3.LvsRepository.LvsPromotionRepository;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository;
 import k23cnt3.lucvanson.project3.LvsService.LvsPromotionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import java.util.Random;
 public class LvsPromotionServiceImpl implements LvsPromotionService {
 
     private final LvsPromotionRepository lvsPromotionRepository;
+    private final LvsOrderRepository lvsOrderRepository;
     private final Random lvsRandom = new Random();
 
     /**
@@ -202,6 +204,61 @@ public class LvsPromotionServiceImpl implements LvsPromotionService {
      * @param lvsOrderValue    Giá trị đơn hàng
      * @return Giá trị sau khi áp dụng
      */
+
+    /**
+     * Kiểm tra mã khuyến mãi có hiệu lực cho user cụ thể không
+     * 
+     * @param lvsPromotionCode Mã khuyến mãi
+     * @param lvsOrderValue    Giá trị đơn hàng
+     * @param lvsUserId        ID của user
+     * @return true nếu hiệu lực
+     */
+    @Override
+    public boolean lvsIsPromotionValidForUser(String lvsPromotionCode, Double lvsOrderValue, Long lvsUserId) {
+        LvsPromotion lvsPromotion = lvsGetPromotionByCode(lvsPromotionCode);
+        if (lvsPromotion == null)
+            return false;
+
+        // Kiểm tra active
+        if (!Boolean.TRUE.equals(lvsPromotion.getLvsIsActive()))
+            return false;
+
+        // Kiểm tra thời gian hiệu lực
+        LocalDate lvsToday = LocalDate.now();
+        if (lvsToday.isBefore(lvsPromotion.getLvsStartDate()) ||
+                lvsToday.isAfter(lvsPromotion.getLvsEndDate())) {
+            return false;
+        }
+
+        // IMPORTANT: Kiểm tra user đã sử dụng promotion này chưa
+        if (lvsUserId != null) {
+            boolean hasUsed = lvsOrderRepository.existsByLvsBuyer_LvsUserIdAndLvsPromotion_LvsPromotionId(
+                    lvsUserId, lvsPromotion.getLvsPromotionId());
+            if (hasUsed) {
+                System.out.println("[PROMOTION] User " + lvsUserId + " has already used promotion: " + lvsPromotionCode);
+                return false;
+            }
+        }
+
+        // IMPORTANT: Kiểm tra giới hạn sử dụng tổng (đếm từ orders thực tế)
+        if (lvsPromotion.getLvsUsageLimit() != null) {
+            long actualUsageCount = lvsOrderRepository.countByLvsPromotion_LvsPromotionId(
+                    lvsPromotion.getLvsPromotionId());
+            if (actualUsageCount >= lvsPromotion.getLvsUsageLimit()) {
+                System.out.println("[PROMOTION] Promotion " + lvsPromotionCode + " has reached usage limit: " + 
+                        actualUsageCount + "/" + lvsPromotion.getLvsUsageLimit());
+                return false;
+            }
+        }
+
+        // Kiểm tra giá trị đơn hàng tối thiểu
+        if (lvsPromotion.getLvsMinOrderValue() != null &&
+                lvsOrderValue < lvsPromotion.getLvsMinOrderValue()) {
+            return false;
+        }
+
+        return true;
+    }
     @Override
     public Double lvsApplyPromotion(String lvsPromotionCode, Double lvsOrderValue) {
         if (!lvsIsPromotionValid(lvsPromotionCode, lvsOrderValue)) {

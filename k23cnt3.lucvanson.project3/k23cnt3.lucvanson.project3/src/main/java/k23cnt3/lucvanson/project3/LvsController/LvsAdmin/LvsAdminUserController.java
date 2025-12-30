@@ -462,10 +462,9 @@ public class LvsAdminUserController {
 
             // ===== CẬP NHẬT PASSWORD (NẾU CÓ) =====
             if (lvsNewPassword != null && !lvsNewPassword.trim().isEmpty()) {
-                // Đổi password qua service (service sẽ validate và mã hóa)
-                if (lvsUserService.lvsChangePassword(lvsUserId, lvsExistingUser.getLvsPassword(), lvsNewPassword)) {
-                    lvsExistingUser.setLvsPassword(lvsUserService.lvsEncodePassword(lvsNewPassword));
-                }
+                // IMPORTANT: Admin can change password without knowing current password
+                // Just encode the new password and set it directly
+                lvsExistingUser.setLvsPassword(lvsUserService.lvsEncodePassword(lvsNewPassword));
             }
 
             // Lưu thay đổi vào database

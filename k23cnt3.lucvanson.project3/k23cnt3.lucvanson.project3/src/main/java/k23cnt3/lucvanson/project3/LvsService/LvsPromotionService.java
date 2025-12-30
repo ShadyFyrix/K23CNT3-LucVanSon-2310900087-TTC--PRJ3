@@ -46,6 +46,9 @@ public interface LvsPromotionService {
     // Kiểm tra mã khuyến mãi có hiệu lực không
     boolean lvsIsPromotionValid(String lvsPromotionCode, Double lvsOrderValue);
 
+    // Kiểm tra mã khuyến mãi có hiệu lực cho user cụ thể không
+    boolean lvsIsPromotionValidForUser(String lvsPromotionCode, Double lvsOrderValue, Long lvsUserId);
+
     // Áp dụng mã khuyến mãi
     Double lvsApplyPromotion(String lvsPromotionCode, Double lvsOrderValue);
 

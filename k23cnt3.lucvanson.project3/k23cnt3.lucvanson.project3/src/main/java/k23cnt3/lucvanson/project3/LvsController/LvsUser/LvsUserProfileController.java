@@ -378,12 +378,20 @@ public class LvsUserProfileController {
                 return "LvsAreas/LvsUsers/LvsProfile/LvsProfileChangePassword";
             }
 
-            // Đổi mật khẩu
-            // TODO: Fix method signature - check UserService interface
-            // lvsUserService.lvsChangePassword(lvsCurrentUser.getLvsUserId(),
-            // lvsNewPassword);
-            lvsCurrentUser.setLvsPassword(lvsUserService.lvsEncodePassword(lvsNewPassword));
-            lvsUserService.lvsUpdateUser(lvsCurrentUser);
+            // Đổi mật khẩu using proper service method
+            boolean success = lvsUserService.lvsChangePassword(
+                    lvsCurrentUser.getLvsUserId(),
+                    lvsCurrentPassword,
+                    lvsNewPassword);
+
+            if (!success) {
+                model.addAttribute("LvsError", "Không thể đổi mật khẩu. Vui lòng thử lại!");
+                return "LvsAreas/LvsUsers/LvsProfile/LvsProfileChangePassword";
+            }
+
+            // Update session with new user data
+            LvsUser updatedUser = lvsUserService.lvsGetUserById(lvsCurrentUser.getLvsUserId());
+            session.setAttribute("LvsCurrentUser", updatedUser);
 
             model.addAttribute("LvsSuccess", "Đổi mật khẩu thành công!");
             return "redirect:/LvsUser/LvsProfile/LvsView";

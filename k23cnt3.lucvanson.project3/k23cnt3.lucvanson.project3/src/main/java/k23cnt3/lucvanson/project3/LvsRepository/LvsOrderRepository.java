@@ -156,4 +156,33 @@ public interface LvsOrderRepository extends JpaRepository<LvsOrder, Long> {
                         "WHERE oi.lvsProject.lvsProjectId = :projectId " +
                         "AND o.lvsStatus = 'COMPLETED'")
         long countByLvsProject_LvsProjectId(@Param("projectId") Long projectId);
+
+
+        // ==================== PROMOTION USAGE TRACKING ====================
+
+        /**
+         * Check if a user has already used a specific promotion
+         * Only counts completed/processing orders (excludes cancelled/refunded)
+         */
+        @Query("SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END FROM LvsOrder o " +
+                        "WHERE o.lvsBuyer.lvsUserId = :userId " +
+                        "AND o.lvsPromotion.lvsPromotionId = :promotionId " +
+                        "AND o.lvsStatus NOT IN ('CANCELLED', 'REFUNDED')")
+        boolean existsByLvsBuyer_LvsUserIdAndLvsPromotion_LvsPromotionId(
+                        @Param("userId") Long userId,
+                        @Param("promotionId") Integer promotionId);
+
+        /**
+         * Count how many times a promotion has been used successfully
+         * Only counts completed/processing orders (excludes cancelled/refunded)
+         */
+        @Query("SELECT COUNT(o) FROM LvsOrder o " +
+                        "WHERE o.lvsPromotion.lvsPromotionId = :promotionId " +
+                        "AND o.lvsStatus NOT IN ('CANCELLED', 'REFUNDED')")
+        long countByLvsPromotion_LvsPromotionId(@Param("promotionId") Integer promotionId);
+
+        /**
+         * Get all orders that used a specific promotion
+         */
+        List<LvsOrder> findByLvsPromotion_LvsPromotionId(Integer promotionId);
 }

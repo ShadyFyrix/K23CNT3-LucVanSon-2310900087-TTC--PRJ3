@@ -2,6 +2,7 @@ package k23cnt3.lucvanson.project3.LvsController.LvsAdmin;
 
 import k23cnt3.lucvanson.project3.LvsEntity.*;
 import k23cnt3.lucvanson.project3.LvsService.*;
+import k23cnt3.lucvanson.project3.LvsRepository.LvsOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,9 @@ public class LvsAdminPromotionController {
     @Autowired
     private LvsUserService lvsUserService;
 
+    @Autowired
+    private LvsOrderRepository lvsOrderRepository;
+
     @GetMapping("/LvsList")
     public String lvsListPromotions(
             @RequestParam(defaultValue = "0") int page,
@@ -47,6 +51,13 @@ public class LvsAdminPromotionController {
         } else {
             lvsPromotions = lvsPromotionService.lvsGetAllPromotions(lvsPageable);
         }
+
+        // Calculate actual usage count from orders (same as user controller)
+        lvsPromotions.forEach(promo -> {
+            long actualCount = lvsOrderRepository.countByLvsPromotion_LvsPromotionId(
+                    promo.getLvsPromotionId());
+            promo.setLvsUsedCount((int) actualCount);
+        });
 
         model.addAttribute("LvsPromotions", lvsPromotions);
         model.addAttribute("LvsIsActive", lvsIsActive);

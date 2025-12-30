@@ -28,6 +28,9 @@ public class LvsUserFollowController {
     @Autowired
     private LvsUserService lvsUserService;
 
+    @Autowired
+    private LvsQuestService lvsQuestService;
+
     // Theo dõi người dùng
     @PostMapping("/LvsFollowUser")
     @ResponseBody
@@ -43,6 +46,17 @@ public class LvsUserFollowController {
                     lvsCurrentUser.getLvsUserId(), lvsUserId);
 
             if (lvsSuccess) {
+                // Update quest progress for FOLLOW_USER quest
+                try {
+                    lvsQuestService.lvsUpdateQuestProgress(
+                            lvsCurrentUser,
+                            LvsQuest.LvsQuestType.FOLLOW_USER,
+                            1);
+                } catch (Exception questEx) {
+                    // Log quest update error but don't fail the follow action
+                    System.err.println("Quest update error: " + questEx.getMessage());
+                }
+
                 return "{\"success\": true, \"message\": \"Đã theo dõi\"}";
             } else {
                 return "{\"success\": false, \"message\": \"Đã xảy ra lỗi\"}";
@@ -196,5 +210,31 @@ public class LvsUserFollowController {
         lvsFollowService.lvsRemoveFollower(lvsCurrentUser.getLvsUserId(), lvsFollowerId);
 
         return "redirect:/LvsUser/LvsFollow/LvsMyFollowers";
+    }
+
+    // Success page after follow action
+    @GetMapping("/LvsFollowSuccess")
+    public String lvsShowFollowSuccess(
+            @RequestParam(required = false) String message,
+            @RequestParam(required = false) String redirectUrl,
+            Model model) {
+
+        model.addAttribute("message", message != null ? message : "Đã theo dõi người dùng");
+        model.addAttribute("redirectUrl", redirectUrl != null ? redirectUrl : "/LvsUser/LvsFollow/LvsMyFollowing");
+
+        return "LvsAreas/LvsUsers/LvsFollow/LvsFollowSuccess";
+    }
+
+    // Success page after unfollow action
+    @GetMapping("/LvsUnfollowSuccess")
+    public String lvsShowUnfollowSuccess(
+            @RequestParam(required = false) String message,
+            @RequestParam(required = false) String redirectUrl,
+            Model model) {
+
+        model.addAttribute("message", message != null ? message : "Đã bỏ theo dõi");
+        model.addAttribute("redirectUrl", redirectUrl != null ? redirectUrl : "/LvsUser/LvsFollow/LvsMyFollowing");
+
+        return "LvsAreas/LvsUsers/LvsFollow/LvsUnfollowSuccess";
     }
 }

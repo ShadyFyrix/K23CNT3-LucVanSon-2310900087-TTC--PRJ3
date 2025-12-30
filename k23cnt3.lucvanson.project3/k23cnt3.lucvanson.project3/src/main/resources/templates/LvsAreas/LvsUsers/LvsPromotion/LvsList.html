@@ -104,13 +104,22 @@
                             <div class="mb-4">
                                 <div class="flex justify-between text-xs text-gray-400 mb-1">
                                     <span>Usage Progress</span>
-                                    <span
-                                        th:text="${promo.lvsUsageLimit > 0 ? (promo.lvsUsedCount * 100 / promo.lvsUsageLimit) : 0} + '%'">45%</span>
+                                    <span th:with="percentage=${promo.lvsUsageLimit > 0 ? (promo.lvsUsedCount * 100.0 / promo.lvsUsageLimit) : 0}"
+                                        th:text="${#numbers.formatDecimal(percentage > 100 ? 100 : percentage, 0, 0)} + '%'"
+                                        th:classappend="${percentage >= 100 ? 'text-red-400 font-bold' : ''}">45%</span>
                                 </div>
                                 <div class="w-full bg-[#1e1e1e] rounded-full h-2">
-                                    <div class="bg-gradient-to-r from-[#fed700] to-[#ffa500] h-2 rounded-full transition-all duration-300"
-                                        th:style="'width: ' + ${promo.lvsUsageLimit > 0 ? (promo.lvsUsedCount * 100.0 / promo.lvsUsageLimit) : 0} + '%'">
+                                    <div th:with="percentage=${promo.lvsUsageLimit > 0 ? (promo.lvsUsedCount * 100.0 / promo.lvsUsageLimit) : 0}"
+                                        th:classappend="${percentage >= 100 ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-[#fed700] to-[#ffa500]'}"
+                                        class="h-2 rounded-full transition-all duration-300"
+                                        th:style="'width: ' + ${percentage > 100 ? 100 : percentage} + '%'">
                                     </div>
+                                </div>
+                                <!-- Full indicator -->
+                                <div th:if="${promo.lvsUsedCount >= promo.lvsUsageLimit}"
+                                    class="mt-2 text-xs text-red-400 flex items-center gap-1">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span>Promotion limit reached!</span>
                                 </div>
                             </div>
 

@@ -3,35 +3,389 @@
     layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
 
 <head>
-    <title>Following - Electro Store</title>
+    <title>Đang theo dõi - WeJect</title>
+    <style>
+        .following-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fed700 0%, #ffa500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .user-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(254, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 0.6s ease-out backwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #fed700 0%, #ffa500 100%);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(254, 215, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(254, 215, 0, 0.2);
+        }
+
+        .user-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fed700 0%, #ffa500 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: #1a1a2e;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(254, 215, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover .user-avatar {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 15px 40px rgba(254, 215, 0, 0.5);
+        }
+
+        .user-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .user-bio {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            min-height: 40px;
+            line-height: 1.5;
+        }
+
+        .user-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fed700;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-profile {
+            background: linear-gradient(135deg, #fed700 0%, #ffa500 100%);
+            color: #1a1a2e;
+        }
+
+        .btn-profile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(254, 215, 0, 0.4);
+        }
+
+        .btn-unfollow {
+            background: rgba(239, 71, 111, 0.1);
+            border: 1px solid rgba(239, 71, 111, 0.3);
+            color: #ef476f;
+        }
+
+        .btn-unfollow:hover {
+            background: rgba(239, 71, 111, 0.2);
+            border-color: rgba(239, 71, 111, 0.5);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .empty-icon {
+            font-size: 100px;
+            color: rgba(254, 215, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .empty-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .empty-text {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 30px;
+        }
+
+        .btn-discover {
+            background: linear-gradient(135deg, #fed700 0%, #ffa500 100%);
+            color: #1a1a2e;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-discover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(254, 215, 0, 0.4);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Stagger animation for cards */
+        .user-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .user-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .user-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .user-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .user-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .user-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+    </style>
 </head>
 
 <body>
     <div layout:fragment="content">
-        <div class="container mx-auto px-4 py-8">
-            <h1 class="text-3xl font-bold text-white mb-8"><i class="fas fa-user-friends mr-3 text-[#fed700]"></i>Đang
-                theo dõi</h1>
-            <div th:if="${LvsFollowing == null or LvsFollowing.isEmpty()}" class="text-center py-16">
-                <i class="fas fa-user-friends text-6xl text-gray-600 mb-4"></i>
-                <p class="text-gray-400 text-xl">Bạn chưa theo dõi ai</p>
+        <div class="following-page">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-user-friends"></i> Đang theo dõi
+                </h1>
+                <p class="page-subtitle" th:text="${LvsFollowing != null ? LvsFollowing.size() + ' người' : '0 người'}">
+                    0 người</p>
             </div>
-            <div th:if="${LvsFollowing != null and !LvsFollowing.isEmpty()}"
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div th:each="user : ${LvsFollowing}"
-                    class="bg-[#2b2b2b] border border-[#333] rounded-xl p-6 text-center">
-                    <div class="w-20 h-20 bg-[#1e1e1e] rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-user text-3xl text-gray-600"></i>
+
+            <!-- Empty State -->
+            <div th:if="${LvsFollowing == null or LvsFollowing.isEmpty()}" class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <h2 class="empty-title">Bạn chưa theo dõi ai</h2>
+                <p class="empty-text">Khám phá và kết nối với những người dùng thú vị!</p>
+                <a href="/LvsUser/LvsFollow/LvsSuggestions" class="btn-discover">
+                    <i class="fas fa-compass"></i> Khám phá người dùng
+                </a>
+            </div>
+
+            <!-- Users Grid -->
+            <div th:if="${LvsFollowing != null and !LvsFollowing.isEmpty()}" class="users-grid">
+                <div th:each="user : ${LvsFollowing}" class="user-card">
+                    <div class="user-avatar">
+                        <span
+                            th:text="${user.lvsUsername != null ? user.lvsUsername.substring(0,1).toUpperCase() : 'U'}">U</span>
                     </div>
-                    <h3 class="text-white font-bold mb-2" th:text="${user.lvsUsername}">Username</h3>
-                    <p class="text-gray-400 text-sm mb-4 line-clamp-2" th:text="${user.lvsBio}">Bio</p>
-                    <button
-                        class="bg-red-500/20 border border-red-500/50 text-red-400 font-bold px-6 py-2 rounded-lg hover:bg-red-500/30 transition">
-                        <i class="fas fa-user-minus mr-1"></i>Unfollow
-                    </button>
+
+                    <h3 class="user-name" th:text="${user.lvsUsername}">Username</h3>
+                    <p class="user-bio"
+                        th:text="${user.lvsBio != null and !user.lvsBio.isEmpty() ? user.lvsBio : 'Chưa có bio'}">Bio
+                    </p>
+
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Posts</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Followers</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Following</div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <a th:href="@{/LvsUser/LvsProfile/{id}(id=${user.lvsUserId})}" class="btn btn-profile">
+                            <i class="fas fa-user"></i> Xem profile
+                        </a>
+                        <button class="btn btn-unfollow" th:attr="data-user-id=${user.lvsUserId}"
+                            onclick="unfollowUser(this)">
+                            <i class="fas fa-user-minus"></i> Unfollow
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script layout:fragment="scripts">
+        function unfollowUser(button) {
+            const userId = button.getAttribute('data-user-id');
+
+            if (confirm('Bạn có chắc muốn unfollow người này?')) {
+                fetch('/LvsUser/LvsFollow/LvsUnfollowUser?lvsUserId=' + userId, {
+                    method: 'POST'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove card with animation
+                            const card = button.closest('.user-card');
+                            card.style.animation = 'fadeOut 0.3s ease-out';
+                            setTimeout(() => {
+                                card.remove();
+                                // Reload if no more users
+                                if (document.querySelectorAll('.user-card').length === 0) {
+                                    location.reload();
+                                }
+                            }, 300);
+                        } else {
+                            alert('Có lỗi xảy ra: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Có lỗi xảy ra khi unfollow');
+                    });
+            }
+        }
+    </script>
+
+    <style layout:fragment="styles">
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+    </style>
 </body>
 
 </html>

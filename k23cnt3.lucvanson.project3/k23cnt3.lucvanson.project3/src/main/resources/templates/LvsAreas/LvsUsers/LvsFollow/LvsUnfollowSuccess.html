@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{LvsAreas/LvsUsers/LvsLayout/LvsUser-layout}">
+
+<head>
+    <title>Đã bỏ theo dõi - WeJect</title>
+    <style>
+        .success-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .success-container {
+            text-align: center;
+            max-width: 600px;
+            animation: zoomIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .success-icon-wrapper {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .success-icon {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ef476f 0%, #e63946 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            color: #fff;
+            box-shadow: 0 20px 60px rgba(239, 71, 111, 0.4);
+            animation: checkmark 0.8s ease-out;
+        }
+
+        .success-icon::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            border: 3px solid rgba(239, 71, 111, 0.3);
+            animation: ripple 1.5s infinite;
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fed700 0%, #ffa500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+
+        .success-message {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            line-height: 1.6;
+            animation: fadeInUp 0.6s ease-out 0.4s backwards;
+        }
+
+        .success-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease-out 0.6s backwards;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fed700 0%, #ffa500 100%);
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(254, 215, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(254, 215, 0, 0.3);
+            color: #fed700;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(254, 215, 0, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .auto-redirect {
+            margin-top: 30px;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            animation: fadeIn 0.6s ease-out 0.8s backwards;
+        }
+
+        .countdown {
+            color: #fed700;
+            font-weight: 700;
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes checkmark {
+            0% {
+                transform: scale(0) rotate(-45deg);
+            }
+
+            50% {
+                transform: scale(1.2) rotate(0deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="success-page">
+            <div class="success-container">
+                <div class="success-icon-wrapper">
+                    <div class="success-icon">
+                        <i class="fas fa-user-minus"></i>
+                    </div>
+                </div>
+
+                <h1 class="success-title">Đã bỏ theo dõi!</h1>
+
+                <p class="success-message" th:text="${message != null ? message : 'Bạn đã bỏ theo dõi người dùng này'}">
+                    Bạn đã bỏ theo dõi người dùng này
+                </p>
+
+                <div class="success-actions">
+                    <a th:href="${redirectUrl != null ? redirectUrl : '/LvsUser/LvsFollow/LvsMyFollowing'}"
+                        class="btn btn-primary">
+                        <i class="fas fa-users"></i>
+                        Xem danh sách theo dõi
+                    </a>
+                    <a href="/lvsforum" class="btn btn-secondary">
+                        <i class="fas fa-home"></i>
+                        Về trang chủ
+                    </a>
+                </div>
+
+                <div class="auto-redirect">
+                    <i class="fas fa-info-circle"></i>
+                    Tự động chuyển hướng sau <span class="countdown" id="countdown">3</span> giây...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="scripts">
+        // Auto redirect after 3 seconds
+        let countdown = 3;
+        const countdownEl = document.getElementById('countdown');
+        const redirectUrl = /*[[${redirectUrl}]]*/ '/LvsUser/LvsFollow/LvsMyFollowing';
+
+        const timer = setInterval(() => {
+            countdown--;
+            if (countdownEl) {
+                countdownEl.textContent = countdown;
+            }
+
+            if (countdown <= 0) {
+                clearInterval(timer);
+                window.location.href = redirectUrl;
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>
